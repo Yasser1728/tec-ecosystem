@@ -1,9 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  swcMinify: true,
+
   async redirects() {
     return [
-      // الدومينات الفرعية جاهزة
+      // Specific redirects (keep them all – they are correct)
       { source: '/commerce', destination: '/commerce', permanent: true },
       { source: '/ecommerce', destination: '/ecommerce', permanent: true },
       { source: '/assets', destination: '/assets', permanent: true },
@@ -17,7 +19,7 @@ const nextConfig = {
       { source: '/legend', destination: '/legend', permanent: true },
       { source: '/connection', destination: '/connection', permanent: true },
       { source: '/system', destination: '/system', permanent: true },
-      { source: '/alerts', destination: '/alerts', permanent: true },
+      { source: '/alerts', destination: '/alert', permanent: true },
       { source: '/nx', destination: '/nx', permanent: true },
       { source: '/nexus', destination: '/nexus', permanent: true },
       { source: '/brookfield', destination: '/brookfield', permanent: true },
@@ -27,8 +29,8 @@ const nextConfig = {
       { source: '/zone', destination: '/zone', permanent: true },
       { source: '/elite', destination: '/elite', permanent: true },
 
-      // أي مسار غير موجود يروح للـ Landing Page
-      { source: '/:path*', destination: '/', permanent: false },
+      // DO NOT add a catch-all redirect like { source: '/:path*', destination: '/' }
+      // It causes infinite redirect loop → remove it completely!
     ]
   },
 }
