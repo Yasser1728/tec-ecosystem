@@ -14,7 +14,7 @@
     "react-dom": "19.2.0"
   },
   "devDependencies": {
-    "eslint": "^8",
+    "eslint": "9.39.1",
     "eslint-config-next": "16.0.5",
     "tailwindcss": "4.1.17",
     "postcss": "^8",
