@@ -1,4 +1,9 @@
 {
+  "engines": {
+    "node": "20.x"
+  }
+}
+{
   "name": "tec-ecosystem",
   "version": "1.0.0",
   "private": true,
