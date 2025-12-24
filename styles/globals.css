@@ -1,8 +1,39 @@
+/* استيراد محرك التنسيق النخبوي */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* إعدادات الواجهة السيادية */
+:root {
+  --tec-dark: #0a0e2b;
+  --tec-green: #00ff9d;
+  --tec-blue: #00c6ff;
+}
+
 body {
-  font-family: 'Inter', sans-serif;
-  background-color: #f9fafb;
+  background-color: var(--tec-dark);
+  color: #ffffff;
+  font-family: 'Cairo', sans-serif;
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+/* تحسين تجربة الـ Elite UX للتمرير */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--tec-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, var(--tec-green), var(--tec-blue));
+  border-radius: 10px;
+}
+
+/* تأثيرات الـ Titan Glow المخصصة */
+.titan-gradient-text {
+  @apply bg-gradient-to-r from-[#00ff9d] via-[#00c6ff] to-[#0072ff] bg-clip-text text-transparent;
 }
