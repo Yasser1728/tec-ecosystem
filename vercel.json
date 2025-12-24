@@ -1,14 +1,3 @@
 {
-  "framework": "nextjs",
-  "regions": ["fra1", "iad1"],
-  "installCommand": "npm install",
-  "buildCommand": "npm run build",
-  "outputDirectory": ".next",
-  "nodeVersion": "20.x",
-  "functions": {
-    "api/**": {
-      "maxDuration": 30,
-      "memory": 1024
-    }
-  }
+  "version": 2
 }
