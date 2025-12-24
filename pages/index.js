@@ -83,6 +83,23 @@ export default function Home() {
       <Head>
         <title>TEC | Titan Elite Commerce</title>
         <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;900&display=swap" rel="stylesheet" />
+        <style>{`
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
+          html, body, #__next {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: #0a0e2b;
+          }
+          body {
+            overflow-x: hidden;
+          }
+        `}</style>
       </Head>
 
       <div style={styles.container}>
@@ -172,8 +189,11 @@ const styles = {
     background: 'linear-gradient(180deg, #0a0e2b 0%, #1a1f4d 50%, #0a0e2b 100%)',
     color: 'white',
     minHeight: '100vh',
+    width: '100%',
     overflowX: 'hidden',
-    position: 'relative'
+    position: 'relative',
+    margin: 0,
+    padding: 0
   },
   canvas: {
     position: 'fixed',
