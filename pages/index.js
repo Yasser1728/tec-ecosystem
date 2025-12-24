@@ -4,7 +4,6 @@ import Footer from '../components/Footer'
 import ServiceCard from '../components/ServiceCard'
 
 export default function Home() {
-  // مصفوفة الدومينات الـ 24 كاملة وفقاً للميثاق النخبوي
   const domainCategories = [
     {
       title: "Commerce & Finance",
@@ -53,33 +52,36 @@ export default function Home() {
   ];
 
   return (
-    <div className="bg-[#0a0e2b] min-h-screen text-white font-['Cairo']">
+    <div className="bg-[#0a0e2b] min-h-screen">
       <Head>
         <title>TEC | Titan Elite Commerce</title>
+        <meta name="description" content="Official Luxury Commerce & Finance Ecosystem on Pi Network" />
       </Head>
       
       <Header />
 
-      <main className="max-w-7xl mx-auto px-4 py-20">
-        <section className="text-center mb-16">
-          <h1 className="text-7xl font-black bg-gradient-to-r from-[#00ff9d] via-[#00c6ff] to-[#0072ff] bg-clip-text text-fill-transparent tracking-widest mb-6">
+      <main className="max-w-7xl mx-auto px-6 py-24">
+        <header className="text-center mb-20">
+          <h1 className="text-6xl md:text-8xl font-black titan-gradient-text tracking-tighter mb-6">
             TEC
           </h1>
-          <p className="text-2xl font-bold text-[#00c6ff] mb-4">Titan Elite Commerce</p>
-          <p className="opacity-80 max-w-2xl mx-auto">
-            The Parent Authority over 24 independent luxury business units on Pi Network.
+          <p className="text-xl md:text-2xl font-bold text-[#00c6ff] mb-4">Titan Elite Commerce</p>
+          <p className="text-gray-400 max-w-2xl mx-auto leading-relaxed">
+            The Parent Authority over 24 independent luxury business units. All deals are curated, brokered, and secured.
           </p>
-        </section>
+        </header>
 
         {domainCategories.map((category, idx) => (
-          <div key={idx} className="mb-12">
-            <h2 className="text-3xl font-bold mb-8 border-l-4 border-[#00ff9d] pl-4">{category.title}</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <section key={idx} className="mb-20">
+            <h2 className="text-2xl font-black mb-10 border-l-4 border-[#00ff9d] pl-4 uppercase tracking-widest text-white">
+              {category.title}
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {category.domains.map((domain) => (
                 <ServiceCard key={domain.name} service={domain} />
               ))}
             </div>
-          </div>
+          </section>
         ))}
       </main>
 
