@@ -1,0 +1,42 @@
+// ملف تعريف قاعدة البيانات لـ TEC
+datasource db {
+  provider = "postgresql" // أو "mongodb" حسب اختيارك للاستضافة
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// نموذج المستخدم (Pi Network User)
+model User {
+  id            String   @id @default(cuid())
+  piUsername    String   @unique // اسم المستخدم في شبكة Pi
+  uid           String   @unique // المعرف الفريد من Pi SDK
+  tier          Tier     @default(ELITE) // رتبة المستخدم
+  balance       Float    @default(0.0) // رصيد المستخدم داخل النظام
+  language      String   @default("en")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  payments      Payment[]
+}
+
+// نموذج عمليات الدفع (Sovereign Payments)
+model Payment {
+  id            String   @id @default(cuid())
+  amount        Float
+  memo          String?
+  status        String   @default("PENDING") // PENDING, COMPLETED, CANCELLED
+  piTxId        String?  @unique // رقم العملية في Pi Blockchain
+  user          User     @relation(fields: [userId], references: [id])
+  userId        String
+  createdAt     DateTime @default(now())
+}
+
+// رتب النخبة في النظام
+enum Tier {
+  ELITE
+  TITAN
+  SOVEREIGN
+  LEGEND
+}
