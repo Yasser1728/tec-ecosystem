@@ -1,42 +1,48 @@
-// ملف تعريف قاعدة البيانات لـ TEC
-datasource db {
-  provider = "postgresql" // أو "mongodb" حسب اختيارك للاستضافة
-  url      = env("DATABASE_URL")
-}
-
 generator client {
   provider = "prisma-client-js"
 }
 
-// نموذج المستخدم (Pi Network User)
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
 model User {
-  id            String   @id @default(cuid())
-  piUsername    String   @unique // اسم المستخدم في شبكة Pi
-  uid           String   @unique // المعرف الفريد من Pi SDK
-  tier          Tier     @default(ELITE) // رتبة المستخدم
-  balance       Float    @default(0.0) // رصيد المستخدم داخل النظام
-  language      String   @default("en")
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  payments      Payment[]
+  id          String   @id @default(cuid())
+  piUserId    String   @unique
+  username    String?
+  role        Role     @default(USER)
+  createdAt  DateTime @default(now())
+  payments   Payment[]
 }
 
-// نموذج عمليات الدفع (Sovereign Payments)
+model Domain {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt  DateTime @default(now())
+}
+
 model Payment {
-  id            String   @id @default(cuid())
-  amount        Float
-  memo          String?
-  status        String   @default("PENDING") // PENDING, COMPLETED, CANCELLED
-  piTxId        String?  @unique // رقم العملية في Pi Blockchain
-  user          User     @relation(fields: [userId], references: [id])
-  userId        String
-  createdAt     DateTime @default(now())
+  id         String   @id @default(cuid())
+  amount     Float
+  currency   String   @default("PI")
+  status     PaymentStatus @default(PENDING)
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  createdAt  DateTime @default(now())
 }
 
-// رتب النخبة في النظام
-enum Tier {
-  ELITE
-  TITAN
-  SOVEREIGN
-  LEGEND
+enum Role {
+  USER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
 }
