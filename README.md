@@ -1,25 +1,25 @@
-# tec-ecosystem
+# TEC Knowledge Information — Dual Language Edition (24 Domains)
 
-## Project Description
+EN — Summary
+TEC (The Elite Consortium) is the parent authority managing 24 independent luxury business domains. This repository contains a dual-language (Arabic / English) knowledge pack that maps each domain, landing pages, assistant reply patterns, and governance protocol for a private curated marketplace (no public catalogs — deals are curated & brokered).
 
-This repository represents the frontend web application for the "tec-ecosystem". The project is built to be an interactive display platform for various services and components within the ecosystem.
+AR — ملخص
+TEC: الهيئة الأم المسؤولة عن 24 دومين لأعمال فاخرة مستقلة. هذا المستودع يحتوي على حزمة معرفة ثنائية اللغة (عربي/إنجليزي) تتضمن خريطة الدومينات، صفحات الهبوط، نماذج ردود المساعد، وبروتوكول الحوكمة لسوق مغلق منسق بواسطة وسطاء.
 
-## Technologies Used
+Key highlights / النقاط الرئيسية
+- Mission: Sovereign parent brand for luxury units.
+- Protocol: Private Marketplace Rule — curated & brokered transactions only.
+- Contents: URL map, domain overviews, assistant reply templates, contributor & PR/Issue templates.
 
-This project is built using the latest web development technologies to ensure high performance and scalability:
+Get started / للبدء
+- Read the domain overview: docs/TEC_OVERVIEW.md
+- Review URL map: docs/url_map.md
+- Use the assistant reply template for integrating in the TEC Assistant: docs/assistant_response_template.md
 
-| Technology | Description |
-| :--- | :--- |
-| **Next.js 14** | A powerful React framework supporting Server-Side Rendering (SSR) and Static Site Generation (SSG). |
-| **React 18** | A JavaScript library for building interactive user interfaces. |
-| **Tailwind CSS** | A utility-first CSS framework for fast and responsive design. |
+Maintainer / المشرف
+- Yasser1728 (project owner)
 
-## Quick Start
+License / الترخيص
+- Add your licensing choice here (e.g., PROPRIETARY / MIT) — update before publishing.
 
-To run the project locally, follow these steps:
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/Yasser1728/tec-ecosystem.git
-cd tec-ecosystem
+---
