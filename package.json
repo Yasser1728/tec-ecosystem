@@ -1,9 +1,4 @@
 {
-  "engines": {
-    "node": "20.x"
-  }
-}
-{
   "name": "tec-ecosystem",
   "version": "1.0.0",
   "private": true,
@@ -14,15 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "next": "16.0.5",
-    "react": "19.2.0",
-    "react-dom": "19.2.0"
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest"
   },
   "devDependencies": {
-    "eslint": "9.39.1",
-    "eslint-config-next": "16.0.5",
-    "tailwindcss": "4.1.17",
-    "postcss": "^8",
-    "autoprefixer": "^10"
+    "autoprefixer": "latest",
+    "postcss": "latest",
+    "tailwindcss": "latest"
   }
 }
