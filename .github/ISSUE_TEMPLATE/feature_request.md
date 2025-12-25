@@ -18,4 +18,4 @@ Explain the feature and business justification.
 - Mapped to docs/url_map.md
 - No public catalog exposure; provide brokered flow or contact path.
 
-## Additional notes / ملاحظات إضافيّة
+## Additional notes / ملاحظات إضافية
