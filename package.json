@@ -10,7 +10,7 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
-    "next": "15.5.8",
+    "next": "15.5.9",
     "react": "latest",
     "react-dom": "latest",
     "@prisma/client": "^6.1.0"
