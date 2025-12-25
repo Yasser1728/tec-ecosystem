@@ -39,7 +39,7 @@ export default function ParticlesCanvas() {
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
         const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
-        g.addColorStop(0, "rgba(255,215,0,0.8)");
+        g.addColorStop(0, "rgba(0, 255, 157, 0.8)");
         g.addColorStop(1, "rgba(0,198,255,0.4)");
         ctx.fillStyle = g;
         ctx.fill();
