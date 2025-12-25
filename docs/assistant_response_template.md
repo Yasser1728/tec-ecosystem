@@ -23,7 +23,7 @@ Deep Dive / التعمق:
 
 CTA / التنفيذ:
 [EN] Direct the user to the most relevant landing page: "Open the full guide → /Estate/buy-guide"
-[AR] وَجه المستخدم للمسار المناسب: "افتح دليل الشراء الكامل → /Estate/buy-guide"
+[AR] وجّه المستخدم للمسار المناسب: "افتح دليل الشراء الكامل → /Estate/buy-guide"
 
 Related Resources / الموارد ذات الصلة:
 - FundX → ROI Calculator / حاسبة العائد

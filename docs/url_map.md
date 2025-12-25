@@ -1,6 +1,6 @@
-# URL Map & Landing Pages — Full 24 Domains (EN / AR)
+# URL Map & Landing Pages — Full 22 Domains (EN / AR)
 
-This file maps each domain (24 total) to its recommended landing pages and short descriptions in English and Arabic. Use as canonical sitemap for site routing and assistant linking.
+This file maps each domain (22 total) to its recommended landing pages and short descriptions in English and Arabic. Use as canonical sitemap for site routing and assistant linking.
 
 1. FundX.pi
 - /start → Getting started guide / دليل البداية
@@ -72,7 +72,8 @@ This file maps each domain (24 total) to its recommended landing pages and short
 - /maps → Economic zones & regulations / خرائط المناطق الاقتصادية والقوانين
 - /invest → Investment guides / أدلة الاستثمار العقاري
 
-15. DX.pi & NX.pi
+15. DX.pi & NX.pi (shared platform)
+- Note: DX.pi and NX.pi run on the same underlying platform and intentionally share these landing pages.
 - /projects → Advanced digital transformation / التحول الرقمي المتقدم
 - /labs → Next-gen tech labs / مختبرات التكنولوجيا الحديثة
 - /insights → Project insights / رؤى المشاريع
@@ -102,7 +103,8 @@ This file maps each domain (24 total) to its recommended landing pages and short
 - /coordination → Cross-sector coordination / تنسيق عبر القطاعات
 - /integration → Platform integration / دمج المنصات
 
-21. Epic.pi / Legend.pi
+21. Epic.pi / Legend.pi (combined entry)
+- Note: Epic.pi and Legend.pi are treated as one business unit with shared landing pages.
 - /legacy → Legacy project management / إدارة مشاريع الإرث
 - /access → Early access opportunities / وصول مبكر للفرص
 - /membership → Elite membership tiers / مستويات العضوية النخبوية

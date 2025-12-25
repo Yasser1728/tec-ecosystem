@@ -6,7 +6,7 @@ Protocol: Private Marketplace Rule — No public catalogs; all deals are Curated
 
 AR — الرؤية والهوية
 TEC: العلامة التجارية الأم المسؤولة عن 24 وحدة أعمال فاخرة مستقلة.
-البروتوكول: قاعدة السوق المغلق — لا توجد كتالوجات عامة، وجميع الصفقات منسقة ومؤهلة ومنفذة عبر وسطاء.
+البروتوكول: قاعدة السوق المغلق — لا توجد كتالوجات عامة، وجميع الصفقات منسقة ومنفذة عبر وسطاء.
 
 Purpose / الغاية
 - Provide a single strategic vision and governance layer for multiple high-value verticals.

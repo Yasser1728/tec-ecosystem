@@ -10,4 +10,4 @@ Logo & Links / الشعار والروابط
 - Display domain names with capitalized top-level (e.g., FundX.pi).
 
 Legal / القانونية
-- Do not promise jurisdictional legal outcomes. Use "consult legal" footnote where applicable.
+- Do not promise jurisdictional legal outcomes. Use a "consult a qualified legal professional" footnote where applicable.

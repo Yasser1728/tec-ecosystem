@@ -1,4 +1,4 @@
-# TEC Knowledge Information — Dual Language Edition (24 Domains)
+# TEC Knowledge Base — Dual Language Edition (24 Domains)
 
 EN — Summary
 TEC (The Elite Consortium) is the parent authority managing 24 independent luxury business domains. This repository contains a dual-language (Arabic / English) knowledge pack that maps each domain, landing pages, assistant reply patterns, and governance protocol for a private curated marketplace (no public catalogs — deals are curated & brokered).
@@ -20,6 +20,6 @@ Maintainer / المشرف
 - Yasser1728 (project owner)
 
 License / الترخيص
-- Add your licensing choice here (e.g., PROPRIETARY / MIT) — update before publishing.
+- MIT License
 
 ---

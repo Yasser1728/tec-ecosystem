@@ -1,12 +1,12 @@
-What I prepared for you:
-- README.md (dual-language summary)
-- docs/TEC_OVERVIEW.md (mission & how-to)
-- docs/url_map.md (canonical sitemap for 24 domains)
-- docs/assistant_response_template.md (standardized bilingual replies)
-- CONTRIBUTING.md, CHANGELOG.md, branding & PR/Issue templates
-- NEXT_STEPS.txt with deployment checklist
+# TEC Knowledge Base — Contents
 
-Tell me if you want:
-- A different tone (more creative / more formal)
-- Additional language variants
-- Automatic PR creation in repo (I can do that if you confirm branch name)
+This repository contains comprehensive bilingual documentation for TEC (The Elite Consortium):
+
+- **README.md** — Dual-language summary and project overview
+- **docs/TEC_OVERVIEW.md** — Mission statement and usage guidelines
+- **docs/url_map.md** — Canonical sitemap for all 22 domain entries
+- **docs/assistant_response_template.md** — Standardized bilingual response patterns
+- **CONTRIBUTING.md** — Contribution guidelines and standards
+- **CHANGELOG.md** — Project version history
+- **docs/BRANDING_GUIDELINES.md** — Brand consistency guidelines
+- **.github/** — PR and issue templates for repository governance
