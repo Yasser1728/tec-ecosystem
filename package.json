@@ -10,15 +10,17 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@prisma/client": "^6.1.0",
     "next": "15.5.9",
     "react": "latest",
-    "react-dom": "latest",
-    "@prisma/client": "^6.1.0"
+    "react-dom": "latest"
   },
   "devDependencies": {
     "autoprefixer": "latest",
+    "eslint": "9.39.2",
+    "eslint-config-next": "16.1.1",
     "postcss": "latest",
-    "tailwindcss": "latest",
-    "prisma": "^6.1.0"
+    "prisma": "^6.1.0",
+    "tailwindcss": "latest"
   }
 }

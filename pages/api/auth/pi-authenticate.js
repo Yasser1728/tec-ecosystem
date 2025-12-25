@@ -1,5 +1,5 @@
 import { prisma } from '../../../lib/db/prisma';
-import { withRateLimit } from '../../../middleware/rateLimit';
+import { withRateLimit } from '../../../middleware/ratelimit';
 import { logger } from '../../../lib/utils/logger';
 
 async function handler(req, res) {

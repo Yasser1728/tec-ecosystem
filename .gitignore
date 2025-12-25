@@ -4,3 +4,4 @@ env.local
 .next/
 .vscode/
 .DS_Store
+.eslintrc.json
