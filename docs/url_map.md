@@ -48,7 +48,7 @@ This file maps each domain (22 total) to its recommended landing pages and short
 - /community → Elite Pi communities / مجتمعات Pi النخبوية
 
 10. Elite.pi
-- /insights → Premium trade insights / محتوى التجارة المميز
+- /insights → Premium trade insights / رؤى التجارة المميزة
 - /consulting → Elite business consulting / استشارات أعمال نخبوية
 - /networking → Networking events / فعاليات بناء الشبكات
 

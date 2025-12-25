@@ -31,7 +31,7 @@ Related Resources / الموارد ذات الصلة:
 - Analytics → ROI monitoring / مراقبة العائد
 
 Exclusive Bonus / الميزة الحصرية (optional):
-- Offer a downloadable checklist or contact to a VIP advisor.
+- Offer a downloadable checklist or contact a VIP advisor.
 ━━━━━━━━━━━━━━━━
 
 Notes for implementers
