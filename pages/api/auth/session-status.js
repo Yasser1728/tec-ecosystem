@@ -5,7 +5,14 @@ import { logger } from '../../../lib/utils/logger';
 /**
  * Session Status API
  * Checks if a user's session is valid and returns their current status
+ * 
+ * Session validity: 7 days from last login
+ * If no lastLoginAt exists, uses account creation date as fallback
  */
+
+// Session timeout configuration (7 days in milliseconds)
+const SESSION_TIMEOUT_MS = 7 * 24 * 60 * 60 * 1000;
+
 async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -39,10 +46,10 @@ async function handler(req, res) {
       });
     }
 
-    // Check if session is still valid (within last 7 days)
-    const sessionTimeout = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
+    // Check if session is still valid (within configured timeout period)
+    // Uses lastLoginAt if available, otherwise falls back to account creation date
     const lastLogin = user.lastLoginAt || user.createdAt;
-    const sessionValid = (Date.now() - new Date(lastLogin).getTime()) < sessionTimeout;
+    const sessionValid = (Date.now() - new Date(lastLogin).getTime()) < SESSION_TIMEOUT_MS;
 
     const sessionStatus = {
       success: true,
