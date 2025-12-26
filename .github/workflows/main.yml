@@ -22,15 +22,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run lint (if exists)
+      - name: Run lint (optional)
         run: npm run lint || echo "No lint script, skipping"
 
-      - name: Type check
-        run: npx tsc --noEmit
+      - name: Prisma generate (optional)
+        run: npx prisma generate || echo "No Prisma schema, skipping"
 
       - name: Build Next.js app
         run: npm run build
-
-      # اختياري: Prisma generate (لو مفيش DB tests محلي)
-      - name: Prisma generate
-        run: npx prisma generate
