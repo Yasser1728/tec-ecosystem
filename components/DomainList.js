@@ -1,6 +1,44 @@
 import { useState } from 'react';
 import Link from 'next/link';
 
+/**
+ * DomainList Component
+ * 
+ * Displays a collapsible list of TEC ecosystem domains organized by tiers.
+ * Supports bilingual display (English/Arabic) and allows users to expand/collapse
+ * categories to view domain details.
+ * 
+ * @param {Object} props - Component props
+ * @param {Array<Object>} props.domains - Array of domain objects containing tier and items
+ * @param {string} props.domains[].tier - English tier name
+ * @param {string} props.domains[].tierAr - Arabic tier name
+ * @param {Array<Object>} props.domains[].items - Array of domain items in this tier
+ * @param {string} props.domains[].items[].name - Domain name
+ * @param {string} props.domains[].items[].url - Domain URL path
+ * @param {string} props.domains[].items[].desc - English description
+ * @param {string} props.domains[].items[].descAr - Arabic description
+ * @param {string} props.language - Current language ('en' or 'ar')
+ * @returns {JSX.Element} The rendered domain list
+ * 
+ * @example
+ * ```jsx
+ * import DomainList from '@/components/DomainList';
+ * 
+ * function DomainsPage() {
+ *   const domains = [
+ *     {
+ *       tier: "Tier 1",
+ *       tierAr: "المستوى 1",
+ *       items: [
+ *         { name: "TEC", url: "tec", desc: "Main platform", descAr: "المنصة الرئيسية" }
+ *       ]
+ *     }
+ *   ];
+ *   
+ *   return <DomainList domains={domains} language="en" />;
+ * }
+ * ```
+ */
 export default function DomainList({ domains, language }) {
   const [openCat, setOpenCat] = useState(null);
 

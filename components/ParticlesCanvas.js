@@ -1,5 +1,35 @@
 import { useEffect, useRef } from 'react';
 
+/**
+ * ParticlesCanvas Component
+ * 
+ * An animated canvas background featuring floating particles with gradient colors.
+ * Automatically adjusts particle count and canvas size based on screen dimensions.
+ * Particles move smoothly and bounce off screen edges.
+ * 
+ * @returns {JSX.Element} The rendered canvas element
+ * 
+ * @example
+ * ```jsx
+ * import ParticlesCanvas from '@/components/ParticlesCanvas';
+ * 
+ * function Page() {
+ *   return (
+ *     <>
+ *       <ParticlesCanvas />
+ *       <main className="relative z-10">Content appears above particles</main>
+ *     </>
+ *   );
+ * }
+ * ```
+ * 
+ * @description
+ * Features:
+ * - Responsive particle count (30 on mobile, 60 on desktop)
+ * - High DPI screen support
+ * - Gradient particle colors (TEC green to blue)
+ * - Automatic cleanup on unmount
+ */
 export default function ParticlesCanvas() {
   const canvasRef = useRef(null);
 
