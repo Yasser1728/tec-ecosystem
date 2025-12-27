@@ -2,7 +2,7 @@
  * Unit Tests for Components
  */
 
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import Footer from '../../public/components/Footer';
 import Header from '../../public/components/Header';
 import ServiceCard from '../../components/ServiceCard';
@@ -66,7 +66,7 @@ describe('LanguageToggle Component', () => {
     render(<LanguageToggle language="en" setLanguage={mockSetLanguage} />);
     
     const arButton = screen.getByText('ع');
-    arButton.click();
+    fireEvent.click(arButton);
     
     expect(mockSetLanguage).toHaveBeenCalledWith('ar');
   });
