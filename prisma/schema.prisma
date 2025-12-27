@@ -45,3 +45,41 @@ model Payment {
   @@index([status])
   @@map("payments")
 }
+
+model NFT {
+  id              String    @id @default(cuid())
+  tokenId         String    @unique
+  userId          String
+  domainName      String
+  certificateType String    @default("ownership")
+  metadata        Json
+  imageUrl        String?
+  mintedAt        DateTime  @default(now())
+  txHash          String?
+  status          String    @default("MINTING")
+  user            User      @relation(fields: [userId], references: [id])
+  
+  @@index([userId])
+  @@index([domainName])
+  @@map("nfts")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  piId          String    @unique
+  username      String
+  email         String?   @unique
+  walletAddress String?   @unique
+  tier          String    @default("STANDARD")
+  status        String    @default("ACTIVE")
+  language      String    @default("en")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  lastLoginAt   DateTime?
+  payments      Payment[]
+  nfts          NFT[]
+  
+  @@index([piId])
+  @@index([tier])
+  @@map("users")
+}
