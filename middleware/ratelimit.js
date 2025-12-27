@@ -1,4 +1,22 @@
 const rateStore = new Map();
+let lastCleanup = Date.now();
+const CLEANUP_INTERVAL = 60 * 60 * 1000; // 1 hour
+
+function cleanupExpiredEntries() {
+  const now = Date.now();
+  
+  if (now - lastCleanup < CLEANUP_INTERVAL) {
+    return;
+  }
+  
+  for (const [key, record] of rateStore.entries()) {
+    if (now > record.resetTime) {
+      rateStore.delete(key);
+    }
+  }
+  
+  lastCleanup = now;
+}
 
 export function withRateLimit(handler, options = {}) {
   const { maxRequests = 100, windowMs = 15 * 60 * 1000 } = options;
@@ -25,6 +43,13 @@ export function withRateLimit(handler, options = {}) {
     record.count++;
     rateStore.set(key, record);
     
+    cleanupExpiredEntries();
+    
     return handler(req, res);
   };
+}
+
+export function clearRateStore() {
+  rateStore.clear();
+  lastCleanup = Date.now();
 }
