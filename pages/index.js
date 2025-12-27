@@ -1,7 +1,7 @@
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import ParticlesCanvas from '../components/ParticlesCanvas';
-import ServiceCard from '../components/ServiceCard';
+import Header from '../public/components/layout/Header';
+import Footer from '../public/components/layout/Footer';
+import ParticlesCanvas from '../public/components/ui/ParticlesCanvas';
+import ServiceCard from '../public/components/ui/ServiceCard';
 
 export default function Home() {
   return (

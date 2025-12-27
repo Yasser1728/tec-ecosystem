@@ -1,6 +1,6 @@
 import Head from 'next/head';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
+import Header from '../../public/components/layout/Header';
+import Footer from '../../public/components/layout/Footer';
 
 export default function LegendMembership() {
   return (
