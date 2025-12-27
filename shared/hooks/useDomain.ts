@@ -26,7 +26,8 @@ export const useDomain = (): UseDomainReturn => {
           setConfig(domainConfig);
         }
       } catch (err) {
-        setError(err instanceof Error ? err : new Error('Failed to load domain config'));
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        setError(new Error(`Failed to load domain config: ${errorMessage}`));
       } finally {
         setLoading(false);
       }
