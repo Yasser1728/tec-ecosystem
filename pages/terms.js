@@ -171,10 +171,10 @@ export default function Terms() {
               </h2>
               <div className="space-y-3 text-gray-400">
                 <p className="font-semibold uppercase">
-                  THE SERVICES ARE PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND.
+                  THE SERVICES ARE PROVIDED &quot;AS IS&quot; AND &quot;AS AVAILABLE&quot; WITHOUT WARRANTIES OF ANY KIND.
                 </p>
                 <p className="font-semibold">
-                  يتم توفير الخدمات "كما هي" و "كما هي متاحة" دون ضمانات من أي نوع.
+                  يتم توفير الخدمات &quot;كما هي&quot; و &quot;كما هي متاحة&quot; دون ضمانات من أي نوع.
                 </p>
                 <p>
                   We disclaim all warranties, express or implied, including but not limited to:

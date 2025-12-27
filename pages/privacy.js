@@ -95,7 +95,7 @@ export default function Privacy() {
                 <ul className="list-disc list-inside space-y-2 text-gray-400">
                   <li>We receive your Pi Network ID and username</li>
                   <li>نستلم معرف Pi Network الخاص بك واسم المستخدم</li>
-                  <li>Payment transactions are processed through Pi Network's secure infrastructure</li>
+                  <li>Payment transactions are processed through Pi Network&apos;s secure infrastructure</li>
                   <li>تتم معالجة معاملات الدفع من خلال البنية التحتية الآمنة لشبكة Pi</li>
                   <li>We do not store your Pi Network password or private keys</li>
                   <li>لا نقوم بتخزين كلمة مرور Pi Network أو المفاتيح الخاصة بك</li>
@@ -207,7 +207,7 @@ export default function Privacy() {
             {/* Children's Privacy */}
             <section className="bg-gray-800 p-6 rounded-lg border border-[#00ff9d]/20">
               <h2 className="text-3xl font-bold text-[#00ff9d] mb-4">
-                11. Children's Privacy / خصوصية الأطفال
+                11. Children&apos;s Privacy / خصوصية الأطفال
               </h2>
               <div className="space-y-3 text-gray-400">
                 <p>
