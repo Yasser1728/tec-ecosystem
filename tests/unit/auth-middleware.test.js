@@ -4,9 +4,28 @@
 
 import { authMiddleware, requireRole, validateSession } from '../../lib/auth-middleware';
 
+// Mock next-auth/react with virtual flag
+jest.mock(
+  'next-auth/react',
+  () => ({
+    getSession: jest.fn(),
+  }),
+  { virtual: true }
+);
+
+// Get the mocked function
+const { getSession } = require('next-auth/react');
+
 describe('Auth Middleware', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   describe('authMiddleware', () => {
     it('should return 401 for unauthenticated requests', async () => {
+      // Mock getSession to return null (unauthenticated)
+      getSession.mockResolvedValue(null);
+
       const req = {
         url: '/private/test',
         headers: {},
@@ -53,6 +72,11 @@ describe('Auth Middleware', () => {
 
   describe('requireRole', () => {
     it('should return 403 for insufficient permissions', async () => {
+      // Mock getSession to return a user with insufficient role
+      getSession.mockResolvedValue({
+        user: { email: 'user@test.com', role: 'user' }
+      });
+
       const req = {
         url: '/admin/test',
       };
@@ -62,17 +86,31 @@ describe('Auth Middleware', () => {
       };
 
       const middleware = requireRole(['admin']);
-      
-      // Mock getSession to return user session
-      jest.mock('next-auth/react', () => ({
-        getSession: jest.fn(() => Promise.resolve({
-          user: { email: 'user@test.com', role: 'user' }
-        })),
-      }));
-
       await middleware(req, res);
 
       expect(res.status).toHaveBeenCalledWith(403);
+      expect(res.json).toHaveBeenCalledWith({
+        error: 'Forbidden',
+        message: 'Insufficient permissions to access this resource',
+      });
+    });
+
+    it('should return 401 for unauthenticated requests', async () => {
+      // Mock getSession to return null
+      getSession.mockResolvedValue(null);
+
+      const req = {
+        url: '/admin/test',
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
+
+      const middleware = requireRole(['admin']);
+      await middleware(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(401);
     });
   });
 });

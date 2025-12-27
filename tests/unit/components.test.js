@@ -3,8 +3,8 @@
  */
 
 import { render, screen } from '@testing-library/react';
-import Footer from '../../public/components/Footer';
-import Header from '../../public/components/Header';
+import Footer from '../../components/Footer';
+import Header from '../../components/Header';
 
 describe('Footer Component', () => {
   it('should render footer with copyright text', () => {

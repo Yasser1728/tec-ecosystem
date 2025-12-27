@@ -35,7 +35,7 @@ export default function NbfPlans() {
             
             <div className="bg-gray-800 p-6 rounded-lg border border-[#00ff9d]/20">
               <h3 className="text-2xl font-bold text-[#00ff9d] mb-3">Legacy Planning / تخطيط الإرث</h3>
-              <p className="text-gray-400">Secure your family's financial future</p>
+              <p className="text-gray-400">Secure your family&apos;s financial future</p>
             </div>
           </div>
         </div>
