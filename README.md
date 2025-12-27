@@ -1,5 +1,7 @@
 # TEC Ecosystem - Professional Repository Structure
 
+[![CI Pipeline](https://github.com/Yasser1728/tec-ecosystem/actions/workflows/ci.yml/badge.svg)](https://github.com/Yasser1728/tec-ecosystem/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/Yasser1728/tec-ecosystem/branch/main/graph/badge.svg)](https://codecov.io/gh/Yasser1728/tec-ecosystem)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Next.js](https://img.shields.io/badge/Next.js-15.5-black)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-latest-blue)](https://reactjs.org/)
