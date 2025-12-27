@@ -48,6 +48,8 @@ tec-ecosystem/
     └── deploy.sh              # Deployment script
 ```
 
+> 📘 **Detailed Structure**: See [docs/FILE_STRUCTURE.md](./docs/FILE_STRUCTURE.md) for comprehensive documentation on the file organization, import paths, and best practices.
+
 ---
 
 ## 🔐 Security & Access Control
