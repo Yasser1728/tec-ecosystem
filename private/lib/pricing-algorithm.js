@@ -82,9 +82,14 @@ const SERVICE_CATEGORIES = {
 
 /**
  * Pi Network to USD conversion rate (dynamic)
- * In production, this should be fetched from an external API
+ * TODO: PRODUCTION - Fetch from external API or database
+ * Recommended approaches:
+ * - CoinGecko API for real-time rates
+ * - Database cache with periodic updates
+ * - Configuration management system
+ * - Rate limiting to prevent API abuse
  */
-const PI_TO_USD_RATE = 314.159; // 1 Pi = $314.159 (example rate)
+const PI_TO_USD_RATE = 314.159; // 1 Pi = $314.159 (example rate - DO NOT USE IN PRODUCTION)
 
 /**
  * Calculate price for a service based on membership tier
@@ -278,7 +283,17 @@ export function recommendTier(usageData) {
  * @returns {number} Discount rate (0-1)
  */
 function validatePromoCode(promoCode) {
-  // TODO: Implement promo code validation against database
+  // TODO: PRODUCTION - Implement database validation with security checks
+  // Required features:
+  // - Database lookup with Prisma
+  // - Expiration date validation
+  // - Usage limit tracking (max uses per code)
+  // - User-specific restrictions (one-time use per user)
+  // - Code activation/deactivation status
+  // - Rate limiting to prevent brute force attacks
+  // Example: const promo = await prisma.promoCode.findUnique({ where: { code: promoCode } });
+  
+  // SECURITY WARNING: Hard-coded promo codes are for demonstration only
   const promoCodes = {
     'WELCOME10': 0.10,
     'SAVE20': 0.20,

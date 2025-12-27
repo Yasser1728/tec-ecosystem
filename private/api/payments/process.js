@@ -32,7 +32,12 @@ export default async function handler(req, res) {
   }
 
   // Authentication check - verify user session
-  // In production, this should use proper authentication middleware
+  // TODO: SECURITY - Implement proper JWT validation or NextAuth session verification
+  // Current implementation is for demonstration only and should NOT be used in production
+  // Consider using: 
+  // - JWT validation with secret key verification
+  // - NextAuth getServerSession for session-based auth
+  // - Rate limiting to prevent abuse
   const { userId, sessionToken } = req.headers;
   
   if (!userId || !sessionToken) {

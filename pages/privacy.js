@@ -184,7 +184,7 @@ export default function Privacy() {
                   We retain your data for as long as necessary to provide services and comply with legal obligations.
                 </p>
                 <p>
-                  نحتفظببياناتك طالما كان ذلك ضرورياً لتقديم الخدمات والامتثال للالتزامات القانونية.
+                  نحتفظ ببياناتك طالما كان ذلك ضرورياً لتقديم الخدمات والامتثال للالتزامات القانونية.
                 </p>
               </div>
             </section>
