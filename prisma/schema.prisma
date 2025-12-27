@@ -9,39 +9,49 @@ datasource db {
 
 model User {
   id            String    @id @default(cuid())
-  piId          String    @unique
+  piUid         String    @unique  // Standard Pi user ID from Pi.authenticate()
   username      String
   email         String?   @unique
   walletAddress String?   @unique
-  tier          String    @default("STANDARD")
-  status        String    @default("ACTIVE")
+  tier          String    @default("STANDARD")  // STANDARD, PREMIUM, ELITE, TITAN
+  role          String    @default("USER")      // USER, ADMIN, PARTNER
+  status        String    @default("ACTIVE")    // ACTIVE, SUSPENDED, PENDING_KYC
+  kycStatus     String?   @default("NOT_STARTED")  // Compliance for high-value transactions
   language      String    @default("en")
+  balance       Float     @default(0.0)         // Internal Pi balance tracking
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   lastLoginAt   DateTime?
+
   payments      Payment[]
-  
-  @@index([piId])
+  // Future: domains Domain[], notifications Notification[]
+
+  @@index([piUid])
   @@index([tier])
+  @@index([status])
+  @@index([walletAddress])
   @@map("users")
 }
 
 model Payment {
-  id            String        @id @default(cuid())
+  id            String   @id @default(cuid())
   userId        String
   amount        Float
-  currency      String        @default("PI")
-  piTxId        String?       @unique
-  status        String        @default("PENDING")
-  domain        String
-  category      String
+  currency      String   @default("PI")
+  piTxId        String?  @unique  // Pi blockchain transaction ID
+  status        String   @default("PENDING")  // PENDING, COMPLETED, FAILED, REFUNDED
+  domain        String?               // e.g., "tec.com" or "elite.pi"
+  category      String                // DOMAIN_PURCHASE, NOTIFICATION, ECOMMERCE, NFT_MINT
   description   String?
-  metadata      Json?
-  createdAt     DateTime      @default(now())
+  metadata      Json?                 // Flexible: { nftId: "...", tierUpgrade: true }
+  createdAt     DateTime @default(now())
   completedAt   DateTime?
-  user          User          @relation(fields: [userId], references: [id])
-  
+
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId])
   @@index([status])
+  @@index([piTxId])
+  @@index([category])
   @@map("payments")
 }
