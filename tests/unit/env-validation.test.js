@@ -6,10 +6,17 @@ import { getEnvVar, isProduction, isDevelopment, validateNoSecretsExposed } from
 
 describe('Environment Validation', () => {
   const originalEnv = process.env;
+  let consoleSpy;
 
   beforeEach(() => {
     jest.resetModules();
     process.env = { ...originalEnv };
+  });
+
+  afterEach(() => {
+    if (consoleSpy) {
+      consoleSpy.mockRestore();
+    }
   });
 
   afterAll(() => {
@@ -59,7 +66,7 @@ describe('Environment Validation', () => {
 
   describe('validateNoSecretsExposed', () => {
     it('should log warning for sensitive environment variables', () => {
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+      consoleSpy = jest.spyOn(console, 'error').mockImplementation();
       
       validateNoSecretsExposed({
         API_KEY: 'sensitive',
@@ -67,11 +74,10 @@ describe('Environment Validation', () => {
       });
       
       expect(consoleSpy).toHaveBeenCalled();
-      consoleSpy.mockRestore();
     });
 
     it('should not log warning for safe environment variables', () => {
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+      consoleSpy = jest.spyOn(console, 'error').mockImplementation();
       
       validateNoSecretsExposed({
         APP_NAME: 'My App',
@@ -79,7 +85,6 @@ describe('Environment Validation', () => {
       });
       
       expect(consoleSpy).not.toHaveBeenCalled();
-      consoleSpy.mockRestore();
     });
   });
 });

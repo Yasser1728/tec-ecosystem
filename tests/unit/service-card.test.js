@@ -19,7 +19,7 @@ describe('ServiceCard Component', () => {
     );
     
     const card = container.firstChild;
-    expect(card.tagName).toBe('DIV');
+    expect(card.tagName.toLowerCase()).toBe('div');
     expect(card.querySelector('h3')).toBeInTheDocument();
     expect(card.querySelector('p')).toBeInTheDocument();
   });

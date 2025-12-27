@@ -32,9 +32,40 @@ jest.mock(
   { virtual: true }
 );
 
-// Suppress console warnings in tests
-global.console = {
-  ...console,
-  warn: jest.fn(),
-  error: jest.fn(),
-};
+// Filter console output to suppress only known library warnings
+// while preserving application-specific logs
+const originalWarn = console.warn;
+const originalError = console.error;
+
+// Suppress specific React and testing library warnings
+beforeAll(() => {
+  jest.spyOn(console, 'warn').mockImplementation((...args) => {
+    const message = args[0]?.toString() || '';
+    // Only suppress known library warnings
+    if (
+      message.includes('ReactDOMTestUtils.act') ||
+      message.includes('componentWillReceiveProps') ||
+      message.includes('componentWillUpdate')
+    ) {
+      return;
+    }
+    originalWarn.apply(console, args);
+  });
+
+  jest.spyOn(console, 'error').mockImplementation((...args) => {
+    const message = args[0]?.toString() || '';
+    // Only suppress known library errors
+    if (
+      message.includes('Warning: ReactDOM.render') ||
+      message.includes('Warning: An update to')
+    ) {
+      return;
+    }
+    originalError.apply(console, args);
+  });
+});
+
+afterAll(() => {
+  console.warn.mockRestore?.();
+  console.error.mockRestore?.();
+});

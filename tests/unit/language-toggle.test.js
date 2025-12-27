@@ -37,11 +37,11 @@ describe('LanguageToggle Component', () => {
     );
     
     const enButton = screen.getByText('EN');
-    expect(enButton.className).toContain('bg-tec-green');
+    expect(enButton).toHaveClass('bg-tec-green');
     
     rerender(<LanguageToggle language="ar" setLanguage={setLanguage} />);
     
     const arButton = screen.getByText('ع');
-    expect(arButton.className).toContain('bg-tec-green');
+    expect(arButton).toHaveClass('bg-tec-green');
   });
 });
