@@ -72,7 +72,7 @@ describe('Auth Middleware', () => {
 
       await middleware(req, res);
 
-      expect(res.status).toHaveBeenCalledWith(401);
+      expect(res.status).toHaveBeenCalledWith(403);
     });
   });
 });

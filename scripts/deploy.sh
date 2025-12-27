@@ -124,6 +124,19 @@ echo ""
 
 # Deploy to Vercel
 echo "🚀 Deploying to Vercel..."
+
+# Check if Vercel CLI is installed
+if ! command -v vercel &> /dev/null; then
+    echo -e "${RED}❌ Vercel CLI is not installed. Install it with: npm i -g vercel${NC}"
+    exit 1
+fi
+
+# Check if authenticated
+if ! vercel whoami &> /dev/null; then
+    echo -e "${RED}❌ Not authenticated with Vercel. Run: vercel login${NC}"
+    exit 1
+fi
+
 if [ "$ENVIRONMENT" == "production" ]; then
     vercel --prod
 else

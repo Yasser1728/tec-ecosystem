@@ -21,12 +21,6 @@ if ! command -v node &> /dev/null; then
     exit 1
 fi
 
-NODE_VERSION=$(node -v | cut -d'v' -f2 | cut -d'.' -f1)
-if [ "$NODE_VERSION" -lt 18 ]; then
-    echo -e "${RED}❌ Node.js version 18 or higher is required. Current version: $(node -v)${NC}"
-    exit 1
-fi
-
 echo -e "${GREEN}✅ Node.js $(node -v) detected${NC}"
 
 # Check if npm is installed
