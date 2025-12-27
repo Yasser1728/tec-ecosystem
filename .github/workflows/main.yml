@@ -45,7 +45,7 @@ jobs:
         continue-on-error: true
 
       - name: 🧪 Run Tests
-        run: npm run test --if-present || echo "No tests or tests skipped"
+        run: npm run test || echo "No tests or tests skipped"
         continue-on-error: true
 
       - name: 🏗️ Build Application
