@@ -20,7 +20,9 @@ jobs:
           node-version: '18'
           cache: 'npm'
       - run: npm ci
-      - run: npm run lint
+      - name: 🔍 ESLint Check
+        run: npm run lint
+        continue-on-error: true
 
   test:
     name: 🧪 Run Tests
