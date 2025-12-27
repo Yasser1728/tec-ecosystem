@@ -19,7 +19,7 @@ export const getDomainConfig = async (slug: string): Promise<DomainConfig | null
     return config.default as DomainConfig;
   } catch (error) {
     // Domain config not found - this is expected for invalid slugs
-    if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === 'development') {
       console.warn(`Domain config not found: ${slug}`);
     }
     return null;

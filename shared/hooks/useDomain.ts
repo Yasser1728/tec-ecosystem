@@ -23,7 +23,11 @@ export const useDomain = (): UseDomainReturn => {
         
         if (domainSlug) {
           const domainConfig = await getDomainConfig(domainSlug);
-          setConfig(domainConfig);
+          if (domainConfig) {
+            setConfig(domainConfig);
+          } else {
+            setError(new Error(`Domain not found: ${domainSlug}`));
+          }
         }
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : String(err);
