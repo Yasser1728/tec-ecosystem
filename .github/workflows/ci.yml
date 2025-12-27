@@ -10,48 +10,51 @@ permissions:
   contents: read
 
 jobs:
-  lint:
-    name: 🔍 ESLint Check
+  quality:
+    name: 🔍 Code Quality
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'npm'
       - run: npm ci
-      - run: npm run lint || true
+      - name: 🔍 ESLint
+        run: npm run lint || true
+      - name: 🎨 Prettier Check
+        run: npm run format:check || true
 
   test:
-    name: 🧪 Run Tests
+    name: 🧪 Tests
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'npm'
       - run: npm ci
-      - run: npm run test:coverage || true
-      - name: Upload Coverage Report
+      - name: 🧪 Run Tests
+        run: npm run test:coverage || true
+      - name: 📊 Upload Coverage
         uses: codecov/codecov-action@v4
         with:
           fail_ci_if_error: false
         continue-on-error: true
 
   build:
-    name: 🏗️ Build Check
+    name: 🏗️ Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'npm'
       - run: npm ci
-      - run: npm run build
+      - name: 🏗️ Build Application
+        run: npm run build
         env:
           NEXT_PUBLIC_PI_APP_ID: dummy_app_id
           NEXT_PUBLIC_PI_SANDBOX: true
