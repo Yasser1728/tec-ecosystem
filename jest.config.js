@@ -12,6 +12,7 @@ module.exports = {
     '^@/lib/(.*)$': '<rootDir>/lib/$1',
     '^@/pages/(.*)$': '<rootDir>/pages/$1',
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+    'next-auth/react': '<rootDir>/tests/__mocks__/next-auth-react.js',
   },
   collectCoverageFrom: [
     'components/**/*.{js,jsx}',

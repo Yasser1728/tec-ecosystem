@@ -1,5 +1,6 @@
 // Jest setup file
 import '@testing-library/jest-dom';
+import React from 'react';
 
 // Mock Next.js router
 jest.mock('next/router', () => ({
@@ -16,17 +17,6 @@ jest.mock('next/head', () => {
     },
   };
 });
-
-// Mock next-auth
-jest.mock('next-auth/react', () => ({
-  useSession: jest.fn(() => ({
-    data: null,
-    status: 'unauthenticated',
-  })),
-  getSession: jest.fn(),
-  signIn: jest.fn(),
-  signOut: jest.fn(),
-}));
 
 // Suppress console warnings in tests
 global.console = {

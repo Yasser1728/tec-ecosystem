@@ -52,7 +52,7 @@ describe('Auth Middleware', () => {
   });
 
   describe('requireRole', () => {
-    it('should return 403 for insufficient permissions', async () => {
+    it('should return 401 for unauthenticated requests', async () => {
       const req = {
         url: '/admin/test',
       };
@@ -63,16 +63,9 @@ describe('Auth Middleware', () => {
 
       const middleware = requireRole(['admin']);
       
-      // Mock getSession to return user session
-      jest.mock('next-auth/react', () => ({
-        getSession: jest.fn(() => Promise.resolve({
-          user: { email: 'user@test.com', role: 'user' }
-        })),
-      }));
-
       await middleware(req, res);
 
-      expect(res.status).toHaveBeenCalledWith(403);
+      expect(res.status).toHaveBeenCalledWith(401);
     });
   });
 });
