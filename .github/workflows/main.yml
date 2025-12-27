@@ -37,15 +37,15 @@ jobs:
         run: npm ci
 
       - name: 🔍 Run ESLint
-        run: npm run lint || echo "Lint completed with warnings"
+        run: npm run lint
         continue-on-error: true
 
       - name: 🔧 Generate Prisma Client
-        run: npx prisma generate || echo "Prisma generate skipped"
+        run: npx prisma generate
         continue-on-error: true
 
       - name: 🧪 Run Tests
-        run: npm test || echo "Tests skipped"
+        run: npm test
         continue-on-error: true
 
       - name: 🏗️ Build Application
