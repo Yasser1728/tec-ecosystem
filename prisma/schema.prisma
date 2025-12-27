@@ -20,6 +20,7 @@ model User {
   updatedAt     DateTime  @updatedAt
   lastLoginAt   DateTime?
   payments      Payment[]
+  nfts          NFT[]
   
   @@index([piId])
   @@index([tier])
@@ -62,24 +63,4 @@ model NFT {
   @@index([userId])
   @@index([domainName])
   @@map("nfts")
-}
-
-model User {
-  id            String    @id @default(cuid())
-  piId          String    @unique
-  username      String
-  email         String?   @unique
-  walletAddress String?   @unique
-  tier          String    @default("STANDARD")
-  status        String    @default("ACTIVE")
-  language      String    @default("en")
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  lastLoginAt   DateTime?
-  payments      Payment[]
-  nfts          NFT[]
-  
-  @@index([piId])
-  @@index([tier])
-  @@map("users")
 }
