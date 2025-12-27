@@ -5,16 +5,16 @@ module.exports = {
       2,
       'always',
       [
-        'feat',     // ميزة جديدة
-        'fix',      // إصلاح خطأ
-        'docs',     // توثيق
-        'style',    // تنسيق
-        'refactor', // إعادة هيكلة
-        'test',     // اختبارات
-        'chore',    // مهام صيانة
+        'feat',     // New feature
+        'fix',      // Bug fix
+        'docs',     // Documentation
+        'style',    // Formatting
+        'refactor', // Refactoring
+        'test',     // Tests
+        'chore',    // Maintenance tasks
         'ci',       // CI/CD
-        'perf',     // تحسين أداء
-        'revert',   // تراجع
+        'perf',     // Performance improvement
+        'revert',   // Revert changes
       ],
     ],
     'subject-case': [0],

@@ -33,7 +33,7 @@
     "@commitlint/config-conventional": "^18.0.0",
     "autoprefixer": "latest",
     "eslint": "^8.57.0",
-    "eslint-config-next": "15.0.0",
+    "eslint-config-next": "14.2.18",
     "husky": "^9.0.0",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^30.2.0",
