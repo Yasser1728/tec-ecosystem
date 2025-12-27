@@ -43,7 +43,7 @@ yarn-error.log*
 *~
 
 # ESLint (don't ignore if you want to commit it)
-.eslintrc.json
+# .eslintrc.json
 
 # Prisma
 prisma/*.db
