@@ -16,7 +16,8 @@
     "test:integration": "jest tests/integration",
     "test:e2e": "jest tests/e2e",
     "test:coverage": "jest --coverage",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@prisma/client": "^6.1.0",
@@ -30,6 +31,9 @@
     "@swc/jest": "^0.2.39",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.1",
+    "@types/node": "^20.10.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
     "autoprefixer": "latest",
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.18",
@@ -41,7 +45,8 @@
     "postcss": "latest",
     "prettier": "^3.2.0",
     "prisma": "^6.1.0",
-    "tailwindcss": "latest"
+    "tailwindcss": "latest",
+    "typescript": "^5.3.0"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": ["eslint --fix", "prettier --write"],

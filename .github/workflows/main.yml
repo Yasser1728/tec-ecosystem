@@ -44,6 +44,10 @@ jobs:
         run: npx prisma generate
         continue-on-error: true
 
+      - name: 🔍 Type Check
+        run: npm run type-check
+        continue-on-error: true
+
       - name: 🧪 Run Tests
         run: npm test
         continue-on-error: true
