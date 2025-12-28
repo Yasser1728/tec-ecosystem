@@ -4,17 +4,17 @@ const CLEANUP_INTERVAL = 60 * 60 * 1000; // 1 hour
 
 function cleanupExpiredEntries() {
   const now = Date.now();
-  
+
   if (now - lastCleanup < CLEANUP_INTERVAL) {
     return;
   }
-  
+
   for (const [key, record] of rateStore.entries()) {
     if (now > record.resetTime) {
       rateStore.delete(key);
     }
   }
-  
+
   lastCleanup = now;
 }
 
@@ -22,29 +22,32 @@ export function withRateLimit(handler, options = {}) {
   const { maxRequests = 100, windowMs = 15 * 60 * 1000 } = options;
 
   return async (req, res) => {
-    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
     const key = `${ip}-${req.url}`;
-    
+
     const now = Date.now();
-    const record = rateStore.get(key) || { count: 0, resetTime: now + windowMs };
-    
+    const record = rateStore.get(key) || {
+      count: 0,
+      resetTime: now + windowMs,
+    };
+
     if (now > record.resetTime) {
       record.count = 0;
       record.resetTime = now + windowMs;
     }
-    
+
     if (record.count >= maxRequests) {
       return res.status(429).json({
         success: false,
-        error: 'Too many requests'
+        error: "Too many requests",
       });
     }
-    
+
     record.count++;
     rateStore.set(key, record);
-    
+
     cleanupExpiredEntries();
-    
+
     return handler(req, res);
   };
 }
