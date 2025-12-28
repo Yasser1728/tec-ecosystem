@@ -1,0 +1,23 @@
+engines:
+  eslint:
+    enabled: true
+    exclude_paths:
+      - "tests/**"
+      - "build/**"
+      
+  pylint:
+    enabled: true
+    python_version: 3
+    
+  bandit:
+    enabled: true
+    
+exclude_paths:
+  - "node_modules/**"
+  - "**.min.js"
+  - "**/migrations/**"
+
+coverage:
+  precision: 2
+  round: nearest
+  range: 50-100
