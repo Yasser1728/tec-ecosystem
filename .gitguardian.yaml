@@ -1,0 +1,22 @@
+version: 2
+
+paths-ignore:
+  - "**/*.md"
+  - "**/test/**"
+  - "node_modules/**"
+  - ".env.example"
+  
+matches-ignore:
+  - name: Generic Password
+    match: test_password_123
+
+exit-zero: false
+
+verbose: true
+
+show-secrets: false
+
+# للـ Pre-commit
+exclude:
+  - .git/
+  - "*.pyc"
