@@ -32,6 +32,19 @@ export default function Home() {
     }
 
     try {
+      // First, authenticate with payments scope
+      console.log('🔐 Authenticating with payments scope...');
+      const authResult = await window.Pi.authenticate(
+        ['username', 'payments'],
+        (payment) => {
+          console.log('Incomplete payment found:', payment);
+        }
+      );
+      
+      console.log('✅ Authenticated:', authResult.user.username);
+      setPiUser(authResult.user);
+      
+      // Now create payment
       console.log('🚀 Creating payment with Pi SDK...');
       const payment = await window.Pi.createPayment({
         amount: 1,
