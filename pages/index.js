@@ -1,10 +1,55 @@
 import Head from 'next/head';
 import Link from 'next/link';
+import { useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ParticlesCanvas from '../components/ParticlesCanvas';
+import PiAuthButton from '../components/PiAuthButton';
 
 export default function Home() {
+  const [piUser, setPiUser] = useState(null);
+  const [paymentStatus, setPaymentStatus] = useState('');
+
+  const handlePiAuth = (user) => {
+    setPiUser(user);
+    console.log('Pi User authenticated:', user);
+  };
+
+  const handlePiPayment = async () => {
+    if (!window.Pi) {
+      alert('Pi SDK not loaded. Please open in Pi Browser or enable sandbox mode.');
+      return;
+    }
+
+    try {
+      const payment = await window.Pi.createPayment({
+        amount: 1,
+        memo: 'TEC Ecosystem - Demo Payment',
+        metadata: { productId: 'tec-demo' }
+      }, {
+        onReadyForServerApproval: (paymentId) => {
+          console.log('Payment ready:', paymentId);
+          setPaymentStatus('Payment approved! Payment ID: ' + paymentId);
+        },
+        onReadyForServerCompletion: (paymentId, txid) => {
+          console.log('Payment completed:', paymentId, txid);
+          setPaymentStatus('Payment completed! Transaction: ' + txid);
+        },
+        onCancel: (paymentId) => {
+          console.log('Payment cancelled:', paymentId);
+          setPaymentStatus('Payment cancelled');
+        },
+        onError: (error, payment) => {
+          console.error('Payment error:', error);
+          setPaymentStatus('Payment error: ' + error.message);
+        }
+      });
+    } catch (error) {
+      console.error('Payment creation error:', error);
+      setPaymentStatus('Error: ' + error.message);
+    }
+  };
+
   const domains = [
     { name: 'FundX', path: '/fundx', icon: '📊', desc: 'Elite Investment Strategies' },
     { name: 'Assets', path: '/assets', icon: '💼', desc: 'Portfolio Management' },
@@ -39,13 +84,57 @@ export default function Home() {
           <p className="text-lg text-gray-400 mb-8 max-w-2xl mx-auto">
             24 Independent Luxury Business Units | Private Marketplace | Pi Network Integration
           </p>
-          <div className="flex gap-4 justify-center">
+          <div className="flex gap-4 justify-center flex-wrap">
             <Link href="/tec/hub" className="bg-gradient-to-r from-[#00ff9d] to-[#00c6ff] text-gray-900 px-8 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300">
               Explore Domains
             </Link>
             <Link href="/tec/overview" className="border border-[#00ff9d] text-[#00ff9d] px-8 py-3 rounded-lg font-semibold hover:bg-[#00ff9d]/10 transition-all duration-300">
               Learn More
             </Link>
+          </div>
+
+          {/* Pi Network Integration */}
+          <div className="mt-12 max-w-2xl mx-auto">
+            <div className="bg-gray-800 border border-[#00ff9d]/30 rounded-lg p-6">
+              <h3 className="text-xl font-bold text-[#00ff9d] mb-4 text-center">
+                🌐 Pi Network Integration
+              </h3>
+              
+              {/* Pi Auth */}
+              <div className="mb-6">
+                <PiAuthButton 
+                  onAuthSuccess={handlePiAuth}
+                  onAuthError={(error) => console.error('Auth error:', error)}
+                />
+                {piUser && (
+                  <div className="mt-3 text-sm text-gray-400 text-center">
+                    ✅ Authenticated as: {piUser.username}
+                  </div>
+                )}
+              </div>
+
+              {/* Pi Payment Demo */}
+              <div className="border-t border-gray-700 pt-6">
+                <p className="text-gray-400 text-sm mb-4 text-center">
+                  Try a demo payment with Pi (Sandbox Mode)
+                </p>
+                <button
+                  onClick={handlePiPayment}
+                  className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300"
+                >
+                  💎 Pay 1 Pi - Demo Payment
+                </button>
+                {paymentStatus && (
+                  <div className="mt-3 text-sm text-gray-400 text-center">
+                    {paymentStatus}
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-4 text-xs text-gray-500 text-center">
+                💡 Sandbox Mode: Test payments without real Pi
+              </div>
+            </div>
           </div>
         </section>
 
