@@ -64,3 +64,102 @@ model NFT {
   @@index([domainName])
   @@map("nfts")
 }
+
+model Product {
+  id          String      @id @default(cuid())
+  domain      String      // estate, commerce, explorer, fundx, etc.
+  title       String
+  description String
+  price       Float
+  currency    String      @default("PI")
+  images      String[]    // Array of image URLs
+  category    String
+  subcategory String?
+  
+  // Domain-specific fields (stored as JSON)
+  specifications Json?     // e.g., {bedrooms: 3, bathrooms: 2, sqm: 150}
+  location       Json?     // e.g., {city: "Dubai", country: "UAE", lat: 25.2, lng: 55.2}
+  
+  stock       Int         @default(1)
+  status      String      @default("ACTIVE") // ACTIVE, SOLD, PENDING
+  sellerId    String
+  
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  
+  cartItems   CartItem[]
+  orderItems  OrderItem[]
+  
+  @@index([domain])
+  @@index([category])
+  @@index([status])
+  @@index([sellerId])
+  @@map("products")
+}
+
+model Cart {
+  id        String     @id @default(cuid())
+  userId    String     @unique
+  items     CartItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  
+  @@map("carts")
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  cartId    String
+  productId String
+  quantity  Int      @default(1)
+  
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id])
+  
+  createdAt DateTime @default(now())
+  
+  @@unique([cartId, productId])
+  @@map("cart_items")
+}
+
+model Order {
+  id          String      @id @default(cuid())
+  userId      String
+  orderNumber String      @unique
+  
+  total       Float
+  currency    String      @default("PI")
+  
+  piPaymentId String?
+  piTxId      String?
+  
+  status      String      @default("PENDING") // PENDING, PAID, PROCESSING, SHIPPED, DELIVERED, CANCELLED
+  
+  items       OrderItem[]
+  
+  // Shipping info (if applicable)
+  shippingInfo Json?
+  
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  paidAt      DateTime?
+  
+  @@index([userId])
+  @@index([status])
+  @@index([orderNumber])
+  @@map("orders")
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  productId String
+  
+  quantity  Int
+  price     Float   // Price at time of purchase
+  
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id])
+  
+  @@map("order_items")
+}
