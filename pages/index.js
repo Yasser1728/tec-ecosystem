@@ -15,6 +15,18 @@ export default function Home() {
     console.log('Pi User authenticated:', user);
   };
 
+  const testPiSDK = () => {
+    console.log('🧪 Testing Pi SDK...');
+    console.log('window.Pi exists:', !!window.Pi);
+    if (window.Pi) {
+      console.log('Pi SDK methods:', Object.keys(window.Pi));
+      console.log('Pi SDK:', window.Pi);
+    } else {
+      console.error('❌ Pi SDK not found!');
+      alert('Pi SDK not loaded! Check console for details.');
+    }
+  };
+
   const handlePiPayment = async () => {
     console.log('💰 Payment button clicked');
     setPaymentStatus('⏳ Initializing payment...');
@@ -36,17 +48,25 @@ export default function Home() {
       }
 
       console.log('✅ Pi SDK loaded:', window.Pi);
+      console.log('Pi SDK methods:', Object.keys(window.Pi));
       
       // First, authenticate with payments scope
       console.log('🔐 Step 1: Authenticating with payments scope...');
       setPaymentStatus('🔐 Authenticating...');
       
-      const authResult = await window.Pi.authenticate(
+      // Add timeout to authentication
+      const authPromise = window.Pi.authenticate(
         ['username', 'payments'],
         (payment) => {
           console.log('⚠️ Incomplete payment found:', payment);
         }
       );
+      
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Authentication timeout after 30 seconds')), 30000)
+      );
+      
+      const authResult = await Promise.race([authPromise, timeoutPromise]);
       
       console.log('✅ Step 2: Authenticated successfully!');
       console.log('👤 User:', authResult.user);
@@ -210,6 +230,16 @@ export default function Home() {
                 <p className="text-gray-400 text-sm mb-4 text-center">
                   Try a demo payment with Pi (Sandbox Mode)
                 </p>
+                
+                {/* Test Button */}
+                <button
+                  onClick={testPiSDK}
+                  className="w-full mb-3 bg-gray-700 text-white px-6 py-2 rounded-lg font-semibold hover:bg-gray-600 transition-all duration-300 text-sm"
+                >
+                  🧪 Test Pi SDK (Check Console)
+                </button>
+                
+                {/* Payment Button */}
                 <button
                   onClick={handlePiPayment}
                   className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300"
