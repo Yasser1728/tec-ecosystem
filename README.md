@@ -251,12 +251,33 @@ We welcome contributions to the **public** components! Please read our [Contribu
 
 ## 📜 Licensing
 
-This project uses a dual-license approach:
+This project uses a **dual-license** approach:
 
-- **Public components** (`/public/`): [MIT License](./LICENSE)
-- **Private components** (`/private/`): [Proprietary License](./private/LICENSE_PROPRIETARY)
+### 🌐 Public Components (MIT License)
+- UI Components (Header, Footer, Layout)
+- Landing Pages (/, /ecosystem, /[unit])
+- Error Pages (403, 404)
+- Configuration metadata
 
-See individual LICENSE files for details.
+**License**: [MIT License](./LICENSE)  
+**Usage**: Free for commercial and personal use
+
+### 🔒 Private Components (Proprietary License)
+- Authentication System (NextAuth + Pi Network)
+- Authorization System (RBAC, Middleware)
+- User Dashboard & Admin Panel
+- Protected Pages & Tools
+- API Layer & Database
+
+**License**: [Proprietary License](./private/LICENSE_PROPRIETARY)  
+**Usage**: Requires commercial license
+
+### 📚 Documentation
+- [DUAL_LICENSE_STRUCTURE.md](./DUAL_LICENSE_STRUCTURE.md) - Complete licensing guide
+- [PUBLIC_COMPONENTS.md](./PUBLIC_COMPONENTS.md) - Open-source components list
+- [PRIVATE_COMPONENTS.md](./PRIVATE_COMPONENTS.md) - Proprietary components list
+
+See individual LICENSE files for full legal details.
 
 ---
 
