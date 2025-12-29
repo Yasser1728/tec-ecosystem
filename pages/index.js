@@ -29,44 +29,36 @@ export default function Home() {
 
   const handlePiPayment = async () => {
     console.log('💰 Payment button clicked');
-    setPaymentStatus('⏳ Initializing payment...');
+    setPaymentStatus('⏳ Initializing...');
     
     try {
-      // Wait for Pi SDK to load
-      console.log('⏳ Waiting for Pi SDK...');
+      // Wait for Pi SDK or Sandbox to load (max 10 seconds)
+      console.log('⏳ Waiting for Pi SDK/Sandbox...');
       let attempts = 0;
-      while (!window.Pi && attempts < 50) {
+      while (!window.Pi && attempts < 100) {
         await new Promise(resolve => setTimeout(resolve, 100));
         attempts++;
       }
 
       if (!window.Pi) {
-        console.error('❌ Pi SDK not loaded after 5 seconds');
-        setPaymentStatus('❌ Pi SDK not loaded. Please refresh the page.');
-        alert('Pi SDK not loaded. Please refresh the page and try again.');
+        console.error('❌ Pi SDK/Sandbox not loaded after 10 seconds');
+        setPaymentStatus('❌ Failed to load. Please refresh the page.');
         return;
       }
 
-      console.log('✅ Pi SDK loaded:', window.Pi);
-      console.log('Pi SDK methods:', Object.keys(window.Pi));
+      const mode = window.piSandboxMode ? 'Sandbox' : 'Pi Browser';
+      console.log(`✅ ${mode} mode active`);
       
-      // First, authenticate with payments scope
-      console.log('🔐 Step 1: Authenticating with payments scope...');
+      // Step 1: Authenticate
+      console.log('🔐 Step 1: Authenticating...');
       setPaymentStatus('🔐 Authenticating...');
       
-      // Add timeout to authentication
-      const authPromise = window.Pi.authenticate(
+      const authResult = await window.Pi.authenticate(
         ['username', 'payments'],
         (payment) => {
-          console.log('⚠️ Incomplete payment found:', payment);
+          console.log('⚠️ Incomplete payment:', payment);
         }
       );
-      
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Authentication timeout after 30 seconds')), 30000)
-      );
-      
-      const authResult = await Promise.race([authPromise, timeoutPromise]);
       
       console.log('✅ Step 2: Authenticated successfully!');
       console.log('👤 User:', authResult.user);
