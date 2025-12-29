@@ -154,21 +154,21 @@ export default function Home() {
   };
 
   const domains = [
-    { name: 'FundX', path: '/fundx', icon: '📊', desc: 'Elite Investment Strategies' },
-    { name: 'Assets', path: '/assets', icon: '💼', desc: 'Portfolio Management' },
-    { name: 'NBF', path: '/nbf', icon: '🏦', desc: 'Sovereign Banking' },
-    { name: 'Estate', path: '/estate', icon: '🏠', desc: 'Luxury Real Estate' },
-    { name: 'Explorer', path: '/explorer', icon: '✈️', desc: 'Luxury Travel' },
-    { name: 'VIP', path: '/vip', icon: '👑', desc: 'Exclusive Opportunities' },
-    { name: 'Elite', path: '/elite', icon: '⭐', desc: 'Premium Consulting' },
-    { name: 'Nexus', path: '/nexus', icon: '🔗', desc: 'Elite Networking' },
+    { name: 'FundX.pi', path: '/fundx', icon: '📊', desc: 'Elite Investment Strategies' },
+    { name: 'Assets.pi', path: '/assets', icon: '💼', desc: 'Portfolio Management' },
+    { name: 'NBF.pi', path: '/nbf', icon: '🏦', desc: 'Sovereign Banking' },
+    { name: 'Estate.pi', path: '/estate', icon: '🏠', desc: 'Luxury Real Estate' },
+    { name: 'Explorer.pi', path: '/explorer', icon: '✈️', desc: 'Luxury Travel' },
+    { name: 'VIP.pi', path: '/vip', icon: '👑', desc: 'Exclusive Opportunities' },
+    { name: 'Elite.pi', path: '/elite', icon: '⭐', desc: 'Premium Consulting' },
+    { name: 'Nexus.pi', path: '/nexus', icon: '🔗', desc: 'AI Integration' },
   ];
 
   return (
     <>
       <Head>
-        <title>TEC - Titan Elite Commerce | 24 Luxury Business Domains</title>
-        <meta name="description" content="Titan Elite Commerce - Private marketplace for elite opportunities across 24 luxury business domains powered by Pi Network" />
+        <title>TEC - Titan Elite Commerce | 24 Elite Business Services</title>
+        <meta name="description" content="Titan Elite Commerce - Private marketplace for elite opportunities across 24 business services powered by Pi Network" />
         <meta name="keywords" content="TEC, Titan Elite Commerce, Pi Network, luxury marketplace, elite commerce, blockchain" />
       </Head>
       

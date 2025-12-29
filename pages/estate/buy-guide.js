@@ -11,7 +11,7 @@ export default function EstateBuyGuide() {
   return (
     <>
       <Head>
-        <title>How to Buy Property with Pi | Estate - TEC</title>
+        <title>How to Buy Property with Pi | Estate.pi - TEC</title>
         <meta name="description" content="Complete guide to purchasing luxury real estate using Pi Network cryptocurrency" />
       </Head>
 

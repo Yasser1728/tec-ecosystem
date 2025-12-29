@@ -7,7 +7,7 @@ export default function Nexus() {
   return (
     <>
       <Head>
-        <title>Nexus - AI-Powered Business Integration | TEC</title>
+        <title>Nexus.pi - AI-Powered Business Integration | TEC</title>
         <meta name="description" content="Connect, coordinate, and integrate your business with AI-powered solutions" />
       </Head>
 
@@ -18,7 +18,7 @@ export default function Nexus() {
         <section className="relative py-20 px-4">
           <div className="container mx-auto text-center">
             <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-[#00ff9d] to-[#00c6ff] bg-clip-text text-transparent">
-              🌐 Nexus
+              🌐 Nexus.pi
             </h1>
             <p className="text-xl md:text-2xl text-gray-300 mb-4">
               AI-Powered Business Integration
