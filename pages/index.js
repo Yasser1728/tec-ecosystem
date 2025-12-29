@@ -64,8 +64,9 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>TEC - The Elite Consortium | 24 Luxury Business Domains</title>
-        <meta name="description" content="Private marketplace for elite opportunities across 24 luxury business domains" />
+        <title>TEC - Titan Elite Commerce | 24 Luxury Business Domains</title>
+        <meta name="description" content="Titan Elite Commerce - Private marketplace for elite opportunities across 24 luxury business domains powered by Pi Network" />
+        <meta name="keywords" content="TEC, Titan Elite Commerce, Pi Network, luxury marketplace, elite commerce, blockchain" />
       </Head>
       
       <Header />
@@ -79,10 +80,10 @@ export default function Home() {
             TEC Ecosystem
           </h1>
           <p className="text-xl md:text-2xl text-gray-300 mb-4">
-            The Elite Consortium
+            Titan Elite Commerce
           </p>
           <p className="text-lg text-gray-400 mb-8 max-w-2xl mx-auto">
-            24 Independent Luxury Business Units | Private Marketplace | Pi Network Integration
+            24 Independent Luxury Business Units | Private Marketplace | Powered by Pi Network
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
             <Link href="/tec/hub" className="bg-gradient-to-r from-[#00ff9d] to-[#00c6ff] text-gray-900 px-8 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300">

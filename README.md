@@ -6,7 +6,7 @@
 [![Next.js](https://img.shields.io/badge/Next.js-15.5-black)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-latest-blue)](https://reactjs.org/)
 
-**TEC (The Elite Consortium)** is the parent authority managing 24 independent luxury business domains. This repository contains a professionally structured codebase with clear separation between open-source (public) and closed-source (private) components.
+**TEC (Titan Elite Commerce)** is the parent authority managing 24 independent luxury business domains powered by Pi Network. This repository contains a professionally structured codebase with clear separation between open-source (public) and closed-source (private) components.
 
 ## 🌐 Dual Language Support
 

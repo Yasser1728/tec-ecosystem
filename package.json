@@ -1,6 +1,7 @@
 {
   "name": "tec-ecosystem",
   "version": "1.0.0",
+  "description": "TEC (Titan Elite Commerce) - 24 luxury business domains powered by Pi Network",
   "private": true,
   "scripts": {
     "dev": "next dev",
