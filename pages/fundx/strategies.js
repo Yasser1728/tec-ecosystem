@@ -1,8 +1,10 @@
 import Head from 'next/head';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import { withAuth } from '../../lib/withAuth';
+import { USER_TIERS } from '../../lib/roles';
 
-export default function FundxStrategies() {
+function FundxStrategies({ session }) {
   return (
     <>
       <Head>
@@ -60,3 +62,7 @@ export default function FundxStrategies() {
     </>
   );
 }
+
+export default withAuth(FundxStrategies, {
+  requiredTier: USER_TIERS.STANDARD,
+});

@@ -1,8 +1,10 @@
 import Head from 'next/head';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import { withAuth } from '../../lib/withAuth';
+import { USER_TIERS } from '../../lib/roles';
 
-export default function FundxCalculator() {
+function FundxCalculator({ session }) {
   return (
     <>
       <Head>
@@ -56,3 +58,7 @@ export default function FundxCalculator() {
     </>
   );
 }
+
+export default withAuth(FundxCalculator, {
+  requiredTier: USER_TIERS.STANDARD,
+});

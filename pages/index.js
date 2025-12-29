@@ -189,11 +189,11 @@ export default function Home() {
             24 Independent Luxury Business Units | Private Marketplace | Powered by Pi Network
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
-            <Link href="/tec/hub" className="bg-gradient-to-r from-[#00ff9d] to-[#00c6ff] text-gray-900 px-8 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300">
-              Explore Services
+            <Link href="/ecosystem" className="bg-gradient-to-r from-[#00ff9d] to-[#00c6ff] text-gray-900 px-8 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300">
+              View All 21 Business Units
             </Link>
-            <Link href="/tec/overview" className="border border-[#00ff9d] text-[#00ff9d] px-8 py-3 rounded-lg font-semibold hover:bg-[#00ff9d]/10 transition-all duration-300">
-              Learn More
+            <Link href="/tec/hub" className="border border-[#00ff9d] text-[#00ff9d] px-8 py-3 rounded-lg font-semibold hover:bg-[#00ff9d]/10 transition-all duration-300">
+              Explore Services
             </Link>
           </div>
 

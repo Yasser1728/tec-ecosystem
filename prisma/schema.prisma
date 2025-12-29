@@ -163,3 +163,103 @@ model OrderItem {
   
   @@map("order_items")
 }
+
+// Business Units Management
+model BusinessUnit {
+  id          String   @id @default(cuid())
+  key         String   @unique // fundx, explorer, commerce, etc.
+  name        String   // FundX, Explorer, Commerce
+  displayName String   // FundX.pi, Explorer.pi
+  icon        String
+  tagline     String
+  description String
+  color       String   // Gradient colors
+  status      String   @default("ACTIVE") // ACTIVE, MAINTENANCE, COMING_SOON
+  
+  // Analytics
+  views       Int      @default(0)
+  visits      Int      @default(0)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  pages       BusinessUnitPage[]
+  features    BusinessUnitFeature[]
+  
+  @@index([key])
+  @@index([status])
+  @@map("business_units")
+}
+
+model BusinessUnitPage {
+  id             String       @id @default(cuid())
+  businessUnitId String
+  path           String       // /start, /strategies, /calculator
+  title          String
+  description    String
+  views          Int          @default(0)
+  
+  businessUnit   BusinessUnit @relation(fields: [businessUnitId], references: [id], onDelete: Cascade)
+  
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  
+  @@unique([businessUnitId, path])
+  @@index([businessUnitId])
+  @@map("business_unit_pages")
+}
+
+model BusinessUnitFeature {
+  id             String       @id @default(cuid())
+  businessUnitId String
+  icon           String
+  title          String
+  description    String
+  order          Int          @default(0)
+  
+  businessUnit   BusinessUnit @relation(fields: [businessUnitId], references: [id], onDelete: Cascade)
+  
+  @@index([businessUnitId])
+  @@map("business_unit_features")
+}
+
+// User Activity Tracking
+model UserActivity {
+  id             String   @id @default(cuid())
+  userId         String
+  businessUnit   String   // fundx, explorer, etc.
+  page           String   // /fundx/strategies
+  action         String   // VIEW, CLICK, PURCHASE, etc.
+  metadata       Json?
+  
+  createdAt      DateTime @default(now())
+  
+  @@index([userId])
+  @@index([businessUnit])
+  @@index([createdAt])
+  @@map("user_activities")
+}
+
+// Subscriptions for Business Units
+model Subscription {
+  id             String   @id @default(cuid())
+  userId         String
+  businessUnit   String   // fundx, explorer, etc.
+  plan           String   // FREE, BASIC, PREMIUM, ENTERPRISE
+  status         String   @default("ACTIVE") // ACTIVE, CANCELLED, EXPIRED
+  
+  startDate      DateTime @default(now())
+  endDate        DateTime?
+  
+  amount         Float?
+  currency       String   @default("PI")
+  piTxId         String?
+  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([businessUnit])
+  @@index([status])
+  @@map("subscriptions")
+}
