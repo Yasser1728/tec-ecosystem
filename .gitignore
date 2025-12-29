@@ -66,3 +66,7 @@ Thumbs.db
 test-results/
 playwright-report/
 
+# GitHub workflows and configs
+.github/
+*.yml
+*.yaml
