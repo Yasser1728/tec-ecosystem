@@ -16,37 +16,49 @@ export default function Home() {
   };
 
   const handlePiPayment = async () => {
+    setPaymentStatus('Initializing payment...');
+    
+    // Wait for Pi SDK to load
+    let attempts = 0;
+    while (!window.Pi && attempts < 50) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+      attempts++;
+    }
+
     if (!window.Pi) {
-      alert('Pi SDK not loaded. Please open in Pi Browser or enable sandbox mode.');
+      setPaymentStatus('❌ Pi SDK not loaded. Please refresh the page.');
+      alert('Pi SDK not loaded. Please refresh the page and try again.');
       return;
     }
 
     try {
+      console.log('🚀 Creating payment with Pi SDK...');
       const payment = await window.Pi.createPayment({
         amount: 1,
         memo: 'TEC Ecosystem - Demo Payment',
         metadata: { productId: 'tec-demo' }
       }, {
         onReadyForServerApproval: (paymentId) => {
-          console.log('Payment ready:', paymentId);
-          setPaymentStatus('Payment approved! Payment ID: ' + paymentId);
+          console.log('✅ Payment ready:', paymentId);
+          setPaymentStatus('✅ Payment approved! Payment ID: ' + paymentId);
         },
         onReadyForServerCompletion: (paymentId, txid) => {
-          console.log('Payment completed:', paymentId, txid);
-          setPaymentStatus('Payment completed! Transaction: ' + txid);
+          console.log('✅ Payment completed:', paymentId, txid);
+          setPaymentStatus('✅ Payment completed! Transaction: ' + txid);
         },
         onCancel: (paymentId) => {
-          console.log('Payment cancelled:', paymentId);
-          setPaymentStatus('Payment cancelled');
+          console.log('❌ Payment cancelled:', paymentId);
+          setPaymentStatus('❌ Payment cancelled');
         },
         onError: (error, payment) => {
-          console.error('Payment error:', error);
-          setPaymentStatus('Payment error: ' + error.message);
+          console.error('❌ Payment error:', error);
+          setPaymentStatus('❌ Payment error: ' + error.message);
         }
       });
+      console.log('Payment object:', payment);
     } catch (error) {
-      console.error('Payment creation error:', error);
-      setPaymentStatus('Error: ' + error.message);
+      console.error('❌ Payment creation error:', error);
+      setPaymentStatus('❌ Error: ' + error.message);
     }
   };
 
