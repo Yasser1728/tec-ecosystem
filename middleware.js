@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
+import { getDomainRoute, isPiDomain } from './lib/domainRedirect';
 
 // Define route access levels
 const routeConfig = {
@@ -67,6 +68,22 @@ const routeConfig = {
 
 export async function middleware(request) {
   const { pathname } = request.nextUrl;
+  const hostname = request.headers.get('host') || '';
+
+  // Handle .pi domain routing
+  if (isPiDomain(hostname)) {
+    const targetRoute = getDomainRoute(hostname);
+    
+    // If user visits root of .pi domain, redirect to business unit page
+    if (pathname === '/' && targetRoute !== '/') {
+      const url = request.nextUrl.clone();
+      url.pathname = targetRoute;
+      return NextResponse.rewrite(url);
+    }
+    
+    // If user visits a path on .pi domain, keep them on that path
+    // e.g., life.pi/about stays on /life/about
+  }
 
   // Allow API routes and static files
   if (

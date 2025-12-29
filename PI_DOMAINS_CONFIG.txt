@@ -1,0 +1,85 @@
+# Pi Developer Portal - Domain Configuration
+# Copy and paste this for each domain
+
+App URL: https://tec-ecosystem.vercel.app
+(or your custom domain)
+
+---
+
+Domain: life.pi
+Redirect Path: /life
+
+Domain: insure.pi
+Redirect Path: /insure
+
+Domain: commerce.pi
+Redirect Path: /commerce
+
+Domain: ecommerce.pi
+Redirect Path: /ecommerce
+
+Domain: assets.pi
+Redirect Path: /assets
+
+Domain: fundx.pi
+Redirect Path: /fundx
+
+Domain: dx.pi
+Redirect Path: /dx
+
+Domain: analytics.pi
+Redirect Path: /analytics
+
+Domain: nbf.pi
+Redirect Path: /nbf
+
+Domain: epic.pi
+Redirect Path: /epic
+
+Domain: legend.pi
+Redirect Path: /legend
+
+Domain: connection.pi
+Redirect Path: /connection
+
+Domain: system.pi
+Redirect Path: /system
+
+Domain: alert.pi
+Redirect Path: /alert
+
+Domain: tec.pi
+Redirect Path: /tec
+
+Domain: estate.pi
+Redirect Path: /estate
+
+Domain: nx.pi
+Redirect Path: /nx
+
+Domain: explorer.pi
+Redirect Path: /explorer
+
+Domain: nexus.pi
+Redirect Path: /nexus
+
+Domain: brookfield.pi
+Redirect Path: /brookfield
+
+Domain: vip.pi
+Redirect Path: /vip
+
+Domain: titan.pi
+Redirect Path: /titan
+
+Domain: zone.pi
+Redirect Path: /zone
+
+Domain: elite.pi
+Redirect Path: /elite
+
+---
+
+Total: 24 domains configured
+All pointing to: TEC Ecosystem application
+Each opens its respective business unit
