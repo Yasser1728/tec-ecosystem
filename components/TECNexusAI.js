@@ -1,8 +1,36 @@
 import { useState } from 'react';
-import { useTranslation } from 'next-i18next';
+
+// Fallback translations
+const translations = {
+  en: {
+    title: 'TEC Nexus AI',
+    subtitle: 'Your Intelligent Guide to Elite Opportunities',
+    placeholder: 'Ask me anything about TEC domains...',
+    send: 'Send',
+    thinking: 'Thinking...',
+    error: 'Something went wrong. Please try again.'
+  },
+  ar: {
+    title: 'TEC Nexus AI',
+    subtitle: 'مرشدك الذكي للفرص النخبوية',
+    placeholder: 'اسألني أي شيء عن دومينات TEC...',
+    send: 'إرسال',
+    thinking: 'جاري التفكير...',
+    error: 'حدث خطأ. يرجى المحاولة مرة أخرى.'
+  }
+};
 
 export default function TECNexusAI() {
-  const { t } = useTranslation('common');
+  const [locale, setLocale] = useState('en');
+  const t = (key) => {
+    const keys = key.split('.');
+    let value = translations[locale];
+    for (const k of keys) {
+      if (k === 'nexusAI') continue;
+      value = value?.[k];
+    }
+    return value || key;
+  };
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);

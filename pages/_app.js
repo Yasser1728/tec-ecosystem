@@ -1,5 +1,4 @@
 import '../styles/globals.css';
-import { appWithTranslation } from 'next-i18next';
 import TECNexusAI from '../components/TECNexusAI';
 
 function MyApp({ Component, pageProps }) {
@@ -11,4 +10,4 @@ function MyApp({ Component, pageProps }) {
   );
 }
 
-export default appWithTranslation(MyApp);
+export default MyApp;
