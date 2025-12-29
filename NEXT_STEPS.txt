@@ -1,5 +1,0 @@
-Suggested next steps before publishing:
-1. Confirm license (PROPRIETARY / MIT / other).
-2. Confirm maintainer name(s) and contact email(s).
-3. Approve branch name for PR (suggestion: docs/update-tec-knowledge-24-domains).
-4. If you want, I can open the PR and push these files.
