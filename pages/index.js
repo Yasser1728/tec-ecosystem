@@ -16,62 +16,80 @@ export default function Home() {
   };
 
   const handlePiPayment = async () => {
-    setPaymentStatus('Initializing payment...');
+    console.log('💰 Payment button clicked');
+    setPaymentStatus('⏳ Initializing payment...');
     
-    // Wait for Pi SDK to load
-    let attempts = 0;
-    while (!window.Pi && attempts < 50) {
-      await new Promise(resolve => setTimeout(resolve, 100));
-      attempts++;
-    }
-
-    if (!window.Pi) {
-      setPaymentStatus('❌ Pi SDK not loaded. Please refresh the page.');
-      alert('Pi SDK not loaded. Please refresh the page and try again.');
-      return;
-    }
-
     try {
+      // Wait for Pi SDK to load
+      console.log('⏳ Waiting for Pi SDK...');
+      let attempts = 0;
+      while (!window.Pi && attempts < 50) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+        attempts++;
+      }
+
+      if (!window.Pi) {
+        console.error('❌ Pi SDK not loaded after 5 seconds');
+        setPaymentStatus('❌ Pi SDK not loaded. Please refresh the page.');
+        alert('Pi SDK not loaded. Please refresh the page and try again.');
+        return;
+      }
+
+      console.log('✅ Pi SDK loaded:', window.Pi);
+      
       // First, authenticate with payments scope
-      console.log('🔐 Authenticating with payments scope...');
+      console.log('🔐 Step 1: Authenticating with payments scope...');
+      setPaymentStatus('🔐 Authenticating...');
+      
       const authResult = await window.Pi.authenticate(
         ['username', 'payments'],
         (payment) => {
-          console.log('Incomplete payment found:', payment);
+          console.log('⚠️ Incomplete payment found:', payment);
         }
       );
       
-      console.log('✅ Authenticated:', authResult.user.username);
+      console.log('✅ Step 2: Authenticated successfully!');
+      console.log('👤 User:', authResult.user);
       setPiUser(authResult.user);
+      setPaymentStatus('✅ Authenticated as ' + authResult.user.username);
+      
+      // Wait a moment before creating payment
+      await new Promise(resolve => setTimeout(resolve, 500));
       
       // Now create payment
-      console.log('🚀 Creating payment with Pi SDK...');
+      console.log('🚀 Step 3: Creating payment...');
+      setPaymentStatus('💰 Creating payment...');
+      
       const payment = await window.Pi.createPayment({
         amount: 1,
         memo: 'TEC Ecosystem - Demo Payment',
         metadata: { productId: 'tec-demo' }
       }, {
         onReadyForServerApproval: (paymentId) => {
-          console.log('✅ Payment ready:', paymentId);
-          setPaymentStatus('✅ Payment approved! Payment ID: ' + paymentId);
+          console.log('✅ Step 4: Payment ready for approval:', paymentId);
+          setPaymentStatus('✅ Payment approved! ID: ' + paymentId);
         },
         onReadyForServerCompletion: (paymentId, txid) => {
-          console.log('✅ Payment completed:', paymentId, txid);
-          setPaymentStatus('✅ Payment completed! Transaction: ' + txid);
+          console.log('✅ Step 5: Payment completed!', { paymentId, txid });
+          setPaymentStatus('✅ Payment completed! TX: ' + txid);
         },
         onCancel: (paymentId) => {
-          console.log('❌ Payment cancelled:', paymentId);
+          console.log('❌ Payment cancelled by user:', paymentId);
           setPaymentStatus('❌ Payment cancelled');
         },
         onError: (error, payment) => {
-          console.error('❌ Payment error:', error);
+          console.error('❌ Payment error:', error, payment);
           setPaymentStatus('❌ Payment error: ' + error.message);
         }
       });
-      console.log('Payment object:', payment);
+      
+      console.log('📦 Payment object created:', payment);
+      
     } catch (error) {
-      console.error('❌ Payment creation error:', error);
+      console.error('❌ Fatal error in payment flow:', error);
+      console.error('Error stack:', error.stack);
       setPaymentStatus('❌ Error: ' + error.message);
+      alert('Payment failed: ' + error.message);
     }
   };
 

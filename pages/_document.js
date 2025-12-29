@@ -20,17 +20,32 @@ class MyDocument extends Document {
                 
                 // Initialize Pi SDK when loaded
                 (function() {
+                  var piCheckAttempts = 0;
+                  var maxAttempts = 100; // 10 seconds
+                  
                   var checkPi = setInterval(function() {
+                    piCheckAttempts++;
+                    
                     if (window.Pi) {
                       clearInterval(checkPi);
-                      console.log('✅ Pi SDK loaded successfully');
+                      console.log('✅ Pi SDK loaded successfully (attempt ' + piCheckAttempts + ')');
                       console.log('📱 App ID:', window.piConfig.appId);
                       console.log('🧪 Sandbox Mode:', window.piConfig.sandbox);
                       
                       // Initialize Pi SDK
-                      if (window.Pi.init) {
-                        window.Pi.init({ version: "2.0", sandbox: window.piConfig.sandbox });
+                      try {
+                        if (window.Pi.init) {
+                          window.Pi.init({ version: "2.0", sandbox: window.piConfig.sandbox });
+                          console.log('✅ Pi SDK initialized');
+                        }
+                      } catch (e) {
+                        console.warn('⚠️ Pi SDK init failed:', e);
                       }
+                    }
+                    
+                    if (piCheckAttempts >= maxAttempts) {
+                      clearInterval(checkPi);
+                      console.warn('⚠️ Pi SDK check timeout after ' + piCheckAttempts + ' attempts');
                     }
                   }, 100);
                   
