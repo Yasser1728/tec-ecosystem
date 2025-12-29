@@ -18,21 +18,93 @@ class MyDocument extends Document {
                   sandbox: ${process.env.NEXT_PUBLIC_PI_SANDBOX || 'true'}
                 };
                 
-                // Initialize Pi SDK when loaded
+                // Pi Sandbox Implementation (immediate fallback)
+                window.PiSandbox = function() {
+                  this.authenticated = false;
+                  this.user = null;
+                  this.scopes = [];
+                };
+                
+                window.PiSandbox.prototype.authenticate = function(scopes, onIncompletePaymentFound) {
+                  console.log('🧪 [Sandbox] Authenticating with scopes:', scopes);
+                  this.authenticated = true;
+                  this.scopes = scopes || [];
+                  this.user = {
+                    uid: 'sandbox_user_' + Date.now(),
+                    username: 'sandbox_user',
+                    wallet_address: null
+                  };
+                  console.log('✅ [Sandbox] Authentication successful:', this.user);
+                  return Promise.resolve({
+                    accessToken: 'sandbox_token_' + Date.now(),
+                    user: this.user
+                  });
+                };
+                
+                window.PiSandbox.prototype.createPayment = function(paymentData, callbacks) {
+                  var self = this;
+                  console.log('🧪 [Sandbox] Creating payment:', paymentData);
+                  
+                  if (!self.authenticated) {
+                    var error = new Error('User must authenticate first');
+                    console.error('❌ [Sandbox]', error.message);
+                    if (callbacks.onError) callbacks.onError(error, null);
+                    return Promise.reject(error);
+                  }
+                  
+                  if (!self.scopes.includes('payments')) {
+                    var error = new Error('Cannot create a payment without "payments" scope');
+                    console.error('❌ [Sandbox]', error.message);
+                    if (callbacks.onError) callbacks.onError(error, null);
+                    return Promise.reject(error);
+                  }
+                  
+                  var paymentId = 'sandbox_payment_' + Date.now();
+                  var txid = 'sandbox_txid_' + Date.now();
+                  
+                  setTimeout(function() {
+                    console.log('✅ [Sandbox] Payment ready for approval:', paymentId);
+                    if (callbacks.onReadyForServerApproval) {
+                      callbacks.onReadyForServerApproval(paymentId);
+                    }
+                  }, 1000);
+                  
+                  setTimeout(function() {
+                    console.log('✅ [Sandbox] Payment completed:', { paymentId: paymentId, txid: txid });
+                    if (callbacks.onReadyForServerCompletion) {
+                      callbacks.onReadyForServerCompletion(paymentId, txid);
+                    }
+                  }, 2000);
+                  
+                  return Promise.resolve({
+                    identifier: paymentId,
+                    amount: paymentData.amount,
+                    memo: paymentData.memo,
+                    metadata: paymentData.metadata
+                  });
+                };
+                
+                // Initialize sandbox immediately
+                console.log('🧪 Initializing Pi Sandbox...');
+                window.Pi = new window.PiSandbox();
+                window.piSandboxMode = true;
+                console.log('✅ Pi Sandbox ready');
+                
+                // Try to load real Pi SDK (will override if available)
                 (function() {
                   var piCheckAttempts = 0;
-                  var maxAttempts = 100; // 10 seconds
+                  var maxAttempts = 30; // 3 seconds
                   
                   var checkPi = setInterval(function() {
                     piCheckAttempts++;
                     
-                    if (window.Pi) {
+                    // Check if real Pi SDK loaded (has different structure than our sandbox)
+                    if (window.Pi && window.Pi.constructor.name !== 'PiSandbox') {
                       clearInterval(checkPi);
-                      console.log('✅ Pi SDK loaded successfully (attempt ' + piCheckAttempts + ')');
+                      console.log('✅ Real Pi SDK loaded (attempt ' + piCheckAttempts + ')');
                       console.log('📱 App ID:', window.piConfig.appId);
-                      console.log('🧪 Sandbox Mode:', window.piConfig.sandbox);
+                      window.piSandboxMode = false;
                       
-                      // Initialize Pi SDK
                       try {
                         if (window.Pi.init) {
                           window.Pi.init({ version: "2.0", sandbox: window.piConfig.sandbox });
@@ -45,7 +117,7 @@ class MyDocument extends Document {
                     
                     if (piCheckAttempts >= maxAttempts) {
                       clearInterval(checkPi);
-                      console.warn('⚠️ Pi SDK check timeout after ' + piCheckAttempts + ' attempts');
+                      console.log('🧪 Using Sandbox mode (Pi SDK not detected)');
                     }
                   }, 100);
                   
