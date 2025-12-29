@@ -28,10 +28,10 @@ export default function Estate() {
             </p>
             
             <Link 
-              href="/estate/marketplace"
+              href="/estate/buy-guide"
               className="inline-block bg-gradient-to-r from-[#00ff9d] to-[#00c6ff] text-gray-900 px-8 py-4 rounded-lg font-semibold text-lg hover:shadow-lg transition-all duration-300"
             >
-              Browse Properties →
+              Start Your Journey →
             </Link>
           </div>
         </section>
@@ -74,29 +74,23 @@ export default function Estate() {
           <div className="container mx-auto">
             <h2 className="text-3xl font-bold text-center mb-12">Property Categories</h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <Link href="/estate/marketplace?type=residential" className="bg-gray-800 border border-[#00ff9d]/20 rounded-lg p-6 hover:border-[#00ff9d] transition-all duration-300 group">
-                <div className="text-4xl mb-4">🏡</div>
-                <h3 className="text-xl font-bold mb-2 group-hover:text-[#00ff9d] transition-colors">Residential</h3>
-                <p className="text-gray-400 text-sm">Villas, Apartments, Houses</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <Link href="/estate/buy-guide" className="bg-gray-800 border border-[#00ff9d]/20 rounded-lg p-6 hover:border-[#00ff9d] transition-all duration-300 group">
+                <div className="text-4xl mb-4">📖</div>
+                <h3 className="text-xl font-bold mb-2 group-hover:text-[#00ff9d] transition-colors">Buy Guide</h3>
+                <p className="text-gray-400 text-sm">How to buy property with Pi</p>
               </Link>
 
-              <Link href="/estate/marketplace?type=commercial" className="bg-gray-800 border border-[#00ff9d]/20 rounded-lg p-6 hover:border-[#00ff9d] transition-all duration-300 group">
-                <div className="text-4xl mb-4">🏢</div>
-                <h3 className="text-xl font-bold mb-2 group-hover:text-[#00ff9d] transition-colors">Commercial</h3>
-                <p className="text-gray-400 text-sm">Offices, Retail, Warehouses</p>
+              <Link href="/estate/countries" className="bg-gray-800 border border-[#00ff9d]/20 rounded-lg p-6 hover:border-[#00ff9d] transition-all duration-300 group">
+                <div className="text-4xl mb-4">🌍</div>
+                <h3 className="text-xl font-bold mb-2 group-hover:text-[#00ff9d] transition-colors">Countries</h3>
+                <p className="text-gray-400 text-sm">Countries accepting Pi</p>
               </Link>
 
-              <Link href="/estate/marketplace?type=land" className="bg-gray-800 border border-[#00ff9d]/20 rounded-lg p-6 hover:border-[#00ff9d] transition-all duration-300 group">
-                <div className="text-4xl mb-4">🌳</div>
-                <h3 className="text-xl font-bold mb-2 group-hover:text-[#00ff9d] transition-colors">Land</h3>
-                <p className="text-gray-400 text-sm">Plots, Farms, Development</p>
-              </Link>
-
-              <Link href="/estate/marketplace?type=luxury" className="bg-gray-800 border border-[#00ff9d]/20 rounded-lg p-6 hover:border-[#00ff9d] transition-all duration-300 group">
-                <div className="text-4xl mb-4">👑</div>
-                <h3 className="text-xl font-bold mb-2 group-hover:text-[#00ff9d] transition-colors">Luxury</h3>
-                <p className="text-gray-400 text-sm">Premium, Exclusive, Elite</p>
+              <Link href="/estate/listings" className="bg-gray-800 border border-[#00ff9d]/20 rounded-lg p-6 hover:border-[#00ff9d] transition-all duration-300 group">
+                <div className="text-4xl mb-4">🏠</div>
+                <h3 className="text-xl font-bold mb-2 group-hover:text-[#00ff9d] transition-colors">Featured Properties</h3>
+                <p className="text-gray-400 text-sm">Elite property showcase</p>
               </Link>
             </div>
           </div>
@@ -108,10 +102,10 @@ export default function Estate() {
             <h2 className="text-3xl font-bold mb-4">Ready to Find Your Dream Property?</h2>
             <p className="text-gray-400 mb-8">Start browsing our exclusive listings today</p>
             <Link 
-              href="/estate/marketplace"
+              href="/estate/buy-guide"
               className="inline-block bg-gradient-to-r from-[#00ff9d] to-[#00c6ff] text-gray-900 px-8 py-4 rounded-lg font-semibold text-lg hover:shadow-lg transition-all duration-300"
             >
-              Explore Marketplace
+              Get Started
             </Link>
           </div>
         </section>

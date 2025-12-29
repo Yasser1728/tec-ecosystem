@@ -190,7 +190,7 @@ export default function Home() {
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
             <Link href="/tec/hub" className="bg-gradient-to-r from-[#00ff9d] to-[#00c6ff] text-gray-900 px-8 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300">
-              Explore Domains
+              Explore Services
             </Link>
             <Link href="/tec/overview" className="border border-[#00ff9d] text-[#00ff9d] px-8 py-3 rounded-lg font-semibold hover:bg-[#00ff9d]/10 transition-all duration-300">
               Learn More
@@ -252,9 +252,9 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Featured Domains */}
+        {/* Featured Services */}
         <section className="relative z-10 container mx-auto px-4 py-16">
-          <h2 className="text-3xl font-bold text-center mb-12">Featured Domains</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">Elite Business Services</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {domains.map((domain) => (
               <Link 
@@ -272,7 +272,7 @@ export default function Home() {
           </div>
           <div className="text-center mt-8">
             <Link href="/tec/overview" className="text-[#00ff9d] hover:text-[#00c6ff] transition-colors">
-              View all 24 domains →
+              View all 24 services →
             </Link>
           </div>
         </section>
