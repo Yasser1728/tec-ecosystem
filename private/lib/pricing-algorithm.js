@@ -122,14 +122,14 @@ export function calculatePrice(category, tier = 'FREE', quantity = 1, options = 
   // Apply additional discounts if provided
   if (options.promoCode) {
     const promoDiscount = validatePromoCode(options.promoCode);
-    discountedPrice = discountedPrice * (1 - promoDiscount);
+    discountedPrice *= 1 - promoDiscount;
   }
 
   // Apply volume discount for bulk purchases
   if (quantity >= 10) {
-    discountedPrice = discountedPrice * 0.9; // 10% bulk discount
+    discountedPrice *= 0.9; // 10% bulk discount
   } else if (quantity >= 5) {
-    discountedPrice = discountedPrice * 0.95; // 5% bulk discount
+    discountedPrice *= 0.95; // 5% bulk discount
   }
 
   // Calculate Pi price

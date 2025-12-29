@@ -1,13 +1,15 @@
 import { prisma } from '../../../lib/db/prisma';
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST')
+  if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
+  }
 
   const { paymentId, internalId } = req.body;
 
-  if (!paymentId || !internalId)
+  if (!paymentId || !internalId) {
     return res.status(400).json({ error: 'Missing payment identifiers' });
+  }
 
   try {
     // Update payment status to approved

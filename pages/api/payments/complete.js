@@ -1,13 +1,15 @@
 import { prisma } from '../../../lib/db/prisma';
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST')
+  if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
+  }
 
   const { paymentId, txid, internalId } = req.body;
 
-  if (!paymentId || !txid || !internalId)
+  if (!paymentId || !txid || !internalId) {
     return res.status(400).json({ error: 'Missing payment or transaction data' });
+  }
 
   try {
     // Verify transaction exists and update payment status to completed

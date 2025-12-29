@@ -62,7 +62,7 @@ export class GDPRCompliance {
     ]);
 
     // Anonymize sensitive data
-    const exportData = {
+    return {
       user: {
         id: user.id,
         username: user.username,
@@ -91,8 +91,6 @@ export class GDPRCompliance {
       format: 'JSON',
       gdprCompliant: true
     };
-
-    return exportData;
   }
 
   /**

@@ -83,14 +83,12 @@ export class PiCompliance {
    * Verify user KYC status for large transactions
    */
   async requiresKYC(amount, userTier) {
-    if (amount >= PI_COMPLIANCE_RULES.REQUIRE_KYC_ABOVE) {
-      if (userTier === 'STANDARD') {
-        return {
-          required: true,
-          reason: 'Large transaction requires identity verification',
-          threshold: PI_COMPLIANCE_RULES.REQUIRE_KYC_ABOVE
-        };
-      }
+    if (amount >= PI_COMPLIANCE_RULES.REQUIRE_KYC_ABOVE && userTier === 'STANDARD') {
+      return {
+        required: true,
+        reason: 'Large transaction requires identity verification',
+        threshold: PI_COMPLIANCE_RULES.REQUIRE_KYC_ABOVE
+      };
     }
 
     return { required: false };
