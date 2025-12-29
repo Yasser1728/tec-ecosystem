@@ -1,9 +1,4 @@
-import OpenAI from 'openai';
 import { TEC_KNOWLEDGE, SYSTEM_PROMPT } from '../../lib/nexus-ai-knowledge';
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -24,6 +19,12 @@ export default async function handler(req, res) {
   }
 
   try {
+    // Dynamic import to avoid build-time issues
+    const OpenAI = (await import('openai')).default;
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+
     const messages = [
       {
         role: 'system',
