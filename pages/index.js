@@ -65,13 +65,61 @@ export default function Home() {
         memo: 'TEC Ecosystem - Demo Payment',
         metadata: { productId: 'tec-demo' }
       }, {
-        onReadyForServerApproval: (paymentId) => {
+        onReadyForServerApproval: async (paymentId) => {
           console.log('✅ Step 4: Payment ready for approval:', paymentId);
-          setPaymentStatus('✅ Payment approved! ID: ' + paymentId);
+          setPaymentStatus('⏳ Approving payment on server...');
+          
+          try {
+            // Call backend to approve payment
+            const approveResponse = await fetch('/api/payments/approve', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ 
+                paymentId,
+                internalId: 'demo_' + Date.now() // In production, get from DB
+              })
+            });
+            
+            if (approveResponse.ok) {
+              console.log('✅ Payment approved on server');
+              setPaymentStatus('✅ Payment approved! ID: ' + paymentId);
+            } else {
+              console.error('❌ Server approval failed');
+              setPaymentStatus('⚠️ Payment approved but server sync failed');
+            }
+          } catch (error) {
+            console.error('❌ Approval API error:', error);
+            setPaymentStatus('⚠️ Payment approved (server sync failed)');
+          }
         },
-        onReadyForServerCompletion: (paymentId, txid) => {
+        onReadyForServerCompletion: async (paymentId, txid) => {
           console.log('✅ Step 5: Payment completed!', { paymentId, txid });
-          setPaymentStatus('✅ Payment completed! TX: ' + txid);
+          setPaymentStatus('⏳ Completing payment on server...');
+          
+          try {
+            // Call backend to complete payment
+            const completeResponse = await fetch('/api/payments/complete', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ 
+                paymentId,
+                txid,
+                internalId: 'demo_' + Date.now() // In production, get from DB
+              })
+            });
+            
+            if (completeResponse.ok) {
+              const data = await completeResponse.json();
+              console.log('✅ Payment completed on server:', data);
+              setPaymentStatus('✅ Payment completed! TX: ' + txid);
+            } else {
+              console.error('❌ Server completion failed');
+              setPaymentStatus('⚠️ Payment completed but server sync failed');
+            }
+          } catch (error) {
+            console.error('❌ Completion API error:', error);
+            setPaymentStatus('⚠️ Payment completed (server sync failed)');
+          }
         },
         onCancel: (paymentId) => {
           console.log('❌ Payment cancelled by user:', paymentId);
