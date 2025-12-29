@@ -65,8 +65,5 @@
     "*.{json,md,yml,yaml}": [
       "prettier --write"
     ]
-  },
-  "prisma": {
-    "seed": "node prisma/seed.js"
   }
 }
