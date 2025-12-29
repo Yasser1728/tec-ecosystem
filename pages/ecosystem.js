@@ -23,7 +23,7 @@ export default function Ecosystem() {
               TEC Ecosystem
             </h1>
             <p className="text-xl text-gray-400">
-              21 Business Units Powered by Pi Network
+              24 Business Units Powered by Pi Network
             </p>
           </div>
 

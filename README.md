@@ -6,7 +6,7 @@
 [![Next.js](https://img.shields.io/badge/Next.js-15.5-black)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-latest-blue)](https://reactjs.org/)
 
-**TEC (Titan Elite Commerce)** is the parent authority managing 21 independent business units powered by Pi Network. Each business unit operates as a standalone application within the ecosystem, accessible via dedicated routes (e.g., `fundx.pi`, `explorer.pi`, `commerce.pi`). This repository contains a professionally structured codebase with unified templates and shared components.
+**TEC (Titan Elite Commerce)** is the parent authority managing 24 independent business units powered by Pi Network. Each business unit operates as a standalone application within the ecosystem, accessible via dedicated routes (e.g., `fundx.pi`, `explorer.pi`, `commerce.pi`). This repository contains a professionally structured codebase with unified templates and shared components.
 
 ## 🌐 Dual Language Support
 
@@ -283,7 +283,7 @@ See individual LICENSE files for full legal details.
 
 ## 🌟 Key Features
 
-- ✅ **21 Business Units**: Independent applications within unified ecosystem
+- ✅ **24 Business Units**: Independent applications within unified ecosystem
 - ✅ **4-Tier Authentication System**: GUEST, STANDARD, PREMIUM, ADMIN with full RBAC
 - ✅ **Protected Routes**: Middleware + HOC protection for secure access control
 - ✅ **User Dashboard**: Profile management, transactions, and account settings
