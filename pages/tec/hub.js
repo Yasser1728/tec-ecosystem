@@ -7,7 +7,7 @@ export default function TecHub() {
     <>
       <Head>
         <title>Unified Hub - TEC | Titan Elite Commerce</title>
-        <meta name="description" content="Central hub for all TEC sovereign domains" />
+        <meta name="description" content="Central hub for all TEC sovereign business services" />
       </Head>
 
       <Header />
@@ -19,28 +19,28 @@ export default function TecHub() {
           </h1>
           
           <p className="text-xl text-gray-300 mb-8">
-            Your Gateway to 24 Sovereign Business Domains / بوابتك إلى 24 مجال أعمال سيادي
+            Your Gateway to 24 Elite Business Services / بوابتك إلى 24 خدمة أعمال نخبوية
           </p>
 
           <div className="grid md:grid-cols-4 gap-6">
             <div className="bg-gray-800 p-6 rounded-lg border border-[#00ff9d]/20">
               <h3 className="text-xl font-bold text-[#00ff9d] mb-2">Finance & Investment</h3>
-              <p className="text-gray-400">6 Domains</p>
+              <p className="text-gray-400">6 Services</p>
             </div>
             
             <div className="bg-gray-800 p-6 rounded-lg border border-[#00c6ff]/20">
               <h3 className="text-xl font-bold text-[#00c6ff] mb-2">Commerce & Trade</h3>
-              <p className="text-gray-400">4 Domains</p>
+              <p className="text-gray-400">4 Services</p>
             </div>
             
             <div className="bg-gray-800 p-6 rounded-lg border border-[#00ff9d]/20">
               <h3 className="text-xl font-bold text-[#00ff9d] mb-2">Real Estate</h3>
-              <p className="text-gray-400">4 Domains</p>
+              <p className="text-gray-400">4 Services</p>
             </div>
             
             <div className="bg-gray-800 p-6 rounded-lg border border-[#00c6ff]/20">
               <h3 className="text-xl font-bold text-[#00c6ff] mb-2">Technology</h3>
-              <p className="text-gray-400">5 Domains</p>
+              <p className="text-gray-400">5 Services</p>
             </div>
           </div>
 
@@ -51,7 +51,7 @@ export default function TecHub() {
               unified interface. Navigate the entire ecosystem with ease.
             </p>
             <button className="bg-gradient-to-r from-[#00ff9d] to-[#00c6ff] text-black font-bold py-3 px-8 rounded-lg hover:opacity-90 transition">
-              Explore All Domains / استكشف جميع المجالات
+              Explore All Services / استكشف جميع المجالات
             </button>
           </div>
         </div>

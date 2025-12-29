@@ -64,7 +64,7 @@ export default async function handler(req, res) {
 كيف يمكنني مساعدتك اليوم؟`
       : `Welcome to TEC Nexus AI! 🌟
 
-I'm here to help you explore TEC's 24 luxury domains. I can assist you with:
+I'm here to help you explore TEC's 24 elite business services. I can assist you with:
 
 📊 **Investments**: FundX, Assets, NBF
 🏠 **Real Estate**: Estate, Brookfield, Zone

@@ -3,6 +3,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import ConsultationForm from '../../components/ConsultationForm';
 
 export default function EstateBuyGuide() {
   const [showConsultationForm, setShowConsultationForm] = useState(false);
@@ -226,22 +227,12 @@ export default function EstateBuyGuide() {
 
       <Footer />
 
-      {/* Consultation Form Modal */}
+      {/* Consultation Form */}
       {showConsultationForm && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-          <div className="bg-gray-800 rounded-lg p-8 max-w-md w-full">
-            <h3 className="text-2xl font-bold mb-4">Request Consultation</h3>
-            <p className="text-gray-400 mb-6">
-              Our team will contact you within 24 hours.
-            </p>
-            <button
-              onClick={() => setShowConsultationForm(false)}
-              className="w-full bg-gradient-to-r from-[#00ff9d] to-[#00c6ff] text-gray-900 px-6 py-3 rounded-lg font-semibold"
-            >
-              Coming Soon - Close
-            </button>
-          </div>
-        </div>
+        <ConsultationForm
+          service="Estate - Real Estate"
+          onClose={() => setShowConsultationForm(false)}
+        />
       )}
     </>
   );
