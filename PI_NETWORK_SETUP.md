@@ -20,7 +20,8 @@
 
 4. **احصل على App ID:**
    - بعد إنشاء الـ App، هتلاقي `App ID`
-   - انسخه (مثال: `app_abc123xyz`)
+   - App ID الحالي: `tec-titan-elite-commerce-04d84accdca2487c`
+   - Sandbox URL: https://sandbox.minepi.com/app/tec-titan-elite-commerce-04d84accdca2487c
 
 ---
 
@@ -39,7 +40,7 @@
 
 ```bash
 # Pi Network App ID (من Developer Portal)
-NEXT_PUBLIC_PI_APP_ID=app_abc123xyz
+NEXT_PUBLIC_PI_APP_ID=tec-titan-elite-commerce-04d84accdca2487c
 
 # Sandbox Mode (للتجربة)
 NEXT_PUBLIC_PI_SANDBOX=true
@@ -72,7 +73,7 @@ touch .env.local
 
 ```bash
 # .env.local
-NEXT_PUBLIC_PI_APP_ID=app_abc123xyz
+NEXT_PUBLIC_PI_APP_ID=tec-titan-elite-commerce-04d84accdca2487c
 NEXT_PUBLIC_PI_SANDBOX=true
 PI_API_KEY=your_api_key_here
 

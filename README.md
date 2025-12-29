@@ -98,9 +98,9 @@ See [SECURITY.md](./docs/SECURITY.md) for detailed security policies.
 
    Required environment variables:
    ```bash
-   PI_API_KEY=your_pi_api_key
-   PI_WALLET_PRIVATE_SEED=your_wallet_seed
+   NEXT_PUBLIC_PI_APP_ID=tec-titan-elite-commerce-04d84accdca2487c
    NEXT_PUBLIC_PI_SANDBOX=true
+   PI_API_KEY=your_pi_api_key
    DATABASE_URL=postgresql://user:password@localhost:5432/tec_ecosystem
    NEXTAUTH_SECRET=your_secret
    ```
@@ -120,7 +120,10 @@ See [SECURITY.md](./docs/SECURITY.md) for detailed security policies.
 
 ### Pi Network Integration
 
-For detailed Pi Network integration guide, see [docs/PI_INTEGRATION.md](./docs/PI_INTEGRATION.md)
+**App ID**: `tec-titan-elite-commerce-04d84accdca2487c`  
+**Sandbox URL**: [https://sandbox.minepi.com/app/tec-titan-elite-commerce-04d84accdca2487c](https://sandbox.minepi.com/app/tec-titan-elite-commerce-04d84accdca2487c)
+
+For detailed Pi Network integration guide, see [PI_NETWORK_SETUP.md](./PI_NETWORK_SETUP.md) or visit [/pi-setup](https://tec-ecosystem.vercel.app/pi-setup)
 
 ---
 

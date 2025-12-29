@@ -60,7 +60,7 @@ export default function PiSetup() {
             <h2 className="text-2xl font-bold text-[#00ff9d] mb-4">🔧 Environment Variables</h2>
             <div className="bg-gray-900 rounded p-4 font-mono text-sm">
               <div className="text-gray-500"># Required</div>
-              <div className="text-[#00ff9d]">NEXT_PUBLIC_PI_APP_ID<span className="text-white">=</span><span className="text-yellow-400">your_app_id_here</span></div>
+              <div className="text-[#00ff9d]">NEXT_PUBLIC_PI_APP_ID<span className="text-white">=</span><span className="text-yellow-400">tec-titan-elite-commerce-04d84accdca2487c</span></div>
               <div className="text-[#00ff9d]">NEXT_PUBLIC_PI_SANDBOX<span className="text-white">=</span><span className="text-yellow-400">true</span></div>
               <div className="mt-3 text-gray-500"># Optional (for backend)</div>
               <div className="text-[#00ff9d]">PI_API_KEY<span className="text-white">=</span><span className="text-yellow-400">your_api_key_here</span></div>
@@ -78,6 +78,10 @@ export default function PiSetup() {
               <div className="flex justify-between border-b border-gray-700 pb-2">
                 <span className="text-gray-400">App URL:</span>
                 <span className="font-mono text-[#00c6ff]">https://tec-ecosystem.vercel.app</span>
+              </div>
+              <div className="flex justify-between border-b border-gray-700 pb-2">
+                <span className="text-gray-400">App ID:</span>
+                <span className="font-mono text-xs text-[#00c6ff]">tec-titan-elite-commerce-04d84accdca2487c</span>
               </div>
               <div className="flex justify-between border-b border-gray-700 pb-2">
                 <span className="text-gray-400">Sandbox Mode:</span>
