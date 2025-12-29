@@ -25,7 +25,7 @@ export default function ExplorerTravel() {
           <div className="space-y-6">
             <div className="bg-gray-800 p-6 rounded-lg border border-[#00ff9d]/20">
               <h3 className="text-2xl font-bold text-[#00ff9d] mb-3">Luxury Resorts / المنتجعات الفاخرة</h3>
-              <p className="text-gray-400">World's finest hotels and private villas</p>
+              <p className="text-gray-400">World&apos;s finest hotels and private villas</p>
             </div>
             
             <div className="bg-gray-800 p-6 rounded-lg border border-[#00c6ff]/20">
