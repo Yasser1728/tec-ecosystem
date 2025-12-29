@@ -1,0 +1,20 @@
+environments:
+  development:
+    machine: small
+    auto_stop: 30m
+    
+  staging:
+    machine: medium
+    auto_stop: 2h
+    
+  production:
+    machine: large
+    auto_stop: never
+    replicas: 2
+
+integrations:
+  github:
+    auto_deploy: true
+    branches:
+      - main
+      - staging
