@@ -1,0 +1,27 @@
+{
+  "tec": {
+    "title": "TEC - The Elite Consortium",
+    "subtitle": "24 Independent Luxury Business Units",
+    "tagline": "Private Marketplace for Elite Opportunities"
+  },
+  "nav": {
+    "home": "Home",
+    "domains": "Domains",
+    "about": "About",
+    "contact": "Contact"
+  },
+  "cta": {
+    "explore": "Explore Opportunities",
+    "getStarted": "Get Started",
+    "learnMore": "Learn More",
+    "download": "Download Guide"
+  },
+  "nexusAI": {
+    "title": "TEC Nexus AI",
+    "subtitle": "Your Intelligent Guide to Elite Opportunities",
+    "placeholder": "Ask me anything about TEC domains...",
+    "send": "Send",
+    "thinking": "Thinking...",
+    "error": "Something went wrong. Please try again."
+  }
+}

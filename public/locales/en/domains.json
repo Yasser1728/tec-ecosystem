@@ -1,0 +1,47 @@
+{
+  "fundx": {
+    "name": "FundX",
+    "tagline": "Elite Investment Strategies",
+    "description": "Access exclusive Pi-based investment opportunities with proven ROI strategies."
+  },
+  "assets": {
+    "name": "Assets",
+    "tagline": "Portfolio Management",
+    "description": "Comprehensive asset valuation and portfolio optimization tools."
+  },
+  "nbf": {
+    "name": "NBF",
+    "tagline": "Sovereign Banking",
+    "description": "Pi-based financial planning and sovereign settlement solutions."
+  },
+  "insure": {
+    "name": "Insure",
+    "tagline": "Deal Protection",
+    "description": "Protect your elite transactions with comprehensive insurance protocols."
+  },
+  "vip": {
+    "name": "VIP",
+    "tagline": "Exclusive Opportunities",
+    "description": "Access VIP-only investment opportunities and exclusive events."
+  },
+  "estate": {
+    "name": "Estate",
+    "tagline": "Luxury Real Estate",
+    "description": "Purchase premium properties worldwide using Pi cryptocurrency."
+  },
+  "explorer": {
+    "name": "Explorer",
+    "tagline": "Luxury Travel",
+    "description": "Private jet charters, exclusive residency programs, and curated travel."
+  },
+  "nexus": {
+    "name": "Nexus",
+    "tagline": "Elite Networking",
+    "description": "Connect with elite partners and coordinate cross-sector opportunities."
+  },
+  "tec": {
+    "name": "TEC Hub",
+    "tagline": "Unified Portal",
+    "description": "Your central gateway to all 24 TEC domains and strategic guidance."
+  }
+}
