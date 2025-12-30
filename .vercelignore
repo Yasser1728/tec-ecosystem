@@ -1,0 +1,4 @@
+# Ignore validation key page files
+pages/validation-key.txt.js
+public/validation-key.txt
+validation-key.txt
