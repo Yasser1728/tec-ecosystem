@@ -32,6 +32,14 @@ const nextConfig = {
       },
     ];
   },
+  async rewrites() {
+    return [
+      {
+        source: '/validation-key.txt',
+        destination: '/api/validation-key',
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;
