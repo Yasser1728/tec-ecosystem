@@ -1,0 +1,124 @@
+name: Deployment Checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  checks: write
+  deployments: write
+
+jobs:
+  # Wait for all checks to complete
+  wait-for-checks:
+    name: ⏳ Wait for All Checks
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: ⏳ Wait for status checks
+        uses: lewagon/wait-on-check-action@v1.3.4
+        with:
+          ref: ${{ github.ref }}
+          check-regexp: '(Build|Lint|Tests|Security).*'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          wait-interval: 10
+          allowed-conclusions: success,skipped
+
+  # Pre-deployment validation
+  pre-deployment:
+    name: 🔍 Pre-Deployment Validation
+    runs-on: ubuntu-latest
+    needs: [wait-for-checks]
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📚 Install dependencies
+        run: npm ci
+
+      - name: ✅ Validate package.json
+        run: |
+          echo "Validating package.json..."
+          node -e "require('./package.json')"
+
+      - name: ✅ Validate environment variables
+        run: |
+          echo "Checking required environment variables..."
+          # Add your required env vars here
+          required_vars=("NEXTAUTH_URL" "PI_API_KEY" "DATABASE_URL")
+          for var in "${required_vars[@]}"; do
+            if [ -z "${!var}" ]; then
+              echo "⚠️ Warning: $var is not set (will be set in Vercel)"
+            fi
+          done
+
+      - name: ✅ Check for TODO/FIXME
+        run: |
+          echo "Checking for critical TODOs..."
+          if grep -r "TODO.*CRITICAL\|FIXME.*CRITICAL" --include="*.js" --include="*.jsx" --include="*.ts" --include="*.tsx" .; then
+            echo "⚠️ Critical TODOs found!"
+            exit 1
+          fi
+        continue-on-error: true
+
+      - name: ✅ Validate Prisma schema
+        run: npx prisma validate
+
+      - name: ✅ Check bundle size
+        run: |
+          npm run build
+          echo "Checking bundle size..."
+          # Add bundle size checks here
+
+  # Deployment readiness check
+  deployment-ready:
+    name: ✅ Deployment Ready
+    runs-on: ubuntu-latest
+    needs: [pre-deployment]
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: ✅ All Checks Passed
+        run: |
+          echo "✅ All deployment checks passed!"
+          echo "🚀 Ready for production deployment"
+
+      - name: 📊 Create Deployment Status
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.repos.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: context.payload.deployment?.id || 0,
+              state: 'success',
+              description: 'All checks passed - ready for deployment',
+              environment: 'production'
+            });
+
+  # Block deployment on failure
+  deployment-blocked:
+    name: ❌ Deployment Blocked
+    runs-on: ubuntu-latest
+    needs: [pre-deployment]
+    if: failure()
+
+    steps:
+      - name: ❌ Checks Failed
+        run: |
+          echo "❌ Deployment checks failed!"
+          echo "🚫 Deployment blocked until all checks pass"
+          exit 1

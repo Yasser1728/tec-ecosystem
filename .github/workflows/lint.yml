@@ -1,0 +1,40 @@
+name: Lint
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+permissions:
+  contents: read
+  checks: write
+
+jobs:
+  lint:
+    name: 🔍 ESLint & Prettier
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📚 Install dependencies
+        run: npm ci
+
+      - name: 🔍 Run ESLint
+        run: npm run lint
+        continue-on-error: false
+
+      - name: 🎨 Check Prettier formatting
+        run: npm run format:check
+        continue-on-error: false
+
+      - name: ✅ Lint Success
+        run: echo "✅ All linting checks passed!"
