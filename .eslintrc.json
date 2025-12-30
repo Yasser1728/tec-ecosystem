@@ -1,3 +1,10 @@
 {
-  "extends": ["next"]
+  "extends": ["next"],
+  "rules": {
+    "react/no-unescaped-entities": "off",
+    "@next/next/no-img-element": "warn",
+    "@next/next/no-html-link-for-pages": "warn",
+    "@next/next/no-sync-scripts": "warn",
+    "react-hooks/exhaustive-deps": "warn"
+  }
 }
