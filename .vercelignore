@@ -2,3 +2,7 @@
 pages/validation-key.txt.js
 public/validation-key.txt
 validation-key.txt
+
+# Ignore build artifacts
+.next/
+node_modules/
