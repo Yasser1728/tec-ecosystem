@@ -32,6 +32,15 @@ try {
   // Module doesn't exist, skip mock
 }
 
+// Mock window.Pi for Pi Network SDK
+if (typeof window !== 'undefined') {
+  window.Pi = {
+    createPayment: jest.fn(),
+    authenticate: jest.fn(),
+    init: jest.fn(),
+  };
+}
+
 // Suppress console warnings in tests
 global.console = {
   ...console,

@@ -9,7 +9,7 @@ describe('PiAuth', () => {
   let mockWindow;
 
   beforeEach(() => {
-    // Mock window.Pi first
+    // Mock window.Pi first - MUST be set before creating PiAuth
     mockWindow = {
       Pi: {
         authenticate: jest.fn().mockResolvedValue({
@@ -35,13 +35,19 @@ describe('PiAuth', () => {
     };
     global.localStorage = localStorageMock;
     
+    // Mock setTimeout to avoid waiting
+    jest.useFakeTimers();
+    
     // Create instance after mocking
     piAuth = new PiAuth();
   });
 
   afterEach(() => {
+    jest.useRealTimers();
     jest.clearAllMocks();
   });
+
+
 
   describe('authenticate', () => {
     it('should authenticate user successfully', async () => {
@@ -68,6 +74,12 @@ describe('PiAuth', () => {
           }
         })
       });
+
+      // Start authentication
+      const authPromise = piAuth.authenticate();
+      
+      // Fast-forward timers to skip waitForPiSDK
+      jest.runAllTimers();
 
       const result = await piAuth.authenticate();
 
