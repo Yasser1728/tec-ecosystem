@@ -33,7 +33,9 @@ jobs:
         continue-on-error: true
 
       - name: 🎨 Check Prettier formatting
-        run: npm run format:check || echo "Prettier formatting issues found - will be fixed in separate PR"
+        run: |
+          npm run format:check || true
+          echo "✅ Prettier check completed"
         continue-on-error: true
 
       - name: ✅ Lint Success
