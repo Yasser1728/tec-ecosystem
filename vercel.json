@@ -1,4 +1,7 @@
 {
+  "framework": null,
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
   "headers": [
     {
       "source": "/validation-key.txt",
