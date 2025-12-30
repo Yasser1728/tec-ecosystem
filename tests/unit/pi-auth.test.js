@@ -9,25 +9,34 @@ describe('PiAuth', () => {
   let mockWindow;
 
   beforeEach(() => {
-    piAuth = new PiAuth();
-    
-    // Mock window.Pi
+    // Mock window.Pi first
     mockWindow = {
       Pi: {
-        authenticate: jest.fn()
+        authenticate: jest.fn().mockResolvedValue({
+          user: { uid: 'test-pi-id', username: 'testuser' },
+          accessToken: 'test-token'
+        })
       }
     };
     global.window = mockWindow;
     
     // Mock fetch
-    global.fetch = jest.fn();
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: jest.fn().mockResolvedValue({ success: true })
+    });
     
     // Mock localStorage
-    global.localStorage = {
+    const localStorageMock = {
       getItem: jest.fn(),
       setItem: jest.fn(),
-      removeItem: jest.fn()
+      removeItem: jest.fn(),
+      clear: jest.fn()
     };
+    global.localStorage = localStorageMock;
+    
+    // Create instance after mocking
+    piAuth = new PiAuth();
   });
 
   afterEach(() => {
@@ -128,14 +137,18 @@ describe('PiAuth', () => {
         amount: 100
       };
 
-      localStorage.getItem.mockReturnValue('[]');
+      const getItemSpy = jest.spyOn(Storage.prototype, 'getItem').mockReturnValue('[]');
+      const setItemSpy = jest.spyOn(Storage.prototype, 'setItem');
 
       piAuth.onIncompletePaymentFound(mockPayment);
 
-      expect(localStorage.setItem).toHaveBeenCalledWith(
+      expect(setItemSpy).toHaveBeenCalledWith(
         'pi_incomplete_payments',
         expect.stringContaining('payment-123')
       );
+
+      getItemSpy.mockRestore();
+      setItemSpy.mockRestore();
     });
   });
 
@@ -146,25 +159,33 @@ describe('PiAuth', () => {
         { identifier: 'payment-2', amount: 200 }
       ];
 
-      localStorage.getItem.mockReturnValue(JSON.stringify(mockPayments));
+      const getItemSpy = jest.spyOn(Storage.prototype, 'getItem')
+        .mockReturnValue(JSON.stringify(mockPayments));
 
       const payments = await piAuth.getIncompletePayments();
 
       expect(payments).toHaveLength(2);
       expect(payments[0].identifier).toBe('payment-1');
+
+      getItemSpy.mockRestore();
     });
 
     it('should return empty array when no incomplete payments', async () => {
-      localStorage.getItem.mockReturnValue(null);
+      const getItemSpy = jest.spyOn(Storage.prototype, 'getItem')
+        .mockReturnValue(null);
 
       const payments = await piAuth.getIncompletePayments();
 
       expect(payments).toEqual([]);
+
+      getItemSpy.mockRestore();
     });
   });
 
   describe('signOut', () => {
     it('should clear user data and localStorage', async () => {
+      const removeItemSpy = jest.spyOn(Storage.prototype, 'removeItem');
+
       piAuth.user = { piId: 'test-id' };
       piAuth.authenticated = true;
 
@@ -172,7 +193,9 @@ describe('PiAuth', () => {
 
       expect(piAuth.user).toBeNull();
       expect(piAuth.authenticated).toBe(false);
-      expect(localStorage.removeItem).toHaveBeenCalledWith('pi_incomplete_payments');
+      expect(removeItemSpy).toHaveBeenCalledWith('pi_incomplete_payments');
+
+      removeItemSpy.mockRestore();
     });
   });
 

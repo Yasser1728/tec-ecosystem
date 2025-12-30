@@ -12,15 +12,19 @@ describe('PiPayments', () => {
   let mockWindow;
 
   beforeEach(() => {
-    piPayments = new PiPayments();
-    
-    // Mock window.Pi
+    // Mock window and Pi SDK
     mockWindow = {
       Pi: {
-        createPayment: jest.fn()
+        createPayment: jest.fn().mockResolvedValue({
+          identifier: 'payment-123',
+          user_uid: 'user-123'
+        })
       }
     };
     global.window = mockWindow;
+    
+    // Create instance after mocking window
+    piPayments = new PiPayments();
     
     // Mock fetch
     global.fetch = jest.fn();
