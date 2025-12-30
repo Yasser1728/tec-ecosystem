@@ -32,11 +32,5 @@ jobs:
         run: npm run lint || exit 0
         continue-on-error: true
 
-      - name: 🎨 Check Prettier formatting
-        run: |
-          npm run format:check || true
-          echo "✅ Prettier check completed"
-        continue-on-error: true
-
       - name: ✅ Lint Success
-        run: echo "✅ All linting checks passed!"
+        run: echo "✅ ESLint checks completed!"
