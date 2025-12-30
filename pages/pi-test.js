@@ -1,27 +1,27 @@
-import { useState, useEffect } from 'react';
-import Head from 'next/head';
+import { useState, useEffect } from "react";
+import Head from "next/head";
 
 export default function PiTest() {
   const [logs, setLogs] = useState([]);
-  const [piStatus, setPiStatus] = useState('Checking...');
+  const [piStatus, setPiStatus] = useState("Checking...");
 
-  const addLog = (message, type = 'info') => {
+  const addLog = (message, type = "info") => {
     const timestamp = new Date().toLocaleTimeString();
-    setLogs(prev => [...prev, { timestamp, message, type }]);
+    setLogs((prev) => [...prev, { timestamp, message, type }]);
     console.log(`[${timestamp}] ${message}`);
   };
 
   useEffect(() => {
-    addLog('Page loaded');
-    
+    addLog("Page loaded");
+
     // Check Pi SDK every second
     const interval = setInterval(() => {
       if (window.Pi) {
-        setPiStatus('✅ Pi SDK Loaded');
-        addLog('✅ Pi SDK detected!', 'success');
+        setPiStatus("✅ Pi SDK Loaded");
+        addLog("✅ Pi SDK detected!", "success");
         clearInterval(interval);
       } else {
-        setPiStatus('⏳ Waiting for Pi SDK...');
+        setPiStatus("⏳ Waiting for Pi SDK...");
       }
     }, 1000);
 
@@ -29,8 +29,8 @@ export default function PiTest() {
     setTimeout(() => {
       clearInterval(interval);
       if (!window.Pi) {
-        setPiStatus('❌ Pi SDK Failed to Load');
-        addLog('❌ Pi SDK not loaded after 15 seconds', 'error');
+        setPiStatus("❌ Pi SDK Failed to Load");
+        addLog("❌ Pi SDK not loaded after 15 seconds", "error");
       }
     }, 15000);
 
@@ -38,92 +38,96 @@ export default function PiTest() {
   }, []);
 
   const testPiSDK = () => {
-    addLog('🧪 Testing Pi SDK...');
-    
+    addLog("🧪 Testing Pi SDK...");
+
     if (!window.Pi) {
-      addLog('❌ window.Pi is undefined', 'error');
-      alert('Pi SDK not loaded!');
+      addLog("❌ window.Pi is undefined", "error");
+      alert("Pi SDK not loaded!");
       return;
     }
 
-    addLog('✅ window.Pi exists', 'success');
-    addLog(`Pi SDK methods: ${Object.keys(window.Pi).join(', ')}`, 'info');
-    
+    addLog("✅ window.Pi exists", "success");
+    addLog(`Pi SDK methods: ${Object.keys(window.Pi).join(", ")}`, "info");
+
     if (window.piConfig) {
-      addLog(`App ID: ${window.piConfig.appId}`, 'info');
-      addLog(`Sandbox: ${window.piConfig.sandbox}`, 'info');
+      addLog(`App ID: ${window.piConfig.appId}`, "info");
+      addLog(`Sandbox: ${window.piConfig.sandbox}`, "info");
     }
   };
 
   const testAuth = async () => {
-    addLog('🔐 Starting authentication...');
-    
+    addLog("🔐 Starting authentication...");
+
     if (!window.Pi) {
-      addLog('❌ Pi SDK not loaded', 'error');
-      alert('Pi SDK not loaded! Refresh the page.');
+      addLog("❌ Pi SDK not loaded", "error");
+      alert("Pi SDK not loaded! Refresh the page.");
       return;
     }
 
     try {
-      addLog('Calling Pi.authenticate()...');
-      
+      addLog("Calling Pi.authenticate()...");
+
       const result = await window.Pi.authenticate(
-        ['username', 'payments'],
+        ["username", "payments"],
         (payment) => {
           addLog(`⚠️ Incomplete payment: ${payment.identifier}`);
-        }
+        },
       );
 
-      addLog('✅ Authentication successful!', 'success');
-      addLog(`User: ${result.user.username}`, 'success');
-      addLog(`UID: ${result.user.uid}`, 'info');
-      
+      addLog("✅ Authentication successful!", "success");
+      addLog(`User: ${result.user.username}`, "success");
+      addLog(`UID: ${result.user.uid}`, "info");
     } catch (error) {
-      addLog(`❌ Authentication failed: ${error.message}`, 'error');
-      console.error('Auth error:', error);
+      addLog(`❌ Authentication failed: ${error.message}`, "error");
+      console.error("Auth error:", error);
     }
   };
 
   const testPayment = async () => {
-    addLog('💰 Starting payment...');
-    
+    addLog("💰 Starting payment...");
+
     if (!window.Pi) {
-      addLog('❌ Pi SDK not loaded', 'error');
+      addLog("❌ Pi SDK not loaded", "error");
       return;
     }
 
     try {
       // First authenticate
-      addLog('Step 1: Authenticating...');
-      const authResult = await window.Pi.authenticate(['username', 'payments'], () => {});
-      addLog(`✅ Authenticated as ${authResult.user.username}`, 'success');
+      addLog("Step 1: Authenticating...");
+      const authResult = await window.Pi.authenticate(
+        ["username", "payments"],
+        () => {},
+      );
+      addLog(`✅ Authenticated as ${authResult.user.username}`, "success");
 
       // Then create payment
-      addLog('Step 2: Creating payment...');
-      const payment = await window.Pi.createPayment({
-        amount: 1,
-        memo: 'Test Payment',
-        metadata: { test: true }
-      }, {
-        onReadyForServerApproval: (paymentId) => {
-          addLog(`✅ Payment approved: ${paymentId}`, 'success');
+      addLog("Step 2: Creating payment...");
+      const payment = await window.Pi.createPayment(
+        {
+          amount: 1,
+          memo: "Test Payment",
+          metadata: { test: true },
         },
-        onReadyForServerCompletion: (paymentId, txid) => {
-          addLog(`✅ Payment completed: ${txid}`, 'success');
+        {
+          onReadyForServerApproval: (paymentId) => {
+            addLog(`✅ Payment approved: ${paymentId}`, "success");
+          },
+          onReadyForServerCompletion: (paymentId, txid) => {
+            addLog(`✅ Payment completed: ${txid}`, "success");
+          },
+          onCancel: (paymentId) => {
+            addLog(`❌ Payment cancelled: ${paymentId}`, "error");
+          },
+          onError: (error) => {
+            addLog(`❌ Payment error: ${error.message}`, "error");
+          },
         },
-        onCancel: (paymentId) => {
-          addLog(`❌ Payment cancelled: ${paymentId}`, 'error');
-        },
-        onError: (error) => {
-          addLog(`❌ Payment error: ${error.message}`, 'error');
-        }
-      });
+      );
 
-      addLog(`Payment created: ${payment.identifier}`, 'success');
-      
+      addLog(`Payment created: ${payment.identifier}`, "success");
     } catch (error) {
-      addLog(`❌ Payment failed: ${error.message}`, 'error');
-      console.error('Payment error:', error);
+      addLog(`❌ Payment failed: ${error.message}`, "error");
+      console.error("Payment error:", error);
     }
   };
 
@@ -194,12 +198,15 @@ export default function PiTest() {
                   <div
                     key={index}
                     className={`mb-2 ${
-                      log.type === 'error' ? 'text-red-400' :
-                      log.type === 'success' ? 'text-green-400' :
-                      'text-gray-300'
+                      log.type === "error"
+                        ? "text-red-400"
+                        : log.type === "success"
+                          ? "text-green-400"
+                          : "text-gray-300"
                     }`}
                   >
-                    <span className="text-gray-500">[{log.timestamp}]</span> {log.message}
+                    <span className="text-gray-500">[{log.timestamp}]</span>{" "}
+                    {log.message}
                   </div>
                 ))
               )}

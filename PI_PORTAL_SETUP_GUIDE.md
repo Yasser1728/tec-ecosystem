@@ -131,6 +131,7 @@ NEXT_PUBLIC_PI_APP_ID=app_xxxxxxxxxxxxxxxxxx
 ### 5.1 الذهاب إلى قسم Domains
 
 في Pi Developer Portal:
+
 1. اختر تطبيقك
 2. اذهب إلى **"Domains"** أو **"Pi Domains"**
 3. اضغط **"Add Domain"**
@@ -302,6 +303,7 @@ Description: TEC Ecosystem Main Hub
 ### 6.1 في Pi Developer Portal:
 
 بعد إضافة كل نطاق، تحقق من:
+
 - ✅ Status: Active
 - ✅ Target URL صحيح
 - ✅ لا توجد أخطاء
@@ -326,6 +328,7 @@ nbf.pi
 ### 7.1 لإثبات ملكية النطاقات:
 
 في Pi Developer Portal:
+
 1. اذهب إلى **"NFT Certificates"**
 2. اضغط **"Mint Certificate"** لكل نطاق
 3. احفظ Token IDs
@@ -334,7 +337,7 @@ nbf.pi
 
 ```sql
 INSERT INTO "NFT" (userId, domain, tokenId, metadata)
-VALUES 
+VALUES
   ('your_user_id', 'fundx.pi', 'token_id_1', '{"verified": true}'),
   ('your_user_id', 'assets.pi', 'token_id_2', '{"verified": true}'),
   -- ... باقي النطاقات
@@ -398,6 +401,7 @@ Events: user.approved
 ### مشكلة: "Domain not found"
 
 **الحل:**
+
 1. تحقق من كتابة النطاق بشكل صحيح
 2. انتظر 5-10 دقائق للتحديث
 3. امسح Cache في Pi Browser
@@ -406,6 +410,7 @@ Events: user.approved
 ### مشكلة: "Invalid redirect URI"
 
 **الحل:**
+
 1. تحقق من Redirect URIs في Pi Portal
 2. تأكد من NEXTAUTH_URL في Vercel
 3. يجب أن تتطابق تماماً (مع/بدون trailing slash)
@@ -413,6 +418,7 @@ Events: user.approved
 ### مشكلة: "Authentication failed"
 
 **الحل:**
+
 1. تحقق من PI_API_KEY و PI_API_SECRET
 2. تأكد من Scopes صحيحة (username, payments)
 3. راجع Logs في Vercel
@@ -420,6 +426,7 @@ Events: user.approved
 ### مشكلة: "Payment not working"
 
 **الحل:**
+
 1. تأكد من تفعيل Pi Payments في Portal
 2. تحقق من Payment Callback URL
 3. اختبر في Sandbox Mode أولاً
@@ -428,51 +435,56 @@ Events: user.approved
 
 ## 📊 جدول النطاقات السريع
 
-| # | النطاق | الفئة | الأولوية |
-|---|--------|-------|----------|
-| 1 | fundx.pi | Financial | عالية |
-| 2 | assets.pi | Financial | عالية |
-| 3 | nbf.pi | Financial | عالية |
-| 4 | insure.pi | Financial | عالية |
-| 5 | vip.pi | Premium | عالية |
-| 6 | elite.pi | Premium | عالية |
-| 7 | titan.pi | Premium | عالية |
-| 8 | epic.pi | Premium | متوسطة |
-| 9 | legend.pi | Premium | متوسطة |
-| 10 | commerce.pi | Commerce | عالية |
-| 11 | ecommerce.pi | Commerce | عالية |
-| 12 | estate.pi | Commerce | متوسطة |
-| 13 | explorer.pi | Technology | متوسطة |
-| 14 | dx.pi | Technology | متوسطة |
-| 15 | nx.pi | Technology | منخفضة |
-| 16 | system.pi | Technology | عالية |
-| 17 | analytics.pi | Technology | متوسطة |
-| 18 | alert.pi | Technology | متوسطة |
-| 19 | nexus.pi | Technology | متوسطة |
-| 20 | life.pi | Specialized | منخفضة |
-| 21 | connection.pi | Specialized | منخفضة |
-| 22 | brookfield.pi | Specialized | متوسطة |
-| 23 | zone.pi | Specialized | منخفضة |
-| 24 | tec.pi | Main Hub | عالية جداً |
+| #   | النطاق        | الفئة       | الأولوية   |
+| --- | ------------- | ----------- | ---------- |
+| 1   | fundx.pi      | Financial   | عالية      |
+| 2   | assets.pi     | Financial   | عالية      |
+| 3   | nbf.pi        | Financial   | عالية      |
+| 4   | insure.pi     | Financial   | عالية      |
+| 5   | vip.pi        | Premium     | عالية      |
+| 6   | elite.pi      | Premium     | عالية      |
+| 7   | titan.pi      | Premium     | عالية      |
+| 8   | epic.pi       | Premium     | متوسطة     |
+| 9   | legend.pi     | Premium     | متوسطة     |
+| 10  | commerce.pi   | Commerce    | عالية      |
+| 11  | ecommerce.pi  | Commerce    | عالية      |
+| 12  | estate.pi     | Commerce    | متوسطة     |
+| 13  | explorer.pi   | Technology  | متوسطة     |
+| 14  | dx.pi         | Technology  | متوسطة     |
+| 15  | nx.pi         | Technology  | منخفضة     |
+| 16  | system.pi     | Technology  | عالية      |
+| 17  | analytics.pi  | Technology  | متوسطة     |
+| 18  | alert.pi      | Technology  | متوسطة     |
+| 19  | nexus.pi      | Technology  | متوسطة     |
+| 20  | life.pi       | Specialized | منخفضة     |
+| 21  | connection.pi | Specialized | منخفضة     |
+| 22  | brookfield.pi | Specialized | متوسطة     |
+| 23  | zone.pi       | Specialized | منخفضة     |
+| 24  | tec.pi        | Main Hub    | عالية جداً |
 
 ---
 
 ## 🎓 نصائح مهمة
 
 ### 1. الأولويات:
+
 ابدأ بالنطاقات ذات الأولوية العالية أولاً:
+
 - tec.pi (الرئيسي)
 - fundx.pi, assets.pi, nbf.pi (مالية)
 - vip.pi, elite.pi (مميزة)
 - commerce.pi, ecommerce.pi (تجارة)
 
 ### 2. الاختبار:
+
 اختبر كل نطاق فور إضافته قبل الانتقال للتالي
 
 ### 3. التوثيق:
+
 احتفظ بسجل لكل نطاق وحالته
 
 ### 4. الأمان:
+
 لا تشارك API Keys أبداً
 
 ---
@@ -480,10 +492,12 @@ Events: user.approved
 ## 📞 الدعم
 
 ### Pi Network Support:
+
 - **Email:** support@minepi.com
 - **Docs:** https://developers.minepi.com/docs
 
 ### TEC Ecosystem Support:
+
 - **Email:** support@tec-ecosystem.com
 - **GitHub:** https://github.com/Yasser1728/tec-ecosystem/issues
 
@@ -498,7 +512,7 @@ Events: user.approved
 ✅ نظام مصادقة Pi متكامل  
 ✅ نظام دفع Pi جاهز  
 ✅ Webhooks مُعدة (اختياري)  
-✅ NFT Certificates مُصدرة (اختياري)  
+✅ NFT Certificates مُصدرة (اختياري)
 
 **🎉 مبروك! نظامك الآن مباشر على Pi Network!**
 

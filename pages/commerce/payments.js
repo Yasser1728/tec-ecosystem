@@ -1,8 +1,8 @@
-import { withAuth } from '../../lib/withAuth';
-import { USER_TIERS } from '../../lib/roles';
+import { withAuth } from "../../lib/withAuth";
+import { USER_TIERS } from "../../lib/roles";
 
-import BusinessUnitLayout from '../../components/BusinessUnitLayout';
-import { businessUnits } from '../../lib/businessUnits';
+import BusinessUnitLayout from "../../components/BusinessUnitLayout";
+import { businessUnits } from "../../lib/businessUnits";
 
 function CommercePayments() {
   return (
@@ -12,7 +12,7 @@ function CommercePayments() {
         <p className="text-lg text-gray-600 mb-8">
           Secure payment processing for your transactions.
         </p>
-        
+
         <div className="grid md:grid-cols-2 gap-6">
           <div className="bg-white p-6 rounded-lg shadow-md">
             <h3 className="text-xl font-semibold mb-3">Payment Methods</h3>
@@ -35,7 +35,6 @@ function CommercePayments() {
     </BusinessUnitLayout>
   );
 }
-
 
 export default withAuth(CommercePayments, {
   requiredTier: USER_TIERS.STANDARD,

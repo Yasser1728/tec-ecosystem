@@ -9,23 +9,27 @@ TEC Ecosystem is built using modern web technologies with a focus on security, s
 ## Technology Stack
 
 ### Frontend
+
 - **Framework**: Next.js 15.5 (React-based)
 - **Styling**: Tailwind CSS
 - **Language**: JavaScript (ES6+)
 - **UI Components**: Custom React components
 
 ### Backend
+
 - **Runtime**: Node.js
 - **Framework**: Next.js API Routes
 - **Database**: PostgreSQL
 - **ORM**: Prisma
 
 ### Authentication
+
 - **Library**: NextAuth.js
 - **Strategy**: Session-based with JWT tokens
 - **Providers**: Credentials, Pi Network
 
 ### Deployment
+
 - **Platform**: Vercel (primary)
 - **CDN**: Vercel Edge Network
 - **Database Hosting**: Managed PostgreSQL
@@ -96,10 +100,10 @@ API routes are server-side only and handle backend logic:
 ```javascript
 // pages/api/example.js
 export default async function handler(req, res) {
-  if (req.method === 'POST') {
+  if (req.method === "POST") {
     // Handle POST request
   }
-  res.status(200).json({ data: 'example' });
+  res.status(200).json({ data: "example" });
 }
 ```
 
@@ -119,7 +123,7 @@ export async function getServerSideProps(context) {
 Protected pages use HOCs for authentication:
 
 ```javascript
-import { withAuth } from '@/lib/with-auth';
+import { withAuth } from "@/lib/with-auth";
 
 function PrivatePage({ session }) {
   return <div>Protected Content</div>;
@@ -179,6 +183,7 @@ Session Validated on Each Request
 ### Core Tables
 
 **Users**
+
 ```prisma
 model User {
   id            String    @id @default(cuid())
@@ -195,6 +200,7 @@ model User {
 ```
 
 **Sessions**
+
 ```prisma
 model Session {
   id           String   @id @default(cuid())
@@ -208,6 +214,7 @@ model Session {
 ```
 
 **Payments**
+
 ```prisma
 model Payment {
   id          String   @id @default(cuid())
@@ -252,7 +259,7 @@ model Payment {
 // middleware/ratelimit.js
 const ratelimit = {
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // limit each IP to 100 requests per windowMs
+  max: 100, // limit each IP to 100 requests per windowMs
 };
 ```
 
@@ -328,10 +335,10 @@ const ratelimit = {
 ```javascript
 // Structured logging
 console.log({
-  level: 'info',
-  message: 'User authenticated',
+  level: "info",
+  message: "User authenticated",
   userId: user.id,
-  timestamp: new Date().toISOString()
+  timestamp: new Date().toISOString(),
 });
 ```
 

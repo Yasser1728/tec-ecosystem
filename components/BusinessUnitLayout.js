@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import Head from 'next/head';
-import Link from 'next/link';
-import Header from './Header';
-import Footer from './Footer';
-import ConsultationForm from './ConsultationForm';
+import { useState } from "react";
+import Head from "next/head";
+import Link from "next/link";
+import Header from "./Header";
+import Footer from "./Footer";
+import ConsultationForm from "./ConsultationForm";
 
 export default function BusinessUnitLayout({ config, basePath }) {
   const [showConsultation, setShowConsultation] = useState(false);
@@ -11,7 +11,9 @@ export default function BusinessUnitLayout({ config, basePath }) {
   return (
     <>
       <Head>
-        <title>{config.displayName} - {config.tagline} | TEC</title>
+        <title>
+          {config.displayName} - {config.tagline} | TEC
+        </title>
         <meta name="description" content={config.description} />
       </Head>
 
@@ -30,7 +32,7 @@ export default function BusinessUnitLayout({ config, basePath }) {
             <p className="text-lg text-gray-400 mb-8 max-w-2xl mx-auto">
               {config.description}
             </p>
-            
+
             <button
               onClick={() => setShowConsultation(true)}
               className="bg-gradient-to-r from-[#00ff9d] to-[#00c6ff] text-gray-900 px-8 py-4 rounded-lg font-semibold text-lg hover:shadow-lg transition-all duration-300"
@@ -43,13 +45,20 @@ export default function BusinessUnitLayout({ config, basePath }) {
         {/* Features */}
         <section className="py-16 px-4 bg-gray-800/50">
           <div className="container mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-12">Why Choose {config.displayName}?</h2>
-            
+            <h2 className="text-3xl font-bold text-center mb-12">
+              Why Choose {config.displayName}?
+            </h2>
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {config.features.map((feature, index) => (
-                <div key={index} className="bg-gray-800 border border-[#00ff9d]/30 rounded-lg p-6 text-center">
+                <div
+                  key={index}
+                  className="bg-gray-800 border border-[#00ff9d]/30 rounded-lg p-6 text-center"
+                >
                   <div className="text-4xl mb-4">{feature.icon}</div>
-                  <h3 className="text-xl font-bold mb-2 text-[#00ff9d]">{feature.title}</h3>
+                  <h3 className="text-xl font-bold mb-2 text-[#00ff9d]">
+                    {feature.title}
+                  </h3>
                   <p className="text-gray-400">{feature.description}</p>
                 </div>
               ))}
@@ -60,8 +69,10 @@ export default function BusinessUnitLayout({ config, basePath }) {
         {/* Services */}
         <section className="py-16 px-4">
           <div className="container mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-12">Our Services</h2>
-            
+            <h2 className="text-3xl font-bold text-center mb-12">
+              Our Services
+            </h2>
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
               {config.pages.map((page, index) => (
                 <Link
@@ -89,7 +100,8 @@ export default function BusinessUnitLayout({ config, basePath }) {
           <div className="container mx-auto text-center max-w-4xl">
             <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
             <p className="text-gray-400 mb-8">
-              Schedule a consultation with our expert advisors to discuss your needs
+              Schedule a consultation with our expert advisors to discuss your
+              needs
             </p>
             <button
               onClick={() => setShowConsultation(true)}

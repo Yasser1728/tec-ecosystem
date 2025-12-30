@@ -83,7 +83,7 @@ The Pi SDK is automatically loaded via `pages/document.js`:
 1. **Import the authentication module**:
 
 ```javascript
-import { piAuth } from '../lib/pi-auth';
+import { piAuth } from "../lib/pi-auth";
 ```
 
 2. **Authenticate user**:
@@ -92,10 +92,10 @@ import { piAuth } from '../lib/pi-auth';
 const result = await piAuth.authenticate();
 
 if (result.success) {
-  console.log('User authenticated:', result.user);
+  console.log("User authenticated:", result.user);
   // User data: piId, username, walletAddress, tier
 } else {
-  console.error('Authentication failed:', result.error);
+  console.error("Authentication failed:", result.error);
 }
 ```
 
@@ -104,23 +104,23 @@ if (result.success) {
 ```javascript
 if (piAuth.isAuthenticated()) {
   const user = piAuth.getUser();
-  console.log('Current user:', user);
+  console.log("Current user:", user);
 }
 ```
 
 ### Using the Auth Button Component
 
 ```javascript
-import PiAuthButton from '../components/PiAuthButton';
+import PiAuthButton from "../components/PiAuthButton";
 
 <PiAuthButton
   onAuthSuccess={(user) => {
-    console.log('Authenticated:', user);
+    console.log("Authenticated:", user);
   }}
   onAuthError={(error) => {
-    console.error('Auth error:', error);
+    console.error("Auth error:", error);
   }}
-/>
+/>;
 ```
 
 ---
@@ -130,16 +130,16 @@ import PiAuthButton from '../components/PiAuthButton';
 ### Domain Purchase
 
 ```javascript
-import { piPayments } from '../lib/pi-payments';
+import { piPayments } from "../lib/pi-payments";
 
 // Create domain purchase payment
 const result = await piPayments.createDomainPurchase({
-  domain: 'fundx',
-  tier: 'STANDARD' // or 'PREMIUM', 'VIP'
+  domain: "fundx",
+  tier: "STANDARD", // or 'PREMIUM', 'VIP'
 });
 
 if (result.success) {
-  console.log('Payment created:', result.paymentId);
+  console.log("Payment created:", result.paymentId);
 }
 ```
 
@@ -147,8 +147,8 @@ if (result.success) {
 
 ```javascript
 const result = await piPayments.createNotificationPayment({
-  notificationType: 'premium',
-  duration: 'monthly' // or 'quarterly', 'yearly'
+  notificationType: "premium",
+  duration: "monthly", // or 'quarterly', 'yearly'
 });
 ```
 
@@ -156,42 +156,42 @@ const result = await piPayments.createNotificationPayment({
 
 ```javascript
 const result = await piPayments.createEcommercePayment({
-  serviceId: 'service-123',
-  serviceName: 'Luxury Concierge Service',
+  serviceId: "service-123",
+  serviceName: "Luxury Concierge Service",
   price: 150,
-  quantity: 1
+  quantity: 1,
 });
 ```
 
 ### Using the Domain Purchase Button
 
 ```javascript
-import DomainPurchaseButton from '../components/DomainPurchaseButton';
+import DomainPurchaseButton from "../components/DomainPurchaseButton";
 
 <DomainPurchaseButton
   domain="fundx"
   tier="STANDARD"
   onSuccess={(result) => {
-    console.log('Purchase successful:', result);
+    console.log("Purchase successful:", result);
   }}
   onError={(error) => {
-    console.error('Purchase failed:', error);
+    console.error("Purchase failed:", error);
   }}
-/>
+/>;
 ```
 
 ### Payment Pricing
 
 | Domain | Base Price (π) | Premium (1.5x) | VIP (2x) |
-|--------|---------------|----------------|----------|
-| fundx  | 100           | 150            | 200      |
-| assets | 150           | 225            | 300      |
-| dx     | 200           | 300            | 400      |
-| nx     | 180           | 270            | 360      |
-| estate | 250           | 375            | 500      |
-| land   | 300           | 450            | 600      |
-| market | 120           | 180            | 240      |
-| store  | 100           | 150            | 200      |
+| ------ | -------------- | -------------- | -------- |
+| fundx  | 100            | 150            | 200      |
+| assets | 150            | 225            | 300      |
+| dx     | 200            | 300            | 400      |
+| nx     | 180            | 270            | 360      |
+| estate | 250            | 375            | 500      |
+| land   | 300            | 450            | 600      |
+| market | 120            | 180            | 240      |
+| store  | 100            | 150            | 200      |
 
 ---
 
@@ -200,40 +200,40 @@ import DomainPurchaseButton from '../components/DomainPurchaseButton';
 ### Mint Domain Certificate
 
 ```javascript
-import { nftMinting } from '../lib/nft-minting';
+import { nftMinting } from "../lib/nft-minting";
 
 const result = await nftMinting.mintDomainCertificate({
-  domainName: 'fundx',
-  certificateType: 'ownership' // or 'premium', 'vip', 'founder'
+  domainName: "fundx",
+  certificateType: "ownership", // or 'premium', 'vip', 'founder'
 });
 
 if (result.success) {
-  console.log('NFT minted:', result.nft);
+  console.log("NFT minted:", result.nft);
 }
 ```
 
 ### Certificate Types
 
-| Type | Rarity | Minting Fee (π) | Benefits |
-|------|--------|----------------|----------|
-| Ownership | Standard | 50 | Domain access, Basic features, Community membership |
-| Premium | Rare | 50 | Premium features, Priority support, Exclusive events, Revenue sharing |
-| VIP | Epic | 50 | All premium + VIP lounge, Personal concierge, Governance rights |
-| Founder | Legendary | 50 | All VIP + Lifetime access, Founder badge, Maximum governance |
+| Type      | Rarity    | Minting Fee (π) | Benefits                                                              |
+| --------- | --------- | --------------- | --------------------------------------------------------------------- |
+| Ownership | Standard  | 50              | Domain access, Basic features, Community membership                   |
+| Premium   | Rare      | 50              | Premium features, Priority support, Exclusive events, Revenue sharing |
+| VIP       | Epic      | 50              | All premium + VIP lounge, Personal concierge, Governance rights       |
+| Founder   | Legendary | 50              | All VIP + Lifetime access, Founder badge, Maximum governance          |
 
 ### Using the NFT Minting Component
 
 ```javascript
-import NFTMintingCard from '../components/NFTMintingCard';
+import NFTMintingCard from "../components/NFTMintingCard";
 
-<NFTMintingCard domainName="fundx" />
+<NFTMintingCard domainName="fundx" />;
 ```
 
 ### Retrieve User NFTs
 
 ```javascript
 const nfts = await nftMinting.getUserNFTs(userId);
-console.log('User NFTs:', nfts);
+console.log("User NFTs:", nfts);
 ```
 
 ---
@@ -252,9 +252,9 @@ Navigate to `/dashboard/transactions` to view:
 ### Using the Transaction History Component
 
 ```javascript
-import TransactionHistory from '../components/TransactionHistory';
+import TransactionHistory from "../components/TransactionHistory";
 
-<TransactionHistory />
+<TransactionHistory />;
 ```
 
 ### Features
@@ -326,8 +326,8 @@ See `private/COMPLIANCE.md` for full details.
 ### Implementation
 
 ```javascript
-import { gdprCompliance } from '../private/lib/gdpr-compliance';
-import { piCompliance } from '../private/lib/pi-compliance';
+import { gdprCompliance } from "../private/lib/gdpr-compliance";
+import { piCompliance } from "../private/lib/pi-compliance";
 
 // Export user data
 const data = await gdprCompliance.exportUserData(userId);
@@ -344,7 +344,8 @@ const validation = piCompliance.validatePaymentAmount(amount);
 
 **Error**: "Pi Browser required for authentication"
 
-**Solution**: 
+**Solution**:
+
 - Open the app in Pi Browser
 - Check if Pi SDK script is loaded
 - Verify `window.Pi` is available
@@ -354,6 +355,7 @@ const validation = piCompliance.validatePaymentAmount(amount);
 **Error**: "Failed to create payment"
 
 **Solution**:
+
 - Verify user is authenticated
 - Check payment amount is within limits
 - Ensure database connection is active
@@ -364,6 +366,7 @@ const validation = piCompliance.validatePaymentAmount(amount);
 **Error**: "Prisma client not initialized"
 
 **Solution**:
+
 ```bash
 npx prisma generate
 npx prisma db push
@@ -374,6 +377,7 @@ npx prisma db push
 **Error**: "Missing environment variables"
 
 **Solution**:
+
 - Verify `.env.local` file exists
 - Check variable names match exactly
 - Restart development server
@@ -381,6 +385,7 @@ npx prisma db push
 ### Test Failures
 
 **Solution**:
+
 ```bash
 # Clear Jest cache
 npm test -- --clearCache

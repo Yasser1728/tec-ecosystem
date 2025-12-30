@@ -1,6 +1,6 @@
-import '../styles/globals.css';
-import { SessionProvider } from 'next-auth/react';
-import TECNexusAI from '../components/TECNexusAI';
+import "../styles/globals.css";
+import { SessionProvider } from "next-auth/react";
+import TECNexusAI from "../components/TECNexusAI";
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   return (

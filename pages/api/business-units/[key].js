@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -8,19 +8,21 @@ export default async function handler(req, res) {
 
   try {
     switch (method) {
-      case 'GET':
+      case "GET":
         return await getBusinessUnit(req, res, key);
-      case 'PUT':
+      case "PUT":
         return await updateBusinessUnit(req, res, key);
-      case 'DELETE':
+      case "DELETE":
         return await deleteBusinessUnit(req, res, key);
       default:
-        res.setHeader('Allow', ['GET', 'PUT', 'DELETE']);
+        res.setHeader("Allow", ["GET", "PUT", "DELETE"]);
         return res.status(405).json({ error: `Method ${method} Not Allowed` });
     }
   } catch (error) {
-    console.error('API Error:', error);
-    return res.status(500).json({ error: 'Internal Server Error', message: error.message });
+    console.error("API Error:", error);
+    return res
+      .status(500)
+      .json({ error: "Internal Server Error", message: error.message });
   } finally {
     await prisma.$disconnect();
   }
@@ -31,17 +33,17 @@ async function getBusinessUnit(req, res, key) {
     where: { key },
     include: {
       pages: {
-        orderBy: { createdAt: 'asc' },
+        orderBy: { createdAt: "asc" },
       },
       features: {
-        orderBy: { order: 'asc' },
+        orderBy: { order: "asc" },
       },
     },
   });
 
   if (!businessUnit) {
     return res.status(404).json({
-      error: 'Business Unit not found',
+      error: "Business Unit not found",
       key,
     });
   }
@@ -59,7 +61,8 @@ async function getBusinessUnit(req, res, key) {
 }
 
 async function updateBusinessUnit(req, res, key) {
-  const { name, displayName, icon, tagline, description, color, status } = req.body;
+  const { name, displayName, icon, tagline, description, color, status } =
+    req.body;
 
   const businessUnit = await prisma.businessUnit.update({
     where: { key },

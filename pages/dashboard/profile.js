@@ -1,42 +1,42 @@
-import { withAuth } from '../../lib/withAuth';
-import { USER_TIERS } from '../../lib/roles';
-import { useState } from 'react';
-import Head from 'next/head';
-import Link from 'next/link';
-import { signOut } from 'next-auth/react';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
+import { withAuth } from "../../lib/withAuth";
+import { USER_TIERS } from "../../lib/roles";
+import { useState } from "react";
+import Head from "next/head";
+import Link from "next/link";
+import { signOut } from "next-auth/react";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
 
 function Profile({ session }) {
   const user = session?.user;
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    username: user?.username || '',
-    email: user?.email || '',
-    language: 'en',
+    username: user?.username || "",
+    email: user?.email || "",
+    language: "en",
   });
 
   const handleSave = async () => {
     try {
-      const response = await fetch('/api/users/profile', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/users/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
       if (response.ok) {
         setIsEditing(false);
-        alert('Profile updated successfully!');
+        alert("Profile updated successfully!");
       }
     } catch (error) {
-      console.error('Update error:', error);
-      alert('Failed to update profile');
+      console.error("Update error:", error);
+      alert("Failed to update profile");
     }
   };
 
   const handleSignOut = async () => {
-    if (confirm('Are you sure you want to sign out?')) {
-      await signOut({ callbackUrl: '/' });
+    if (confirm("Are you sure you want to sign out?")) {
+      await signOut({ callbackUrl: "/" });
     }
   };
 
@@ -52,7 +52,10 @@ function Profile({ session }) {
         <main className="container mx-auto px-4 py-12">
           {/* Breadcrumb */}
           <div className="mb-6">
-            <Link href="/dashboard" className="text-gray-400 hover:text-[#00ff9d]">
+            <Link
+              href="/dashboard"
+              className="text-gray-400 hover:text-[#00ff9d]"
+            >
               Dashboard
             </Link>
             <span className="text-gray-600 mx-2">/</span>
@@ -116,7 +119,7 @@ function Profile({ session }) {
                         className="w-full bg-gray-900 border border-gray-600 rounded-lg px-4 py-2 text-white focus:border-[#00ff9d] focus:outline-none"
                       />
                     ) : (
-                      <p className="text-lg">{user?.email || 'Not set'}</p>
+                      <p className="text-lg">{user?.email || "Not set"}</p>
                     )}
                   </div>
 
@@ -125,7 +128,9 @@ function Profile({ session }) {
                     <label className="block text-sm text-gray-400 mb-2">
                       Pi Network ID
                     </label>
-                    <p className="text-lg font-mono text-gray-300">{user?.piId}</p>
+                    <p className="text-lg font-mono text-gray-300">
+                      {user?.piId}
+                    </p>
                     <p className="text-xs text-gray-500 mt-1">
                       This cannot be changed
                     </p>
@@ -158,9 +163,9 @@ function Profile({ session }) {
                     </label>
                     <span
                       className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
-                        user?.status === 'ACTIVE'
-                          ? 'bg-green-500/20 text-green-400'
-                          : 'bg-red-500/20 text-red-400'
+                        user?.status === "ACTIVE"
+                          ? "bg-green-500/20 text-green-400"
+                          : "bg-red-500/20 text-red-400"
                       }`}
                     >
                       {user?.status}
@@ -193,7 +198,8 @@ function Profile({ session }) {
                   Danger Zone
                 </h2>
                 <p className="text-gray-400 mb-4">
-                  Once you sign out, you'll need to authenticate with Pi Network again.
+                  Once you sign out, you'll need to authenticate with Pi Network
+                  again.
                 </p>
                 <button
                   onClick={handleSignOut}

@@ -1,13 +1,13 @@
 /**
  * PROPRIETARY AND CONFIDENTIAL
- * 
+ *
  * Copyright (c) 2024-2025 TEC Ecosystem
  * All rights reserved.
- * 
+ *
  * This file is part of the TEC Ecosystem proprietary software.
  * Unauthorized copying, modification, distribution, or use is strictly prohibited.
  * See LICENSE_PROPRIETARY for full license terms.
- * 
+ *
  * @file pricing-algorithm.js
  * @description Dynamic pricing algorithm for luxury services in TEC Ecosystem
  * @license Proprietary
@@ -19,29 +19,29 @@
  */
 const MEMBERSHIP_TIERS = {
   FREE: {
-    name: 'Free',
+    name: "Free",
     multiplier: 1.0,
     discount: 0,
     maxDiscount: 0,
-    features: ['basic'],
-    piPriority: 'standard'
+    features: ["basic"],
+    piPriority: "standard",
   },
   PREMIUM: {
-    name: 'Premium',
+    name: "Premium",
     multiplier: 0.85,
     discount: 0.15,
     maxDiscount: 0.25,
-    features: ['basic', 'premium'],
-    piPriority: 'high'
+    features: ["basic", "premium"],
+    piPriority: "high",
   },
   VIP: {
-    name: 'VIP',
-    multiplier: 0.70,
-    discount: 0.30,
-    maxDiscount: 0.40,
-    features: ['basic', 'premium', 'vip', 'exclusive'],
-    piPriority: 'highest'
-  }
+    name: "VIP",
+    multiplier: 0.7,
+    discount: 0.3,
+    maxDiscount: 0.4,
+    features: ["basic", "premium", "vip", "exclusive"],
+    piPriority: "highest",
+  },
 };
 
 /**
@@ -49,35 +49,35 @@ const MEMBERSHIP_TIERS = {
  */
 const SERVICE_CATEGORIES = {
   estate: {
-    name: 'Real Estate',
+    name: "Real Estate",
     basePriceUSD: 100,
-    piConversionRate: 1.5
+    piConversionRate: 1.5,
   },
   commerce: {
-    name: 'E-Commerce',
+    name: "E-Commerce",
     basePriceUSD: 50,
-    piConversionRate: 1.2
+    piConversionRate: 1.2,
   },
   investment: {
-    name: 'Investment',
+    name: "Investment",
     basePriceUSD: 200,
-    piConversionRate: 2.0
+    piConversionRate: 2.0,
   },
   vip: {
-    name: 'VIP Services',
+    name: "VIP Services",
     basePriceUSD: 500,
-    piConversionRate: 3.0
+    piConversionRate: 3.0,
   },
   insurance: {
-    name: 'Insurance',
+    name: "Insurance",
     basePriceUSD: 150,
-    piConversionRate: 1.8
+    piConversionRate: 1.8,
   },
   luxury: {
-    name: 'Luxury Services',
+    name: "Luxury Services",
     basePriceUSD: 1000,
-    piConversionRate: 5.0
-  }
+    piConversionRate: 5.0,
+  },
 };
 
 /**
@@ -93,19 +93,24 @@ const PI_TO_USD_RATE = 314.159; // 1 Pi = $314.159 (example rate - DO NOT USE IN
 
 /**
  * Calculate price for a service based on membership tier
- * 
+ *
  * @param {string} category - Service category (estate, commerce, investment, etc.)
  * @param {string} tier - User membership tier (FREE, PREMIUM, VIP)
  * @param {number} quantity - Quantity of service (default: 1)
  * @param {object} options - Additional pricing options
  * @returns {object} Price breakdown in both USD and Pi
  */
-export function calculatePrice(category, tier = 'FREE', quantity = 1, options = {}) {
+export function calculatePrice(
+  category,
+  tier = "FREE",
+  quantity = 1,
+  options = {},
+) {
   // Validate inputs
   if (!SERVICE_CATEGORIES[category]) {
     throw new Error(`Invalid service category: ${category}`);
   }
-  
+
   if (!MEMBERSHIP_TIERS[tier]) {
     throw new Error(`Invalid membership tier: ${tier}`);
   }
@@ -148,29 +153,31 @@ export function calculatePrice(category, tier = 'FREE', quantity = 1, options = 
       discountedPrice: roundPrice(discountedPrice),
       priceInUSD: roundPrice(discountedPrice),
       priceInPi: roundPrice(priceInPi, 4),
-      currency: 'Pi'
+      currency: "Pi",
     },
     savings: {
       amount: roundPrice(totalSavings),
-      percentage: roundPrice(savingsPercentage, 2)
+      percentage: roundPrice(savingsPercentage, 2),
     },
     breakdown: {
       basePricePerUnit: service.basePriceUSD,
       tierDiscount: membershipTier.discount,
       volumeDiscount: quantity >= 5 ? (quantity >= 10 ? 0.1 : 0.05) : 0,
-      promoDiscount: options.promoCode ? validatePromoCode(options.promoCode) : 0
-    }
+      promoDiscount: options.promoCode
+        ? validatePromoCode(options.promoCode)
+        : 0,
+    },
   };
 }
 
 /**
  * Calculate discount amount based on membership tier
- * 
+ *
  * @param {number} originalPrice - Original price in USD
  * @param {string} tier - Membership tier
  * @returns {object} Discount details
  */
-export function calculateDiscount(originalPrice, tier = 'FREE') {
+export function calculateDiscount(originalPrice, tier = "FREE") {
   if (!MEMBERSHIP_TIERS[tier]) {
     throw new Error(`Invalid membership tier: ${tier}`);
   }
@@ -184,13 +191,13 @@ export function calculateDiscount(originalPrice, tier = 'FREE') {
     discountPercentage: membershipTier.discount * 100,
     discountAmount: roundPrice(discountAmount),
     finalPrice: roundPrice(finalPrice),
-    tier: membershipTier.name
+    tier: membershipTier.name,
   };
 }
 
 /**
  * Convert USD to Pi cryptocurrency
- * 
+ *
  * @param {number} usdAmount - Amount in USD
  * @param {number} conversionRate - Custom conversion rate (optional)
  * @returns {number} Amount in Pi
@@ -202,7 +209,7 @@ export function convertUSDtoPi(usdAmount, conversionRate = null) {
 
 /**
  * Convert Pi to USD
- * 
+ *
  * @param {number} piAmount - Amount in Pi
  * @param {number} conversionRate - Custom conversion rate (optional)
  * @returns {number} Amount in USD
@@ -214,16 +221,16 @@ export function convertPiToUSD(piAmount, conversionRate = null) {
 
 /**
  * Get pricing for all tiers for comparison
- * 
+ *
  * @param {string} category - Service category
  * @param {number} quantity - Quantity
  * @returns {object} Pricing for all tiers
  */
 export function getPricingComparison(category, quantity = 1) {
-  const tiers = ['FREE', 'PREMIUM', 'VIP'];
+  const tiers = ["FREE", "PREMIUM", "VIP"];
   const comparison = {};
 
-  tiers.forEach(tier => {
+  tiers.forEach((tier) => {
     comparison[tier] = calculatePrice(category, tier, quantity);
   });
 
@@ -232,7 +239,7 @@ export function getPricingComparison(category, quantity = 1) {
 
 /**
  * Calculate recommended tier based on usage and potential savings
- * 
+ *
  * @param {object} usageData - User's historical usage data
  * @returns {object} Recommendation details
  */
@@ -248,14 +255,14 @@ export function recommendTier(usageData) {
   const vipSavings = freeCost - vipCost;
 
   // Determine recommendation
-  let recommendedTier = 'FREE';
-  let reasoning = 'Your current usage does not justify a paid tier.';
+  let recommendedTier = "FREE";
+  let reasoning = "Your current usage does not justify a paid tier.";
 
   if (vipSavings > 1000 || servicesUsed >= 10) {
-    recommendedTier = 'VIP';
+    recommendedTier = "VIP";
     reasoning = `You could save $${roundPrice(vipSavings)} per month with VIP membership.`;
   } else if (premiumSavings > 500 || servicesUsed >= 5) {
-    recommendedTier = 'PREMIUM';
+    recommendedTier = "PREMIUM";
     reasoning = `You could save $${roundPrice(premiumSavings)} per month with Premium membership.`;
   }
 
@@ -264,21 +271,21 @@ export function recommendTier(usageData) {
     reasoning,
     potentialSavings: {
       premium: roundPrice(premiumSavings),
-      vip: roundPrice(vipSavings)
+      vip: roundPrice(vipSavings),
     },
     currentCost: roundPrice(freeCost),
     projectedCosts: {
       free: roundPrice(freeCost),
       premium: roundPrice(premiumCost),
-      vip: roundPrice(vipCost)
-    }
+      vip: roundPrice(vipCost),
+    },
   };
 }
 
 /**
  * Validate promotional code
  * @private
- * 
+ *
  * @param {string} promoCode - Promotional code
  * @returns {number} Discount rate (0-1)
  */
@@ -292,12 +299,12 @@ function validatePromoCode(promoCode) {
   // - Code activation/deactivation status
   // - Rate limiting to prevent brute force attacks
   // Example: const promo = await prisma.promoCode.findUnique({ where: { code: promoCode } });
-  
+
   // SECURITY WARNING: Hard-coded promo codes are for demonstration only
   const promoCodes = {
-    'WELCOME10': 0.10,
-    'SAVE20': 0.20,
-    'VIP50': 0.50
+    WELCOME10: 0.1,
+    SAVE20: 0.2,
+    VIP50: 0.5,
   };
 
   return promoCodes[promoCode.toUpperCase()] || 0;
@@ -306,7 +313,7 @@ function validatePromoCode(promoCode) {
 /**
  * Round price to specified decimal places
  * @private
- * 
+ *
  * @param {number} price - Price to round
  * @param {number} decimals - Number of decimal places
  * @returns {number} Rounded price
@@ -317,11 +324,11 @@ function roundPrice(price, decimals = 2) {
 
 /**
  * Get membership tier benefits
- * 
+ *
  * @param {string} tier - Membership tier
  * @returns {object} Tier benefits and features
  */
-export function getTierBenefits(tier = 'FREE') {
+export function getTierBenefits(tier = "FREE") {
   if (!MEMBERSHIP_TIERS[tier]) {
     throw new Error(`Invalid membership tier: ${tier}`);
   }
@@ -334,7 +341,7 @@ export function getTierBenefits(tier = 'FREE') {
     maxDiscount: `${membershipTier.maxDiscount * 100}%`,
     features: membershipTier.features,
     piPriority: membershipTier.piPriority,
-    benefits: getTierSpecificBenefits(tier)
+    benefits: getTierSpecificBenefits(tier),
   };
 }
 
@@ -344,27 +351,23 @@ export function getTierBenefits(tier = 'FREE') {
  */
 function getTierSpecificBenefits(tier) {
   const benefits = {
-    FREE: [
-      'Access to basic services',
-      'Standard support',
-      'Community access'
-    ],
+    FREE: ["Access to basic services", "Standard support", "Community access"],
     PREMIUM: [
-      'All FREE benefits',
-      '15% discount on all services',
-      'Priority support',
-      'Advanced analytics',
-      'Early access to new features'
+      "All FREE benefits",
+      "15% discount on all services",
+      "Priority support",
+      "Advanced analytics",
+      "Early access to new features",
     ],
     VIP: [
-      'All PREMIUM benefits',
-      '30% discount on all services',
-      '24/7 dedicated support',
-      'Exclusive VIP events',
-      'Personal account manager',
-      'Custom service packages',
-      'Highest Pi Network priority'
-    ]
+      "All PREMIUM benefits",
+      "30% discount on all services",
+      "24/7 dedicated support",
+      "Exclusive VIP events",
+      "Personal account manager",
+      "Custom service packages",
+      "Highest Pi Network priority",
+    ],
   };
 
   return benefits[tier] || [];
@@ -376,5 +379,5 @@ function getTierSpecificBenefits(tier) {
 export const PRICING_CONFIG = {
   tiers: Object.keys(MEMBERSHIP_TIERS),
   categories: Object.keys(SERVICE_CATEGORIES),
-  currency: 'Pi'
+  currency: "Pi",
 };

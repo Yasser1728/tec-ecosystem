@@ -3,11 +3,13 @@
 ## 📋 ما هو Deployment Protection؟
 
 **Deployment Protection** في Vercel يمنع:
+
 - ❌ نشر كود معطوب تلقائياً
 - ❌ deployment بدون اجتياز tests
 - ❌ production bugs
 
 **ويضمن:**
+
 - ✅ كل GitHub Checks تنجح قبل النشر
 - ✅ جودة عالية في Production
 - ✅ ثقة كاملة في كل deployment
@@ -17,6 +19,7 @@
 ## 🎯 الخطوة 1: فتح Vercel Dashboard
 
 ### 1️⃣ افتح المتصفح واذهب إلى:
+
 ```
 https://vercel.com/dashboard
 ```
@@ -36,6 +39,7 @@ https://vercel.com/dashboard
 اضغط على **"Settings"** (في أعلى الصفحة)
 
 ### 2️⃣ في Sidebar الأيسر، اختر:
+
 ```
 Git
 ```
@@ -91,11 +95,13 @@ Git
 #### 1️⃣ ابحث عن **"Production Branch"**
 
 #### 2️⃣ تأكد من أنه:
+
 ```
 main
 ```
 
 #### 3️⃣ فعّل:
+
 ```
 ☑ Auto-deploy only production branch
 ```
@@ -111,6 +117,7 @@ main
 #### 1️⃣ ابحث عن **"Preview Deployments"**
 
 #### 2️⃣ اختر:
+
 ```
 ● All branches (موصى به للتطوير)
 ```
@@ -122,6 +129,7 @@ main
 ```
 
 #### 3️⃣ فعّل:
+
 ```
 ☑ Run checks on preview deployments
 ```
@@ -133,6 +141,7 @@ main
 ## 🎯 الخطوة 6: إعداد Environment Variables
 
 ### 1️⃣ في Sidebar، اختر:
+
 ```
 Environment Variables
 ```
@@ -211,7 +220,7 @@ git diff HEAD^ HEAD --quiet -- docs/
 4. إذا كل شيء نجح ✅:
    → Vercel تبدأ Deployment
    → Production يتحدث
-   
+
 5. إذا فشل أي check ❌:
    → Vercel تمنع Deployment
    → Production يبقى آمن
@@ -327,6 +336,7 @@ Settings → Git → Deploy Hooks
 ### مشكلة: Vercel لا تنتظر Checks
 
 **الحل:**
+
 1. تأكد من تفعيل "Deployment Protection"
 2. تحقق من ربط GitHub بشكل صحيح
 3. تأكد من وجود `.github/workflows/` في repo
@@ -335,6 +345,7 @@ Settings → Git → Deploy Hooks
 ### مشكلة: Deployment فشل رغم نجاح Checks
 
 **الحل:**
+
 1. راجع Vercel Logs
 2. تحقق من Environment Variables
 3. تأكد من Build Command صحيح:
@@ -349,6 +360,7 @@ Settings → Git → Deploy Hooks
 ### مشكلة: Preview Deployment لا يعمل
 
 **الحل:**
+
 1. Settings → Git → Preview Deployments
 2. تأكد من "All branches" مفعّل
 3. تحقق من Branch name patterns
@@ -356,6 +368,7 @@ Settings → Git → Deploy Hooks
 ### مشكلة: Environment Variables مفقودة
 
 **الحل:**
+
 1. Settings → Environment Variables
 2. تأكد من اختيار Environment الصحيح:
    - Production
@@ -441,6 +454,7 @@ URL: https://tec-ecosystem.vercel.app
 ## 🎉 النتيجة
 
 **الآن لديك:**
+
 - ✅ حماية كاملة للـ Production
 - ✅ لا يمكن نشر كود معطوب
 - ✅ Preview لكل PR

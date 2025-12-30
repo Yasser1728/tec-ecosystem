@@ -22,17 +22,18 @@ TEC Ecosystem uses NextAuth.js with Pi Network integration for authentication an
 
 ### Available Tiers
 
-| Tier | Level | Description |
-|------|-------|-------------|
-| GUEST | 0 | Unauthenticated users |
-| STANDARD | 1 | Free registered users |
-| PREMIUM | 2 | Paid subscription (100 Pi/month) |
-| ENTERPRISE | 3 | Business subscription (1000 Pi/month) |
-| ADMIN | 4 | System administrators |
+| Tier       | Level | Description                           |
+| ---------- | ----- | ------------------------------------- |
+| GUEST      | 0     | Unauthenticated users                 |
+| STANDARD   | 1     | Free registered users                 |
+| PREMIUM    | 2     | Paid subscription (100 Pi/month)      |
+| ENTERPRISE | 3     | Business subscription (1000 Pi/month) |
+| ADMIN      | 4     | System administrators                 |
 
 ### Tier Permissions
 
 #### GUEST
+
 - ✅ View public pages
 - ✅ View business unit landing pages
 - ❌ Access calculators
@@ -40,6 +41,7 @@ TEC Ecosystem uses NextAuth.js with Pi Network integration for authentication an
 - ❌ Make purchases
 
 #### STANDARD
+
 - ✅ All GUEST permissions
 - ✅ Access calculators (10/day limit)
 - ✅ Access basic analytics (5 reports/month)
@@ -48,6 +50,7 @@ TEC Ecosystem uses NextAuth.js with Pi Network integration for authentication an
 - ❌ Access premium content
 
 #### PREMIUM
+
 - ✅ All STANDARD permissions
 - ✅ Unlimited calculators
 - ✅ Unlimited analytics
@@ -57,6 +60,7 @@ TEC Ecosystem uses NextAuth.js with Pi Network integration for authentication an
 - ✅ Custom branding
 
 #### ENTERPRISE
+
 - ✅ All PREMIUM permissions
 - ✅ API access
 - ✅ White-label solutions
@@ -65,6 +69,7 @@ TEC Ecosystem uses NextAuth.js with Pi Network integration for authentication an
 - ✅ Dedicated account manager
 
 #### ADMIN
+
 - ✅ Full system access
 - ✅ User management
 - ✅ Business unit management
@@ -79,14 +84,14 @@ TEC Ecosystem uses NextAuth.js with Pi Network integration for authentication an
 File: `pages/api/auth/[...nextauth].js`
 
 ```javascript
-import NextAuth from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
+import NextAuth from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
 
 export const authOptions = {
   providers: [
     CredentialsProvider({
-      id: 'pi-network',
-      name: 'Pi Network',
+      id: "pi-network",
+      name: "Pi Network",
       // ... configuration
     }),
   ],
@@ -114,8 +119,8 @@ const routeConfig = {
 #### Using withAuth HOC
 
 ```javascript
-import { withAuth } from '../lib/withAuth';
-import { USER_TIERS } from '../lib/roles';
+import { withAuth } from "../lib/withAuth";
+import { USER_TIERS } from "../lib/roles";
 
 function MyProtectedPage({ session }) {
   return <div>Protected Content</div>;
@@ -129,7 +134,7 @@ export default withAuth(MyProtectedPage, {
 #### Using useAuth Hook
 
 ```javascript
-import { useAuth } from '../lib/withAuth';
+import { useAuth } from "../lib/withAuth";
 
 function MyComponent() {
   const { user, isAuthenticated, hasRequiredTier } = useAuth({
@@ -147,8 +152,8 @@ function MyComponent() {
 #### Using AuthGuard Component
 
 ```javascript
-import { AuthGuard } from '../lib/withAuth';
-import { USER_TIERS } from '../lib/roles';
+import { AuthGuard } from "../lib/withAuth";
+import { USER_TIERS } from "../lib/roles";
 
 function MyComponent() {
   return (
@@ -167,19 +172,22 @@ function MyComponent() {
 ## Sign In Flow
 
 ### 1. User clicks "Sign In"
+
 → Redirected to `/auth/signin`
 
 ### 2. User authenticates with Pi Network
+
 ```javascript
 const authResult = await window.Pi.authenticate(
-  ['username', 'payments'],
-  onIncompletePaymentFound
+  ["username", "payments"],
+  onIncompletePaymentFound,
 );
 ```
 
 ### 3. NextAuth creates session
+
 ```javascript
-await signIn('pi-network', {
+await signIn("pi-network", {
   piId: authResult.user.uid,
   username: authResult.user.username,
   accessToken: authResult.accessToken,
@@ -187,6 +195,7 @@ await signIn('pi-network', {
 ```
 
 ### 4. User redirected to dashboard
+
 → `/dashboard` or original callback URL
 
 ---
@@ -194,26 +203,34 @@ await signIn('pi-network', {
 ## Route Protection
 
 ### Public Routes
+
 No authentication required:
+
 - `/` - Home page
 - `/ecosystem` - Business units overview
 - `/fundx` - Business unit landing pages
 - `/auth/*` - Authentication pages
 
 ### Protected Routes
+
 Require STANDARD tier:
+
 - `/dashboard` - User dashboard
 - `/fundx/calculator` - Calculators
 - `/explorer/analytics` - Analytics
 
 ### Premium Routes
+
 Require PREMIUM tier:
+
 - `/fundx/advanced` - Advanced features
 - `/elite/consulting` - Premium consulting
 - `/vip/events` - VIP events
 
 ### Admin Routes
+
 Require ADMIN tier:
+
 - `/admin/*` - Admin panel
 
 ---
@@ -223,10 +240,10 @@ Require ADMIN tier:
 ### In Code
 
 ```javascript
-import { hasPermission, hasTierLevel } from '../lib/roles';
+import { hasPermission, hasTierLevel } from "../lib/roles";
 
 // Check specific permission
-if (hasPermission(user.tier, 'accessCalculators')) {
+if (hasPermission(user.tier, "accessCalculators")) {
   // Allow access
 }
 
@@ -236,7 +253,7 @@ if (hasTierLevel(user.tier, USER_TIERS.PREMIUM)) {
 }
 
 // Check business unit page access
-if (canAccessBusinessUnitPage(user.tier, 'fundx', 'calculator')) {
+if (canAccessBusinessUnitPage(user.tier, "fundx", "calculator")) {
   // Allow access
 }
 ```
@@ -287,11 +304,11 @@ DATABASE_URL=postgresql://...
 
 Run `npm run db:seed` to create demo users:
 
-| Username | Pi ID | Tier | Password |
-|----------|-------|------|----------|
-| admin | admin-demo-pi-id | ADMIN | N/A (Pi Auth) |
-| demo_user | user-demo-pi-id | STANDARD | N/A (Pi Auth) |
-| premium_user | premium-demo-pi-id | PREMIUM | N/A (Pi Auth) |
+| Username     | Pi ID              | Tier     | Password      |
+| ------------ | ------------------ | -------- | ------------- |
+| admin        | admin-demo-pi-id   | ADMIN    | N/A (Pi Auth) |
+| demo_user    | user-demo-pi-id    | STANDARD | N/A (Pi Auth) |
+| premium_user | premium-demo-pi-id | PREMIUM  | N/A (Pi Auth) |
 
 ---
 
@@ -310,15 +327,18 @@ Run `npm run db:seed` to create demo users:
 ## Troubleshooting
 
 ### "Pi SDK not loaded"
+
 - Ensure app is opened in Pi Browser
 - Check Pi SDK script is loaded in `_app.js`
 
 ### "Access Denied"
+
 - Check user tier matches required tier
 - Verify user status is ACTIVE
 - Check middleware configuration
 
 ### "Session not found"
+
 - Clear browser cookies
 - Check NEXTAUTH_SECRET is set
 - Verify database connection
@@ -328,11 +348,13 @@ Run `npm run db:seed` to create demo users:
 ## API Endpoints
 
 ### Authentication
+
 - `POST /api/auth/signin` - Sign in
 - `POST /api/auth/signout` - Sign out
 - `GET /api/auth/session` - Get session
 
 ### Business Units
+
 - `GET /api/business-units` - List all units
 - `GET /api/business-units/[key]` - Get unit details
 - `POST /api/business-units/[key]/track` - Track activity
@@ -350,5 +372,6 @@ Run `npm run db:seed` to create demo users:
 ---
 
 For more information, see:
+
 - [NextAuth.js Documentation](https://next-auth.js.org/)
 - [Pi Network SDK Documentation](https://developers.minepi.com/)

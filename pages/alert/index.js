@@ -1,5 +1,5 @@
-import Header from '../../components/Header'
-import Footer from '../../components/Footer'
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
 
 export default function Alert() {
   return (
@@ -9,11 +9,12 @@ export default function Alert() {
         <section className="text-center my-10">
           <h1 className="text-4xl font-bold mb-4">Alerts & Notifications</h1>
           <p className="text-gray-700">
-            Stay updated with the latest alerts and notifications in TEC Ecosystem.
+            Stay updated with the latest alerts and notifications in TEC
+            Ecosystem.
           </p>
         </section>
       </main>
       <Footer />
     </div>
-  )
+  );
 }

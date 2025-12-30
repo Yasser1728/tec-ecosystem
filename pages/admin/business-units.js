@@ -1,9 +1,9 @@
-import { withAuth } from '../../lib/withAuth';
-import { USER_TIERS } from '../../lib/roles';
-import Head from 'next/head';
-import Link from 'next/link';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
+import { withAuth } from "../../lib/withAuth";
+import { USER_TIERS } from "../../lib/roles";
+import Head from "next/head";
+import Link from "next/link";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
 
 function AdminBusinessUnits({ session }) {
   return (
@@ -25,12 +25,16 @@ function AdminBusinessUnits({ session }) {
           </div>
 
           <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-2">Business Units Management</h1>
+            <h1 className="text-4xl font-bold mb-2">
+              Business Units Management
+            </h1>
             <p className="text-gray-400">Manage all 21 business units</p>
           </div>
 
           <div className="bg-gray-800 border border-gray-700 rounded-xl p-8">
-            <p className="text-gray-400 text-center">Business units management interface coming soon...</p>
+            <p className="text-gray-400 text-center">
+              Business units management interface coming soon...
+            </p>
           </div>
         </main>
 

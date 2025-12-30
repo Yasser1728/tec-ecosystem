@@ -1,44 +1,45 @@
-import { TEC_KNOWLEDGE, SYSTEM_PROMPT } from '../../lib/nexus-ai-knowledge';
+import { TEC_KNOWLEDGE, SYSTEM_PROMPT } from "../../lib/nexus-ai-knowledge";
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
   const { message, history = [] } = req.body;
 
   if (!message) {
-    return res.status(400).json({ error: 'Message is required' });
+    return res.status(400).json({ error: "Message is required" });
   }
 
   if (!process.env.OPENAI_API_KEY) {
-    return res.status(500).json({ 
-      error: 'OpenAI API key not configured',
-      response: 'TEC Nexus AI is currently being configured. Please try again later.'
+    return res.status(500).json({
+      error: "OpenAI API key not configured",
+      response:
+        "TEC Nexus AI is currently being configured. Please try again later.",
     });
   }
 
   try {
     // Dynamic import to avoid build-time issues
-    const OpenAI = (await import('openai')).default;
+    const OpenAI = (await import("openai")).default;
     const openai = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY,
     });
 
     const messages = [
       {
-        role: 'system',
-        content: `${SYSTEM_PROMPT}\n\nKnowledge Base:\n${TEC_KNOWLEDGE}`
+        role: "system",
+        content: `${SYSTEM_PROMPT}\n\nKnowledge Base:\n${TEC_KNOWLEDGE}`,
       },
       ...history.slice(-10), // Keep last 10 messages for context
       {
-        role: 'user',
-        content: message
-      }
+        role: "user",
+        content: message,
+      },
     ];
 
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4-turbo-preview',
+      model: "gpt-4-turbo-preview",
       messages,
       temperature: 0.7,
       max_tokens: 1000,
@@ -48,11 +49,12 @@ export default async function handler(req, res) {
 
     res.status(200).json({ response });
   } catch (error) {
-    console.error('TEC Nexus AI Error:', error);
-    
+    console.error("TEC Nexus AI Error:", error);
+
     // Fallback response if OpenAI fails
-    const fallbackResponse = message.includes('عربي') || message.includes('العربية')
-      ? `مرحباً بك في TEC Nexus AI! 🌟
+    const fallbackResponse =
+      message.includes("عربي") || message.includes("العربية")
+        ? `مرحباً بك في TEC Nexus AI! 🌟
 
 أنا هنا لمساعدتك في استكشاف 24 دومين فاخر في TEC. يمكنني مساعدتك في:
 
@@ -62,7 +64,7 @@ export default async function handler(req, res) {
 🤝 **التواصل النخبوي**: Connection, Nexus, Elite
 
 كيف يمكنني مساعدتك اليوم؟`
-      : `Welcome to TEC Nexus AI! 🌟
+        : `Welcome to TEC Nexus AI! 🌟
 
 I'm here to help you explore TEC's 24 elite business services. I can assist you with:
 

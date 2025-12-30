@@ -72,10 +72,10 @@ Please include the following information:
 
 ## Supported Versions
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 1.x.x   | ✅ Yes             |
-| < 1.0   | ❌ No              |
+| Version | Supported |
+| ------- | --------- |
+| 1.x.x   | ✅ Yes    |
+| < 1.0   | ❌ No     |
 
 ---
 
@@ -250,6 +250,7 @@ We maintain a security researchers hall of fame for responsible disclosures.
 ### Bug Bounty
 
 We currently do not have a formal bug bounty program, but we:
+
 - Publicly credit responsible disclosures
 - Consider rewards for critical findings
 - Maintain a hall of fame
@@ -270,6 +271,7 @@ We currently do not have a formal bug bounty program, but we:
 This security policy is reviewed and updated quarterly. Last update: 2025-01-01
 
 Changes to this policy will be communicated via:
+
 - GitHub repository updates
 - Email to registered users
 - Security bulletin on website

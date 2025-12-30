@@ -1,74 +1,81 @@
-import { useState } from 'react';
-import Head from 'next/head';
-import Link from 'next/link';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import { useState } from "react";
+import Head from "next/head";
+import Link from "next/link";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 export default function Referral() {
-  const [referralCode] = useState('TEC-' + Math.random().toString(36).substr(2, 8).toUpperCase());
+  const [referralCode] = useState(
+    "TEC-" + Math.random().toString(36).substr(2, 8).toUpperCase(),
+  );
   const [copied, setCopied] = useState(false);
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(`https://tec-ecosystem.vercel.app?ref=${referralCode}`);
+    navigator.clipboard.writeText(
+      `https://tec-ecosystem.vercel.app?ref=${referralCode}`,
+    );
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
   const rewards = [
     {
-      tier: 'Bronze',
-      icon: '🥉',
-      bonus: '10 Pi',
-      color: 'from-orange-900 to-red-900'
+      tier: "Bronze",
+      icon: "🥉",
+      bonus: "10 Pi",
+      color: "from-orange-900 to-red-900",
     },
     {
-      tier: 'Silver',
-      icon: '🥈',
-      bonus: '25 Pi',
-      color: 'from-gray-700 to-gray-600'
+      tier: "Silver",
+      icon: "🥈",
+      bonus: "25 Pi",
+      color: "from-gray-700 to-gray-600",
     },
     {
-      tier: 'Gold',
-      icon: '🥇',
-      bonus: '50 Pi',
-      color: 'from-yellow-900 to-orange-900'
+      tier: "Gold",
+      icon: "🥇",
+      bonus: "50 Pi",
+      color: "from-yellow-900 to-orange-900",
     },
     {
-      tier: 'Platinum',
-      icon: '💎',
-      bonus: '100 Pi',
-      color: 'from-purple-900 to-pink-900'
-    }
+      tier: "Platinum",
+      icon: "💎",
+      bonus: "100 Pi",
+      color: "from-purple-900 to-pink-900",
+    },
   ];
 
   const milestones = [
     {
       referrals: 5,
-      reward: 'Upgrade to next tier (1 month free)',
-      icon: '🎁'
+      reward: "Upgrade to next tier (1 month free)",
+      icon: "🎁",
     },
     {
       referrals: 10,
-      reward: 'Upgrade to next tier (3 months free)',
-      icon: '🎉'
+      reward: "Upgrade to next tier (3 months free)",
+      icon: "🎉",
     },
     {
       referrals: 25,
-      reward: 'Gold tier for life + 500 Pi bonus',
-      icon: '👑'
+      reward: "Gold tier for life + 500 Pi bonus",
+      icon: "👑",
     },
     {
       referrals: 50,
-      reward: 'Platinum tier for life + 1000 Pi bonus',
-      icon: '💎'
-    }
+      reward: "Platinum tier for life + 1000 Pi bonus",
+      icon: "💎",
+    },
   ];
 
   return (
     <>
       <Head>
         <title>Referral Program | TEC - Earn Rewards</title>
-        <meta name="description" content="Refer friends to TEC and earn Pi rewards. Both you and your referrals benefit!" />
+        <meta
+          name="description"
+          content="Refer friends to TEC and earn Pi rewards. Both you and your referrals benefit!"
+        />
       </Head>
 
       <Header />
@@ -81,14 +88,16 @@ export default function Referral() {
               🎁 Referral Program
             </h1>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Share TEC with your network and earn Pi rewards. 
-              The more you refer, the more you earn!
+              Share TEC with your network and earn Pi rewards. The more you
+              refer, the more you earn!
             </p>
           </div>
 
           {/* Your Referral Code */}
           <div className="bg-gradient-to-br from-[#00ff9d]/10 to-[#00c6ff]/10 border border-[#00ff9d]/30 rounded-lg p-8 mb-12">
-            <h2 className="text-2xl font-bold mb-4 text-center">Your Referral Code</h2>
+            <h2 className="text-2xl font-bold mb-4 text-center">
+              Your Referral Code
+            </h2>
             <div className="flex items-center gap-4 max-w-2xl mx-auto">
               <div className="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-6 py-4 font-mono text-xl text-center">
                 {referralCode}
@@ -97,7 +106,7 @@ export default function Referral() {
                 onClick={copyToClipboard}
                 className="bg-gradient-to-r from-[#00ff9d] to-[#00c6ff] text-gray-900 px-8 py-4 rounded-lg font-semibold hover:shadow-lg transition-all whitespace-nowrap"
               >
-                {copied ? '✓ Copied!' : '📋 Copy Link'}
+                {copied ? "✓ Copied!" : "📋 Copy Link"}
               </button>
             </div>
             <p className="text-center text-sm text-gray-400 mt-4">
@@ -107,7 +116,9 @@ export default function Referral() {
 
           {/* How It Works */}
           <div className="mb-16">
-            <h2 className="text-3xl font-bold mb-8 text-center">How It Works</h2>
+            <h2 className="text-3xl font-bold mb-8 text-center">
+              How It Works
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               <div className="bg-gray-800 border border-[#00ff9d]/20 rounded-lg p-6 text-center">
                 <div className="text-4xl mb-4">1️⃣</div>
@@ -142,7 +153,9 @@ export default function Referral() {
 
           {/* Rewards by Tier */}
           <div className="mb-16">
-            <h2 className="text-3xl font-bold mb-8 text-center">Rewards by Membership Tier</h2>
+            <h2 className="text-3xl font-bold mb-8 text-center">
+              Rewards by Membership Tier
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               {rewards.map((reward) => (
                 <div
@@ -151,7 +164,9 @@ export default function Referral() {
                 >
                   <div className="text-5xl mb-3">{reward.icon}</div>
                   <h3 className="text-xl font-bold mb-2">{reward.tier}</h3>
-                  <div className="text-3xl font-bold text-[#00ff9d] mb-2">{reward.bonus}</div>
+                  <div className="text-3xl font-bold text-[#00ff9d] mb-2">
+                    {reward.bonus}
+                  </div>
                   <p className="text-sm text-gray-300">per referral</p>
                 </div>
               ))}
@@ -163,7 +178,9 @@ export default function Referral() {
 
           {/* Milestones */}
           <div className="mb-16">
-            <h2 className="text-3xl font-bold mb-8 text-center">Referral Milestones</h2>
+            <h2 className="text-3xl font-bold mb-8 text-center">
+              Referral Milestones
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {milestones.map((milestone, index) => (
                 <div
@@ -186,14 +203,18 @@ export default function Referral() {
 
           {/* Stats Dashboard */}
           <div className="bg-gray-800 border border-[#00ff9d]/30 rounded-lg p-8 mb-12">
-            <h2 className="text-2xl font-bold mb-6 text-center">Your Referral Stats</h2>
+            <h2 className="text-2xl font-bold mb-6 text-center">
+              Your Referral Stats
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               <div className="text-center">
                 <div className="text-4xl font-bold text-[#00ff9d] mb-2">0</div>
                 <div className="text-sm text-gray-400">Total Referrals</div>
               </div>
               <div className="text-center">
-                <div className="text-4xl font-bold text-[#00ff9d] mb-2">0 Pi</div>
+                <div className="text-4xl font-bold text-[#00ff9d] mb-2">
+                  0 Pi
+                </div>
                 <div className="text-sm text-gray-400">Total Earned</div>
               </div>
               <div className="text-center">
@@ -213,7 +234,10 @@ export default function Referral() {
             <ul className="space-y-2 text-sm text-gray-400">
               <li className="flex items-start gap-2">
                 <span className="text-[#00ff9d] mt-1">•</span>
-                <span>Referral bonuses are credited within 24 hours of successful signup</span>
+                <span>
+                  Referral bonuses are credited within 24 hours of successful
+                  signup
+                </span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-[#00ff9d] mt-1">•</span>
@@ -229,7 +253,9 @@ export default function Referral() {
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-[#00ff9d] mt-1">•</span>
-                <span>TEC reserves the right to modify program terms with notice</span>
+                <span>
+                  TEC reserves the right to modify program terms with notice
+                </span>
               </li>
             </ul>
           </div>

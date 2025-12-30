@@ -1,23 +1,23 @@
-import NextAuth from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
-import { PrismaClient } from '@prisma/client';
+import NextAuth from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 export const authOptions = {
   providers: [
     CredentialsProvider({
-      id: 'pi-network',
-      name: 'Pi Network',
+      id: "pi-network",
+      name: "Pi Network",
       credentials: {
-        piId: { label: 'Pi ID', type: 'text' },
-        username: { label: 'Username', type: 'text' },
-        accessToken: { label: 'Access Token', type: 'text' },
+        piId: { label: "Pi ID", type: "text" },
+        username: { label: "Username", type: "text" },
+        accessToken: { label: "Access Token", type: "text" },
       },
       async authorize(credentials) {
         try {
           if (!credentials?.piId || !credentials?.username) {
-            throw new Error('Missing Pi Network credentials');
+            throw new Error("Missing Pi Network credentials");
           }
 
           // Find or create user
@@ -31,9 +31,9 @@ export const authOptions = {
               data: {
                 piId: credentials.piId,
                 username: credentials.username,
-                tier: 'STANDARD',
-                status: 'ACTIVE',
-                language: 'en',
+                tier: "STANDARD",
+                status: "ACTIVE",
+                language: "en",
                 lastLoginAt: new Date(),
               },
             });
@@ -54,7 +54,7 @@ export const authOptions = {
             status: user.status,
           };
         } catch (error) {
-          console.error('Auth Error:', error);
+          console.error("Auth Error:", error);
           return null;
         }
       },
@@ -86,12 +86,12 @@ export const authOptions = {
   },
 
   pages: {
-    signIn: '/auth/signin',
-    error: '/auth/error',
+    signIn: "/auth/signin",
+    error: "/auth/error",
   },
 
   session: {
-    strategy: 'jwt',
+    strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
 

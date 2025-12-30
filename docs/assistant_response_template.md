@@ -13,10 +13,11 @@ Quick Answer / الإجابة السريعة:
 
 Deep Dive / التعمق:
 [EN] Expand into domain steps with links:
+
 - Legal steps (link to Estate /buy-guide)
 - Funding & ROI (link to FundX /calculator)
 - Insurance & protection (link to Insure /protocols)
-[AR] تفاصيل وروابط مجزأة حسب الدومينات:
+  [AR] تفاصيل وروابط مجزأة حسب الدومينات:
 - خطوات قانونية (Estate → /buy-guide)
 - تمويل وحساب العائد (FundX → /calculator)
 - حماية الصفقات (Insure → /protocols)
@@ -26,15 +27,18 @@ CTA / التنفيذ:
 [AR] وَجه المستخدم للمسار المناسب: "افتح دليل الشراء الكامل → /Estate/buy-guide"
 
 Related Resources / الموارد ذات الصلة:
+
 - FundX → ROI Calculator / حاسبة العائد
 - Insure → Deal Protection / حماية الصفقات
 - Analytics → ROI monitoring / مراقبة العائد
 
 Exclusive Bonus / الميزة الحصرية (optional):
+
 - Offer a downloadable checklist or contact to a VIP advisor.
-━━━━━━━━━━━━━━━━
+  ━━━━━━━━━━━━━━━━
 
 Notes for implementers
+
 - Keep replies concise, provide both AR/EN when possible.
 - Avoid exposing private catalogs — always route users into curated workflows or broker contact paths.
 - Track user intent to escalate to VIP or Nexus when required.

@@ -1,9 +1,9 @@
-import { withAuth } from '../../lib/withAuth';
-import { USER_TIERS } from '../../lib/roles';
-import Head from 'next/head';
-import Link from 'next/link';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
+import { withAuth } from "../../lib/withAuth";
+import { USER_TIERS } from "../../lib/roles";
+import Head from "next/head";
+import Link from "next/link";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
 
 function AdminUsers({ session }) {
   return (
@@ -30,7 +30,9 @@ function AdminUsers({ session }) {
           </div>
 
           <div className="bg-gray-800 border border-gray-700 rounded-xl p-8">
-            <p className="text-gray-400 text-center">User management interface coming soon...</p>
+            <p className="text-gray-400 text-center">
+              User management interface coming soon...
+            </p>
           </div>
         </main>
 

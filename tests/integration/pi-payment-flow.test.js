@@ -2,10 +2,10 @@
  * Integration tests for Pi Payment Flow
  */
 
-import { prisma } from '../../lib/db/prisma';
+import { prisma } from "../../lib/db/prisma";
 
 // Mock Prisma
-jest.mock('../../lib/db/prisma', () => ({
+jest.mock("../../lib/db/prisma", () => ({
   prisma: {
     payment: {
       create: jest.fn(),
@@ -14,78 +14,80 @@ jest.mock('../../lib/db/prisma', () => ({
       findMany: jest.fn(),
       aggregate: jest.fn(),
       groupBy: jest.fn(),
-      count: jest.fn()
+      count: jest.fn(),
     },
     user: {
       upsert: jest.fn(),
-      findUnique: jest.fn()
-    }
-  }
+      findUnique: jest.fn(),
+    },
+  },
 }));
 
-describe.skip('Pi Payment Flow Integration', () => {
+describe.skip("Pi Payment Flow Integration", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  describe('Payment Creation Flow', () => {
-    it('should create payment record in database', async () => {
+  describe("Payment Creation Flow", () => {
+    it("should create payment record in database", async () => {
       const mockPayment = {
-        id: 'payment-123',
-        userId: 'user-123',
+        id: "payment-123",
+        userId: "user-123",
         amount: 100,
-        currency: 'PI',
-        domain: 'fundx',
-        category: 'domain_purchase',
-        status: 'PENDING',
-        createdAt: new Date()
+        currency: "PI",
+        domain: "fundx",
+        category: "domain_purchase",
+        status: "PENDING",
+        createdAt: new Date(),
       };
 
       prisma.payment.create.mockResolvedValue(mockPayment);
 
-      const handler = require('../../pages/api/payments/create-payment').default;
+      const handler =
+        require("../../pages/api/payments/create-payment").default;
       const req = {
-        method: 'POST',
+        method: "POST",
         body: {
           amount: 100,
-          memo: 'Test payment',
-          domain: 'fundx',
-          userId: 'user-123',
-          category: 'domain_purchase'
-        }
+          memo: "Test payment",
+          domain: "fundx",
+          userId: "user-123",
+          category: "domain_purchase",
+        },
       };
 
       const res = {
         status: jest.fn().mockReturnThis(),
-        json: jest.fn()
+        json: jest.fn(),
       };
 
       await handler(req, res);
 
       expect(prisma.payment.create).toHaveBeenCalledWith({
         data: expect.objectContaining({
-          userId: 'user-123',
+          userId: "user-123",
           amount: 100,
-          domain: 'fundx'
-        })
+          domain: "fundx",
+        }),
       });
 
       expect(res.status).toHaveBeenCalledWith(200);
     });
 
-    it('should reject invalid payment data', async () => {
-      const handler = require('../../pages/api/payments/create-payment').default;
+    it("should reject invalid payment data", async () => {
+      const handler =
+        require("../../pages/api/payments/create-payment").default;
       const req = {
-        method: 'POST',
+        method: "POST",
         body: {
           // Missing required fields
-          amount: 100
-        }
+          amount: 100,
+        },
       };
 
       const res = {
         status: jest.fn().mockReturnThis(),
-        json: jest.fn()
+        json: jest.fn(),
       };
 
       await handler(req, res);
@@ -93,33 +95,33 @@ describe.skip('Pi Payment Flow Integration', () => {
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith(
         expect.objectContaining({
-          error: 'Invalid payment data'
-        })
+          error: "Invalid payment data",
+        }),
       );
     });
   });
 
-  describe('Payment Approval Flow', () => {
-    it('should approve payment successfully', async () => {
+  describe("Payment Approval Flow", () => {
+    it("should approve payment successfully", async () => {
       const mockPayment = {
-        id: 'payment-123',
-        status: 'APPROVED'
+        id: "payment-123",
+        status: "APPROVED",
       };
 
       prisma.payment.update.mockResolvedValue(mockPayment);
 
-      const handler = require('../../pages/api/payments/approve').default;
+      const handler = require("../../pages/api/payments/approve").default;
       const req = {
-        method: 'POST',
+        method: "POST",
         body: {
-          paymentId: 'pi-payment-123',
-          internalId: 'payment-123'
-        }
+          paymentId: "pi-payment-123",
+          internalId: "payment-123",
+        },
       };
 
       const res = {
         status: jest.fn().mockReturnThis(),
-        json: jest.fn()
+        json: jest.fn(),
       };
 
       await handler(req, res);
@@ -129,76 +131,76 @@ describe.skip('Pi Payment Flow Integration', () => {
     });
   });
 
-  describe('Payment Completion Flow', () => {
-    it('should complete payment with transaction ID', async () => {
+  describe("Payment Completion Flow", () => {
+    it("should complete payment with transaction ID", async () => {
       const mockPayment = {
-        id: 'payment-123',
-        status: 'COMPLETED',
-        piTxId: 'txid-123'
+        id: "payment-123",
+        status: "COMPLETED",
+        piTxId: "txid-123",
       };
 
       prisma.payment.update.mockResolvedValue(mockPayment);
 
-      const handler = require('../../pages/api/payments/complete').default;
+      const handler = require("../../pages/api/payments/complete").default;
       const req = {
-        method: 'POST',
+        method: "POST",
         body: {
-          paymentId: 'pi-payment-123',
-          txid: 'txid-123',
-          internalId: 'payment-123'
-        }
+          paymentId: "pi-payment-123",
+          txid: "txid-123",
+          internalId: "payment-123",
+        },
       };
 
       const res = {
         status: jest.fn().mockReturnThis(),
-        json: jest.fn()
+        json: jest.fn(),
       };
 
       await handler(req, res);
 
       expect(prisma.payment.update).toHaveBeenCalledWith({
-        where: { id: 'payment-123' },
+        where: { id: "payment-123" },
         data: expect.objectContaining({
-          status: 'COMPLETED',
-          piTxId: 'txid-123'
-        })
+          status: "COMPLETED",
+          piTxId: "txid-123",
+        }),
       });
     });
   });
 
-  describe('Payment History Flow', () => {
-    it('should fetch user payment history', async () => {
+  describe("Payment History Flow", () => {
+    it("should fetch user payment history", async () => {
       const mockPayments = [
         {
-          id: 'payment-1',
+          id: "payment-1",
           amount: 100,
-          status: 'COMPLETED',
-          user: { username: 'testuser', tier: 'STANDARD' }
+          status: "COMPLETED",
+          user: { username: "testuser", tier: "STANDARD" },
         },
         {
-          id: 'payment-2',
+          id: "payment-2",
           amount: 200,
-          status: 'PENDING',
-          user: { username: 'testuser', tier: 'STANDARD' }
-        }
+          status: "PENDING",
+          user: { username: "testuser", tier: "STANDARD" },
+        },
       ];
 
       prisma.payment.findMany.mockResolvedValue(mockPayments);
       prisma.payment.count.mockResolvedValue(2);
 
-      const handler = require('../../pages/api/payments/history').default;
+      const handler = require("../../pages/api/payments/history").default;
       const req = {
-        method: 'GET',
+        method: "GET",
         query: {
-          userId: 'user-123',
-          limit: '50',
-          offset: '0'
-        }
+          userId: "user-123",
+          limit: "50",
+          offset: "0",
+        },
       };
 
       const res = {
         status: jest.fn().mockReturnThis(),
-        json: jest.fn()
+        json: jest.fn(),
       };
 
       await handler(req, res);
@@ -208,34 +210,34 @@ describe.skip('Pi Payment Flow Integration', () => {
       expect(res.json).toHaveBeenCalledWith(
         expect.objectContaining({
           success: true,
-          payments: mockPayments
-        })
+          payments: mockPayments,
+        }),
       );
     });
   });
 
-  describe('Payment Stats Flow', () => {
-    it('should calculate payment statistics', async () => {
+  describe("Payment Stats Flow", () => {
+    it("should calculate payment statistics", async () => {
       prisma.payment.aggregate.mockResolvedValue({
-        _sum: { amount: 500 }
+        _sum: { amount: 500 },
       });
 
       prisma.payment.groupBy.mockResolvedValue([
-        { status: 'COMPLETED', _count: 3 },
-        { status: 'PENDING', _count: 1 }
+        { status: "COMPLETED", _count: 3 },
+        { status: "PENDING", _count: 1 },
       ]);
 
       prisma.payment.findMany.mockResolvedValue([]);
 
-      const handler = require('../../pages/api/payments/stats').default;
+      const handler = require("../../pages/api/payments/stats").default;
       const req = {
-        method: 'GET',
-        query: { userId: 'user-123' }
+        method: "GET",
+        query: { userId: "user-123" },
       };
 
       const res = {
         status: jest.fn().mockReturnThis(),
-        json: jest.fn()
+        json: jest.fn(),
       };
 
       await handler(req, res);
@@ -245,9 +247,9 @@ describe.skip('Pi Payment Flow Integration', () => {
         expect.objectContaining({
           success: true,
           stats: expect.objectContaining({
-            totalSpent: 500
-          })
-        })
+            totalSpent: 500,
+          }),
+        }),
       );
     });
   });

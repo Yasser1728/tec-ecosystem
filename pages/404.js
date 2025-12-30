@@ -1,8 +1,8 @@
-import Head from 'next/head';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import Head from "next/head";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 export default function NotFound() {
   const router = useRouter();
@@ -42,7 +42,9 @@ export default function NotFound() {
                 >
                   <div className="text-2xl mb-2">🌐</div>
                   <p className="font-semibold">Ecosystem</p>
-                  <p className="text-xs text-gray-400">View all business units</p>
+                  <p className="text-xs text-gray-400">
+                    View all business units
+                  </p>
                 </Link>
                 <Link
                   href="/dashboard"

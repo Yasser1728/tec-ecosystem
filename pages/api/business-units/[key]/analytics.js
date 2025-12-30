@@ -1,11 +1,11 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 export default async function handler(req, res) {
-  if (req.method !== 'GET') {
-    res.setHeader('Allow', ['GET']);
-    return res.status(405).json({ error: 'Method Not Allowed' });
+  if (req.method !== "GET") {
+    res.setHeader("Allow", ["GET"]);
+    return res.status(405).json({ error: "Method Not Allowed" });
   }
 
   const { key } = req.query;
@@ -20,13 +20,13 @@ export default async function handler(req, res) {
             title: true,
             views: true,
           },
-          orderBy: { views: 'desc' },
+          orderBy: { views: "desc" },
         },
       },
     });
 
     if (!businessUnit) {
-      return res.status(404).json({ error: 'Business Unit not found' });
+      return res.status(404).json({ error: "Business Unit not found" });
     }
 
     // Get activity stats
@@ -36,14 +36,14 @@ export default async function handler(req, res) {
 
     const uniqueUsers = await prisma.userActivity.findMany({
       where: { businessUnit: key },
-      distinct: ['userId'],
+      distinct: ["userId"],
       select: { userId: true },
     });
 
     // Get recent activities
     const recentActivities = await prisma.userActivity.findMany({
       where: { businessUnit: key },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       take: 10,
     });
 
@@ -51,7 +51,7 @@ export default async function handler(req, res) {
     const subscriptionsCount = await prisma.subscription.count({
       where: {
         businessUnit: key,
-        status: 'ACTIVE',
+        status: "ACTIVE",
       },
     });
 
@@ -74,8 +74,10 @@ export default async function handler(req, res) {
       },
     });
   } catch (error) {
-    console.error('Analytics Error:', error);
-    return res.status(500).json({ error: 'Internal Server Error', message: error.message });
+    console.error("Analytics Error:", error);
+    return res
+      .status(500)
+      .json({ error: "Internal Server Error", message: error.message });
   } finally {
     await prisma.$disconnect();
   }

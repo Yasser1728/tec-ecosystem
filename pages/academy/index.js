@@ -1,128 +1,140 @@
-import Head from 'next/head';
-import Link from 'next/link';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
+import Head from "next/head";
+import Link from "next/link";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
 
 export default function Academy() {
   const freeCourses = [
     {
       id: 1,
-      title: 'Pi Investment 101',
-      description: 'Learn the fundamentals of investing with Pi Network cryptocurrency',
-      duration: '2 hours',
+      title: "Pi Investment 101",
+      description:
+        "Learn the fundamentals of investing with Pi Network cryptocurrency",
+      duration: "2 hours",
       lessons: 8,
-      level: 'Beginner',
-      icon: '📚',
-      category: 'Investment'
+      level: "Beginner",
+      icon: "📚",
+      category: "Investment",
     },
     {
       id: 2,
-      title: 'Real Estate with Crypto',
-      description: 'How to purchase property using cryptocurrency',
-      duration: '1.5 hours',
+      title: "Real Estate with Crypto",
+      description: "How to purchase property using cryptocurrency",
+      duration: "1.5 hours",
       lessons: 6,
-      level: 'Beginner',
-      icon: '🏠',
-      category: 'Real Estate'
+      level: "Beginner",
+      icon: "🏠",
+      category: "Real Estate",
     },
     {
       id: 3,
-      title: 'Luxury Travel Planning',
-      description: 'Master the art of planning exclusive travel experiences',
-      duration: '1 hour',
+      title: "Luxury Travel Planning",
+      description: "Master the art of planning exclusive travel experiences",
+      duration: "1 hour",
       lessons: 5,
-      level: 'Beginner',
-      icon: '✈️',
-      category: 'Lifestyle'
+      level: "Beginner",
+      icon: "✈️",
+      category: "Lifestyle",
     },
     {
       id: 4,
-      title: 'B2B Trading Strategies',
-      description: 'Essential strategies for business-to-business trading',
-      duration: '2.5 hours',
+      title: "B2B Trading Strategies",
+      description: "Essential strategies for business-to-business trading",
+      duration: "2.5 hours",
       lessons: 10,
-      level: 'Intermediate',
-      icon: '🤝',
-      category: 'Business'
-    }
+      level: "Intermediate",
+      icon: "🤝",
+      category: "Business",
+    },
   ];
 
   const premiumCourses = [
     {
       id: 5,
-      title: 'Advanced Pi Investment Strategies',
-      description: 'Deep dive into sophisticated investment techniques',
-      duration: '5 hours',
+      title: "Advanced Pi Investment Strategies",
+      description: "Deep dive into sophisticated investment techniques",
+      duration: "5 hours",
       lessons: 15,
-      level: 'Advanced',
+      level: "Advanced",
       price: 50,
-      icon: '💎',
-      category: 'Investment'
+      icon: "💎",
+      category: "Investment",
     },
     {
       id: 6,
-      title: 'International Real Estate Mastery',
-      description: 'Navigate global property markets with confidence',
-      duration: '8 hours',
+      title: "International Real Estate Mastery",
+      description: "Navigate global property markets with confidence",
+      duration: "8 hours",
       lessons: 20,
-      level: 'Advanced',
+      level: "Advanced",
       price: 100,
-      icon: '🌍',
-      category: 'Real Estate'
+      icon: "🌍",
+      category: "Real Estate",
     },
     {
       id: 7,
-      title: 'Elite Business Networking',
-      description: 'Build powerful connections in high-value circles',
-      duration: '4 hours',
+      title: "Elite Business Networking",
+      description: "Build powerful connections in high-value circles",
+      duration: "4 hours",
       lessons: 12,
-      level: 'Intermediate',
+      level: "Intermediate",
       price: 75,
-      icon: '🎯',
-      category: 'Business'
+      icon: "🎯",
+      category: "Business",
     },
     {
       id: 8,
-      title: 'Wealth Management with Pi',
-      description: 'Comprehensive wealth management strategies',
-      duration: '10 hours',
+      title: "Wealth Management with Pi",
+      description: "Comprehensive wealth management strategies",
+      duration: "10 hours",
       lessons: 25,
-      level: 'Advanced',
+      level: "Advanced",
       price: 150,
-      icon: '💰',
-      category: 'Finance'
-    }
+      icon: "💰",
+      category: "Finance",
+    },
   ];
 
   const certifications = [
     {
-      name: 'TEC Certified Pi Investor',
-      description: 'Demonstrate expertise in Pi Network investments',
-      requirements: '3 courses + exam',
-      badge: '🏆',
-      benefits: ['Badge on profile', 'Priority deal access', 'Networking events']
+      name: "TEC Certified Pi Investor",
+      description: "Demonstrate expertise in Pi Network investments",
+      requirements: "3 courses + exam",
+      badge: "🏆",
+      benefits: [
+        "Badge on profile",
+        "Priority deal access",
+        "Networking events",
+      ],
     },
     {
-      name: 'TEC Real Estate Specialist',
-      description: 'Master real estate transactions with cryptocurrency',
-      requirements: '4 courses + exam',
-      badge: '🎖️',
-      benefits: ['Specialist badge', 'Exclusive listings', 'Broker network access']
+      name: "TEC Real Estate Specialist",
+      description: "Master real estate transactions with cryptocurrency",
+      requirements: "4 courses + exam",
+      badge: "🎖️",
+      benefits: [
+        "Specialist badge",
+        "Exclusive listings",
+        "Broker network access",
+      ],
     },
     {
-      name: 'TEC Elite Trader',
-      description: 'Advanced trading and business strategies',
-      requirements: '5 courses + exam',
-      badge: '⭐',
-      benefits: ['Elite badge', 'Premium tools', 'Direct advisor access']
-    }
+      name: "TEC Elite Trader",
+      description: "Advanced trading and business strategies",
+      requirements: "5 courses + exam",
+      badge: "⭐",
+      benefits: ["Elite badge", "Premium tools", "Direct advisor access"],
+    },
   ];
 
   return (
     <>
       <Head>
         <title>TEC Academy | Learn, Grow, Succeed</title>
-        <meta name="description" content="Educational platform for Pi Network investment, real estate, and elite business strategies" />
+        <meta
+          name="description"
+          content="Educational platform for Pi Network investment, real estate, and elite business strategies"
+        />
       </Head>
 
       <Header />
@@ -135,8 +147,9 @@ export default function Academy() {
               🎓 TEC Academy
             </h1>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-8">
-              Master the skills needed to succeed in luxury business, investment, and elite commerce. 
-              Learn from industry experts and earn recognized certifications.
+              Master the skills needed to succeed in luxury business,
+              investment, and elite commerce. Learn from industry experts and
+              earn recognized certifications.
             </p>
             <div className="flex gap-4 justify-center flex-wrap">
               <div className="bg-gray-800 border border-[#00ff9d]/30 rounded-lg px-6 py-3">
@@ -158,9 +171,11 @@ export default function Academy() {
           <section className="mb-16">
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-3xl font-bold">Free Courses</h2>
-              <span className="text-[#00ff9d] text-sm">Start learning today</span>
+              <span className="text-[#00ff9d] text-sm">
+                Start learning today
+              </span>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {freeCourses.map((course) => (
                 <div
@@ -173,7 +188,7 @@ export default function Academy() {
                       FREE
                     </span>
                   </div>
-                  
+
                   <div className="p-6">
                     <h3 className="text-lg font-bold mb-2 group-hover:text-[#00ff9d] transition-colors">
                       {course.title}
@@ -181,12 +196,12 @@ export default function Academy() {
                     <p className="text-sm text-gray-400 mb-4">
                       {course.description}
                     </p>
-                    
+
                     <div className="flex items-center gap-4 text-xs text-gray-500 mb-4">
                       <span>⏱️ {course.duration}</span>
                       <span>📖 {course.lessons} lessons</span>
                     </div>
-                    
+
                     <div className="flex items-center justify-between">
                       <span className="text-xs bg-gray-700 px-3 py-1 rounded-full">
                         {course.level}
@@ -207,7 +222,7 @@ export default function Academy() {
               <h2 className="text-3xl font-bold">Premium Courses</h2>
               <span className="text-[#00c6ff] text-sm">Advanced learning</span>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {premiumCourses.map((course) => (
                 <div
@@ -220,7 +235,7 @@ export default function Academy() {
                       {course.price} Pi
                     </span>
                   </div>
-                  
+
                   <div className="p-6">
                     <h3 className="text-lg font-bold mb-2 group-hover:text-purple-400 transition-colors">
                       {course.title}
@@ -228,12 +243,12 @@ export default function Academy() {
                     <p className="text-sm text-gray-400 mb-4">
                       {course.description}
                     </p>
-                    
+
                     <div className="flex items-center gap-4 text-xs text-gray-500 mb-4">
                       <span>⏱️ {course.duration}</span>
                       <span>📖 {course.lessons} lessons</span>
                     </div>
-                    
+
                     <div className="flex items-center justify-between">
                       <span className="text-xs bg-gray-700 px-3 py-1 rounded-full">
                         {course.level}
@@ -253,11 +268,12 @@ export default function Academy() {
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold mb-4">Earn Certifications</h2>
               <p className="text-gray-400 max-w-2xl mx-auto">
-                Complete courses and pass exams to earn recognized TEC certifications. 
-                Showcase your expertise and unlock exclusive benefits.
+                Complete courses and pass exams to earn recognized TEC
+                certifications. Showcase your expertise and unlock exclusive
+                benefits.
               </p>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {certifications.map((cert, index) => (
                 <div
@@ -265,14 +281,22 @@ export default function Academy() {
                   className="bg-gradient-to-br from-gray-800 to-gray-900 border border-yellow-500/30 rounded-lg p-8 text-center"
                 >
                   <div className="text-6xl mb-4">{cert.badge}</div>
-                  <h3 className="text-xl font-bold mb-2 text-yellow-400">{cert.name}</h3>
-                  <p className="text-sm text-gray-400 mb-4">{cert.description}</p>
-                  
+                  <h3 className="text-xl font-bold mb-2 text-yellow-400">
+                    {cert.name}
+                  </h3>
+                  <p className="text-sm text-gray-400 mb-4">
+                    {cert.description}
+                  </p>
+
                   <div className="bg-gray-700/50 rounded-lg p-4 mb-4">
-                    <div className="text-xs text-gray-500 mb-2">Requirements:</div>
-                    <div className="text-sm font-semibold">{cert.requirements}</div>
+                    <div className="text-xs text-gray-500 mb-2">
+                      Requirements:
+                    </div>
+                    <div className="text-sm font-semibold">
+                      {cert.requirements}
+                    </div>
                   </div>
-                  
+
                   <div className="text-left">
                     <div className="text-xs text-gray-500 mb-2">Benefits:</div>
                     <ul className="space-y-1">
@@ -284,7 +308,7 @@ export default function Academy() {
                       ))}
                     </ul>
                   </div>
-                  
+
                   <button className="w-full mt-6 bg-gradient-to-r from-yellow-500 to-orange-500 text-gray-900 px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all">
                     Start Path
                   </button>
@@ -295,9 +319,12 @@ export default function Academy() {
 
           {/* CTA */}
           <div className="bg-gradient-to-r from-[#00ff9d]/10 to-[#00c6ff]/10 border border-[#00ff9d]/30 rounded-lg p-12 text-center">
-            <h2 className="text-3xl font-bold mb-4">Ready to Start Learning?</h2>
+            <h2 className="text-3xl font-bold mb-4">
+              Ready to Start Learning?
+            </h2>
             <p className="text-gray-400 mb-8 max-w-2xl mx-auto">
-              Join TEC Academy today and gain the knowledge you need to succeed in elite business and investment.
+              Join TEC Academy today and gain the knowledge you need to succeed
+              in elite business and investment.
             </p>
             <div className="flex gap-4 justify-center flex-wrap">
               <button className="bg-gradient-to-r from-[#00ff9d] to-[#00c6ff] text-gray-900 px-8 py-4 rounded-lg font-semibold text-lg hover:shadow-lg transition-all">

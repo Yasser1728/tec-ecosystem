@@ -42,6 +42,7 @@ Content-Type: application/json
 Check API health status.
 
 **Response** (200 OK):
+
 ```json
 {
   "status": "ok",
@@ -63,6 +64,7 @@ Get current user session status.
 **Authentication**: Required
 
 **Response** (200 OK):
+
 ```json
 {
   "authenticated": true,
@@ -76,6 +78,7 @@ Get current user session status.
 ```
 
 **Response** (401 Unauthorized):
+
 ```json
 {
   "authenticated": false,
@@ -94,6 +97,7 @@ Authenticate user with Pi Network credentials.
 **Authentication**: Required
 
 **Request Body**:
+
 ```json
 {
   "piToken": "pi-token-here",
@@ -102,6 +106,7 @@ Authenticate user with Pi Network credentials.
 ```
 
 **Response** (200 OK):
+
 ```json
 {
   "success": true,
@@ -113,6 +118,7 @@ Authenticate user with Pi Network credentials.
 ```
 
 **Response** (401 Unauthorized):
+
 ```json
 {
   "success": false,
@@ -133,9 +139,10 @@ Create a new payment transaction.
 **Authentication**: Required
 
 **Request Body**:
+
 ```json
 {
-  "amount": 100.00,
+  "amount": 100.0,
   "currency": "USD",
   "description": "Product purchase",
   "metadata": {
@@ -146,11 +153,12 @@ Create a new payment transaction.
 ```
 
 **Response** (201 Created):
+
 ```json
 {
   "success": true,
   "paymentId": "pay_123abc",
-  "amount": 100.00,
+  "amount": 100.0,
   "status": "pending",
   "approvalUrl": "https://..."
 }
@@ -167,6 +175,7 @@ Approve a pending payment.
 **Authentication**: Required
 
 **Request Body**:
+
 ```json
 {
   "paymentId": "pay_123abc",
@@ -175,6 +184,7 @@ Approve a pending payment.
 ```
 
 **Response** (200 OK):
+
 ```json
 {
   "success": true,
@@ -194,6 +204,7 @@ Complete an approved payment.
 **Authentication**: Required
 
 **Request Body**:
+
 ```json
 {
   "paymentId": "pay_123abc"
@@ -201,6 +212,7 @@ Complete an approved payment.
 ```
 
 **Response** (200 OK):
+
 ```json
 {
   "success": true,
@@ -284,6 +296,7 @@ API endpoints are rate-limited to prevent abuse:
 - **Payment endpoints**: 10 requests per minute per user
 
 **Rate Limit Headers**:
+
 ```
 X-RateLimit-Limit: 1000
 X-RateLimit-Remaining: 999
@@ -303,13 +316,14 @@ TEC Ecosystem can send webhooks for payment status changes.
 **Method**: POST
 
 **Payload**:
+
 ```json
 {
   "event": "payment.completed",
   "data": {
     "paymentId": "pay_123abc",
     "status": "completed",
-    "amount": 100.00,
+    "amount": 100.0,
     "timestamp": "2025-01-01T00:00:00.000Z"
   },
   "signature": "sha256-signature-here"
@@ -324,23 +338,23 @@ TEC Ecosystem can send webhooks for payment status changes.
 
 ```typescript
 // Fetch session status
-const response = await fetch('/api/auth/session-status', {
-  credentials: 'include'
+const response = await fetch("/api/auth/session-status", {
+  credentials: "include",
 });
 const session = await response.json();
 
 // Create payment
-const payment = await fetch('/api/payments/create-payment', {
-  method: 'POST',
-  credentials: 'include',
+const payment = await fetch("/api/payments/create-payment", {
+  method: "POST",
+  credentials: "include",
   headers: {
-    'Content-Type': 'application/json'
+    "Content-Type": "application/json",
   },
   body: JSON.stringify({
-    amount: 100.00,
-    currency: 'USD',
-    description: 'Product purchase'
-  })
+    amount: 100.0,
+    currency: "USD",
+    description: "Product purchase",
+  }),
 });
 ```
 
@@ -349,6 +363,7 @@ const payment = await fetch('/api/payments/create-payment', {
 ## Support
 
 For API support:
+
 - **Email**: api-support@tec-ecosystem.com
 - **Documentation**: https://docs.tec-ecosystem.com
 - **Status Page**: https://status.tec-ecosystem.com

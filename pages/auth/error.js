@@ -1,13 +1,13 @@
-import Head from 'next/head';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
+import Head from "next/head";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 const errorMessages = {
-  Configuration: 'There is a problem with the server configuration.',
-  AccessDenied: 'You do not have permission to sign in.',
-  Verification: 'The verification token has expired or has already been used.',
-  AccountInactive: 'Your account is inactive. Please contact support.',
-  Default: 'An error occurred during authentication.',
+  Configuration: "There is a problem with the server configuration.",
+  AccessDenied: "You do not have permission to sign in.",
+  Verification: "The verification token has expired or has already been used.",
+  AccountInactive: "Your account is inactive. Please contact support.",
+  Default: "An error occurred during authentication.",
 };
 
 export default function AuthError() {
@@ -74,8 +74,11 @@ export default function AuthError() {
             {/* Support */}
             <div className="mt-6 text-center text-sm text-gray-400">
               <p>
-                Need help?{' '}
-                <Link href="/support" className="text-[#00ff9d] hover:underline">
+                Need help?{" "}
+                <Link
+                  href="/support"
+                  className="text-[#00ff9d] hover:underline"
+                >
                   Contact Support
                 </Link>
               </p>

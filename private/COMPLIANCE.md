@@ -61,12 +61,12 @@ Users have the following rights under GDPR:
 
 ### Data Retention
 
-| Data Type | Retention Period | Reason |
-|-----------|-----------------|---------|
-| User Data | 2 years after last activity | Service continuity |
-| Payment Data | 7 years | Legal requirement (financial records) |
-| Session Data | 30 days | Security and analytics |
-| Analytics Data | 1 year | Service improvement |
+| Data Type      | Retention Period            | Reason                                |
+| -------------- | --------------------------- | ------------------------------------- |
+| User Data      | 2 years after last activity | Service continuity                    |
+| Payment Data   | 7 years                     | Legal requirement (financial records) |
+| Session Data   | 30 days                     | Security and analytics                |
+| Analytics Data | 1 year                      | Service improvement                   |
 
 ---
 

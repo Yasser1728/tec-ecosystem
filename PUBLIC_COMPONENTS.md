@@ -28,16 +28,19 @@ public-src/
 ## ✅ Open Source Components
 
 ### Components
+
 - **Header.js** - Global navigation header
 - **Footer.js** - Global footer with links
 - **BusinessUnitLayout.js** - Reusable layout for business units
 - **ParticlesCanvas.js** - Animated background
 
 ### Libraries
+
 - **businessUnits.js** - Configuration for all 21 business units (metadata only)
 - **utils.js** - Helper functions
 
 ### Pages (Public Access)
+
 - **/** - Home/Landing page
 - **/ecosystem** - Business units overview
 - **/403** - Forbidden error page

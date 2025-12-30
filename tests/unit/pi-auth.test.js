@@ -2,9 +2,9 @@
  * Unit tests for Pi Authentication Module
  */
 
-import { PiAuth } from '../../lib/pi-auth';
+import { PiAuth } from "../../lib/pi-auth";
 
-describe('PiAuth', () => {
+describe("PiAuth", () => {
   let piAuth;
   let mockWindow;
 
@@ -13,31 +13,31 @@ describe('PiAuth', () => {
     mockWindow = {
       Pi: {
         authenticate: jest.fn().mockResolvedValue({
-          user: { uid: 'test-pi-id', username: 'testuser' },
-          accessToken: 'test-token'
-        })
-      }
+          user: { uid: "test-pi-id", username: "testuser" },
+          accessToken: "test-token",
+        }),
+      },
     };
     global.window = mockWindow;
-    
+
     // Mock fetch
     global.fetch = jest.fn().mockResolvedValue({
       ok: true,
-      json: jest.fn().mockResolvedValue({ success: true })
+      json: jest.fn().mockResolvedValue({ success: true }),
     });
-    
+
     // Mock localStorage
     const localStorageMock = {
       getItem: jest.fn(),
       setItem: jest.fn(),
       removeItem: jest.fn(),
-      clear: jest.fn()
+      clear: jest.fn(),
     };
     global.localStorage = localStorageMock;
-    
+
     // Mock setTimeout to avoid waiting
     jest.useFakeTimers();
-    
+
     // Create instance after mocking
     piAuth = new PiAuth();
   });
@@ -47,116 +47,118 @@ describe('PiAuth', () => {
     jest.clearAllMocks();
   });
 
-
-
-  describe.skip('authenticate', () => {
-    it('should authenticate user successfully', async () => {
+  describe.skip("authenticate", () => {
+    it("should authenticate user successfully", async () => {
       const mockAuthResult = {
         user: {
-          uid: 'test-pi-id',
-          username: 'testuser',
-          wallet_address: '0x123'
+          uid: "test-pi-id",
+          username: "testuser",
+          wallet_address: "0x123",
         },
-        accessToken: 'test-token'
+        accessToken: "test-token",
       };
 
       mockWindow.Pi.authenticate.mockResolvedValue(mockAuthResult);
-      
+
       global.fetch.mockResolvedValue({
         ok: true,
         json: async () => ({
           success: true,
           user: {
-            id: 'user-123',
-            username: 'testuser',
-            tier: 'STANDARD',
-            status: 'ACTIVE'
-          }
-        })
+            id: "user-123",
+            username: "testuser",
+            tier: "STANDARD",
+            status: "ACTIVE",
+          },
+        }),
       });
 
       // Start authentication
       const authPromise = piAuth.authenticate();
-      
+
       // Fast-forward timers to skip waitForPiSDK
       jest.runAllTimers();
 
       const result = await piAuth.authenticate();
 
       expect(result.success).toBe(true);
-      expect(result.user.piId).toBe('test-pi-id');
-      expect(result.user.username).toBe('testuser');
+      expect(result.user.piId).toBe("test-pi-id");
+      expect(result.user.username).toBe("testuser");
       expect(piAuth.isAuthenticated()).toBe(true);
     });
 
-    it('should handle authentication failure', async () => {
-      mockWindow.Pi.authenticate.mockRejectedValue(new Error('Auth failed'));
+    it("should handle authentication failure", async () => {
+      mockWindow.Pi.authenticate.mockRejectedValue(new Error("Auth failed"));
 
       const result = await piAuth.authenticate();
 
       expect(result.success).toBe(false);
-      expect(result.error).toBe('Auth failed');
+      expect(result.error).toBe("Auth failed");
       expect(piAuth.isAuthenticated()).toBe(false);
     });
 
-    it('should throw error when Pi Browser not available', async () => {
+    it("should throw error when Pi Browser not available", async () => {
       global.window = {};
 
-      await expect(piAuth.authenticate()).rejects.toThrow('Pi Browser required');
+      await expect(piAuth.authenticate()).rejects.toThrow(
+        "Pi Browser required",
+      );
     });
 
-    it('should sync user with backend', async () => {
+    it("should sync user with backend", async () => {
       const mockAuthResult = {
         user: {
-          uid: 'test-pi-id',
-          username: 'testuser',
-          wallet_address: '0x123'
+          uid: "test-pi-id",
+          username: "testuser",
+          wallet_address: "0x123",
         },
-        accessToken: 'test-token'
+        accessToken: "test-token",
       };
 
       mockWindow.Pi.authenticate.mockResolvedValue(mockAuthResult);
-      
+
       global.fetch.mockResolvedValue({
         ok: true,
         json: async () => ({
           success: true,
           user: {
-            id: 'user-123',
-            username: 'testuser',
-            tier: 'PREMIUM',
-            status: 'ACTIVE'
-          }
-        })
+            id: "user-123",
+            username: "testuser",
+            tier: "PREMIUM",
+            status: "ACTIVE",
+          },
+        }),
       });
 
       await piAuth.authenticate();
 
       expect(global.fetch).toHaveBeenCalledWith(
-        '/api/auth/pi-authenticate',
+        "/api/auth/pi-authenticate",
         expect.objectContaining({
-          method: 'POST',
-          body: expect.stringContaining('testuser')
-        })
+          method: "POST",
+          body: expect.stringContaining("testuser"),
+        }),
       );
     });
   });
 
-  describe('onIncompletePaymentFound', () => {
-    it('should store incomplete payment in localStorage', () => {
+  describe("onIncompletePaymentFound", () => {
+    it("should store incomplete payment in localStorage", () => {
       const mockPayment = {
-        identifier: 'payment-123',
-        amount: 100
+        identifier: "payment-123",
+        amount: 100,
       };
 
-      const getItemSpy = jest.spyOn(Storage.prototype, 'getItem').mockReturnValue('[]');
-      const setItemSpy = jest.spyOn(Storage.prototype, 'setItem');
+      const getItemSpy = jest
+        .spyOn(Storage.prototype, "getItem")
+        .mockReturnValue("[]");
+      const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
 
       piAuth.onIncompletePaymentFound(mockPayment);
 
       expect(setItemSpy).toHaveBeenCalledWith(
-        'pi_incomplete_payments',
-        expect.stringContaining('payment-123')
+        "pi_incomplete_payments",
+        expect.stringContaining("payment-123"),
       );
 
       getItemSpy.mockRestore();
@@ -164,26 +166,28 @@ describe('PiAuth', () => {
     });
   });
 
-  describe('getIncompletePayments', () => {
-    it('should retrieve incomplete payments from localStorage', async () => {
+  describe("getIncompletePayments", () => {
+    it("should retrieve incomplete payments from localStorage", async () => {
       const mockPayments = [
-        { identifier: 'payment-1', amount: 100 },
-        { identifier: 'payment-2', amount: 200 }
+        { identifier: "payment-1", amount: 100 },
+        { identifier: "payment-2", amount: 200 },
       ];
 
-      const getItemSpy = jest.spyOn(Storage.prototype, 'getItem')
+      const getItemSpy = jest
+        .spyOn(Storage.prototype, "getItem")
         .mockReturnValue(JSON.stringify(mockPayments));
 
       const payments = await piAuth.getIncompletePayments();
 
       expect(payments).toHaveLength(2);
-      expect(payments[0].identifier).toBe('payment-1');
+      expect(payments[0].identifier).toBe("payment-1");
 
       getItemSpy.mockRestore();
     });
 
-    it('should return empty array when no incomplete payments', async () => {
-      const getItemSpy = jest.spyOn(Storage.prototype, 'getItem')
+    it("should return empty array when no incomplete payments", async () => {
+      const getItemSpy = jest
+        .spyOn(Storage.prototype, "getItem")
         .mockReturnValue(null);
 
       const payments = await piAuth.getIncompletePayments();
@@ -194,26 +198,26 @@ describe('PiAuth', () => {
     });
   });
 
-  describe('signOut', () => {
-    it('should clear user data and localStorage', async () => {
-      const removeItemSpy = jest.spyOn(Storage.prototype, 'removeItem');
+  describe("signOut", () => {
+    it("should clear user data and localStorage", async () => {
+      const removeItemSpy = jest.spyOn(Storage.prototype, "removeItem");
 
-      piAuth.user = { piId: 'test-id' };
+      piAuth.user = { piId: "test-id" };
       piAuth.authenticated = true;
 
       await piAuth.signOut();
 
       expect(piAuth.user).toBeNull();
       expect(piAuth.authenticated).toBe(false);
-      expect(removeItemSpy).toHaveBeenCalledWith('pi_incomplete_payments');
+      expect(removeItemSpy).toHaveBeenCalledWith("pi_incomplete_payments");
 
       removeItemSpy.mockRestore();
     });
   });
 
-  describe('getUser', () => {
-    it('should return current user', () => {
-      const mockUser = { piId: 'test-id', username: 'testuser' };
+  describe("getUser", () => {
+    it("should return current user", () => {
+      const mockUser = { piId: "test-id", username: "testuser" };
       piAuth.user = mockUser;
 
       const user = piAuth.getUser();
@@ -222,15 +226,15 @@ describe('PiAuth', () => {
     });
   });
 
-  describe('isAuthenticated', () => {
-    it('should return true when authenticated', () => {
+  describe("isAuthenticated", () => {
+    it("should return true when authenticated", () => {
       piAuth.authenticated = true;
-      piAuth.user = { piId: 'test-id' };
+      piAuth.user = { piId: "test-id" };
 
       expect(piAuth.isAuthenticated()).toBe(true);
     });
 
-    it('should return false when not authenticated', () => {
+    it("should return false when not authenticated", () => {
       piAuth.authenticated = false;
       piAuth.user = null;
 

@@ -1,43 +1,43 @@
-import { signIn, useSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import Head from 'next/head';
-import Link from 'next/link';
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import Head from "next/head";
+import Link from "next/link";
 
 export default function SignIn() {
   const router = useRouter();
   const { data: session, status } = useSession();
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const { callbackUrl } = router.query;
 
   useEffect(() => {
-    if (status === 'authenticated') {
-      router.push(callbackUrl || '/dashboard');
+    if (status === "authenticated") {
+      router.push(callbackUrl || "/dashboard");
     }
   }, [status, router, callbackUrl]);
 
   const handlePiSignIn = async () => {
     setIsLoading(true);
-    setError('');
+    setError("");
 
     try {
       if (!window.Pi) {
-        throw new Error('Pi SDK not loaded. Please open in Pi Browser.');
+        throw new Error("Pi SDK not loaded. Please open in Pi Browser.");
       }
 
       // Authenticate with Pi Network
       const authResult = await window.Pi.authenticate(
-        ['username', 'payments'],
+        ["username", "payments"],
         (payment) => {
-          console.log('Incomplete payment:', payment);
-        }
+          console.log("Incomplete payment:", payment);
+        },
       );
 
-      console.log('Pi Auth Result:', authResult);
+      console.log("Pi Auth Result:", authResult);
 
       // Sign in with NextAuth
-      const result = await signIn('pi-network', {
+      const result = await signIn("pi-network", {
         piId: authResult.user.uid,
         username: authResult.user.username,
         accessToken: authResult.accessToken,
@@ -47,17 +47,17 @@ export default function SignIn() {
       if (result?.error) {
         setError(result.error);
       } else if (result?.ok) {
-        router.push(callbackUrl || '/dashboard');
+        router.push(callbackUrl || "/dashboard");
       }
     } catch (err) {
-      console.error('Sign in error:', err);
-      setError(err.message || 'Failed to sign in with Pi Network');
+      console.error("Sign in error:", err);
+      setError(err.message || "Failed to sign in with Pi Network");
     } finally {
       setIsLoading(false);
     }
   };
 
-  if (status === 'loading') {
+  if (status === "loading") {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-black">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00ff9d]"></div>
@@ -117,7 +117,7 @@ export default function SignIn() {
             {/* Info */}
             <div className="mt-6 text-center text-sm text-gray-400">
               <p>
-                Don't have Pi Network?{' '}
+                Don't have Pi Network?{" "}
                 <a
                   href="https://minepi.com"
                   target="_blank"

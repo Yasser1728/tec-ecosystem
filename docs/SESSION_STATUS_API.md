@@ -1,6 +1,7 @@
 # Session Status API Documentation
 
 ## Overview
+
 The Session Status API provides a secure endpoint to validate user sessions in the TEC ecosystem. This feature was added to track and verify active user sessions with configurable timeout periods.
 
 ## API Endpoint
@@ -10,10 +11,11 @@ The Session Status API provides a secure endpoint to validate user sessions in t
 Validates a user's session and returns their current status.
 
 #### Request Body
+
 ```json
 {
-  "piId": "string",     // Pi Network user ID (optional if userId provided)
-  "userId": "string"    // Internal user ID (optional if piId provided)
+  "piId": "string", // Pi Network user ID (optional if userId provided)
+  "userId": "string" // Internal user ID (optional if piId provided)
 }
 ```
 
@@ -22,6 +24,7 @@ Validates a user's session and returns their current status.
 #### Response
 
 **Success Response (200):**
+
 ```json
 {
   "success": true,
@@ -38,6 +41,7 @@ Validates a user's session and returns their current status.
 ```
 
 **User Not Found (404):**
+
 ```json
 {
   "success": false,
@@ -47,6 +51,7 @@ Validates a user's session and returns their current status.
 ```
 
 **Invalid Request (400):**
+
 ```json
 {
   "error": "Missing piId or userId"
@@ -54,6 +59,7 @@ Validates a user's session and returns their current status.
 ```
 
 **Server Error (500):**
+
 ```json
 {
   "success": false,
@@ -65,11 +71,13 @@ Validates a user's session and returns their current status.
 ## Configuration
 
 ### Session Timeout
+
 - **Default:** 7 days (604,800,000 milliseconds)
 - **Configuration:** Modify `SESSION_TIMEOUT_MS` constant in the handler
 - **Behavior:** Sessions older than the timeout are marked as invalid
 
 ### Rate Limiting
+
 - **Limit:** 20 requests per minute per IP
 - **Window:** 60 seconds
 - **Response on limit:** 429 Too Many Requests
@@ -87,19 +95,19 @@ Validates a user's session and returns their current status.
 ### Using Pi SDK
 
 ```javascript
-import { piSDK } from './lib/pi-sdk';
+import { piSDK } from "./lib/pi-sdk";
 
 // Check session status for the current authenticated user
 const result = await piSDK.checkSessionStatus();
 
 // Check session status for a specific user
-const result = await piSDK.checkSessionStatus('specific_pi_id');
+const result = await piSDK.checkSessionStatus("specific_pi_id");
 
 // Handle response
 if (result.success && result.sessionValid) {
-  console.log('Session is active:', result.user);
+  console.log("Session is active:", result.user);
 } else {
-  console.log('Session expired or invalid');
+  console.log("Session expired or invalid");
   // Prompt user to re-authenticate
 }
 ```
@@ -107,10 +115,10 @@ if (result.success && result.sessionValid) {
 ### Direct API Call
 
 ```javascript
-const response = await fetch('/api/auth/session-status', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ piId: 'user_pi_id' })
+const response = await fetch("/api/auth/session-status", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ piId: "user_pi_id" }),
 });
 
 const data = await response.json();
@@ -140,6 +148,7 @@ if (data.sessionValid) {
 ## Error Handling
 
 The API uses try-catch blocks to handle:
+
 - Database connection errors
 - Invalid user lookups
 - Malformed requests
@@ -150,6 +159,7 @@ All errors are logged via the logger utility for monitoring and debugging.
 ## Logging
 
 Session status checks are logged with:
+
 - User ID
 - Username
 - Session validity result
@@ -160,6 +170,7 @@ Failed checks log error details for troubleshooting.
 ## Future Enhancements
 
 Potential improvements:
+
 - Environment variable for session timeout configuration
 - Support for different timeout periods per user tier
 - Session refresh mechanism

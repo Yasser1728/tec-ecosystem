@@ -3,12 +3,14 @@
 ## 📋 ما هو Branch Protection؟
 
 **Branch Protection** يمنع:
+
 - ❌ Push مباشر إلى `main` بدون مراجعة
 - ❌ Merge كود معطوب
 - ❌ حذف Branch بالخطأ
 - ❌ Force push
 
 **ويضمن:**
+
 - ✅ كل الـ Checks تنجح قبل Merge
 - ✅ Code Review إجباري
 - ✅ جودة الكود عالية
@@ -18,6 +20,7 @@
 ## 🎯 الخطوة 1: فتح Branch Protection Settings
 
 ### 1️⃣ افتح GitHub Repository:
+
 ```
 https://github.com/Yasser1728/tec-ecosystem
 ```
@@ -25,15 +28,18 @@ https://github.com/Yasser1728/tec-ecosystem
 ### 2️⃣ اضغط على **Settings** (في أعلى الصفحة)
 
 ⚠️ **ملاحظة:** إذا لم تجد Settings، تأكد من أنك:
+
 - مالك الـ Repository
 - أو لديك Admin access
 
 ### 3️⃣ في Sidebar الأيسر، اختر:
+
 ```
 Code and automation → Branches
 ```
 
 أو اذهب مباشرة إلى:
+
 ```
 https://github.com/Yasser1728/tec-ecosystem/settings/branches
 ```
@@ -49,6 +55,7 @@ https://github.com/Yasser1728/tec-ecosystem/settings/branches
 ### 2️⃣ في حقل **"Branch name pattern"**:
 
 اكتب:
+
 ```
 main
 ```
@@ -94,7 +101,7 @@ main
 ☑ Build
 ☑ Lint / lint
 ☑ Tests / unit-tests
-☑ Tests / integration-tests  
+☑ Tests / integration-tests
 ☑ Tests / e2e-tests
 ☑ Tests / test-summary
 ☑ Security / dependency-audit
@@ -354,6 +361,7 @@ staging → Pre-production
 ### مشكلة: Status Checks لا تظهر
 
 **الحل:**
+
 1. شغل workflows مرة واحدة على الأقل
 2. انتظر 5 دقائق
 3. Refresh الصفحة
@@ -362,6 +370,7 @@ staging → Pre-production
 ### مشكلة: لا يمكن Merge رغم نجاح Checks
 
 **الحل:**
+
 - تحقق من "Require branches to be up to date"
 - اعمل rebase أو merge من main:
   ```bash
@@ -373,6 +382,7 @@ staging → Pre-production
 ### مشكلة: Admin يريد bypass
 
 **الحل:**
+
 1. Settings → Branches → Edit rule
 2. فعّل "Allow specified actors to bypass"
 3. أضف username
@@ -422,6 +432,7 @@ Conversations:
 ## 🎉 النتيجة
 
 **الآن لديك:**
+
 - ✅ حماية كاملة لـ main branch
 - ✅ لا يمكن merge كود معطوب
 - ✅ Code review إجباري

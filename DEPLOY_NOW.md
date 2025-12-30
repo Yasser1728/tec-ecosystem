@@ -17,6 +17,7 @@ vercel --prod
 ```
 
 **ملاحظات مهمة:**
+
 - سيسألك عن اسم المشروع: اختر `tec-ecosystem`
 - سيسألك عن الإعدادات: اضغط Enter للقبول الافتراضي
 - سيستغرق البناء 2-5 دقائق
@@ -26,6 +27,7 @@ vercel --prod
 ## الخطوة 3️⃣: الحصول على الرابط
 
 بعد النشر، ستحصل على:
+
 ```
 ✅ Production: https://tec-ecosystem.vercel.app
 ```
@@ -59,6 +61,7 @@ NEXT_PUBLIC_GA_ID=your_google_analytics_id
 ```
 
 **لتوليد NEXTAUTH_SECRET:**
+
 ```bash
 openssl rand -base64 32
 ```
@@ -128,17 +131,21 @@ tec.pi → https://tec-ecosystem.vercel.app
 ## الخطوة 7️⃣: التحقق من النشر
 
 ### اختبار الصفحة الرئيسية:
+
 ```bash
 curl https://tec-ecosystem.vercel.app
 ```
 
 ### اختبار API:
+
 ```bash
 curl https://tec-ecosystem.vercel.app/api/business-units
 ```
 
 ### اختبار المصادقة:
+
 افتح في Pi Browser:
+
 ```
 https://tec-ecosystem.vercel.app/auth/signin
 ```
@@ -191,6 +198,7 @@ vercel remove [deployment-url]
 ### مشكلة: Build Failed
 
 **الحل:**
+
 ```bash
 # اختبر البناء محلياً
 npm run build
@@ -202,6 +210,7 @@ vercel --prod --force
 ### مشكلة: Database Connection Error
 
 **الحل:**
+
 - تحقق من DATABASE_URL في Environment Variables
 - تأكد من تشغيل Migrations
 - تحقق من IP Whitelist في قاعدة البيانات
@@ -209,6 +218,7 @@ vercel --prod --force
 ### مشكلة: Pi Authentication Not Working
 
 **الحل:**
+
 - تحقق من PI_API_KEY و PI_API_SECRET
 - تأكد من NEXTAUTH_URL صحيح
 - راجع Pi Developer Portal للتأكد من Redirect URLs
@@ -216,6 +226,7 @@ vercel --prod --force
 ### مشكلة: Domain Not Routing
 
 **الحل:**
+
 - تحقق من إعدادات النطاق في Pi Portal
 - انتظر 5-10 دقائق للتحديث
 - امسح Cache في Pi Browser
@@ -240,6 +251,6 @@ vercel --prod --force
 ✅ نظام مصادقة Pi Network نشط  
 ✅ قاعدة بيانات متصلة  
 ✅ لوحة إدارة متاحة  
-✅ جميع وحدات الأعمال قابلة للوصول  
+✅ جميع وحدات الأعمال قابلة للوصول
 
 **🎉 مبروك! نظام TEC Ecosystem الآن مباشر!**

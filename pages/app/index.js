@@ -1,31 +1,63 @@
-import Header from '../../components/Header'
-import Footer from '../../components/Footer'
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
 
 export default function Dashboard() {
   const services = [
-    { name: 'Commerce', url: '/commerce', description: 'Marketplace & Stores' },
-    { name: 'Ecommerce', url: '/ecommerce', description: 'Platform for Small Stores' },
-    { name: 'Assets', url: '/assets', description: 'Digital Assets & Wallet' },
-    { name: 'Fundx', url: '/fundx', description: 'Investment & Finance' },
-    { name: 'Estate', url: '/estate', description: 'Real Estate Listings' },
-    { name: 'Insure', url: '/insure', description: 'Insurance Services' },
-    { name: 'Dx', url: '/dx', description: 'Developer Tools & API' },
-    { name: 'Explorer', url: '/explorer', description: 'Pi Network Explorer' },
-    { name: 'NBF', url: '/nbf', description: 'Financial & Business Services' },
-    { name: 'Epic', url: '/epic', description: 'Epic Projects & Offerings' },
-    { name: 'Legend', url: '/legend', description: 'Special Programs & Legendary Projects' },
-    { name: 'Connection', url: '/connection', description: 'Connect & Collaborate' },
-    { name: 'System', url: '/system', description: 'System Settings & Tools' },
-    { name: 'Alerts', url: '/alerts', description: 'Latest Notifications & Alerts' },
-    { name: 'NX', url: '/nx', description: 'NX Projects & Tools' },
-    { name: 'Nexus', url: '/nexus', description: 'Hub for Connections & Integrations' },
-    { name: 'Brookfield', url: '/brookfield', description: 'Real Estate & Investments' },
-    { name: 'Sab', url: '/sab', description: 'SAB Projects & Services' },
-    { name: 'VIP', url: '/vip', description: 'Exclusive VIP Services' },
-    { name: 'Titan', url: '/titan', description: 'Titan Initiatives & Offerings' },
-    { name: 'Zone', url: '/zone', description: 'Zones for Collaboration' },
-    { name: 'Elite', url: '/elite', description: 'Premium Services & Exclusive Offerings' },
-  ]
+    { name: "Commerce", url: "/commerce", description: "Marketplace & Stores" },
+    {
+      name: "Ecommerce",
+      url: "/ecommerce",
+      description: "Platform for Small Stores",
+    },
+    { name: "Assets", url: "/assets", description: "Digital Assets & Wallet" },
+    { name: "Fundx", url: "/fundx", description: "Investment & Finance" },
+    { name: "Estate", url: "/estate", description: "Real Estate Listings" },
+    { name: "Insure", url: "/insure", description: "Insurance Services" },
+    { name: "Dx", url: "/dx", description: "Developer Tools & API" },
+    { name: "Explorer", url: "/explorer", description: "Pi Network Explorer" },
+    { name: "NBF", url: "/nbf", description: "Financial & Business Services" },
+    { name: "Epic", url: "/epic", description: "Epic Projects & Offerings" },
+    {
+      name: "Legend",
+      url: "/legend",
+      description: "Special Programs & Legendary Projects",
+    },
+    {
+      name: "Connection",
+      url: "/connection",
+      description: "Connect & Collaborate",
+    },
+    { name: "System", url: "/system", description: "System Settings & Tools" },
+    {
+      name: "Alerts",
+      url: "/alerts",
+      description: "Latest Notifications & Alerts",
+    },
+    { name: "NX", url: "/nx", description: "NX Projects & Tools" },
+    {
+      name: "Nexus",
+      url: "/nexus",
+      description: "Hub for Connections & Integrations",
+    },
+    {
+      name: "Brookfield",
+      url: "/brookfield",
+      description: "Real Estate & Investments",
+    },
+    { name: "Sab", url: "/sab", description: "SAB Projects & Services" },
+    { name: "VIP", url: "/vip", description: "Exclusive VIP Services" },
+    {
+      name: "Titan",
+      url: "/titan",
+      description: "Titan Initiatives & Offerings",
+    },
+    { name: "Zone", url: "/zone", description: "Zones for Collaboration" },
+    {
+      name: "Elite",
+      url: "/elite",
+      description: "Premium Services & Exclusive Offerings",
+    },
+  ];
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -55,5 +87,5 @@ export default function Dashboard() {
       </main>
       <Footer />
     </div>
-  )
-    }
+  );
+}

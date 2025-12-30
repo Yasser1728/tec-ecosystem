@@ -66,6 +66,7 @@ tec-ecosystem/
 ### Authentication
 
 Private routes are protected using:
+
 - **Authentication Middleware**: Role-based access control (RBAC)
 - **withAuth HOC**: Page-level protection
 - **Session Validation**: Secure session management
@@ -86,23 +87,27 @@ See [SECURITY.md](./docs/SECURITY.md) for detailed security policies.
 ### Installation
 
 1. **Clone the repository**:
+
    ```bash
    git clone https://github.com/Yasser1728/tec-ecosystem.git
    cd tec-ecosystem
    ```
 
 2. **Install dependencies**:
+
    ```bash
    npm install
    ```
 
 3. **Configure environment**:
+
    ```bash
    cp env.local.example .env.local
    # Edit .env.local with your configuration
    ```
 
    Required environment variables:
+
    ```bash
    NEXT_PUBLIC_PI_APP_ID=tec-titan-elite-commerce-04d84accdca2487c
    NEXT_PUBLIC_PI_SANDBOX=true
@@ -112,12 +117,14 @@ See [SECURITY.md](./docs/SECURITY.md) for detailed security policies.
    ```
 
 4. **Setup database**:
+
    ```bash
    npx prisma generate
    npx prisma db push
    ```
 
 5. **Run development server**:
+
    ```bash
    npm run dev
    ```
@@ -132,39 +139,39 @@ See [SECURITY.md](./docs/SECURITY.md) for detailed security policies.
 
 ### Available Business Units
 
-| Unit | Route | Access Level | Description |
-|------|-------|--------------|-------------|
-| FundX | `/fundx` | Public (landing) | Investment strategies and ROI calculator |
-| FundX Calculator | `/fundx/calculator` | STANDARD+ | ROI calculation tool |
-| FundX Strategies | `/fundx/strategies` | STANDARD+ | Investment strategies |
-| Explorer | `/explorer` | Public (landing) | Discovery platform with analytics |
-| Explorer Analytics | `/explorer/analytics` | STANDARD+ | Advanced analytics |
-| Explorer Portfolio | `/explorer/portfolio` | STANDARD+ | Portfolio tracking |
-| Commerce | `/commerce` | Public (landing) | Marketplace with payment solutions |
-| Commerce Sellers | `/commerce/sellers` | STANDARD+ | Seller management hub |
-| Commerce Payments | `/commerce/payments` | STANDARD+ | Payment processing |
-| ... | ... | ... | 18 more business units |
+| Unit               | Route                 | Access Level     | Description                              |
+| ------------------ | --------------------- | ---------------- | ---------------------------------------- |
+| FundX              | `/fundx`              | Public (landing) | Investment strategies and ROI calculator |
+| FundX Calculator   | `/fundx/calculator`   | STANDARD+        | ROI calculation tool                     |
+| FundX Strategies   | `/fundx/strategies`   | STANDARD+        | Investment strategies                    |
+| Explorer           | `/explorer`           | Public (landing) | Discovery platform with analytics        |
+| Explorer Analytics | `/explorer/analytics` | STANDARD+        | Advanced analytics                       |
+| Explorer Portfolio | `/explorer/portfolio` | STANDARD+        | Portfolio tracking                       |
+| Commerce           | `/commerce`           | Public (landing) | Marketplace with payment solutions       |
+| Commerce Sellers   | `/commerce/sellers`   | STANDARD+        | Seller management hub                    |
+| Commerce Payments  | `/commerce/payments`  | STANDARD+        | Payment processing                       |
+| ...                | ...                   | ...              | 18 more business units                   |
 
 Visit `/ecosystem` to explore all units interactively.
 
 ### User Pages
 
-| Page | Route | Access Level | Description |
-|------|-------|--------------|-------------|
-| Sign In | `/auth/signin` | Public | Pi Network authentication |
-| Dashboard | `/dashboard` | STANDARD+ | User account dashboard |
-| Profile | `/dashboard/profile` | STANDARD+ | Profile management |
-| Transactions | `/dashboard/transactions` | STANDARD+ | Payment history |
-| Upgrade | `/upgrade` | Public | Tier comparison and upgrade |
+| Page         | Route                     | Access Level | Description                 |
+| ------------ | ------------------------- | ------------ | --------------------------- |
+| Sign In      | `/auth/signin`            | Public       | Pi Network authentication   |
+| Dashboard    | `/dashboard`              | STANDARD+    | User account dashboard      |
+| Profile      | `/dashboard/profile`      | STANDARD+    | Profile management          |
+| Transactions | `/dashboard/transactions` | STANDARD+    | Payment history             |
+| Upgrade      | `/upgrade`                | Public       | Tier comparison and upgrade |
 
 ### Admin Pages
 
-| Page | Route | Access Level | Description |
-|------|-------|--------------|-------------|
-| Admin Dashboard | `/admin` | ADMIN | System overview |
-| User Management | `/admin/users` | ADMIN | Manage all users |
-| Business Units | `/admin/business-units` | ADMIN | Manage business units |
-| Analytics | `/admin/analytics` | ADMIN | System analytics |
+| Page            | Route                   | Access Level | Description           |
+| --------------- | ----------------------- | ------------ | --------------------- |
+| Admin Dashboard | `/admin`                | ADMIN        | System overview       |
+| User Management | `/admin/users`          | ADMIN        | Manage all users      |
+| Business Units  | `/admin/business-units` | ADMIN        | Manage business units |
+| Analytics       | `/admin/analytics`      | ADMIN        | System analytics      |
 
 ### Pi Network Integration
 
@@ -215,6 +222,7 @@ npm run test:coverage
 ### Business Units System
 
 Each of the 21 business units operates as an independent application with:
+
 - **Dedicated Routes**: `/fundx`, `/explorer`, `/commerce`, etc.
 - **Unified Layout**: All units use `BusinessUnitLayout` component
 - **Shared Configuration**: Centralized in `lib/businessUnits.js`
@@ -223,6 +231,7 @@ Each of the 21 business units operates as an independent application with:
 ### Ecosystem Dashboard
 
 The `/ecosystem` page provides:
+
 - **Visual Grid**: All 21 business units in interactive cards
 - **Quick Navigation**: Direct links to each business unit
 - **Unit Information**: Icons, taglines, descriptions, and features
@@ -254,6 +263,7 @@ We welcome contributions to the **public** components! Please read our [Contribu
 This project uses a **dual-license** approach:
 
 ### 🌐 Public Components (MIT License)
+
 - UI Components (Header, Footer, Layout)
 - Landing Pages (/, /ecosystem, /[unit])
 - Error Pages (403, 404)
@@ -263,6 +273,7 @@ This project uses a **dual-license** approach:
 **Usage**: Free for commercial and personal use
 
 ### 🔒 Private Components (Proprietary License)
+
 - Authentication System (NextAuth + Pi Network)
 - Authorization System (RBAC, Middleware)
 - User Dashboard & Admin Panel
@@ -273,6 +284,7 @@ This project uses a **dual-license** approach:
 **Usage**: Requires commercial license
 
 ### 📚 Documentation
+
 - [DUAL_LICENSE_STRUCTURE.md](./DUAL_LICENSE_STRUCTURE.md) - Complete licensing guide
 - [PUBLIC_COMPONENTS.md](./PUBLIC_COMPONENTS.md) - Open-source components list
 - [PRIVATE_COMPONENTS.md](./PRIVATE_COMPONENTS.md) - Proprietary components list
@@ -314,12 +326,14 @@ See individual LICENSE files for full legal details.
 The TEC Ecosystem consists of 21 independent business units:
 
 ### Financial Services
+
 - **FundX.pi** - Investment strategies and portfolio optimization
 - **Assets.pi** - Asset management and valuation
 - **NBF.pi** - Next-generation banking solutions
 - **Insure.pi** - Insurance and risk management
 
 ### Premium Services
+
 - **VIP.pi** - Exclusive opportunities and memberships
 - **Elite.pi** - Premium consulting and networking
 - **Titan.pi** - Enterprise-level authority
@@ -327,10 +341,12 @@ The TEC Ecosystem consists of 21 independent business units:
 - **Legend.pi** - Legacy and heritage services
 
 ### Commerce & Marketplace
+
 - **Commerce.pi** - General marketplace
 - **Ecommerce.pi** - Online retail platform
 
 ### Technology & Innovation
+
 - **Explorer.pi** - Discovery and analytics platform
 - **DX.pi** - Digital transformation solutions
 - **NX.pi** - Next-generation technologies
@@ -339,6 +355,7 @@ The TEC Ecosystem consists of 21 independent business units:
 - **Alert.pi** - Notification and monitoring system
 
 ### Specialized Services
+
 - **Life.pi** - Lifestyle and wellness
 - **Connection.pi** - Networking and relationships
 - **Brookfield.pi** - Real estate and property

@@ -3,6 +3,7 @@
 ## ✅ الصفحات جاهزة
 
 تم التأكد من وجود:
+
 - ✅ `/pages/terms.js` - شروط الخدمة
 - ✅ `/pages/privacy.js` - سياسة الخصوصية
 - ✅ جميع صفحات الـ 24 وحدة عمل
@@ -20,6 +21,7 @@
 3. **اختر:** "Import Git Repository"
 
 4. **الصق رابط GitHub:**
+
    ```
    https://github.com/Yasser1728/tec-ecosystem
    ```
@@ -33,6 +35,7 @@
    - Output Directory: `.next`
 
 7. **Environment Variables - أضف:**
+
    ```env
    NEXTAUTH_URL=https://your-project.vercel.app
    NEXTAUTH_SECRET=generate_with_openssl_rand_base64_32
@@ -172,22 +175,26 @@ tec.pi → https://tec-ecosystem.vercel.app
 ## ✅ التحقق من النشر
 
 ### 1. اختبار الصفحة الرئيسية:
+
 ```
 https://your-project.vercel.app
 ```
 
 ### 2. اختبار Terms & Privacy:
+
 ```
 https://your-project.vercel.app/terms
 https://your-project.vercel.app/privacy
 ```
 
 ### 3. اختبار API:
+
 ```
 https://your-project.vercel.app/api/business-units
 ```
 
 ### 4. اختبار المصادقة:
+
 ```
 https://your-project.vercel.app/auth/signin
 ```
@@ -211,6 +218,7 @@ https://your-project.vercel.app/auth/signin
 ## 🆘 حل المشاكل
 
 ### Build Failed؟
+
 ```bash
 # اختبر محلياً
 npm run build
@@ -220,11 +228,13 @@ vercel --prod --force
 ```
 
 ### Database Connection Error؟
+
 - تحقق من DATABASE_URL
 - تأكد من تشغيل Migrations
 - تحقق من IP Whitelist
 
 ### Pi Authentication لا يعمل؟
+
 - تحقق من PI_API_KEY
 - راجع Redirect URLs في Pi Portal
 - تأكد من NEXTAUTH_URL صحيح
@@ -242,6 +252,7 @@ vercel --prod --force
 ## 🎉 بعد النشر الناجح
 
 ستحصل على:
+
 - ✅ رابط مباشر: `https://your-project.vercel.app`
 - ✅ SSL تلقائي (HTTPS)
 - ✅ CDN عالمي

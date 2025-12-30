@@ -1,26 +1,26 @@
-import { prisma } from '../../../lib/db/prisma';
-import { piAuth } from '../../../lib/pi-auth';
+import { prisma } from "../../../lib/db/prisma";
+import { piAuth } from "../../../lib/pi-auth";
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
   const { domainName, certificateType, metadata, paymentId } = req.body;
 
   if (!domainName || !certificateType || !metadata) {
-    return res.status(400).json({ error: 'Missing required fields' });
+    return res.status(400).json({ error: "Missing required fields" });
   }
 
   try {
     // Verify payment is completed
     if (paymentId) {
       const payment = await prisma.payment.findUnique({
-        where: { id: paymentId }
+        where: { id: paymentId },
       });
 
-      if (!payment || payment.status !== 'COMPLETED') {
-        return res.status(400).json({ error: 'Payment not completed' });
+      if (!payment || payment.status !== "COMPLETED") {
+        return res.status(400).json({ error: "Payment not completed" });
       }
     }
 
@@ -31,12 +31,14 @@ export default async function handler(req, res) {
     const nft = await prisma.nFT.create({
       data: {
         tokenId,
-        userId: metadata.attributes.find(a => a.trait_type === 'Owner')?.value || 'unknown',
+        userId:
+          metadata.attributes.find((a) => a.trait_type === "Owner")?.value ||
+          "unknown",
         domainName,
         certificateType,
         metadata,
-        status: 'MINTED'
-      }
+        status: "MINTED",
+      },
     });
 
     return res.status(200).json({
@@ -47,15 +49,16 @@ export default async function handler(req, res) {
         domainName: nft.domainName,
         certificateType: nft.certificateType,
         metadata: nft.metadata,
-        mintedAt: nft.mintedAt
+        mintedAt: nft.mintedAt,
       },
-      message: 'NFT minted successfully'
+      message: "NFT minted successfully",
     });
   } catch (error) {
-    console.error('NFT minting error:', error);
+    console.error("NFT minting error:", error);
     return res.status(500).json({
-      error: 'Failed to mint NFT',
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      error: "Failed to mint NFT",
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 }

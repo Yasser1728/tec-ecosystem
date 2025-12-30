@@ -33,7 +33,7 @@ try {
 }
 
 // Mock window.Pi for Pi Network SDK
-if (typeof window !== 'undefined') {
+if (typeof window !== "undefined") {
   window.Pi = {
     createPayment: jest.fn(),
     authenticate: jest.fn(),

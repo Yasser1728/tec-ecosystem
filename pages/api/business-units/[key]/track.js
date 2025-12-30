@@ -1,11 +1,11 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    res.setHeader('Allow', ['POST']);
-    return res.status(405).json({ error: 'Method Not Allowed' });
+  if (req.method !== "POST") {
+    res.setHeader("Allow", ["POST"]);
+    return res.status(405).json({ error: "Method Not Allowed" });
   }
 
   const { key } = req.query;
@@ -18,16 +18,16 @@ export default async function handler(req, res) {
     });
 
     if (!businessUnit) {
-      return res.status(404).json({ error: 'Business Unit not found' });
+      return res.status(404).json({ error: "Business Unit not found" });
     }
 
     // Track user activity
     const activity = await prisma.userActivity.create({
       data: {
-        userId: userId || 'anonymous',
+        userId: userId || "anonymous",
         businessUnit: key,
-        page: page || '/',
-        action: action || 'VIEW',
+        page: page || "/",
+        action: action || "VIEW",
         metadata: metadata || {},
       },
     });
@@ -56,8 +56,10 @@ export default async function handler(req, res) {
       data: activity,
     });
   } catch (error) {
-    console.error('Tracking Error:', error);
-    return res.status(500).json({ error: 'Internal Server Error', message: error.message });
+    console.error("Tracking Error:", error);
+    return res
+      .status(500)
+      .json({ error: "Internal Server Error", message: error.message });
   } finally {
     await prisma.$disconnect();
   }

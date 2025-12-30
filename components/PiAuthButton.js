@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { piAuth } from '../lib/pi-auth';
+import { useState, useEffect } from "react";
+import { piAuth } from "../lib/pi-auth";
 
 export default function PiAuthButton({ onAuthSuccess, onAuthError }) {
   const [loading, setLoading] = useState(false);
@@ -9,25 +9,25 @@ export default function PiAuthButton({ onAuthSuccess, onAuthError }) {
   useEffect(() => {
     // Check if Pi SDK is available
     const checkPiSDK = () => {
-      if (typeof window !== 'undefined' && window.Pi) {
+      if (typeof window !== "undefined" && window.Pi) {
         setPiAvailable(true);
       }
     };
 
     checkPiSDK();
-    
+
     // Retry check after a delay if not immediately available
     const timer = setTimeout(checkPiSDK, 1000);
-    
+
     return () => clearTimeout(timer);
   }, []);
 
   const handleAuth = async () => {
     setLoading(true);
-    
+
     try {
       const result = await piAuth.authenticate();
-      
+
       if (result.success) {
         setUser(result.user);
         if (onAuthSuccess) {
@@ -39,7 +39,7 @@ export default function PiAuthButton({ onAuthSuccess, onAuthError }) {
         }
       }
     } catch (error) {
-      console.error('Authentication error:', error);
+      console.error("Authentication error:", error);
       if (onAuthError) {
         onAuthError(error.message);
       }
@@ -57,7 +57,8 @@ export default function PiAuthButton({ onAuthSuccess, onAuthError }) {
     return (
       <div className="bg-yellow-900/20 border border-yellow-600 rounded-lg p-4 text-yellow-200">
         <p className="text-sm">
-          ⚠️ Pi Browser required. Please open this app in the Pi Browser to authenticate.
+          ⚠️ Pi Browser required. Please open this app in the Pi Browser to
+          authenticate.
         </p>
       </div>
     );
@@ -74,7 +75,9 @@ export default function PiAuthButton({ onAuthSuccess, onAuthError }) {
           </div>
           <div>
             <p className="text-sm font-medium text-white">@{user.username}</p>
-            <p className="text-xs text-gray-400">Tier: {user.tier || 'STANDARD'}</p>
+            <p className="text-xs text-gray-400">
+              Tier: {user.tier || "STANDARD"}
+            </p>
           </div>
         </div>
         <button
@@ -96,13 +99,25 @@ export default function PiAuthButton({ onAuthSuccess, onAuthError }) {
       {loading ? (
         <span className="flex items-center gap-2">
           <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+              fill="none"
+            />
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            />
           </svg>
           Authenticating...
         </span>
       ) : (
-        'Connect with Pi'
+        "Connect with Pi"
       )}
     </button>
   );

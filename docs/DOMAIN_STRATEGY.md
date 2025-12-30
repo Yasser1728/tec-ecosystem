@@ -9,12 +9,14 @@ TEC Ecosystem manages 24 independent business units, each requiring a domain str
 ## 📋 The 24 Domains
 
 ### Financial Services (4)
+
 1. fundx.pi - Investment Strategies
 2. assets.pi - Portfolio Management
 3. nbf.pi - Sovereign Banking
 4. insure.pi - Deal Protection
 
 ### Premium Services (5)
+
 5. vip.pi - Exclusive Opportunities
 6. elite.pi - Premium Consulting
 7. titan.pi - Enterprise Solutions
@@ -22,11 +24,13 @@ TEC Ecosystem manages 24 independent business units, each requiring a domain str
 9. legend.pi - Legacy Services
 
 ### Commerce (3)
+
 10. commerce.pi - B2B Trading
 11. ecommerce.pi - Digital Commerce
 12. estate.pi - Real Estate
 
 ### Technology (7)
+
 13. explorer.pi - Luxury Travel
 14. dx.pi - Digital Transformation
 15. nx.pi - Next-Gen Technology
@@ -36,12 +40,14 @@ TEC Ecosystem manages 24 independent business units, each requiring a domain str
 19. nexus.pi - AI Integration
 
 ### Specialized (4)
+
 20. life.pi - Long-term Growth
 21. connection.pi - Elite Networking
 22. brookfield.pi - Property Investment
 23. zone.pi - Regional Services
 
 ### Central Hub (1)
+
 24. tec.pi - Ecosystem Hub
 
 ---
@@ -53,6 +59,7 @@ TEC Ecosystem manages 24 independent business units, each requiring a domain str
 **Purchase:** `tec-ecosystem.com` ($12/year)
 
 **Setup 24 Subdomains (Free):**
+
 ```
 fundx.tec-ecosystem.com
 explorer.tec-ecosystem.com
@@ -61,6 +68,7 @@ commerce.tec-ecosystem.com
 ```
 
 **Implementation:**
+
 1. Buy domain from Namecheap/GoDaddy
 2. Deploy to Vercel
 3. Configure DNS for subdomains
@@ -78,12 +86,14 @@ commerce.tec-ecosystem.com
 **Collection:** "TEC Ecosystem Domain Certificates"
 
 **Purpose:**
+
 - Prove early ownership claim
 - Create tradeable assets
 - Marketing and community building
 - Generate early revenue
 
 **Metadata Example:**
+
 ```json
 {
   "name": "FundX.pi Domain Certificate",
@@ -100,6 +110,7 @@ commerce.tec-ecosystem.com
 ```
 
 **Pricing:**
+
 - Tier 1 (5 domains): 50 Pi each
 - Tier 2 (10 domains): 30 Pi each
 - Tier 3 (9 domains): 20 Pi each
@@ -113,6 +124,7 @@ commerce.tec-ecosystem.com
 ### Domain Acquisition Strategy
 
 #### Tier 1: Must Have (Priority 1)
+
 ```
 1. tec.pi          - Central hub
 2. fundx.pi        - Financial flagship
@@ -125,6 +137,7 @@ Action: Purchase on Day 1
 ```
 
 #### Tier 2: Important (Priority 2)
+
 ```
 6. assets.pi       - Portfolio management
 7. nbf.pi          - Banking
@@ -142,6 +155,7 @@ Action: Purchase in Week 1
 ```
 
 #### Tier 3: Nice to Have (Priority 3)
+
 ```
 16. insure.pi
 17. life.pi
@@ -166,12 +180,14 @@ Action: Purchase in Month 1
 ### Strategy A: HODL + Build (Recommended)
 
 **Approach:**
+
 - Keep all 24 domains
 - Build strong applications
 - Grow user base
 - Domain value increases organically
 
 **Projected ROI (1 year):**
+
 - Investment: 7,300 Pi
 - Domain value: 50,000+ Pi
 - ROI: 585%
@@ -181,11 +197,13 @@ Action: Purchase in Month 1
 ### Strategy B: Selective Selling
 
 **Approach:**
+
 - Sell 8-10 secondary domains
 - Keep 14-16 core domains
 - Use proceeds to fund development
 
 **Example:**
+
 ```
 Sell:
 - brookfield.pi (2,000 Pi)
@@ -201,6 +219,7 @@ Keep:
 ```
 
 **Benefits:**
+
 - Recover initial investment
 - Reduce risk
 - Focus on core business units
@@ -210,11 +229,13 @@ Keep:
 ### Strategy C: Domain Leasing
 
 **Approach:**
+
 - Lease domains to businesses
 - Generate passive income
 - Retain ownership
 
 **Example Pricing:**
+
 ```
 elite.pi → Consulting firm (50 Pi/month)
 titan.pi → Enterprise company (100 Pi/month)
@@ -232,11 +253,13 @@ Annual Income: 3,180 Pi
 ### Conservative Scenario
 
 **Investment:**
+
 - Domain: $12
 - .pi domains: 7,300 Pi
 - Development: Time
 
 **Returns (Year 1):**
+
 - Domain appreciation: 25,000 Pi
 - App revenue: 10,000 Pi
 - Total: 35,000 Pi
@@ -247,6 +270,7 @@ Annual Income: 3,180 Pi
 **Investment:** Same
 
 **Returns (Year 1):**
+
 - Domain appreciation: 100,000 Pi
 - App revenue: 50,000 Pi
 - Domain sales: 30,000 Pi
@@ -258,24 +282,28 @@ Annual Income: 3,180 Pi
 ## 🎯 Action Items
 
 ### Immediate (This Week)
+
 - [ ] Purchase tec-ecosystem.com
 - [ ] Deploy to Vercel
 - [ ] Setup 24 subdomains
 - [ ] Test all subdomain routes
 
 ### Short Term (This Month)
+
 - [ ] Design NFT certificate artwork
 - [ ] Create NFT collection metadata
 - [ ] Mint 24 domain certificates
 - [ ] Launch NFT sale
 
 ### Medium Term (Next 3 Months)
+
 - [ ] Monitor Pi Name Service announcements
 - [ ] Prepare Pi wallet with sufficient balance
 - [ ] Create domain purchase priority list
 - [ ] Setup automated purchase scripts
 
 ### Long Term (6-12 Months)
+
 - [ ] Purchase all .pi domains
 - [ ] Integrate domains with applications
 - [ ] Evaluate monetization strategies

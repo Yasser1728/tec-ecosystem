@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 export default function ParticlesCanvas() {
   const canvasRef = useRef(null);
@@ -9,7 +9,7 @@ export default function ParticlesCanvas() {
       return;
     }
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     const dpr = window.devicePixelRatio || 1;
 
     function resize() {
@@ -29,7 +29,7 @@ export default function ParticlesCanvas() {
       y: Math.random() * window.innerHeight,
       r: Math.random() * 2 + 0.8,
       dx: (Math.random() - 0.5) * 0.5,
-      dy: (Math.random() - 0.5) * 0.5
+      dy: (Math.random() - 0.5) * 0.5,
     }));
 
     let animationId;
@@ -37,7 +37,7 @@ export default function ParticlesCanvas() {
     function animate() {
       ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
-      particles.forEach(p => {
+      particles.forEach((p) => {
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
         const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
@@ -57,11 +57,11 @@ export default function ParticlesCanvas() {
     }
 
     animate();
-    window.addEventListener('resize', resize);
+    window.addEventListener("resize", resize);
 
     return () => {
       cancelAnimationFrame(animationId);
-      window.removeEventListener('resize', resize);
+      window.removeEventListener("resize", resize);
     };
   }, []);
 

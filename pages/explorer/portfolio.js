@@ -1,8 +1,8 @@
-import { withAuth } from '../../lib/withAuth';
-import { USER_TIERS } from '../../lib/roles';
+import { withAuth } from "../../lib/withAuth";
+import { USER_TIERS } from "../../lib/roles";
 
-import BusinessUnitLayout from '../../components/BusinessUnitLayout';
-import { businessUnits } from '../../lib/businessUnits';
+import BusinessUnitLayout from "../../components/BusinessUnitLayout";
+import { businessUnits } from "../../lib/businessUnits";
 
 function ExplorerPortfolio() {
   return (
@@ -12,18 +12,20 @@ function ExplorerPortfolio() {
         <p className="text-lg text-gray-600 mb-8">
           Manage and optimize your investment portfolio.
         </p>
-        
+
         <div className="space-y-6">
           <div className="bg-white p-6 rounded-lg shadow-md">
             <h3 className="text-xl font-semibold mb-3">Your Holdings</h3>
             <p className="text-gray-600">View and manage your investments</p>
           </div>
-          
+
           <div className="bg-white p-6 rounded-lg shadow-md">
             <h3 className="text-xl font-semibold mb-3">Asset Allocation</h3>
-            <p className="text-gray-600">Optimize your portfolio distribution</p>
+            <p className="text-gray-600">
+              Optimize your portfolio distribution
+            </p>
           </div>
-          
+
           <div className="bg-white p-6 rounded-lg shadow-md">
             <h3 className="text-xl font-semibold mb-3">Risk Assessment</h3>
             <p className="text-gray-600">Evaluate portfolio risk levels</p>
@@ -33,7 +35,6 @@ function ExplorerPortfolio() {
     </BusinessUnitLayout>
   );
 }
-
 
 export default withAuth(ExplorerPortfolio, {
   requiredTier: USER_TIERS.STANDARD,

@@ -20,19 +20,20 @@ TEC Ecosystem
 
 ### Tier Hierarchy
 
-| Tier | Level | Monthly Cost | Access Level |
-|------|-------|--------------|--------------|
-| GUEST | 0 | Free | Public pages only |
-| STANDARD | 1 | Free | Basic features |
-| PREMIUM | 2 | 100 π | Advanced features |
-| ENTERPRISE | 3 | 1000 π | Full features + API |
-| ADMIN | 4 | N/A | System management |
+| Tier       | Level | Monthly Cost | Access Level        |
+| ---------- | ----- | ------------ | ------------------- |
+| GUEST      | 0     | Free         | Public pages only   |
+| STANDARD   | 1     | Free         | Basic features      |
+| PREMIUM    | 2     | 100 π        | Advanced features   |
+| ENTERPRISE | 3     | 1000 π       | Full features + API |
+| ADMIN      | 4     | N/A          | System management   |
 
 ---
 
 ## 🏢 Business Units (21 Total)
 
 ### Financial Services
+
 1. **FundX.pi** - Investment strategies
    - `/fundx` (Public)
    - `/fundx/calculator` (STANDARD+)
@@ -43,6 +44,7 @@ TEC Ecosystem
 4. **Insure.pi** - Insurance services
 
 ### Premium Services
+
 5. **VIP.pi** - Exclusive opportunities
 6. **Elite.pi** - Premium consulting
 7. **Titan.pi** - Enterprise authority
@@ -50,6 +52,7 @@ TEC Ecosystem
 9. **Legend.pi** - Legacy services
 
 ### Commerce
+
 10. **Commerce.pi** - General marketplace
     - `/commerce` (Public)
     - `/commerce/sellers` (STANDARD+)
@@ -58,6 +61,7 @@ TEC Ecosystem
 11. **Ecommerce.pi** - Online retail
 
 ### Technology
+
 12. **Explorer.pi** - Discovery platform
     - `/explorer` (Public)
     - `/explorer/analytics` (STANDARD+)
@@ -70,6 +74,7 @@ TEC Ecosystem
 17. **Alert.pi** - Notifications
 
 ### Specialized
+
 18. **Life.pi** - Lifestyle
 19. **Connection.pi** - Networking
 20. **Brookfield.pi** - Real estate
@@ -80,6 +85,7 @@ TEC Ecosystem
 ## 🔐 Authentication Flow
 
 ### 1. User Signs In
+
 ```
 User → /auth/signin
   ↓
@@ -91,6 +97,7 @@ Redirect to Dashboard
 ```
 
 ### 2. Access Protected Page
+
 ```
 User → Protected Page
   ↓
@@ -180,28 +187,33 @@ tec-ecosystem/
 ## 🚀 Getting Started
 
 ### 1. Installation
+
 ```bash
 npm install
 ```
 
 ### 2. Environment Setup
+
 ```bash
 cp .env.example .env.local
 # Edit .env.local with your values
 ```
 
 ### 3. Database Setup
+
 ```bash
 npx prisma generate
 npm run db:seed
 ```
 
 ### 4. Run Development Server
+
 ```bash
 npm run dev
 ```
 
 ### 5. Access the System
+
 - **Home**: http://localhost:3000
 - **Ecosystem**: http://localhost:3000/ecosystem
 - **Sign In**: http://localhost:3000/auth/signin
@@ -214,11 +226,11 @@ npm run dev
 
 After running `npm run db:seed`:
 
-| Username | Pi ID | Tier | Access |
-|----------|-------|------|--------|
-| admin | admin-demo-pi-id | ADMIN | Full system access |
-| demo_user | user-demo-pi-id | STANDARD | Basic features |
-| premium_user | premium-demo-pi-id | PREMIUM | Premium features |
+| Username     | Pi ID              | Tier     | Access             |
+| ------------ | ------------------ | -------- | ------------------ |
+| admin        | admin-demo-pi-id   | ADMIN    | Full system access |
+| demo_user    | user-demo-pi-id    | STANDARD | Basic features     |
+| premium_user | premium-demo-pi-id | PREMIUM  | Premium features   |
 
 ---
 
@@ -392,6 +404,7 @@ npm run test:coverage   # Coverage report
 ## 📞 Support
 
 For issues or questions:
+
 - GitHub Issues: [Repository Issues](https://github.com/Yasser1728/tec-ecosystem/issues)
 - Documentation: `/docs` folder
 - Email: support@tec-ecosystem.com (placeholder)

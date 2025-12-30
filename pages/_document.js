@@ -1,4 +1,4 @@
-import Document, { Html, Head, Main, NextScript } from 'next/document'
+import Document, { Html, Head, Main, NextScript } from "next/document";
 
 class MyDocument extends Document {
   render() {
@@ -6,16 +6,14 @@ class MyDocument extends Document {
       <Html>
         <Head>
           {/* Pi Network SDK v2.0 */}
-          <script 
-            src="https://sdk.minepi.com/pi-sdk.js"
-          />
+          <script src="https://sdk.minepi.com/pi-sdk.js" />
           <script
             dangerouslySetInnerHTML={{
               __html: `
                 // Pi SDK Configuration
                 window.piConfig = {
-                  appId: '${process.env.NEXT_PUBLIC_PI_APP_ID || 'tec-titan-elite-commerce-04d84accdca2487c'}',
-                  sandbox: ${process.env.NEXT_PUBLIC_PI_SANDBOX || 'true'}
+                  appId: '${process.env.NEXT_PUBLIC_PI_APP_ID || "tec-titan-elite-commerce-04d84accdca2487c"}',
+                  sandbox: ${process.env.NEXT_PUBLIC_PI_SANDBOX || "true"}
                 };
                 
                 // Pi Sandbox Implementation (immediate fallback)
@@ -175,7 +173,7 @@ class MyDocument extends Document {
                     }
                   }, 10000);
                 })();
-              `
+              `,
             }}
           />
         </Head>
@@ -184,8 +182,8 @@ class MyDocument extends Document {
           <NextScript />
         </body>
       </Html>
-    )
+    );
   }
 }
 
-export default MyDocument
+export default MyDocument;

@@ -2,12 +2,16 @@
  * Unit tests for Pi Payments Module
  */
 
-import { PiPayments, DOMAIN_PRICES, PAYMENT_TYPES } from '../../lib/pi-payments';
-import { piAuth } from '../../lib/pi-auth';
+import {
+  PiPayments,
+  DOMAIN_PRICES,
+  PAYMENT_TYPES,
+} from "../../lib/pi-payments";
+import { piAuth } from "../../lib/pi-auth";
 
-jest.mock('../../lib/pi-auth');
+jest.mock("../../lib/pi-auth");
 
-describe('PiPayments', () => {
+describe("PiPayments", () => {
   let piPayments;
   let mockWindow;
 
@@ -16,24 +20,24 @@ describe('PiPayments', () => {
     mockWindow = {
       Pi: {
         createPayment: jest.fn().mockResolvedValue({
-          identifier: 'payment-123',
-          user_uid: 'user-123'
-        })
-      }
+          identifier: "payment-123",
+          user_uid: "user-123",
+        }),
+      },
     };
     global.window = mockWindow;
-    
+
     // Create instance after mocking window
     piPayments = new PiPayments();
-    
+
     // Mock fetch
     global.fetch = jest.fn();
-    
+
     // Mock piAuth
     piAuth.getUser.mockReturnValue({
-      id: 'user-123',
-      piId: 'pi-123',
-      username: 'testuser'
+      id: "user-123",
+      piId: "pi-123",
+      username: "testuser",
     });
   });
 
@@ -41,255 +45,259 @@ describe('PiPayments', () => {
     jest.clearAllMocks();
   });
 
-  describe.skip('createDomainPurchase', () => {
-    it('should create domain purchase payment', async () => {
+  describe.skip("createDomainPurchase", () => {
+    it("should create domain purchase payment", async () => {
       const mockPaymentRecord = {
-        id: 'payment-123',
+        id: "payment-123",
         amount: 100,
-        domain: 'fundx'
+        domain: "fundx",
       };
 
       global.fetch.mockResolvedValue({
         ok: true,
         json: async () => ({
           success: true,
-          payment: mockPaymentRecord
-        })
+          payment: mockPaymentRecord,
+        }),
       });
 
       mockWindow.Pi.createPayment.mockResolvedValue({
-        identifier: 'pi-payment-123'
+        identifier: "pi-payment-123",
       });
 
       const result = await piPayments.createDomainPurchase({
-        domain: 'fundx',
-        tier: 'STANDARD'
+        domain: "fundx",
+        tier: "STANDARD",
       });
 
       expect(result.success).toBe(true);
-      expect(result.paymentId).toBe('pi-payment-123');
+      expect(result.paymentId).toBe("pi-payment-123");
     });
 
-    it('should apply tier multiplier for premium tier', async () => {
+    it("should apply tier multiplier for premium tier", async () => {
       global.fetch.mockResolvedValue({
         ok: true,
         json: async () => ({
           success: true,
-          payment: { id: 'payment-123' }
-        })
+          payment: { id: "payment-123" },
+        }),
       });
 
       mockWindow.Pi.createPayment.mockResolvedValue({
-        identifier: 'pi-payment-123'
+        identifier: "pi-payment-123",
       });
 
       await piPayments.createDomainPurchase({
-        domain: 'fundx',
-        tier: 'PREMIUM'
+        domain: "fundx",
+        tier: "PREMIUM",
       });
 
       const expectedAmount = DOMAIN_PRICES.fundx * 1.5;
-      
+
       expect(global.fetch).toHaveBeenCalledWith(
-        '/api/payments/create-payment',
+        "/api/payments/create-payment",
         expect.objectContaining({
-          body: expect.stringContaining(expectedAmount.toString())
-        })
+          body: expect.stringContaining(expectedAmount.toString()),
+        }),
       );
     });
 
-    it('should throw error when user not authenticated', async () => {
+    it("should throw error when user not authenticated", async () => {
       piAuth.getUser.mockReturnValue(null);
 
       await expect(
-        piPayments.createDomainPurchase({ domain: 'fundx' })
-      ).rejects.toThrow('User must be authenticated');
+        piPayments.createDomainPurchase({ domain: "fundx" }),
+      ).rejects.toThrow("User must be authenticated");
     });
   });
 
-  describe.skip('createNotificationPayment', () => {
-    it('should create notification payment with monthly duration', async () => {
+  describe.skip("createNotificationPayment", () => {
+    it("should create notification payment with monthly duration", async () => {
       global.fetch.mockResolvedValue({
         ok: true,
         json: async () => ({
           success: true,
-          payment: { id: 'payment-123' }
-        })
+          payment: { id: "payment-123" },
+        }),
       });
 
       mockWindow.Pi.createPayment.mockResolvedValue({
-        identifier: 'pi-payment-123'
+        identifier: "pi-payment-123",
       });
 
       const result = await piPayments.createNotificationPayment({
-        notificationType: 'premium',
-        duration: 'monthly'
+        notificationType: "premium",
+        duration: "monthly",
       });
 
       expect(result.success).toBe(true);
       expect(global.fetch).toHaveBeenCalledWith(
-        '/api/payments/create-payment',
+        "/api/payments/create-payment",
         expect.objectContaining({
-          body: expect.stringContaining('"amount":10')
-        })
+          body: expect.stringContaining('"amount":10'),
+        }),
       );
     });
 
-    it('should apply correct pricing for yearly duration', async () => {
+    it("should apply correct pricing for yearly duration", async () => {
       global.fetch.mockResolvedValue({
         ok: true,
         json: async () => ({
           success: true,
-          payment: { id: 'payment-123' }
-        })
+          payment: { id: "payment-123" },
+        }),
       });
 
       mockWindow.Pi.createPayment.mockResolvedValue({
-        identifier: 'pi-payment-123'
+        identifier: "pi-payment-123",
       });
 
       await piPayments.createNotificationPayment({
-        notificationType: 'premium',
-        duration: 'yearly'
+        notificationType: "premium",
+        duration: "yearly",
       });
 
       expect(global.fetch).toHaveBeenCalledWith(
-        '/api/payments/create-payment',
+        "/api/payments/create-payment",
         expect.objectContaining({
-          body: expect.stringContaining('"amount":80')
-        })
+          body: expect.stringContaining('"amount":80'),
+        }),
       );
     });
   });
 
-  describe.skip('createEcommercePayment', () => {
-    it('should create ecommerce payment with quantity', async () => {
+  describe.skip("createEcommercePayment", () => {
+    it("should create ecommerce payment with quantity", async () => {
       global.fetch.mockResolvedValue({
         ok: true,
         json: async () => ({
           success: true,
-          payment: { id: 'payment-123' }
-        })
+          payment: { id: "payment-123" },
+        }),
       });
 
       mockWindow.Pi.createPayment.mockResolvedValue({
-        identifier: 'pi-payment-123'
+        identifier: "pi-payment-123",
       });
 
       const result = await piPayments.createEcommercePayment({
-        serviceId: 'service-1',
-        serviceName: 'Luxury Service',
+        serviceId: "service-1",
+        serviceName: "Luxury Service",
         price: 50,
-        quantity: 3
+        quantity: 3,
       });
 
       expect(result.success).toBe(true);
       expect(global.fetch).toHaveBeenCalledWith(
-        '/api/payments/create-payment',
+        "/api/payments/create-payment",
         expect.objectContaining({
-          body: expect.stringContaining('"amount":150')
-        })
+          body: expect.stringContaining('"amount":150'),
+        }),
       );
     });
   });
 
-  describe.skip('createNFTMintingPayment', () => {
-    it('should create NFT minting payment', async () => {
+  describe.skip("createNFTMintingPayment", () => {
+    it("should create NFT minting payment", async () => {
       global.fetch.mockResolvedValue({
         ok: true,
         json: async () => ({
           success: true,
-          payment: { id: 'payment-123' }
-        })
+          payment: { id: "payment-123" },
+        }),
       });
 
       mockWindow.Pi.createPayment.mockResolvedValue({
-        identifier: 'pi-payment-123'
+        identifier: "pi-payment-123",
       });
 
       const result = await piPayments.createNFTMintingPayment({
-        domainName: 'fundx',
-        certificateType: 'ownership'
+        domainName: "fundx",
+        certificateType: "ownership",
       });
 
       expect(result.success).toBe(true);
       expect(global.fetch).toHaveBeenCalledWith(
-        '/api/payments/create-payment',
+        "/api/payments/create-payment",
         expect.objectContaining({
-          body: expect.stringContaining('"amount":50')
-        })
+          body: expect.stringContaining('"amount":50'),
+        }),
       );
     });
   });
 
-  describe('handleApproval', () => {
-    it('should call approval API endpoint', async () => {
+  describe("handleApproval", () => {
+    it("should call approval API endpoint", async () => {
       global.fetch.mockResolvedValue({
         ok: true,
-        json: async () => ({ success: true })
+        json: async () => ({ success: true }),
       });
 
-      await piPayments.handleApproval('pi-payment-123', 'internal-123');
+      await piPayments.handleApproval("pi-payment-123", "internal-123");
 
       expect(global.fetch).toHaveBeenCalledWith(
-        '/api/payments/approve',
+        "/api/payments/approve",
         expect.objectContaining({
-          method: 'POST',
-          body: expect.stringContaining('pi-payment-123')
-        })
+          method: "POST",
+          body: expect.stringContaining("pi-payment-123"),
+        }),
       );
     });
   });
 
-  describe('handleCompletion', () => {
-    it('should call completion API and dispatch event', async () => {
+  describe("handleCompletion", () => {
+    it("should call completion API and dispatch event", async () => {
       global.fetch.mockResolvedValue({
         ok: true,
-        json: async () => ({ success: true })
+        json: async () => ({ success: true }),
       });
 
-      const dispatchEventSpy = jest.spyOn(window, 'dispatchEvent');
+      const dispatchEventSpy = jest.spyOn(window, "dispatchEvent");
 
-      await piPayments.handleCompletion('pi-payment-123', 'txid-123', 'internal-123');
+      await piPayments.handleCompletion(
+        "pi-payment-123",
+        "txid-123",
+        "internal-123",
+      );
 
       expect(global.fetch).toHaveBeenCalledWith(
-        '/api/payments/complete',
+        "/api/payments/complete",
         expect.objectContaining({
-          method: 'POST',
-          body: expect.stringContaining('txid-123')
-        })
+          method: "POST",
+          body: expect.stringContaining("txid-123"),
+        }),
       );
 
       expect(dispatchEventSpy).toHaveBeenCalledWith(
         expect.objectContaining({
-          type: 'pi-payment-completed'
-        })
+          type: "pi-payment-completed",
+        }),
       );
     });
   });
 
-  describe('handleCancel', () => {
-    it('should call cancel API endpoint', async () => {
+  describe("handleCancel", () => {
+    it("should call cancel API endpoint", async () => {
       global.fetch.mockResolvedValue({
         ok: true,
-        json: async () => ({ success: true })
+        json: async () => ({ success: true }),
       });
 
-      await piPayments.handleCancel('pi-payment-123', 'internal-123');
+      await piPayments.handleCancel("pi-payment-123", "internal-123");
 
       expect(global.fetch).toHaveBeenCalledWith(
-        '/api/payments/cancel',
+        "/api/payments/cancel",
         expect.objectContaining({
-          method: 'POST'
-        })
+          method: "POST",
+        }),
       );
     });
   });
 
-  describe('getActivePayments', () => {
-    it('should return array of active payments', () => {
-      piPayments.activePayments.set('payment-1', { amount: 100 });
-      piPayments.activePayments.set('payment-2', { amount: 200 });
+  describe("getActivePayments", () => {
+    it("should return array of active payments", () => {
+      piPayments.activePayments.set("payment-1", { amount: 100 });
+      piPayments.activePayments.set("payment-2", { amount: 200 });
 
       const payments = piPayments.getActivePayments();
 

@@ -3,6 +3,7 @@
 ## 📋 نظرة عامة
 
 تم إعداد نظام شامل لفحص الكود قبل النشر على Vercel، يضمن:
+
 - ✅ جودة الكود (Linting)
 - ✅ نجاح الاختبارات (Tests)
 - ✅ أمان التطبيق (Security)
@@ -17,10 +18,12 @@
 **الغرض:** بناء التطبيق والتحقق من نجاح الـ build
 
 **يعمل عند:**
+
 - Push إلى `main` أو `develop`
 - Pull Request إلى `main` أو `develop`
 
 **الخطوات:**
+
 - ✅ تثبيت Dependencies
 - ✅ توليد Prisma Client
 - ✅ بناء Next.js
@@ -33,10 +36,12 @@
 **الغرض:** فحص جودة الكود
 
 **الفحوصات:**
+
 - ✅ ESLint - فحص أخطاء JavaScript/TypeScript
 - ✅ Prettier - فحص التنسيق
 
 **الأوامر:**
+
 ```bash
 npm run lint
 npm run format:check
@@ -51,25 +56,31 @@ npm run format:check
 **أنواع الاختبارات:**
 
 #### A. Unit Tests (اختبارات الوحدة)
+
 ```bash
 npm run test:unit
 ```
+
 - اختبار Functions منفصلة
 - اختبار Components
 - سريعة جداً
 
 #### B. Integration Tests (اختبارات التكامل)
+
 ```bash
 npm run test:integration
 ```
+
 - اختبار APIs
 - اختبار Database
 - تحتاج PostgreSQL
 
 #### C. E2E Tests (اختبارات شاملة)
+
 ```bash
 npm run test:playwright
 ```
+
 - اختبار التطبيق كاملاً
 - محاكاة المستخدم
 - Playwright
@@ -83,25 +94,31 @@ npm run test:playwright
 **الفحوصات:**
 
 #### A. Dependency Audit
+
 ```bash
 npm audit --audit-level=moderate
 ```
+
 - فحص ثغرات في npm packages
 - تقرير يومي
 
 #### B. Snyk Scan
+
 - فحص متقدم للثغرات
 - يحتاج `SNYK_TOKEN` في GitHub Secrets
 
 #### C. CodeQL Analysis
+
 - تحليل الكود من GitHub
 - يكتشف ثغرات أمنية محتملة
 
 #### D. Secret Scanning
+
 - TruffleHog للبحث عن API Keys مكشوفة
 - يفحص Git history
 
 #### E. License Compliance
+
 - فحص تراخيص المكتبات
 - تجنب مشاكل قانونية
 
@@ -112,6 +129,7 @@ npm audit --audit-level=moderate
 **الغرض:** التحقق النهائي قبل النشر
 
 **الخطوات:**
+
 1. ⏳ انتظار جميع الفحوصات
 2. ✅ التحقق من package.json
 3. ✅ التحقق من Prisma schema
@@ -130,6 +148,7 @@ SNYK_TOKEN=<your_snyk_token>
 ```
 
 **للحصول على Snyk Token:**
+
 1. اذهب إلى: https://snyk.io
 2. أنشئ حساب مجاني
 3. Account Settings → API Token
@@ -203,7 +222,7 @@ SNYK_TOKEN=<your_snyk_token>
    ↓
 4. إذا كل شيء نجح ✅:
    → Vercel تبدأ النشر تلقائياً
-   
+
 5. إذا فشل أي check ❌:
    → Vercel تمنع النشر
    → Developer يصلح المشكلة
@@ -285,6 +304,7 @@ npm run test:all
 ### مشكلة: Build فشل
 
 **الحل:**
+
 ```bash
 # محلياً
 npm run build
@@ -296,6 +316,7 @@ npm run build
 ### مشكلة: Tests فشلت
 
 **الحل:**
+
 ```bash
 # شغل Tests محلياً
 npm test
@@ -307,6 +328,7 @@ npm test
 ### مشكلة: Security Audit فشل
 
 **الحل:**
+
 ```bash
 # شوف الثغرات
 npm audit
@@ -321,6 +343,7 @@ npm update <package-name>
 ### مشكلة: Vercel لا تنتظر Checks
 
 **الحل:**
+
 1. تأكد من تفعيل "Deployment Protection" في Vercel
 2. تحقق من ربط GitHub بشكل صحيح
 3. تأكد من وجود `.github/workflows/` في الـ repo
@@ -330,16 +353,19 @@ npm update <package-name>
 ## 📈 الفوائد
 
 ### للأمان:
+
 - 🔒 منع نشر كود به ثغرات
 - 🔐 كشف API Keys مكشوفة
 - 🛡️ فحص تراخيص المكتبات
 
 ### للجودة:
+
 - ✅ كود نظيف ومنسق
 - ✅ اختبارات شاملة
 - ✅ بناء ناجح دائماً
 
 ### للربحية:
+
 - 💰 تجنب Downtime (تكلفة عالية في Fintech)
 - 💰 تقليل Bugs في Production
 - 💰 ثقة أكبر من المستخدمين
@@ -349,16 +375,18 @@ npm update <package-name>
 ## 🎓 Best Practices
 
 ### 1. اكتب Tests لكل Feature جديدة
+
 ```javascript
 // tests/unit/payment.test.js
-describe('Payment', () => {
-  it('should process payment successfully', () => {
+describe("Payment", () => {
+  it("should process payment successfully", () => {
     // test code
   });
 });
 ```
 
 ### 2. استخدم Pre-commit Hooks
+
 ```bash
 # في package.json
 "husky": {
@@ -370,11 +398,13 @@ describe('Payment', () => {
 ```
 
 ### 3. راجع Security Reports بانتظام
+
 - يومياً: npm audit
 - أسبوعياً: Snyk reports
 - شهرياً: CodeQL findings
 
 ### 4. حافظ على Dependencies محدثة
+
 ```bash
 # كل أسبوع
 npm outdated
@@ -422,7 +452,7 @@ npm update
 ✅ **الأمان مضمون**  
 ✅ **الجودة عالية**  
 ✅ **الثقة في Production**  
-✅ **تقليل التكاليف**  
+✅ **تقليل التكاليف**
 
 **🚀 تطبيق احترافي جاهز للإنتاج!**
 

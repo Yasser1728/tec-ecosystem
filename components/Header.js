@@ -8,9 +8,7 @@ export default function Header() {
           </h1>
           <p className="text-xs text-gray-400">Titan Elite Commerce</p>
         </div>
-        <div className="text-sm text-gray-400">
-          Powered by Pi Network
-        </div>
+        <div className="text-sm text-gray-400">Powered by Pi Network</div>
       </div>
     </header>
   );

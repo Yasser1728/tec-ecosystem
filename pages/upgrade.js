@@ -1,17 +1,19 @@
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
-import { useState } from 'react';
-import Head from 'next/head';
-import Link from 'next/link';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import { USER_TIERS, TIER_PRICING, TIER_BENEFITS } from '../lib/roles';
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import Head from "next/head";
+import Link from "next/link";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+import { USER_TIERS, TIER_PRICING, TIER_BENEFITS } from "../lib/roles";
 
 export default function Upgrade() {
   const { data: session } = useSession();
   const router = useRouter();
   const { required, from } = router.query;
-  const [selectedTier, setSelectedTier] = useState(required || USER_TIERS.PREMIUM);
+  const [selectedTier, setSelectedTier] = useState(
+    required || USER_TIERS.PREMIUM,
+  );
   const [isProcessing, setIsProcessing] = useState(false);
 
   const currentTier = session?.user?.tier || USER_TIERS.GUEST;
@@ -19,31 +21,31 @@ export default function Upgrade() {
   const tiers = [
     {
       id: USER_TIERS.STANDARD,
-      name: 'Standard',
+      name: "Standard",
       price: 0,
-      period: 'Forever Free',
-      icon: '🌟',
-      color: 'from-blue-500 to-cyan-500',
+      period: "Forever Free",
+      icon: "🌟",
+      color: "from-blue-500 to-cyan-500",
       popular: false,
       benefits: TIER_BENEFITS.STANDARD,
     },
     {
       id: USER_TIERS.PREMIUM,
-      name: 'Premium',
+      name: "Premium",
       price: TIER_PRICING.PREMIUM,
-      period: 'per month',
-      icon: '💎',
-      color: 'from-purple-500 to-pink-500',
+      period: "per month",
+      icon: "💎",
+      color: "from-purple-500 to-pink-500",
       popular: true,
       benefits: TIER_BENEFITS.PREMIUM,
     },
     {
       id: USER_TIERS.ENTERPRISE,
-      name: 'Enterprise',
+      name: "Enterprise",
       price: TIER_PRICING.ENTERPRISE,
-      period: 'per month',
-      icon: '🏢',
-      color: 'from-orange-500 to-red-500',
+      period: "per month",
+      icon: "🏢",
+      color: "from-orange-500 to-red-500",
       popular: false,
       benefits: TIER_BENEFITS.ENTERPRISE,
     },
@@ -51,7 +53,9 @@ export default function Upgrade() {
 
   const handleUpgrade = async (tier) => {
     if (!session) {
-      router.push(`/auth/signin?callbackUrl=${encodeURIComponent(router.asPath)}`);
+      router.push(
+        `/auth/signin?callbackUrl=${encodeURIComponent(router.asPath)}`,
+      );
       return;
     }
 
@@ -63,45 +67,48 @@ export default function Upgrade() {
 
     try {
       // Create Pi payment
-      const payment = await window.Pi.createPayment({
-        amount: TIER_PRICING[tier],
-        memo: `TEC Ecosystem - ${tier} Subscription`,
-        metadata: {
-          type: 'subscription',
-          tier: tier,
-          userId: session.user.id,
+      const payment = await window.Pi.createPayment(
+        {
+          amount: TIER_PRICING[tier],
+          memo: `TEC Ecosystem - ${tier} Subscription`,
+          metadata: {
+            type: "subscription",
+            tier: tier,
+            userId: session.user.id,
+          },
         },
-      }, {
-        onReadyForServerApproval: async (paymentId) => {
-          // Approve payment on server
-          const response = await fetch('/api/subscriptions/create', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              paymentId,
-              tier,
-              userId: session.user.id,
-            }),
-          });
+        {
+          onReadyForServerApproval: async (paymentId) => {
+            // Approve payment on server
+            const response = await fetch("/api/subscriptions/create", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                paymentId,
+                tier,
+                userId: session.user.id,
+              }),
+            });
 
-          if (response.ok) {
-            router.push('/dashboard?upgraded=true');
-          }
+            if (response.ok) {
+              router.push("/dashboard?upgraded=true");
+            }
+          },
+          onReadyForServerCompletion: async (paymentId, txid) => {
+            console.log("Payment completed:", paymentId, txid);
+          },
+          onCancel: () => {
+            setIsProcessing(false);
+          },
+          onError: (error) => {
+            console.error("Payment error:", error);
+            setIsProcessing(false);
+          },
         },
-        onReadyForServerCompletion: async (paymentId, txid) => {
-          console.log('Payment completed:', paymentId, txid);
-        },
-        onCancel: () => {
-          setIsProcessing(false);
-        },
-        onError: (error) => {
-          console.error('Payment error:', error);
-          setIsProcessing(false);
-        },
-      });
+      );
     } catch (error) {
-      console.error('Upgrade error:', error);
-      alert('Failed to process upgrade. Please try again.');
+      console.error("Upgrade error:", error);
+      alert("Failed to process upgrade. Please try again.");
       setIsProcessing(false);
     }
   };
@@ -110,7 +117,10 @@ export default function Upgrade() {
     <>
       <Head>
         <title>Upgrade Your Plan - TEC Ecosystem</title>
-        <meta name="description" content="Choose the perfect plan for your needs" />
+        <meta
+          name="description"
+          content="Choose the perfect plan for your needs"
+        />
       </Head>
 
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
@@ -127,7 +137,10 @@ export default function Upgrade() {
             </p>
             {currentTier && (
               <p className="text-sm text-gray-500 mt-2">
-                Current Plan: <span className="text-[#00ff9d] font-semibold">{currentTier}</span>
+                Current Plan:{" "}
+                <span className="text-[#00ff9d] font-semibold">
+                  {currentTier}
+                </span>
               </p>
             )}
           </div>
@@ -136,7 +149,8 @@ export default function Upgrade() {
           {required && (
             <div className="max-w-2xl mx-auto mb-8 p-4 bg-yellow-500/10 border border-yellow-500/50 rounded-lg">
               <p className="text-yellow-400 text-center">
-                ⚠️ <strong>{required}</strong> tier required to access this feature
+                ⚠️ <strong>{required}</strong> tier required to access this
+                feature
               </p>
             </div>
           )}
@@ -147,9 +161,9 @@ export default function Upgrade() {
               <div
                 key={tier.id}
                 className={`relative bg-gray-800 border ${
-                  tier.popular ? 'border-[#00ff9d]' : 'border-gray-700'
+                  tier.popular ? "border-[#00ff9d]" : "border-gray-700"
                 } rounded-xl p-8 ${
-                  tier.popular ? 'transform scale-105' : ''
+                  tier.popular ? "transform scale-105" : ""
                 } transition-all hover:border-[#00ff9d]`}
               >
                 {/* Popular Badge */}
@@ -165,12 +179,16 @@ export default function Upgrade() {
                 <div className="text-5xl mb-4 text-center">{tier.icon}</div>
 
                 {/* Name */}
-                <h3 className="text-2xl font-bold text-center mb-2">{tier.name}</h3>
+                <h3 className="text-2xl font-bold text-center mb-2">
+                  {tier.name}
+                </h3>
 
                 {/* Price */}
                 <div className="text-center mb-6">
                   {tier.price === 0 ? (
-                    <div className="text-3xl font-bold text-[#00ff9d]">Free</div>
+                    <div className="text-3xl font-bold text-[#00ff9d]">
+                      Free
+                    </div>
                   ) : (
                     <>
                       <div className="text-4xl font-bold">
@@ -198,10 +216,10 @@ export default function Upgrade() {
                   disabled={isProcessing || currentTier === tier.id}
                   className={`w-full py-3 rounded-lg font-semibold transition-all ${
                     currentTier === tier.id
-                      ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
+                      ? "bg-gray-700 text-gray-400 cursor-not-allowed"
                       : tier.popular
-                      ? 'bg-gradient-to-r from-[#00ff9d] to-[#00c6ff] text-gray-900 hover:shadow-lg'
-                      : 'bg-gray-700 text-white hover:bg-gray-600'
+                        ? "bg-gradient-to-r from-[#00ff9d] to-[#00c6ff] text-gray-900 hover:shadow-lg"
+                        : "bg-gray-700 text-white hover:bg-gray-600"
                   }`}
                 >
                   {isProcessing ? (
@@ -210,9 +228,9 @@ export default function Upgrade() {
                       Processing...
                     </span>
                   ) : currentTier === tier.id ? (
-                    'Current Plan'
+                    "Current Plan"
                   ) : tier.price === 0 ? (
-                    'Get Started'
+                    "Get Started"
                   ) : (
                     `Upgrade to ${tier.name}`
                   )}
@@ -229,30 +247,42 @@ export default function Upgrade() {
 
             <div className="space-y-4">
               <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-                <h3 className="text-lg font-bold mb-2">Can I change my plan later?</h3>
+                <h3 className="text-lg font-bold mb-2">
+                  Can I change my plan later?
+                </h3>
                 <p className="text-gray-400">
-                  Yes! You can upgrade or downgrade your plan at any time. Changes take effect immediately.
+                  Yes! You can upgrade or downgrade your plan at any time.
+                  Changes take effect immediately.
                 </p>
               </div>
 
               <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-                <h3 className="text-lg font-bold mb-2">What payment methods do you accept?</h3>
+                <h3 className="text-lg font-bold mb-2">
+                  What payment methods do you accept?
+                </h3>
                 <p className="text-gray-400">
-                  We accept Pi cryptocurrency through the Pi Network. All transactions are secure and verified on the blockchain.
+                  We accept Pi cryptocurrency through the Pi Network. All
+                  transactions are secure and verified on the blockchain.
                 </p>
               </div>
 
               <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-                <h3 className="text-lg font-bold mb-2">Is there a free trial?</h3>
+                <h3 className="text-lg font-bold mb-2">
+                  Is there a free trial?
+                </h3>
                 <p className="text-gray-400">
-                  The Standard plan is free forever! You can explore the platform and upgrade when you're ready for more features.
+                  The Standard plan is free forever! You can explore the
+                  platform and upgrade when you're ready for more features.
                 </p>
               </div>
 
               <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-                <h3 className="text-lg font-bold mb-2">Can I cancel my subscription?</h3>
+                <h3 className="text-lg font-bold mb-2">
+                  Can I cancel my subscription?
+                </h3>
                 <p className="text-gray-400">
-                  Yes, you can cancel anytime from your dashboard. You'll retain access until the end of your billing period.
+                  Yes, you can cancel anytime from your dashboard. You'll retain
+                  access until the end of your billing period.
                 </p>
               </div>
             </div>

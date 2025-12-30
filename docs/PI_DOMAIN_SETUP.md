@@ -63,6 +63,7 @@ Redirect Path: /explorer
 Copy-paste this configuration for all 24 domains:
 
 #### Financial Services
+
 ```
 life.pi → /life
 insure.pi → /insure
@@ -72,6 +73,7 @@ nbf.pi → /nbf
 ```
 
 #### Premium Services
+
 ```
 vip.pi → /vip
 elite.pi → /elite
@@ -81,6 +83,7 @@ legend.pi → /legend
 ```
 
 #### Commerce
+
 ```
 commerce.pi → /commerce
 ecommerce.pi → /ecommerce
@@ -88,6 +91,7 @@ estate.pi → /estate
 ```
 
 #### Technology
+
 ```
 explorer.pi → /explorer
 dx.pi → /dx
@@ -99,6 +103,7 @@ nexus.pi → /nexus
 ```
 
 #### Specialized
+
 ```
 connection.pi → /connection
 brookfield.pi → /brookfield
@@ -106,6 +111,7 @@ zone.pi → /zone
 ```
 
 #### Hub
+
 ```
 tec.pi → /tec
 ```
@@ -163,15 +169,15 @@ The application uses Next.js middleware to detect .pi domains:
 ```javascript
 // middleware.js
 export async function middleware(request) {
-  const hostname = request.headers.get('host');
-  
+  const hostname = request.headers.get("host");
+
   // Check if it's a .pi domain
-  if (hostname.endsWith('.pi')) {
+  if (hostname.endsWith(".pi")) {
     // Get the target route
     const route = getDomainRoute(hostname);
-    
+
     // Rewrite to the correct route
-    if (pathname === '/') {
+    if (pathname === "/") {
       url.pathname = route;
       return NextResponse.rewrite(url);
     }
@@ -185,11 +191,11 @@ All domains are mapped in `lib/domainMapping.js`:
 
 ```javascript
 export const domainMapping = {
-  'life.pi': {
-    route: '/life',
-    businessUnit: 'life',
-    name: 'Life',
-    category: 'Specialized'
+  "life.pi": {
+    route: "/life",
+    businessUnit: "life",
+    name: "Life",
+    category: "Specialized",
   },
   // ... 23 more domains
 };
@@ -204,6 +210,7 @@ export const domainMapping = {
 Since .pi domains only work in Pi Browser, for local testing:
 
 1. **Use regular routes:**
+
    ```
    http://localhost:3000/life
    http://localhost:3000/fundx
@@ -212,7 +219,7 @@ Since .pi domains only work in Pi Browser, for local testing:
 2. **Simulate domain in code:**
    ```javascript
    // In your component
-   const domain = 'life.pi'; // Simulate
+   const domain = "life.pi"; // Simulate
    const info = getDomainInfo(domain);
    ```
 
@@ -233,6 +240,7 @@ Since .pi domains only work in Pi Browser, for local testing:
 ## 📊 Domain Status Dashboard
 
 Visit `/domains` to see all 24 domains with:
+
 - ✅ Status indicators
 - 🎯 Priority tiers
 - 📂 Categories
@@ -243,6 +251,7 @@ Visit `/domains` to see all 24 domains with:
 ## 🎯 Benefits
 
 ### For Users:
+
 ```
 ✅ Easy to remember (life.pi vs tec-ecosystem.com/life)
 ✅ Direct access to specific services
@@ -251,6 +260,7 @@ Visit `/domains` to see all 24 domains with:
 ```
 
 ### For You:
+
 ```
 ✅ Premium domain portfolio
 ✅ Strong brand identity
@@ -266,6 +276,7 @@ Visit `/domains` to see all 24 domains with:
 ### Domain Verification
 
 Pi Network verifies domain ownership through:
+
 1. **Pi Account:** Must own the domain in Pi Network
 2. **App Verification:** App must be verified by Pi
 3. **DNS Configuration:** Proper DNS setup required
@@ -282,16 +293,19 @@ Pi Network verifies domain ownership through:
 ## 🚀 Next Steps
 
 ### Immediate:
+
 - [ ] Configure all 24 domains in Pi Developer Portal
 - [ ] Test each domain in Pi Browser
 - [ ] Verify routing works correctly
 
 ### Short Term:
+
 - [ ] Add domain-specific branding
 - [ ] Optimize each business unit page
 - [ ] Add analytics tracking per domain
 
 ### Long Term:
+
 - [ ] Consider separate apps for Tier 1 domains
 - [ ] Implement domain-specific features
 - [ ] Explore domain leasing opportunities
@@ -301,11 +315,13 @@ Pi Network verifies domain ownership through:
 ## 📞 Support
 
 ### Pi Network Support:
+
 - **Developer Portal:** https://develop.pi
 - **Documentation:** https://developers.minepi.com
 - **Community:** Pi Developer Community
 
 ### TEC Ecosystem:
+
 - **Technical:** tech@tec-ecosystem.com
 - **Business:** business@tec-ecosystem.com
 

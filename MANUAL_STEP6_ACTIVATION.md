@@ -15,6 +15,7 @@
 1. **افتح Pi Browser**
 
 2. **اذهب إلى:**
+
    ```
    https://develop.pi
    ```
@@ -29,6 +30,7 @@
 5. **اضغط على "Create Test Payment"** أو **"Test Payment Flow"**
 
 6. **املأ البيانات:**
+
    ```
    Amount: 1 Pi
    Memo: Test payment for Step 6
@@ -56,6 +58,7 @@
 2. **اذهب إلى "App Development Checklist"**
 
 3. **اضغط على الخطوة 6 نفسها:**
+
    ```
    ☐ Step 6: Test a payment in Sandbox
    ```
@@ -91,6 +94,7 @@
 2. **اذهب إلى "API Testing" أو "API Playground"**
 
 3. **اختر Endpoint:**
+
    ```
    POST /v2/payments/{payment_id}/approve
    ```
@@ -100,6 +104,7 @@
 5. **اضغط "Send Request"**
 
 6. **ثم اختر:**
+
    ```
    POST /v2/payments/{payment_id}/complete
    ```
@@ -117,6 +122,7 @@
 #### إذا جربت كل الطرق ولم تنجح:
 
 1. **اجمع المعلومات:**
+
    ```
    App Name: TEC Ecosystem
    App ID: [your app ID]
@@ -128,37 +134,41 @@
 2. **افتح Pi Browser**
 
 3. **اذهب إلى:**
+
    ```
    https://developers.minepi.com/support
    ```
+
    أو
+
    ```
    https://develop.pi/support
    ```
 
 4. **أو أرسل Email:**
+
    ```
    To: support@minepi.com
    Subject: Step 6 not activating - TEC Ecosystem App
-   
+
    Body:
    Hello Pi Support Team,
-   
+
    I have successfully completed a test payment in Sandbox mode,
    but Step 6 in the App Development Checklist is not marked as complete.
-   
+
    App Details:
    - App Name: TEC Ecosystem
    - App ID: [your app ID]
    - Payment ID: [payment ID]
    - Transaction ID: [txid]
    - Date: [date and time]
-   
+
    The payment was successful and I received confirmation,
    but the checklist step is still showing as incomplete.
-   
+
    Could you please help activate Step 6 or advise on next steps?
-   
+
    Thank you!
    ```
 
@@ -197,6 +207,7 @@
 ## 📸 كيف تبدو الخطوة 6
 
 ### قبل التفعيل:
+
 ```
 App Development Checklist
 
@@ -210,6 +221,7 @@ App Development Checklist
 ```
 
 ### بعد التفعيل:
+
 ```
 App Development Checklist
 
@@ -227,27 +239,33 @@ App Development Checklist
 ## 🎯 نصائح مهمة
 
 ### 1. تأكد من Sandbox Mode مفعّل:
+
 ```
 Settings → Development Mode
 ☑ Enable Sandbox Mode
 ```
 
 ### 2. استخدم Pi Browser:
+
 - ❌ لا تستخدم Chrome/Safari العادي
 - ✅ استخدم Pi Browser من داخل تطبيق Pi Network
 
 ### 3. انتظر قليلاً:
+
 - بعد الدفع الناجح، انتظر 5-10 دقائق
 - Refresh الصفحة
 - أحياناً يأخذ وقت للتحديث
 
 ### 4. امسح Cache:
+
 ```
 Pi Browser → Settings → Clear Cache
 ```
+
 ثم أعد فتح Pi Developer Portal
 
 ### 5. سجل خروج ودخول:
+
 - Logout من Pi Developer Portal
 - أغلق Pi Browser تماماً
 - افتحه مرة أخرى
@@ -275,11 +293,13 @@ Pi Browser → Settings → Clear Cache
 ## 📞 معلومات الدعم
 
 ### Pi Network Support:
+
 - **Website:** https://developers.minepi.com/support
 - **Email:** support@minepi.com
 - **Community:** Pi Developer Forum
 
 ### وقت الاستجابة:
+
 - عادة: 24-48 ساعة
 - في أوقات الذروة: 3-5 أيام
 
@@ -297,6 +317,7 @@ Pi Browser → Settings → Clear Cache
 **Step 7: Submit for Review**
 
 قبل التقديم، تأكد من:
+
 - ✅ جميع الـ 24 نطاق تعمل
 - ✅ Terms & Privacy موجودة
 - ✅ التطبيق منشور ويعمل
@@ -306,6 +327,7 @@ Pi Browser → Settings → Clear Cache
 - ✅ الدفع يعمل
 
 ثم:
+
 1. اضغط على Step 7
 2. املأ نموذج التقديم
 3. أرفق Screenshots
@@ -320,7 +342,7 @@ Pi Browser → Settings → Clear Cache
 
 ✅ **يمكنك الانتقال للخطوة 7**  
 ✅ **التطبيق جاهز للمراجعة**  
-✅ **قريب من الإطلاق الرسمي**  
+✅ **قريب من الإطلاق الرسمي**
 
 **مبروك! 🎊**
 

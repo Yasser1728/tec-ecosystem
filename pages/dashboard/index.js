@@ -1,9 +1,9 @@
-import { withAuth } from '../../lib/withAuth';
-import { USER_TIERS } from '../../lib/roles';
-import Head from 'next/head';
-import Link from 'next/link';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
+import { withAuth } from "../../lib/withAuth";
+import { USER_TIERS } from "../../lib/roles";
+import Head from "next/head";
+import Link from "next/link";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
 
 function Dashboard({ session }) {
   const user = session?.user;
@@ -33,7 +33,9 @@ function Dashboard({ session }) {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-400 mb-1">Account Tier</p>
-                <p className="text-2xl font-bold text-[#00ff9d]">{user?.tier}</p>
+                <p className="text-2xl font-bold text-[#00ff9d]">
+                  {user?.tier}
+                </p>
               </div>
               <div>
                 <p className="text-sm text-gray-400 mb-1">Pi ID</p>

@@ -31,12 +31,14 @@ TEC Ecosystem
 ### What's Open Source?
 
 **Components** (40% of codebase)
+
 - ✅ `components/Header.js`
 - ✅ `components/Footer.js`
 - ✅ `components/BusinessUnitLayout.js`
 - ✅ `components/ParticlesCanvas.js`
 
 **Pages** (Public Access)
+
 - ✅ `pages/index.js` - Landing page
 - ✅ `pages/ecosystem.js` - Business units overview
 - ✅ `pages/403.js` - Error page
@@ -44,9 +46,11 @@ TEC Ecosystem
 - ✅ `pages/[unit]/index.js` - BU landing pages (21 units)
 
 **Configuration**
+
 - ✅ `lib/businessUnits.js` - Metadata only (names, icons, descriptions)
 
 **Documentation**
+
 - ✅ `README.md`
 - ✅ `CONTRIBUTING.md`
 - ✅ `CODE_OF_CONDUCT.md`
@@ -79,6 +83,7 @@ See [LICENSE](./LICENSE) for full text.
 ### What's Proprietary?
 
 **Authentication & Authorization** (60% of codebase)
+
 - 🔒 `pages/api/auth/[...nextauth].js`
 - 🔒 `middleware.js`
 - 🔒 `lib/roles.js`
@@ -87,6 +92,7 @@ See [LICENSE](./LICENSE) for full text.
 - 🔒 `pages/auth/error.js`
 
 **User Features**
+
 - 🔒 `pages/dashboard/` - All dashboard pages
 - 🔒 `pages/upgrade.js` - Subscription system
 - 🔒 `pages/[unit]/calculator.js` - Protected tools
@@ -94,22 +100,26 @@ See [LICENSE](./LICENSE) for full text.
 - 🔒 `pages/[unit]/[protected-pages]` - All protected pages
 
 **Admin Panel**
+
 - 🔒 `pages/admin/` - All admin pages
 - 🔒 User management
 - 🔒 Business units management
 - 🔒 System analytics
 
 **API Layer**
+
 - 🔒 `pages/api/business-units/` - All BU APIs
 - 🔒 `pages/api/users/` - User APIs
 - 🔒 `pages/api/subscriptions/` - Subscription APIs
 
 **Database**
+
 - 🔒 `prisma/schema.prisma` - Complete schema
 - 🔒 `prisma/seed.js` - Seeding script
 - 🔒 All database models and migrations
 
 **Documentation**
+
 - 🔒 `docs/AUTHENTICATION.md`
 - 🔒 `docs/SYSTEM_OVERVIEW.md`
 - 🔒 `PRIVATE_COMPONENTS.md`

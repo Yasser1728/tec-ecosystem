@@ -1,4 +1,9 @@
-export default function HomeHeader({ t, dynamicWord, handlePiLogin, handlePayment }) {
+export default function HomeHeader({
+  t,
+  dynamicWord,
+  handlePiLogin,
+  handlePayment,
+}) {
   return (
     <header className="text-center px-5 py-[120px]">
       <h1 className="text-8xl font-black text-tec-green mb-4">TEC</h1>

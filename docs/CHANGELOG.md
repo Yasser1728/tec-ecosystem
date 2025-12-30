@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This major release introduces a professional repository structure with clear separation between open-source and proprietary components.
 
 ### Added
+
 - **New Directory Structure**
   - `public/` directory for open-source components (MIT License)
   - `private/` directory for proprietary components (Proprietary License)
@@ -51,12 +52,14 @@ This major release introduces a professional repository structure with clear sep
   - `.github/workflows/security-scan.yml` - Security scanning
 
 ### Changed
+
 - Reorganized file structure for better separation of concerns
 - Updated licensing approach to dual-license (MIT + Proprietary)
 - Enhanced security with middleware and HOCs
 - Improved documentation structure
 
 ### Security
+
 - Implemented authentication middleware for private routes
 - Added role-based access control
 - Environment variable validation on startup
@@ -68,6 +71,7 @@ This major release introduces a professional repository structure with clear sep
 ## [1.0.0] - 2024-12-24
 
 ### Added
+
 - Initial dual-language knowledge pack (EN/AR)
 - URL map for all 24 business domains
 - Assistant response templates
@@ -78,6 +82,7 @@ This major release introduces a professional repository structure with clear sep
 - Branding guidelines
 
 ### Infrastructure
+
 - Next.js 15.5 setup
 - Prisma ORM integration
 - Tailwind CSS configuration
@@ -89,6 +94,7 @@ This major release introduces a professional repository structure with clear sep
 ## [0.1.0] - 2024-12-01
 
 ### Added
+
 - Initial project setup
 - Repository structure
 - Basic documentation

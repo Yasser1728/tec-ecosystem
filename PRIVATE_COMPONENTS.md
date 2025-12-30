@@ -67,6 +67,7 @@ private-src/
 ## 🔐 Proprietary Features
 
 ### Authentication & Authorization
+
 - **NextAuth.js Integration** - Complete auth system with Pi Network
 - **4-Tier Role System** - GUEST, STANDARD, PREMIUM, ADMIN
 - **Middleware Protection** - Automatic route protection
@@ -75,29 +76,34 @@ private-src/
 - **Session Management** - Secure JWT tokens
 
 ### User Management
+
 - **User Dashboard** - Complete account management
 - **Profile Management** - Edit user information
 - **Transaction History** - View all Pi payments
 - **Tier Upgrade System** - Subscription management
 
 ### Admin Panel
+
 - **Admin Dashboard** - System overview
 - **User Management** - Manage all users
 - **Business Units Management** - Configure units
 - **System Analytics** - Detailed reports
 
 ### Business Unit Features
+
 - **Protected Pages** - Calculator, analytics, seller hub, etc.
 - **Activity Tracking** - User behavior analytics
 - **Subscription System** - Tier-based access control
 
 ### API Layer
+
 - **Business Units API** - CRUD operations
 - **User API** - Profile management
 - **Subscriptions API** - Payment processing
 - **Analytics API** - Data tracking
 
 ### Database
+
 - **Prisma ORM** - Complete schema
 - **8+ Models** - Users, BusinessUnits, Subscriptions, etc.
 - **Seeding Script** - Demo data
@@ -126,5 +132,6 @@ For open-source components, see [PUBLIC_COMPONENTS.md](./PUBLIC_COMPONENTS.md)
 ## 📞 Contact
 
 For licensing inquiries:
+
 - Email: licensing@tec-ecosystem.com (placeholder)
 - GitHub: [Issues](https://github.com/Yasser1728/tec-ecosystem/issues)

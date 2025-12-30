@@ -42,6 +42,7 @@ Settings → Development Mode
 ##### B. اعمل اختبار دفع من **داخل Pi Developer Portal**:
 
 1. في صفحة التطبيق، ابحث عن:
+
    ```
    "Test Payment" أو "Payment Testing" أو "Sandbox Payment"
    ```
@@ -49,6 +50,7 @@ Settings → Development Mode
 2. اضغط على **"Test Payment"** أو **"Create Test Payment"**
 
 3. املأ البيانات:
+
    ```
    Amount: 1 Pi
    Memo: Test payment for TEC Ecosystem
@@ -65,6 +67,7 @@ Settings → Development Mode
 إذا كان عندك صفحة دفع في التطبيق:
 
 1. افتح التطبيق في Pi Browser:
+
    ```
    https://tec-ecosystem.vercel.app
    ```
@@ -116,64 +119,67 @@ Settings → Development Mode
 
 ```javascript
 // في صفحة اختبار (مثلاً /test-payment)
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
 export default function TestPayment() {
   useEffect(() => {
     // تحميل Pi SDK
-    const script = document.createElement('script');
-    script.src = 'https://sdk.minepi.com/pi-sdk.js';
+    const script = document.createElement("script");
+    script.src = "https://sdk.minepi.com/pi-sdk.js";
     script.async = true;
     document.body.appendChild(script);
 
     script.onload = () => {
-      window.Pi.init({ 
+      window.Pi.init({
         version: "2.0",
-        sandbox: true // مهم للـ Sandbox
+        sandbox: true, // مهم للـ Sandbox
       });
     };
   }, []);
 
   const handleTestPayment = async () => {
     try {
-      const payment = await window.Pi.createPayment({
-        amount: 1,
-        memo: "Test payment for Pi Developer Portal Step 6",
-        metadata: { 
-          test: true,
-          step: 6,
-          app: "TEC Ecosystem"
-        }
-      }, {
-        onReadyForServerApproval: (paymentId) => {
-          console.log('Payment ID:', paymentId);
-          // أرسل للـ backend للموافقة
-          fetch('/api/payments/approve', {
-            method: 'POST',
-            body: JSON.stringify({ paymentId })
-          });
+      const payment = await window.Pi.createPayment(
+        {
+          amount: 1,
+          memo: "Test payment for Pi Developer Portal Step 6",
+          metadata: {
+            test: true,
+            step: 6,
+            app: "TEC Ecosystem",
+          },
         },
-        onReadyForServerCompletion: (paymentId, txid) => {
-          console.log('Payment completed:', paymentId, txid);
-          // أكمل الدفع
-          fetch('/api/payments/complete', {
-            method: 'POST',
-            body: JSON.stringify({ paymentId, txid })
-          });
+        {
+          onReadyForServerApproval: (paymentId) => {
+            console.log("Payment ID:", paymentId);
+            // أرسل للـ backend للموافقة
+            fetch("/api/payments/approve", {
+              method: "POST",
+              body: JSON.stringify({ paymentId }),
+            });
+          },
+          onReadyForServerCompletion: (paymentId, txid) => {
+            console.log("Payment completed:", paymentId, txid);
+            // أكمل الدفع
+            fetch("/api/payments/complete", {
+              method: "POST",
+              body: JSON.stringify({ paymentId, txid }),
+            });
+          },
+          onCancel: (paymentId) => {
+            console.log("Payment cancelled");
+          },
+          onError: (error, payment) => {
+            console.error("Payment error:", error);
+          },
         },
-        onCancel: (paymentId) => {
-          console.log('Payment cancelled');
-        },
-        onError: (error, payment) => {
-          console.error('Payment error:', error);
-        }
-      });
+      );
 
-      console.log('Payment created:', payment);
-      alert('✅ Payment test successful! Check Pi Developer Portal.');
+      console.log("Payment created:", payment);
+      alert("✅ Payment test successful! Check Pi Developer Portal.");
     } catch (error) {
-      console.error('Error:', error);
-      alert('❌ Payment test failed: ' + error.message);
+      console.error("Error:", error);
+      alert("❌ Payment test failed: " + error.message);
     }
   };
 
@@ -189,8 +195,8 @@ export default function TestPayment() {
         🧪 Test Payment (1 Pi)
       </button>
       <p className="mt-4 text-gray-600">
-        This will create a test payment in Sandbox mode.
-        After completion, check Pi Developer Portal.
+        This will create a test payment in Sandbox mode. After completion, check
+        Pi Developer Portal.
       </p>
     </div>
   );
@@ -198,6 +204,7 @@ export default function TestPayment() {
 ```
 
 **استخدمها:**
+
 1. احفظ الكود في `pages/test-payment.js`
 2. افتح: `https://tec-ecosystem.vercel.app/test-payment`
 3. اضغط الزر
@@ -223,6 +230,7 @@ export default function TestPayment() {
 ## 📊 كيف تعرف إن الخطوة اتفعلت؟
 
 ### قبل:
+
 ```
 App Development Checklist:
 ☑ Step 1: Create app
@@ -235,6 +243,7 @@ App Development Checklist:
 ```
 
 ### بعد:
+
 ```
 App Development Checklist:
 ☑ Step 1: Create app
@@ -292,6 +301,7 @@ Step 7: Submit for Review
 **قبل ما تقدم للمراجعة (Step 7):**
 
 تأكد من:
+
 - ✅ جميع الـ 24 نطاق شغالة
 - ✅ المصادقة تعمل بشكل صحيح
 - ✅ الدفع يعمل (اختبرته في Sandbox)

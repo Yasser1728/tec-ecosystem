@@ -146,17 +146,17 @@ npm run dev
 // pages/api/pi/verify-payment.js
 export default async function handler(req, res) {
   const { paymentId } = req.body;
-  
+
   // Verify with Pi Network API
   const response = await fetch(
     `https://api.minepi.com/v2/payments/${paymentId}`,
     {
       headers: {
-        'Authorization': `Key ${process.env.PI_API_KEY}`
-      }
-    }
+        Authorization: `Key ${process.env.PI_API_KEY}`,
+      },
+    },
   );
-  
+
   const payment = await response.json();
   res.json(payment);
 }
@@ -172,6 +172,7 @@ export default async function handler(req, res) {
 ### 7️⃣ Testing Checklist
 
 #### ✅ Sandbox Mode:
+
 - [ ] Pi SDK loaded (check browser console)
 - [ ] Authentication works
 - [ ] Payment dialog appears
@@ -179,6 +180,7 @@ export default async function handler(req, res) {
 - [ ] No real Pi deducted
 
 #### ✅ Production Mode:
+
 - [ ] App registered in Pi Developer Portal
 - [ ] Environment variables set in Vercel
 - [ ] Works in Pi Browser
@@ -190,24 +192,30 @@ export default async function handler(req, res) {
 ### 8️⃣ Troubleshooting
 
 #### Problem: "Pi SDK not loaded"
+
 **Solution:**
+
 ```javascript
 // Check if Pi SDK is loaded
-if (typeof window !== 'undefined' && window.Pi) {
-  console.log('✅ Pi SDK loaded');
+if (typeof window !== "undefined" && window.Pi) {
+  console.log("✅ Pi SDK loaded");
 } else {
-  console.log('❌ Pi SDK not loaded');
+  console.log("❌ Pi SDK not loaded");
 }
 ```
 
 #### Problem: "Invalid App ID"
+
 **Solution:**
+
 - تأكد إن الـ App ID صحيح
 - تأكد إن Environment Variables محفوظة في Vercel
 - اعمل Redeploy
 
 #### Problem: "Payment not working"
+
 **Solution:**
+
 - تأكد إن Sandbox Mode مفعّل
 - تأكد إن الـ payment callbacks موجودة
 - شوف الـ browser console للـ errors
@@ -242,6 +250,7 @@ NEXT_PUBLIC_PI_API_URL=https://api.minepi.com/v2
 بعد ما تعمل الخطوات دي، التطبيق هيكون متصل بـ Pi Network وجاهز للاستخدام!
 
 **للتجربة السريعة:**
+
 1. افتح https://tec-ecosystem.vercel.app
 2. اضغط "Authenticate with Pi Network"
 3. اضغط "Pay 1 Pi - Demo Payment"

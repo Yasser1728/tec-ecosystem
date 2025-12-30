@@ -1,5 +1,5 @@
-import Header from '../../components/Header'
-import Footer from '../../components/Footer'
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
 
 export default function Nx() {
   return (
@@ -15,5 +15,5 @@ export default function Nx() {
       </main>
       <Footer />
     </div>
-  )
+  );
 }

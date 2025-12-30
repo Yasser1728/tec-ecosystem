@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react';
-import { piAuth } from '../lib/pi-auth';
+import { useState, useEffect } from "react";
+import { piAuth } from "../lib/pi-auth";
 
 export default function TransactionHistory() {
   const [payments, setPayments] = useState([]);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('all');
+  const [filter, setFilter] = useState("all");
   const [autoRefresh, setAutoRefresh] = useState(true);
 
   useEffect(() => {
@@ -22,14 +22,17 @@ export default function TransactionHistory() {
       loadData();
     };
 
-    if (typeof window !== 'undefined') {
-      window.addEventListener('pi-payment-completed', handlePaymentCompleted);
+    if (typeof window !== "undefined") {
+      window.addEventListener("pi-payment-completed", handlePaymentCompleted);
     }
 
     return () => {
       if (interval) clearInterval(interval);
-      if (typeof window !== 'undefined') {
-        window.removeEventListener('pi-payment-completed', handlePaymentCompleted);
+      if (typeof window !== "undefined") {
+        window.removeEventListener(
+          "pi-payment-completed",
+          handlePaymentCompleted,
+        );
       }
     };
   }, [autoRefresh, filter]);
@@ -42,22 +45,22 @@ export default function TransactionHistory() {
     }
 
     try {
-      const statusParam = filter !== 'all' ? `&status=${filter}` : '';
-      
+      const statusParam = filter !== "all" ? `&status=${filter}` : "";
+
       const [paymentsRes, statsRes] = await Promise.all([
         fetch(`/api/payments/history?userId=${user.id}${statusParam}`),
-        fetch(`/api/payments/stats?userId=${user.id}`)
+        fetch(`/api/payments/stats?userId=${user.id}`),
       ]);
 
       if (paymentsRes.ok && statsRes.ok) {
         const paymentsData = await paymentsRes.json();
         const statsData = await statsRes.json();
-        
+
         setPayments(paymentsData.payments);
         setStats(statsData.stats);
       }
     } catch (error) {
-      console.error('Failed to load transaction data:', error);
+      console.error("Failed to load transaction data:", error);
     } finally {
       setLoading(false);
     }
@@ -65,22 +68,22 @@ export default function TransactionHistory() {
 
   const getStatusColor = (status) => {
     const colors = {
-      COMPLETED: 'text-green-400 bg-green-900/20 border-green-600',
-      PENDING: 'text-yellow-400 bg-yellow-900/20 border-yellow-600',
-      CANCELLED: 'text-gray-400 bg-gray-900/20 border-gray-600',
-      FAILED: 'text-red-400 bg-red-900/20 border-red-600'
+      COMPLETED: "text-green-400 bg-green-900/20 border-green-600",
+      PENDING: "text-yellow-400 bg-yellow-900/20 border-yellow-600",
+      CANCELLED: "text-gray-400 bg-gray-900/20 border-gray-600",
+      FAILED: "text-red-400 bg-red-900/20 border-red-600",
     };
     return colors[status] || colors.PENDING;
   };
 
   const getStatusIcon = (status) => {
     const icons = {
-      COMPLETED: '✅',
-      PENDING: '⏳',
-      CANCELLED: '❌',
-      FAILED: '⚠️'
+      COMPLETED: "✅",
+      PENDING: "⏳",
+      CANCELLED: "❌",
+      FAILED: "⚠️",
     };
-    return icons[status] || '⏳';
+    return icons[status] || "⏳";
   };
 
   if (loading) {
@@ -94,7 +97,9 @@ export default function TransactionHistory() {
   if (!piAuth.isAuthenticated()) {
     return (
       <div className="bg-gray-800 rounded-lg p-6 text-center">
-        <p className="text-gray-400">Please authenticate with Pi Network to view transaction history</p>
+        <p className="text-gray-400">
+          Please authenticate with Pi Network to view transaction history
+        </p>
       </div>
     );
   }
@@ -106,19 +111,27 @@ export default function TransactionHistory() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="bg-gradient-to-br from-[#00ff9d]/10 to-[#00c6ff]/10 border border-[#00ff9d]/30 rounded-lg p-4">
             <p className="text-sm text-gray-400">Total Spent</p>
-            <p className="text-2xl font-bold text-white">{stats.totalSpent.toFixed(2)} π</p>
+            <p className="text-2xl font-bold text-white">
+              {stats.totalSpent.toFixed(2)} π
+            </p>
           </div>
           <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
             <p className="text-sm text-gray-400">Completed</p>
-            <p className="text-2xl font-bold text-green-400">{stats.byStatus.COMPLETED || 0}</p>
+            <p className="text-2xl font-bold text-green-400">
+              {stats.byStatus.COMPLETED || 0}
+            </p>
           </div>
           <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
             <p className="text-sm text-gray-400">Pending</p>
-            <p className="text-2xl font-bold text-yellow-400">{stats.byStatus.PENDING || 0}</p>
+            <p className="text-2xl font-bold text-yellow-400">
+              {stats.byStatus.PENDING || 0}
+            </p>
           </div>
           <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
             <p className="text-sm text-gray-400">Failed</p>
-            <p className="text-2xl font-bold text-red-400">{stats.byStatus.FAILED || 0}</p>
+            <p className="text-2xl font-bold text-red-400">
+              {stats.byStatus.FAILED || 0}
+            </p>
           </div>
         </div>
       )}
@@ -126,21 +139,21 @@ export default function TransactionHistory() {
       {/* Filters and Controls */}
       <div className="flex items-center justify-between">
         <div className="flex gap-2">
-          {['all', 'COMPLETED', 'PENDING', 'FAILED'].map((status) => (
+          {["all", "COMPLETED", "PENDING", "FAILED"].map((status) => (
             <button
               key={status}
               onClick={() => setFilter(status)}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 filter === status
-                  ? 'bg-[#00ff9d] text-[#0a0e2b]'
-                  : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                  ? "bg-[#00ff9d] text-[#0a0e2b]"
+                  : "bg-gray-800 text-gray-400 hover:bg-gray-700"
               }`}
             >
-              {status === 'all' ? 'All' : status}
+              {status === "all" ? "All" : status}
             </button>
           ))}
         </div>
-        
+
         <label className="flex items-center gap-2 text-sm text-gray-400">
           <input
             type="checkbox"
@@ -182,9 +195,14 @@ export default function TransactionHistory() {
               </thead>
               <tbody className="divide-y divide-gray-700">
                 {payments.map((payment) => (
-                  <tr key={payment.id} className="hover:bg-gray-700/50 transition-colors">
+                  <tr
+                    key={payment.id}
+                    className="hover:bg-gray-700/50 transition-colors"
+                  >
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium border ${getStatusColor(payment.status)}`}>
+                      <span
+                        className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium border ${getStatusColor(payment.status)}`}
+                      >
                         {getStatusIcon(payment.status)} {payment.status}
                       </span>
                     </td>
@@ -195,7 +213,7 @@ export default function TransactionHistory() {
                     </td>
                     <td className="px-6 py-4">
                       <span className="text-sm text-gray-300">
-                        {payment.description || 'No description'}
+                        {payment.description || "No description"}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">

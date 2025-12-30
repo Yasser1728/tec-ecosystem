@@ -3,6 +3,7 @@
 ## 📍 ما هو Sandbox Mode؟
 
 **Sandbox Mode** هو بيئة اختبار من Pi Network تسمح لك بـ:
+
 - ✅ اختبار التطبيق بدون Pi حقيقي
 - ✅ محاكاة المدفوعات
 - ✅ اختبار المصادقة
@@ -15,11 +16,13 @@
 ### 1️⃣ الدخول إلى Pi Developer Portal
 
 **افتح Pi Browser وانتقل إلى:**
+
 ```
 https://develop.pi
 ```
 
 أو:
+
 ```
 https://developers.minepi.com
 ```
@@ -119,31 +122,31 @@ PI_SANDBOX_API_URL=https://sandbox-api.minepi.com/v2
 #### تحقق من ملف `pages/api/auth/[...nextauth].js`:
 
 ```javascript
-const isPiSandbox = process.env.NEXT_PUBLIC_PI_SANDBOX === 'true';
+const isPiSandbox = process.env.NEXT_PUBLIC_PI_SANDBOX === "true";
 
 export default NextAuth({
   providers: [
     {
-      id: 'pi',
-      name: 'Pi Network',
-      type: 'oauth',
+      id: "pi",
+      name: "Pi Network",
+      type: "oauth",
       authorization: {
-        url: isPiSandbox 
-          ? 'https://sandbox-api.minepi.com/v2/oauth/authorize'
-          : 'https://api.minepi.com/v2/oauth/authorize',
+        url: isPiSandbox
+          ? "https://sandbox-api.minepi.com/v2/oauth/authorize"
+          : "https://api.minepi.com/v2/oauth/authorize",
         params: {
-          scope: 'username payments',
-          client_id: process.env.NEXT_PUBLIC_PI_APP_ID
-        }
+          scope: "username payments",
+          client_id: process.env.NEXT_PUBLIC_PI_APP_ID,
+        },
       },
       token: {
         url: isPiSandbox
-          ? 'https://sandbox-api.minepi.com/v2/oauth/token'
-          : 'https://api.minepi.com/v2/oauth/token'
+          ? "https://sandbox-api.minepi.com/v2/oauth/token"
+          : "https://api.minepi.com/v2/oauth/token",
       },
       // ... باقي الإعدادات
-    }
-  ]
+    },
+  ],
 });
 ```
 
@@ -154,6 +157,7 @@ export default NextAuth({
 #### A. اختبار المصادقة:
 
 1. افتح في Pi Browser:
+
    ```
    https://tec-ecosystem.vercel.app/auth/signin
    ```
@@ -171,8 +175,8 @@ export default NextAuth({
 // في الكود
 const payment = await Pi.createPayment({
   amount: 1,
-  memo: 'Test Payment',
-  metadata: { test: true }
+  memo: "Test Payment",
+  metadata: { test: true },
 });
 
 // في Sandbox:
@@ -204,6 +208,7 @@ PI_API_KEY=pi_xxx (production key)
 ## 📋 Checklist: تفعيل Sandbox
 
 ### في Pi Developer Portal:
+
 - [ ] تسجيل الدخول إلى https://develop.pi
 - [ ] فتح/إنشاء تطبيق TEC Ecosystem
 - [ ] الذهاب إلى Settings
@@ -214,6 +219,7 @@ PI_API_KEY=pi_xxx (production key)
 - [ ] نسخ Sandbox App ID
 
 ### في Vercel:
+
 - [ ] فتح Settings → Environment Variables
 - [ ] إضافة `NEXT_PUBLIC_PI_SANDBOX=true`
 - [ ] إضافة `PI_SANDBOX_MODE=true`
@@ -224,6 +230,7 @@ PI_API_KEY=pi_xxx (production key)
 - [ ] إعادة النشر (Redeploy)
 
 ### الاختبار:
+
 - [ ] فتح التطبيق في Pi Browser
 - [ ] اختبار تسجيل الدخول
 - [ ] اختبار دفعة وهمية
@@ -235,6 +242,7 @@ PI_API_KEY=pi_xxx (production key)
 ## 🎯 مثال: كيف يبدو Sandbox في Pi Portal
 
 ### قبل التفعيل:
+
 ```
 ┌─────────────────────────────────┐
 │ TEC Ecosystem                   │
@@ -246,6 +254,7 @@ PI_API_KEY=pi_xxx (production key)
 ```
 
 ### بعد التفعيل:
+
 ```
 ┌─────────────────────────────────┐
 │ TEC Ecosystem                   │
@@ -267,6 +276,7 @@ PI_API_KEY=pi_xxx (production key)
 ### مشكلة: لا أجد خيار Sandbox
 
 **الحل:**
+
 1. تأكد من أنك في صفحة التطبيق الصحيحة
 2. ابحث في:
    - Settings
@@ -281,6 +291,7 @@ PI_API_KEY=pi_xxx (production key)
 ### مشكلة: Sandbox لا يعمل
 
 **الحل:**
+
 1. تحقق من `NEXT_PUBLIC_PI_SANDBOX=true` في Vercel
 2. تأكد من استخدام Sandbox API Keys
 3. أعد نشر التطبيق بعد تغيير المتغيرات
@@ -289,6 +300,7 @@ PI_API_KEY=pi_xxx (production key)
 ### مشكلة: "Invalid API Key" في Sandbox
 
 **الحل:**
+
 1. تأكد من نسخ Sandbox API Key (وليس Production)
 2. تحقق من عدم وجود مسافات زائدة
 3. تأكد من أن Sandbox مفعّل في Pi Portal
@@ -298,38 +310,42 @@ PI_API_KEY=pi_xxx (production key)
 
 ## 📊 الفرق بين Sandbox و Production
 
-| الميزة | Sandbox | Production |
-|--------|---------|------------|
-| Pi حقيقي | ❌ لا | ✅ نعم |
-| اختبار آمن | ✅ نعم | ❌ لا |
-| مدفوعات وهمية | ✅ نعم | ❌ لا |
-| بيانات حقيقية | ❌ لا | ✅ نعم |
-| للتطوير | ✅ نعم | ❌ لا |
-| للمستخدمين | ❌ لا | ✅ نعم |
+| الميزة        | Sandbox | Production |
+| ------------- | ------- | ---------- |
+| Pi حقيقي      | ❌ لا   | ✅ نعم     |
+| اختبار آمن    | ✅ نعم  | ❌ لا      |
+| مدفوعات وهمية | ✅ نعم  | ❌ لا      |
+| بيانات حقيقية | ❌ لا   | ✅ نعم     |
+| للتطوير       | ✅ نعم  | ❌ لا      |
+| للمستخدمين    | ❌ لا   | ✅ نعم     |
 
 ---
 
 ## 🎓 نصائح مهمة
 
 ### 1. استخدم Sandbox دائماً للتطوير
+
 ```bash
 # في .env.local (للتطوير المحلي)
 NEXT_PUBLIC_PI_SANDBOX=true
 ```
 
 ### 2. لا تخلط بين Credentials
+
 ```
 ❌ خطأ: استخدام Production Key مع Sandbox Mode
 ✅ صح: استخدام Sandbox Key مع Sandbox Mode
 ```
 
 ### 3. اختبر كل شيء في Sandbox أولاً
+
 - المصادقة
 - المدفوعات
 - Webhooks
 - النطاقات
 
 ### 4. انتقل إلى Production فقط عند الجاهزية
+
 ```
 ✅ كل الاختبارات نجحت في Sandbox
 ✅ لا توجد أخطاء
@@ -342,11 +358,13 @@ NEXT_PUBLIC_PI_SANDBOX=true
 ## 📞 الدعم
 
 ### Pi Network Sandbox Support:
+
 - **Docs:** https://developers.minepi.com/docs/sandbox
 - **Email:** support@minepi.com
 - **Community:** Pi Developer Forum
 
 ### TEC Ecosystem:
+
 - **GitHub:** https://github.com/Yasser1728/tec-ecosystem
 - **Issues:** Report bugs in GitHub Issues
 
@@ -360,7 +378,7 @@ NEXT_PUBLIC_PI_SANDBOX=true
 ✅ لن يُخصم Pi حقيقي  
 ✅ يمكنك محاكاة جميع العمليات  
 ✅ بيئة آمنة للتطوير  
-✅ جاهز للانتقال إلى Production لاحقاً  
+✅ جاهز للانتقال إلى Production لاحقاً
 
 **🎉 الآن يمكنك التطوير والاختبار بحرية!**
 

@@ -1,7 +1,7 @@
-import Head from 'next/head';
-import Link from 'next/link';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import Head from "next/head";
+import Link from "next/link";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 export default function Forbidden() {
   return (
@@ -43,7 +43,9 @@ export default function Forbidden() {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-red-400 mt-1">•</span>
-                  <span>Your account may not have the required permissions</span>
+                  <span>
+                    Your account may not have the required permissions
+                  </span>
                 </li>
               </ul>
             </div>
@@ -67,8 +69,11 @@ export default function Forbidden() {
             {/* Support Link */}
             <div className="mt-8">
               <p className="text-gray-400 text-sm">
-                Need help?{' '}
-                <Link href="/support" className="text-[#00ff9d] hover:underline">
+                Need help?{" "}
+                <Link
+                  href="/support"
+                  className="text-[#00ff9d] hover:underline"
+                >
                   Contact Support
                 </Link>
               </p>

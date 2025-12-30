@@ -3,6 +3,7 @@
 ## 📋 ما هو Snyk؟
 
 **Snyk** هو أداة مجانية لفحص الثغرات الأمنية في:
+
 - npm packages
 - Docker images
 - Infrastructure as Code
@@ -13,6 +14,7 @@
 ## 🎯 الخطوة 1: إنشاء حساب Snyk
 
 ### 1️⃣ افتح المتصفح واذهب إلى:
+
 ```
 https://snyk.io
 ```
@@ -20,6 +22,7 @@ https://snyk.io
 ### 2️⃣ اضغط على **"Sign Up Free"**
 
 ### 3️⃣ اختر طريقة التسجيل:
+
 - **GitHub** (موصى به - أسهل)
 - Google
 - Bitbucket
@@ -27,6 +30,7 @@ https://snyk.io
 - Email
 
 ### 4️⃣ إذا اخترت GitHub:
+
 1. اضغط **"Continue with GitHub"**
 2. سيطلب أذونات - اضغط **"Authorize Snyk"**
 3. اختر المؤسسة (Organization) أو حسابك الشخصي
@@ -42,6 +46,7 @@ https://snyk.io
 ### 2️⃣ اختر **"Account Settings"**
 
 أو اذهب مباشرة إلى:
+
 ```
 https://app.snyk.io/account
 ```
@@ -53,6 +58,7 @@ https://app.snyk.io/account
 ### 4️⃣ اضغط على **"Click to show"** أو **"Generate token"**
 
 سيظهر Token مثل:
+
 ```
 xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 ```
@@ -66,6 +72,7 @@ xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 ## 🎯 الخطوة 3: إضافة Token في GitHub
 
 ### 1️⃣ افتح GitHub Repository:
+
 ```
 https://github.com/Yasser1728/tec-ecosystem
 ```
@@ -73,6 +80,7 @@ https://github.com/Yasser1728/tec-ecosystem
 ### 2️⃣ اذهب إلى **Settings** (في أعلى الصفحة)
 
 ### 3️⃣ في Sidebar الأيسر، اختر:
+
 ```
 Secrets and variables → Actions
 ```
@@ -148,11 +156,11 @@ Snyk found 3 vulnerabilities:
 1. High severity - Prototype Pollution in lodash
    Package: lodash@4.17.15
    Fix: Upgrade to lodash@4.17.21
-   
+
 2. Medium severity - ReDoS in trim
    Package: trim@0.0.1
    Fix: Upgrade to trim@1.0.0
-   
+
 3. Low severity - ...
 ```
 
@@ -175,21 +183,25 @@ npm install lodash@4.17.21
 ## 🎓 نصائح مهمة
 
 ### 1. Token أمان حساس:
+
 - ❌ لا تشاركه أبداً
 - ❌ لا تضعه في الكود
 - ✅ فقط في GitHub Secrets
 
 ### 2. Snyk مجاني للمشاريع Open Source:
+
 - Unlimited scans
 - Unlimited projects
 - Community support
 
 ### 3. راجع التقارير بانتظام:
+
 - أسبوعياً: شوف Snyk dashboard
 - عند كل PR: راجع نتائج Scan
 - شهرياً: حدّث Dependencies
 
 ### 4. أولويات الإصلاح:
+
 1. **Critical** - فوراً
 2. **High** - خلال أسبوع
 3. **Medium** - خلال شهر
@@ -202,6 +214,7 @@ npm install lodash@4.17.21
 ### مشكلة: "Invalid token"
 
 **الحل:**
+
 1. تأكد من نسخ Token كاملاً
 2. تحقق من عدم وجود مسافات زائدة
 3. جرب توليد Token جديد
@@ -209,6 +222,7 @@ npm install lodash@4.17.21
 ### مشكلة: "Rate limit exceeded"
 
 **الحل:**
+
 - Snyk المجاني له حدود
 - انتظر ساعة وجرب مرة أخرى
 - أو ترقية للـ Pro plan
@@ -216,6 +230,7 @@ npm install lodash@4.17.21
 ### مشكلة: Snyk Scan يفشل في CI
 
 **الحل:**
+
 ```yaml
 # في .github/workflows/security.yml
 # تأكد من:
@@ -228,11 +243,13 @@ env:
 ## 📞 الدعم
 
 ### Snyk Support:
+
 - **Docs:** https://docs.snyk.io
 - **Community:** https://community.snyk.io
 - **Email:** support@snyk.io
 
 ### إذا واجهت مشاكل:
+
 1. راجع Snyk Docs
 2. ابحث في Community
 3. اسأل في GitHub Discussions
@@ -252,6 +269,7 @@ env:
 ## 🎉 بعد الإعداد
 
 **الآن لديك:**
+
 - ✅ فحص أمان تلقائي
 - ✅ تنبيهات عن ثغرات جديدة
 - ✅ اقتراحات إصلاح

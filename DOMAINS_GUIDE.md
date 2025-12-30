@@ -9,13 +9,16 @@
 ## 📊 الـ 24 Domains:
 
 ### 1. **Estate** 🏠 (✅ Implemented)
+
 **المنتجات:**
+
 - Villas
 - Apartments
 - Commercial properties
 - Land
 
 **الـ Filters:**
+
 - Property type
 - Price range
 - Location
@@ -23,6 +26,7 @@
 - Size (sqm)
 
 **الصفحات:**
+
 - `/estate` - Homepage
 - `/estate/marketplace` - Browse properties
 - `/estate/product/[id]` - Property details (TODO)
@@ -30,13 +34,16 @@
 ---
 
 ### 2. **Commerce** 🛍️ (TODO)
+
 **المنتجات:**
+
 - Electronics
 - Fashion
 - Home & Garden
 - Sports & Outdoors
 
 **الـ Filters:**
+
 - Category
 - Brand
 - Price
@@ -46,13 +53,16 @@
 ---
 
 ### 3. **Ecommerce** 🛒 (TODO)
+
 **المنتجات:**
+
 - Digital products
 - Software
 - Courses
 - Subscriptions
 
 **الـ Filters:**
+
 - Category
 - Price
 - Format (download/streaming)
@@ -61,13 +71,16 @@
 ---
 
 ### 4. **Explorer** ✈️ (TODO)
+
 **المنتجات:**
+
 - Flight tickets
 - Hotels
 - Tours
 - Travel packages
 
 **الـ Filters:**
+
 - Destination
 - Date
 - Price
@@ -77,13 +90,16 @@
 ---
 
 ### 5. **FundX** 📊 (TODO)
+
 **المنتجات:**
+
 - Investment opportunities
 - Stocks
 - Bonds
 - Mutual funds
 
 **الـ Filters:**
+
 - Risk level
 - Return rate
 - Duration
@@ -93,13 +109,16 @@
 ---
 
 ### 6. **Assets** 💼 (TODO)
+
 **المنتجات:**
+
 - Portfolio management services
 - Asset allocation
 - Wealth management
 - Financial planning
 
 **الـ Filters:**
+
 - Service type
 - Price
 - Duration
@@ -108,13 +127,16 @@
 ---
 
 ### 7. **NBF** 🏦 (TODO)
+
 **المنتجات:**
+
 - Banking services
 - Loans
 - Credit cards
 - Savings accounts
 
 **الـ Filters:**
+
 - Service type
 - Interest rate
 - Duration
@@ -123,13 +145,16 @@
 ---
 
 ### 8. **Insure** 🛡️ (TODO)
+
 **المنتجات:**
+
 - Life insurance
 - Health insurance
 - Property insurance
 - Travel insurance
 
 **الـ Filters:**
+
 - Insurance type
 - Coverage amount
 - Premium
@@ -138,13 +163,16 @@
 ---
 
 ### 9. **VIP** 👑 (TODO)
+
 **المنتجات:**
+
 - VIP memberships
 - Exclusive events
 - Private services
 - Concierge
 
 **الـ Filters:**
+
 - Membership tier
 - Price
 - Benefits
@@ -153,13 +181,16 @@
 ---
 
 ### 10. **Life** 🌟 (TODO)
+
 **المنتجات:**
+
 - Lifestyle services
 - Personal coaching
 - Wellness programs
 - Luxury experiences
 
 **الـ Filters:**
+
 - Service type
 - Price
 - Duration
@@ -168,13 +199,16 @@
 ---
 
 ### 11. **Connection** 🔗 (TODO)
+
 **المنتجات:**
+
 - Networking events
 - Business connections
 - Partnerships
 - Collaborations
 
 **الـ Filters:**
+
 - Industry
 - Location
 - Type
@@ -183,13 +217,16 @@
 ---
 
 ### 12. **Elite** ⭐ (TODO)
+
 **المنتجات:**
+
 - Premium consulting
 - Executive coaching
 - Strategy services
 - Advisory
 
 **الـ Filters:**
+
 - Service type
 - Expertise
 - Price
@@ -198,13 +235,16 @@
 ---
 
 ### 13. **Brookfield** 🏛️ (TODO)
+
 **المنتجات:**
+
 - Investment properties
 - REITs
 - Property funds
 - Development projects
 
 **الـ Filters:**
+
 - Property type
 - Location
 - Investment size
@@ -213,13 +253,16 @@
 ---
 
 ### 14. **Zone** 🌍 (TODO)
+
 **المنتجات:**
+
 - Regional services
 - Local businesses
 - Area-specific deals
 - Location-based offers
 
 **الـ Filters:**
+
 - Location
 - Category
 - Price
@@ -228,13 +271,16 @@
 ---
 
 ### 15. **DX** 🚀 (TODO)
+
 **المنتجات:**
+
 - Digital transformation services
 - Technology consulting
 - Software solutions
 - IT services
 
 **الـ Filters:**
+
 - Service type
 - Technology
 - Price
@@ -243,13 +289,16 @@
 ---
 
 ### 16. **NX** 🔮 (TODO)
+
 **المنتجات:**
+
 - Next-gen technologies
 - Innovation services
 - R&D projects
 - Future tech
 
 **الـ Filters:**
+
 - Technology type
 - Stage
 - Investment
@@ -258,13 +307,16 @@
 ---
 
 ### 17. **System** ⚙️ (TODO)
+
 **المنتجات:**
+
 - System integration
 - Infrastructure
 - Enterprise solutions
 - Platform services
 
 **الـ Filters:**
+
 - System type
 - Scale
 - Price
@@ -273,13 +325,16 @@
 ---
 
 ### 18. **Analytics** 📈 (TODO)
+
 **المنتجات:**
+
 - Data analytics services
 - Business intelligence
 - Reporting tools
 - Insights
 
 **الـ Filters:**
+
 - Service type
 - Data volume
 - Price
@@ -288,13 +343,16 @@
 ---
 
 ### 19. **Alert** 🔔 (TODO)
+
 **المنتجات:**
+
 - Notification services
 - Monitoring systems
 - Alert platforms
 - Real-time updates
 
 **الـ Filters:**
+
 - Alert type
 - Frequency
 - Price
@@ -303,13 +361,16 @@
 ---
 
 ### 20. **Titan** 💪 (TODO)
+
 **المنتجات:**
+
 - Enterprise solutions
 - Large-scale projects
 - Corporate services
 - B2B offerings
 
 **الـ Filters:**
+
 - Service type
 - Scale
 - Industry
@@ -318,13 +379,16 @@
 ---
 
 ### 21. **Nexus** 🌐 (TODO)
+
 **المنتجات:**
+
 - Network services
 - Connectivity solutions
 - Integration platforms
 - API services
 
 **الـ Filters:**
+
 - Service type
 - Bandwidth
 - Price
@@ -333,13 +397,16 @@
 ---
 
 ### 22. **Epic** 🎯 (TODO)
+
 **المنتجات:**
+
 - Premium projects
 - Exclusive deals
 - High-value services
 - Elite offerings
 
 **الـ Filters:**
+
 - Project type
 - Value
 - Duration
@@ -348,13 +415,16 @@
 ---
 
 ### 23. **Legend** 🏆 (TODO)
+
 **المنتجات:**
+
 - Legacy services
 - Heritage products
 - Collectibles
 - Rare items
 
 **الـ Filters:**
+
 - Category
 - Rarity
 - Price
@@ -363,13 +433,16 @@
 ---
 
 ### 24. **TEC Hub** 🎪 (TODO)
+
 **المنتجات:**
+
 - Central marketplace
 - Cross-domain deals
 - Bundle offers
 - Featured items
 
 **الـ Filters:**
+
 - Domain
 - Category
 - Price
@@ -380,6 +453,7 @@
 ## 🗄️ Database Structure
 
 ### Product Model:
+
 ```prisma
 model Product {
   id              String
@@ -402,6 +476,7 @@ model Product {
 ### Domain-Specific Specifications:
 
 **Estate:**
+
 ```json
 {
   "bedrooms": 3,
@@ -414,6 +489,7 @@ model Product {
 ```
 
 **Explorer:**
+
 ```json
 {
   "destination": "Dubai",
@@ -425,6 +501,7 @@ model Product {
 ```
 
 **FundX:**
+
 ```json
 {
   "riskLevel": "medium",
@@ -475,24 +552,28 @@ model Product {
 ## 🚀 Next Steps
 
 ### Phase 1: Core Marketplace (Current)
+
 - ✅ Estate domain (example)
 - ⏳ Shopping cart
 - ⏳ Checkout with Pi
 - ⏳ Order management
 
 ### Phase 2: More Domains
+
 - Commerce
 - Explorer
 - FundX
 - VIP
 
 ### Phase 3: Advanced Features
+
 - User reviews
 - Wishlist
 - Seller dashboard
 - Analytics
 
 ### Phase 4: Production
+
 - Real database
 - Image uploads
 - Payment verification

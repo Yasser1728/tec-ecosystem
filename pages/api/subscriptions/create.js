@@ -1,25 +1,25 @@
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../auth/[...nextauth]';
-import { PrismaClient } from '@prisma/client';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../auth/[...nextauth]";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    res.setHeader('Allow', ['POST']);
-    return res.status(405).json({ error: 'Method Not Allowed' });
+  if (req.method !== "POST") {
+    res.setHeader("Allow", ["POST"]);
+    return res.status(405).json({ error: "Method Not Allowed" });
   }
 
   const session = await getServerSession(req, res, authOptions);
 
   if (!session) {
-    return res.status(401).json({ error: 'Unauthorized' });
+    return res.status(401).json({ error: "Unauthorized" });
   }
 
   const { paymentId, tier, userId } = req.body;
 
   if (!paymentId || !tier) {
-    return res.status(400).json({ error: 'Missing required fields' });
+    return res.status(400).json({ error: "Missing required fields" });
   }
 
   try {
@@ -30,12 +30,12 @@ export default async function handler(req, res) {
     const subscription = await prisma.subscription.create({
       data: {
         userId: session.user.id,
-        businessUnit: 'tec-ecosystem',
+        businessUnit: "tec-ecosystem",
         plan: tier,
-        status: 'ACTIVE',
+        status: "ACTIVE",
         piTxId: paymentId,
-        amount: tier === 'PREMIUM' ? 100 : 1000,
-        currency: 'PI',
+        amount: tier === "PREMIUM" ? 100 : 1000,
+        currency: "PI",
       },
     });
 
@@ -50,8 +50,8 @@ export default async function handler(req, res) {
       data: subscription,
     });
   } catch (error) {
-    console.error('Subscription Error:', error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Subscription Error:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
   } finally {
     await prisma.$disconnect();
   }

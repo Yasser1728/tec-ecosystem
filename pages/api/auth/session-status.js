@@ -1,11 +1,11 @@
-import { prisma } from '../../../lib/db/prisma';
-import { withRateLimit } from '../../../middleware/ratelimit';
-import { logger } from '../../../lib/utils/logger';
+import { prisma } from "../../../lib/db/prisma";
+import { withRateLimit } from "../../../middleware/ratelimit";
+import { logger } from "../../../lib/utils/logger";
 
 /**
  * Session Status API
  * Checks if a user's session is valid and returns their current status
- * 
+ *
  * Session validity: 7 days from last login
  * If no lastLoginAt exists, uses account creation date as fallback
  */
@@ -14,15 +14,15 @@ import { logger } from '../../../lib/utils/logger';
 const SESSION_TIMEOUT_MS = 7 * 24 * 60 * 60 * 1000;
 
 async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
     const { piId, userId } = req.body;
 
     if (!piId && !userId) {
-      return res.status(400).json({ error: 'Missing piId or userId' });
+      return res.status(400).json({ error: "Missing piId or userId" });
     }
 
     // Find user by piId or userId
@@ -34,22 +34,23 @@ async function handler(req, res) {
         status: true,
         tier: true,
         lastLoginAt: true,
-        createdAt: true
-      }
+        createdAt: true,
+      },
     });
 
     if (!user) {
-      return res.status(404).json({ 
-        success: false, 
-        error: 'User not found',
-        sessionValid: false
+      return res.status(404).json({
+        success: false,
+        error: "User not found",
+        sessionValid: false,
       });
     }
 
     // Check if session is still valid (within configured timeout period)
     // Uses lastLoginAt if available, otherwise falls back to account creation date
     const lastLogin = user.lastLoginAt || user.createdAt;
-    const sessionValid = (Date.now() - new Date(lastLogin).getTime()) < SESSION_TIMEOUT_MS;
+    const sessionValid =
+      Date.now() - new Date(lastLogin).getTime() < SESSION_TIMEOUT_MS;
 
     const sessionStatus = {
       success: true,
@@ -59,25 +60,24 @@ async function handler(req, res) {
         username: user.username,
         status: user.status,
         tier: user.tier,
-        lastLoginAt: lastLogin
+        lastLoginAt: lastLogin,
       },
-      message: sessionValid ? 'Session is active' : 'Session expired'
+      message: sessionValid ? "Session is active" : "Session expired",
     };
 
-    logger.info('Session status checked', { 
-      userId: user.id, 
+    logger.info("Session status checked", {
+      userId: user.id,
       sessionValid,
-      username: user.username 
+      username: user.username,
     });
 
     return res.status(200).json(sessionStatus);
-
   } catch (error) {
-    logger.error('Session status check error', { error: error.message });
-    return res.status(500).json({ 
+    logger.error("Session status check error", { error: error.message });
+    return res.status(500).json({
       success: false,
-      error: 'Failed to check session status',
-      sessionValid: false
+      error: "Failed to check session status",
+      sessionValid: false,
     });
   }
 }

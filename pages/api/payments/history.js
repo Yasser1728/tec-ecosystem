@@ -1,19 +1,19 @@
-import { prisma } from '../../../lib/db/prisma';
+import { prisma } from "../../../lib/db/prisma";
 
 export default async function handler(req, res) {
-  if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'Method not allowed' });
+  if (req.method !== "GET") {
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
   const { userId, limit = 50, offset = 0, status } = req.query;
 
   if (!userId) {
-    return res.status(400).json({ error: 'Missing userId' });
+    return res.status(400).json({ error: "Missing userId" });
   }
 
   try {
     const where = {
-      userId
+      userId,
     };
 
     if (status) {
@@ -24,7 +24,7 @@ export default async function handler(req, res) {
       prisma.payment.findMany({
         where,
         orderBy: {
-          createdAt: 'desc'
+          createdAt: "desc",
         },
         take: parseInt(limit),
         skip: parseInt(offset),
@@ -32,12 +32,12 @@ export default async function handler(req, res) {
           user: {
             select: {
               username: true,
-              tier: true
-            }
-          }
-        }
+              tier: true,
+            },
+          },
+        },
       }),
-      prisma.payment.count({ where })
+      prisma.payment.count({ where }),
     ]);
 
     return res.status(200).json({
@@ -47,14 +47,15 @@ export default async function handler(req, res) {
         total,
         limit: parseInt(limit),
         offset: parseInt(offset),
-        hasMore: total > parseInt(offset) + parseInt(limit)
-      }
+        hasMore: total > parseInt(offset) + parseInt(limit),
+      },
     });
   } catch (error) {
-    console.error('Payment history error:', error);
+    console.error("Payment history error:", error);
     return res.status(500).json({
-      error: 'Failed to fetch payment history',
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      error: "Failed to fetch payment history",
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 }
