@@ -19,6 +19,8 @@ const nextConfig = {
   trailingSlash: false,
   skipTrailingSlashRedirect: true,
   // Rewrites to bypass i18n for static validation file
+  // The source-to-same-destination rewrite intentionally bypasses i18n locale
+  // routing, allowing the file to be served directly from the public folder
   async rewrites() {
     return {
       beforeFiles: [
