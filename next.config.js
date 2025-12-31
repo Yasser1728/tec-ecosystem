@@ -18,6 +18,17 @@ const nextConfig = {
   // Serve static files from public without i18n prefix
   trailingSlash: false,
   skipTrailingSlashRedirect: true,
+  // Rewrites to bypass i18n for static validation file
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: "/validation-key.txt",
+          destination: "/validation-key.txt",
+        },
+      ],
+    };
+  },
 };
 
 module.exports = nextConfig;
