@@ -4,7 +4,11 @@ const { i18n } = require("./next-i18next.config");
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  i18n,
+  i18n: {
+    ...i18n,
+    // Exclude validation-key.txt from i18n routing
+    localeDetection: false,
+  },
   eslint: {
     // Warning: This allows production builds to successfully complete even if
     // your project has ESLint errors.
@@ -14,6 +18,16 @@ const nextConfig = {
     serverActions: {
       enabled: true,
     },
+  },
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: '/validation-key.txt',
+          destination: '/api/validation-key',
+        },
+      ],
+    };
   },
   async headers() {
     return [
