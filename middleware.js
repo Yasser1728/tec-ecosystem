@@ -70,11 +70,9 @@ export async function middleware(request) {
   const { pathname } = request.nextUrl;
   const hostname = request.headers.get("host") || "";
 
-  // Handle validation-key.txt - rewrite to API route
+  // Handle validation-key.txt - serve directly
   if (pathname === "/validation-key.txt") {
-    const url = request.nextUrl.clone();
-    url.pathname = "/api/validation-key";
-    return NextResponse.rewrite(url);
+    return NextResponse.next();
   }
 
   // Handle .pi domain routing
