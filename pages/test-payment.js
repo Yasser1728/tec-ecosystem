@@ -8,6 +8,36 @@ export default function TestPayment() {
   const [paymentId, setPaymentId] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Handler for incomplete payments found during authentication
+  const handleIncompletePayment = async (payment) => {
+    console.log("Incomplete payment found:", payment);
+    setPaymentStatus(`⚠️ Found incomplete payment: ${payment.identifier}`);
+
+    try {
+      // Sync incomplete payment with server
+      const response = await fetch("/api/payments/incomplete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          paymentId: payment.identifier,
+          txid: payment.transaction?.txid || null,
+        }),
+      });
+
+      const data = await response.json();
+      console.log("Incomplete payment synced:", data);
+
+      if (data.success) {
+        setPaymentStatus(`✅ Incomplete payment synced: ${payment.identifier}`);
+      } else {
+        setPaymentStatus(`⚠️ Incomplete payment sync issue: ${data.error || "Unknown error"}`);
+      }
+    } catch (err) {
+      console.error("Error syncing incomplete payment:", err);
+      setPaymentStatus(`⚠️ Error syncing incomplete payment: ${err.message}`);
+    }
+  };
+
   useEffect(() => {
     // Load Pi SDK
     const script = document.createElement("script");
@@ -15,14 +45,29 @@ export default function TestPayment() {
     script.async = true;
     document.body.appendChild(script);
 
-    script.onload = () => {
+    script.onload = async () => {
       if (window.Pi) {
+        // Initialize Pi SDK with sandbox mode
         window.Pi.init({
           version: "2.0",
           sandbox: true, // Sandbox mode for testing
         });
-        setPiLoaded(true);
-        setPaymentStatus("✅ Pi SDK loaded successfully");
+
+        try {
+          // Authenticate with Pi Network and handle incomplete payments
+          // Per Pi SDK v2.0, onIncompletePaymentFound is passed to authenticate()
+          await window.Pi.authenticate(
+            ["payments"],
+            handleIncompletePayment
+          );
+          setPiLoaded(true);
+          setPaymentStatus("✅ Pi SDK loaded and authenticated successfully");
+        } catch (authError) {
+          console.warn("Pi authentication skipped or failed:", authError);
+          // Still mark as loaded - user may be in sandbox mode outside Pi Browser
+          setPiLoaded(true);
+          setPaymentStatus("✅ Pi SDK loaded (sandbox mode)");
+        }
       }
     };
 
@@ -31,7 +76,9 @@ export default function TestPayment() {
     };
 
     return () => {
-      document.body.removeChild(script);
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
     };
   }, []);
 
