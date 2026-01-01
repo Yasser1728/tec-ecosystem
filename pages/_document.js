@@ -33,7 +33,6 @@ class MyDocument extends Document {
                 };
                 
                 window.PiSandbox.prototype.authenticate = function(scopes, onIncompletePaymentFound) {
-                  var self = this;
                   console.log('🧪 [Sandbox] Authenticating with scopes:', scopes);
                   this.authenticated = true;
                   this.scopes = scopes || [];

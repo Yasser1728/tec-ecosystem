@@ -76,8 +76,13 @@ export default function TestPayment() {
     };
 
     return () => {
-      if (document.body.contains(script)) {
-        document.body.removeChild(script);
+      try {
+        if (script && script.parentNode) {
+          script.parentNode.removeChild(script);
+        }
+      } catch (e) {
+        // Script may have already been removed
+        console.warn("Script cleanup:", e);
       }
     };
   }, []);

@@ -139,7 +139,7 @@ export default async function handler(req, res) {
     console.error("Incomplete payment handling error:", error);
 
     // In sandbox, return success even on error
-    if (process.env.NEXT_PUBLIC_PI_SANDBOX === "true") {
+    if (isSandbox) {
       return res.status(200).json({
         success: true,
         payment: {
@@ -156,7 +156,7 @@ export default async function handler(req, res) {
     return res.status(500).json({
       error: "Failed to handle incomplete payment",
       details:
-        process.env.NODE_ENV === "development" ? error.message : undefined,
+        process.env.NODE_ENV === "development" ? String(error.message || "Unknown error").slice(0, 200) : undefined,
     });
   }
 }
