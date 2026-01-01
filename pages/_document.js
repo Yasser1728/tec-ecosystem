@@ -21,18 +21,35 @@ class MyDocument extends Document {
                   this.authenticated = false;
                   this.user = null;
                   this.scopes = [];
+                  this.onIncompletePaymentFound = null;
+                  this.initialized = false;
+                };
+                
+                window.PiSandbox.prototype.init = function(config) {
+                  console.log('🧪 [Sandbox] Initializing with config:', config);
+                  this.initialized = true;
+                  this.sandbox = config && config.sandbox !== undefined ? config.sandbox : true;
+                  return Promise.resolve();
                 };
                 
                 window.PiSandbox.prototype.authenticate = function(scopes, onIncompletePaymentFound) {
                   console.log('🧪 [Sandbox] Authenticating with scopes:', scopes);
                   this.authenticated = true;
                   this.scopes = scopes || [];
+                  this.onIncompletePaymentFound = onIncompletePaymentFound;
                   this.user = {
                     uid: 'sandbox_user_' + Date.now(),
                     username: 'sandbox_user',
                     wallet_address: null
                   };
                   console.log('✅ [Sandbox] Authentication successful:', this.user);
+                  
+                  // Register handler for incomplete payments (in real SDK this would check Pi Network)
+                  // For sandbox, we just register the handler without triggering it
+                  if (typeof onIncompletePaymentFound === 'function') {
+                    console.log('🧪 [Sandbox] onIncompletePaymentFound handler registered');
+                  }
+                  
                   return Promise.resolve({
                     accessToken: 'sandbox_token_' + Date.now(),
                     user: this.user
@@ -127,12 +144,21 @@ class MyDocument extends Document {
                       // Create mock Pi object for sandbox
                       var authenticatedScopes = [];
                       var isAuthenticated = false;
+                      var incompletePaymentHandler = null;
                       
                       window.Pi = {
+                        init: function(config) {
+                          console.log('🧪 Sandbox: Mock init with config:', config);
+                          return Promise.resolve();
+                        },
                         authenticate: function(scopes, onIncompletePaymentFound) {
                           console.log('🧪 Sandbox: Mock authentication with scopes:', scopes);
                           authenticatedScopes = scopes || [];
                           isAuthenticated = true;
+                          incompletePaymentHandler = onIncompletePaymentFound;
+                          if (typeof onIncompletePaymentFound === 'function') {
+                            console.log('🧪 Sandbox: onIncompletePaymentFound handler registered');
+                          }
                           return Promise.resolve({
                             accessToken: 'sandbox_token_' + Date.now(),
                             user: {
