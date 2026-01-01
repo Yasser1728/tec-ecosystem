@@ -1,3 +1,12 @@
+/**
+ * API Route: Handle Incomplete Pi Network Payments
+ *
+ * SECURITY: This endpoint does NOT make external API calls in sandbox mode.
+ * For sandbox testing, it simply acknowledges the payment locally and returns success.
+ *
+ * Per Pi SDK v2.0, this is called when onIncompletePaymentFound is triggered.
+ */
+
 // Validate payment ID format to prevent SSRF attacks
 // Pi payment IDs are alphanumeric with underscores/hyphens
 function isValidPaymentId(id) {
@@ -11,75 +20,77 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { paymentId, txid, internalId } = req.body;
+  const { paymentId, txid } = req.body;
 
-  if (!paymentId || !txid) {
-    return res
-      .status(400)
-      .json({ error: "Missing payment or transaction data" });
+  if (!paymentId) {
+    return res.status(400).json({ error: "Missing payment identifier" });
   }
 
-  // Validate paymentId and txid format to prevent SSRF
+  // Validate paymentId format to prevent SSRF
   if (!isValidPaymentId(paymentId)) {
     return res.status(400).json({ error: "Invalid payment identifier format" });
   }
 
-  if (!isValidPaymentId(txid)) {
+  // Validate txid format if provided
+  if (txid && !isValidPaymentId(txid)) {
     return res.status(400).json({ error: "Invalid transaction ID format" });
   }
 
   const isSandbox = process.env.NEXT_PUBLIC_PI_SANDBOX === "true";
 
+  console.log("Handling incomplete payment:", { paymentId, txid, isSandbox });
+
   // SECURITY: In sandbox mode, do NOT make external API calls
-  // Pi SDK handles payment completion client-side in sandbox
+  // Simply acknowledge the payment locally to prevent SSRF vulnerabilities
   if (isSandbox) {
-    console.log("✅ Completing payment in sandbox mode (no external API calls):", { paymentId, txid });
+    console.log(
+      "✅ Acknowledging incomplete payment in sandbox mode (no external calls):",
+      paymentId,
+    );
     return res.status(200).json({
       success: true,
       payment: {
-        id: internalId || paymentId,
         piPaymentId: paymentId,
-        status: "COMPLETED",
-        txid: txid,
-        completedAt: new Date().toISOString(),
-        verified: true,
+        txid: txid || null,
+        status: txid ? "COMPLETED" : "PENDING",
+        syncedAt: new Date().toISOString(),
       },
-      message: "Payment completed (sandbox mode)",
+      message: "Incomplete payment acknowledged (sandbox mode)",
     });
   }
 
   // Production mode requires API key
   const piApiKey = process.env.PI_API_KEY;
   if (!piApiKey) {
-    console.log("✅ No PI_API_KEY configured, completing payment locally");
+    console.log("✅ No PI_API_KEY configured, acknowledging payment locally");
     return res.status(200).json({
       success: true,
       payment: {
-        id: internalId || paymentId,
         piPaymentId: paymentId,
-        status: "COMPLETED",
-        txid: txid,
-        completedAt: new Date().toISOString(),
-        verified: true,
+        txid: txid || null,
+        status: txid ? "COMPLETED" : "PENDING",
+        syncedAt: new Date().toISOString(),
       },
-      message: "Payment completed (no API key configured)",
+      message: "Incomplete payment acknowledged (no API key configured)",
     });
   }
 
+  // Production mode with API key - use Pi API
   try {
-    console.log("Completing payment:", { paymentId, txid, internalId });
-
-    // Production mode with API key - use Pi API
     const apiUrl = process.env.PI_API_URL || "https://api.minepi.com/v2";
 
     // Use encodeURIComponent for safe URL construction
-    const response = await fetch(`${apiUrl}/payments/${encodeURIComponent(paymentId)}/complete`, {
+    const endpoint = txid
+      ? `${apiUrl}/payments/${encodeURIComponent(paymentId)}/complete`
+      : `${apiUrl}/payments/${encodeURIComponent(paymentId)}/approve`;
+
+    const response = await fetch(endpoint, {
       method: "POST",
       headers: {
         Authorization: `Key ${piApiKey}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ txid }),
+      body: txid ? JSON.stringify({ txid }) : undefined,
     });
 
     if (!response.ok) {
@@ -92,25 +103,25 @@ export default async function handler(req, res) {
     }
 
     const data = await response.json();
-    console.log("✅ Payment completed by Pi Network:", data);
+    console.log("✅ Incomplete payment processed by Pi Network:", data);
 
     return res.status(200).json({
       success: true,
       payment: {
-        id: internalId || paymentId,
         piPaymentId: paymentId,
-        status: "COMPLETED",
-        txid: txid,
-        completedAt: new Date().toISOString(),
-        verified: true,
+        txid: txid || null,
+        status: txid ? "COMPLETED" : "APPROVED",
+        syncedAt: new Date().toISOString(),
         piResponse: data,
       },
-      message: "Payment completed and verified successfully",
+      message: txid
+        ? "Incomplete payment completed successfully"
+        : "Incomplete payment approved successfully",
     });
   } catch (error) {
-    console.error("Payment completion error:", error);
+    console.error("Incomplete payment handling error:", error);
     return res.status(500).json({
-      error: "Failed to complete payment",
+      error: "Failed to handle incomplete payment",
       details:
         process.env.NODE_ENV === "development" ? error.message : undefined,
     });
