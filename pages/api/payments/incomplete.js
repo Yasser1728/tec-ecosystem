@@ -75,7 +75,7 @@ export default async function handler(req, res) {
   // Note: In a real production implementation, you would use the official
   // Pi Network Node.js SDK instead of direct fetch calls
   try {
-    const apiUrl = "https://api.minepi.com/v2";
+    const apiUrl = process.env.PI_API_URL || "https://api.minepi.com/v2";
     const endpoint = txid
       ? `${apiUrl}/payments/${encodeURIComponent(paymentId)}/complete`
       : `${apiUrl}/payments/${encodeURIComponent(paymentId)}/approve`;
