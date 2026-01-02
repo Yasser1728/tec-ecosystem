@@ -4,9 +4,9 @@
  * Central exports for all core functionality
  */
 
-export { DomainBootstrap } from './bootstrap';
-export { ForensicLogger, AUDIT_OPERATION_TYPES, RISK_LEVELS } from './forensic';
-export { ApprovalCenter, SOVEREIGN_EMAIL, APPROVAL_THRESHOLDS } from './approval';
+export { DomainBootstrap } from './bootstrap.js';
+export { ForensicLogger, AUDIT_OPERATION_TYPES, RISK_LEVELS } from './forensic.js';
+export { ApprovalCenter, SOVEREIGN_EMAIL, APPROVAL_THRESHOLDS } from './approval.js';
 
 // Re-export forensic utilities for convenience
 export {
@@ -26,7 +26,7 @@ export {
   SYSTEM_INTEGRITY_LEVEL,
   SECURITY_THRESHOLDS,
   AUDIT_PAGINATION
-} from '../lib/forensic-utils';
+} from '../lib/forensic-utils.js';
 
 export default {
   DomainBootstrap,

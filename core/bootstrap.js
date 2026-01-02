@@ -28,7 +28,7 @@ export class DomainBootstrap {
     if (this.approvalRequired) {
       // Require SOVEREIGN_EMAIL to be set for production security
       if (!process.env.SOVEREIGN_EMAIL) {
-        console.warn(`[DomainBootstrap] SOVEREIGN_EMAIL not set, using default for ${this.name}`);
+        console.warn('[DomainBootstrap] SOVEREIGN_EMAIL environment variable not set, using default value');
       }
       this.approvalCenter = new ApprovalCenter({
         domain: this.name,

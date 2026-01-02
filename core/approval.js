@@ -5,7 +5,7 @@
  * Manages sovereign email notifications and approval workflows
  */
 
-import { AUDIT_OPERATION_TYPES, RISK_LEVELS } from '../lib/forensic-utils';
+import { AUDIT_OPERATION_TYPES, RISK_LEVELS } from '../lib/forensic-utils.js';
 
 // Sovereign email for major transaction approvals
 const SOVEREIGN_EMAIL = process.env.SOVEREIGN_EMAIL || 'yasserrr.fox17@gmail.com';
@@ -39,31 +39,56 @@ export class ApprovalCenter {
     try {
       // Call central approval API
       const apiEndpoint = process.env.APPROVAL_API_ENDPOINT || '/api/approval';
-      const response = await fetch(apiEndpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          operationType,
-          operationData: {
-            ...operationData,
-            domain: domain || this.domain
+      
+      let response;
+      try {
+        response = await fetch(apiEndpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
           },
-          domain: domain || this.domain,
-          context: {
-            requestedAt: new Date().toISOString(),
-            requestedBy: user?.id || 'unknown'
-          }
-        })
-      });
+          body: JSON.stringify({
+            operationType,
+            operationData: {
+              ...operationData,
+              domain: domain || this.domain
+            },
+            domain: domain || this.domain,
+            context: {
+              requestedAt: new Date().toISOString(),
+              requestedBy: user?.id || 'unknown'
+            }
+          })
+        });
+      } catch (networkError) {
+        // Network error - fail securely for critical operations
+        const isCritical = this.isCriticalOperation(operationType, operationData);
+        console.error('[ApprovalCenter] Network error during approval request:', networkError);
+        
+        return {
+          approved: !isCritical,
+          reason: isCritical 
+            ? 'Network error during approval - denied for security'
+            : 'Network error during approval - allowed with audit trail',
+          error: networkError.message,
+          networkError: true
+        };
+      }
       
       if (!response.ok) {
-        const error = await response.json();
+        const errorText = await response.text();
+        let error;
+        try {
+          error = JSON.parse(errorText);
+        } catch {
+          error = { message: errorText };
+        }
+        
         return {
           approved: false,
-          reason: error.message || 'Approval request failed',
-          error: error
+          reason: error.message || `Approval request failed with status ${response.status}`,
+          error: error,
+          httpStatus: response.status
         };
       }
       

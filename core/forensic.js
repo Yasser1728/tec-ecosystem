@@ -13,7 +13,7 @@ import {
   detectSuspiciousActivity,
   AUDIT_OPERATION_TYPES,
   RISK_LEVELS
-} from '../lib/forensic-utils';
+} from '../lib/forensic-utils.js';
 
 export class ForensicLogger {
   constructor(config = {}) {
