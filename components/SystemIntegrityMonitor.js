@@ -33,12 +33,22 @@ export default function SystemIntegrityMonitor({ onRefresh }) {
 
   const toggleCircuitBreaker = async () => {
     const isActive = liquidityData?.systemIntegrity?.circuitBreakerActive;
-    const reason = isActive
-      ? 'Manual deactivation'
-      : prompt('Enter reason for activating circuit breaker:');
+    let reason;
 
-    if (!isActive && !reason) {
-      return; // User cancelled
+    if (isActive) {
+      // Deactivating - just confirm
+      if (!confirm('Are you sure you want to deactivate the circuit breaker?')) {
+        return;
+      }
+      reason = 'Manual deactivation';
+    } else {
+      // Activating - get reason
+      // TODO: Replace prompt with a proper modal dialog component for better UX
+      reason = prompt('Enter reason for activating circuit breaker:');
+      if (!reason || reason.trim() === '') {
+        alert('A valid reason is required to activate the circuit breaker.');
+        return;
+      }
     }
 
     setToggling(true);
@@ -97,6 +107,21 @@ export default function SystemIntegrityMonitor({ onRefresh }) {
     }
   };
 
+  const getLevelBorderColor = (level) => {
+    switch (level) {
+      case 'NORMAL':
+        return 'border-green-500';
+      case 'WARNING':
+        return 'border-yellow-500';
+      case 'CRITICAL':
+        return 'border-orange-500';
+      case 'LOCKED':
+        return 'border-red-500';
+      default:
+        return 'border-gray-500';
+    }
+  };
+
   const getLevelIcon = (level) => {
     switch (level) {
       case 'NORMAL':
@@ -114,7 +139,7 @@ export default function SystemIntegrityMonitor({ onRefresh }) {
 
   return (
     <div
-      className={`bg-gradient-to-br ${getLevelColor(integrityLevel)}/20 border-2 border-${getLevelColor(integrityLevel).split(' ')[0].split('-')[1]}-500 rounded-xl p-6`}
+      className={`bg-gradient-to-br ${getLevelColor(integrityLevel)}/20 border-2 ${getLevelBorderColor(integrityLevel)} rounded-xl p-6`}
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-4">

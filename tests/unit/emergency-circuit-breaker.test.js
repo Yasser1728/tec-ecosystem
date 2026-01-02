@@ -92,15 +92,17 @@ describe('Emergency Circuit Breaker', () => {
     expect(result.status).toBe(403);
   });
 
-  it('should handle errors gracefully and default to blocking', async () => {
+  it('should handle database errors and default to blocking with critical state', async () => {
+    // When checkSystemIntegrity fails, it returns a fail-safe object with CRITICAL state
+    // This causes emergencyCircuitBreaker to block with 403
     prisma.systemControl.findFirst.mockRejectedValue(new Error('Database error'));
 
     const result = await emergencyCircuitBreaker();
 
     expect(result.blocked).toBe(true);
-    // Note: When database fails, system defaults to CRITICAL state which returns 403
     expect(result.status).toBe(403);
     expect(result.message).toBe('System Lock: Integrity Breach Detected');
+    expect(result.details).toContain('System integrity check failed');
   });
 });
 

@@ -78,13 +78,14 @@ function CommandCenter({ session }) {
           <div className="bg-gray-800 border border-gray-700 rounded-xl p-6">
             <h2 className="text-2xl font-bold mb-4">Quick Actions</h2>
             <div className="grid md:grid-cols-3 gap-4">
-              <Link href="/api/audit-logs">
-                <div className="bg-gray-900 hover:bg-gray-700 border border-gray-700 rounded-lg p-4 cursor-pointer transition-all">
-                  <div className="text-3xl mb-2">📋</div>
-                  <h3 className="font-bold mb-1">Audit Logs</h3>
-                  <p className="text-sm text-gray-400">View forensic audit trail</p>
-                </div>
-              </Link>
+              <div
+                onClick={() => window.location.href = '/admin/audit-logs'}
+                className="bg-gray-900 hover:bg-gray-700 border border-gray-700 rounded-lg p-4 cursor-pointer transition-all"
+              >
+                <div className="text-3xl mb-2">📋</div>
+                <h3 className="font-bold mb-1">Audit Logs</h3>
+                <p className="text-sm text-gray-400">View forensic audit trail</p>
+              </div>
 
               <Link href="/admin/users">
                 <div className="bg-gray-900 hover:bg-gray-700 border border-gray-700 rounded-lg p-4 cursor-pointer transition-all">

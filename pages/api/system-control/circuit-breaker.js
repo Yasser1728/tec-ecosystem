@@ -33,10 +33,10 @@ export default async function handler(req, res) {
       });
     }
 
-    if (activate && !reason) {
+    if (activate && (!reason || reason.trim() === '')) {
       return res.status(400).json({
         error: 'Invalid request',
-        message: 'reason is required when activating circuit breaker',
+        message: 'reason is required and cannot be empty when activating circuit breaker',
       });
     }
 
