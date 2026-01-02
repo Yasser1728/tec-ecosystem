@@ -1,14 +1,36 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
+/**
+ * Generate a secure random referral code using Web Crypto API
+ */
+function generateSecureReferralCode() {
+  // Use Web Crypto API for secure random generation
+  const array = new Uint8Array(4);
+  if (typeof window !== 'undefined' && window.crypto && window.crypto.getRandomValues) {
+    window.crypto.getRandomValues(array);
+    // Convert to hex string and uppercase
+    const hexString = Array.from(array)
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join('')
+      .toUpperCase();
+    return `TEC-${hexString}`;
+  }
+  // Fallback for SSR (will be replaced on client mount)
+  return 'TEC-XXXXXXXX';
+}
+
 export default function Referral() {
-  const [referralCode] = useState(
-    "TEC-" + Math.random().toString(36).substr(2, 8).toUpperCase(),
-  );
+  const [referralCode, setReferralCode] = useState('TEC-XXXXXXXX');
   const [copied, setCopied] = useState(false);
+
+  // Generate secure referral code on client side only
+  useEffect(() => {
+    setReferralCode(generateSecureReferralCode());
+  }, []);
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(
