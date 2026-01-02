@@ -10,6 +10,7 @@ import {
   createAuditEntry,
   AUDIT_OPERATION_TYPES,
   RISK_LEVELS,
+  SECURITY_THRESHOLDS,
 } from '../../lib/forensic-utils';
 
 describe('Forensic Utils - Immutable Log Entry', () => {
@@ -118,7 +119,7 @@ describe('Forensic Utils - Operation Validation', () => {
 
   it('should flag high-risk for large amounts', () => {
     const result = validateOperation(AUDIT_OPERATION_TYPES.PAYMENT_CREATE, {
-      amount: 15000,
+      amount: SECURITY_THRESHOLDS.HIGH_RISK_AMOUNT + 1,
       domain: 'commerce',
     });
 
@@ -182,7 +183,7 @@ describe('Forensic Utils - Suspicious Activity Detection', () => {
   });
 
   it('should flag rapid repeated operations', () => {
-    const recentOperations = Array(11)
+    const recentOperations = Array(SECURITY_THRESHOLDS.RAPID_OPERATIONS_COUNT + 2)
       .fill(null)
       .map(() => ({
         timestamp: new Date().toISOString(),
@@ -204,7 +205,7 @@ describe('Forensic Utils - Suspicious Activity Detection', () => {
     const result = detectSuspiciousActivity(
       user,
       AUDIT_OPERATION_TYPES.PAYMENT_CREATE,
-      { amount: 60000 },
+      { amount: SECURITY_THRESHOLDS.LARGE_TRANSACTION_AMOUNT + 1 },
       {}
     );
 
@@ -220,7 +221,7 @@ describe('Forensic Utils - Suspicious Activity Detection', () => {
     const result = detectSuspiciousActivity(
       user,
       AUDIT_OPERATION_TYPES.PAYMENT_CREATE,
-      { amount: 5000 },
+      { amount: SECURITY_THRESHOLDS.NEW_ACCOUNT_LARGE_AMOUNT + 1 },
       { userCreatedAt }
     );
 
@@ -307,7 +308,7 @@ describe('Forensic Utils - Create Audit Entry', () => {
         verified: true, // Add verified flag
       },
       operationType: AUDIT_OPERATION_TYPES.PAYMENT_CREATE,
-      operationData: { amount: 60000, domain: 'commerce' },
+      operationData: { amount: SECURITY_THRESHOLDS.LARGE_TRANSACTION_AMOUNT + 1, domain: 'commerce' },
       approved: true,
     });
 

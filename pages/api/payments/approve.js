@@ -22,6 +22,8 @@ export default async function handler(req, res) {
 
   try {
     // Call forensic audit server for approval validation
+    // NOTE: Using HTTP call maintains service separation. For high-performance
+    // scenarios, consider directly importing forensic-utils functions.
     const approvalResponse = await fetch(
       `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/approval`,
       {

@@ -14,6 +14,9 @@ export default async function handler(req, res) {
 
   try {
     // Call forensic audit server for approval before creating payment
+    // NOTE: Using HTTP call maintains service separation and allows approval server
+    // to be scaled independently. For high-performance scenarios, consider
+    // directly importing forensic-utils functions instead.
     const approvalResponse = await fetch(
       `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/approval`,
       {

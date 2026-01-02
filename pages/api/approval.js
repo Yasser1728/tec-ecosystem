@@ -85,7 +85,9 @@ export default async function handler(req, res) {
     // Extract user information
     const user = session?.user || null;
 
-    // Extract request metadata
+    // Extract request metadata for audit trail
+    // NOTE: IP headers are used for logging purposes only, NOT for security decisions
+    // These headers can be spoofed and should not be trusted for authentication/authorization
     const requestMetadata = {
       ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
       userAgent: req.headers['user-agent'],
