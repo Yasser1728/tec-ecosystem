@@ -160,14 +160,14 @@ class ApprovalCenter {
    * Generate unique approval ID
    */
   generateApprovalId() {
-    return `APR-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `APR-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
   }
 
   /**
    * Generate unique notification ID
    */
   generateNotificationId() {
-    return `NOT-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `NOT-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
   }
 
   /**

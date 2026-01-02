@@ -197,14 +197,14 @@ class EventBus {
    * Generate unique event ID
    */
   generateEventId() {
-    return `EVT-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `EVT-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
   }
 
   /**
    * Generate unique subscription ID
    */
   generateSubscriptionId() {
-    return `SUB-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `SUB-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
   }
 
   /**

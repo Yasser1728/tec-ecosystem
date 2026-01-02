@@ -105,7 +105,7 @@ async function testEstateApp() {
 
   // Verify deed
   console.log('\n--- Verifying Deed Authenticity ---');
-  const verification = await estateService.estateService.forensicDeed.verifyDeed(
+  const verification = await estateService.forensicDeed.verifyDeed(
     registration.deed.id
   );
   console.log('✓ Deed valid:', verification.valid);
