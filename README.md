@@ -71,6 +71,17 @@ Private routes are protected using:
 - **withAuth HOC**: Page-level protection
 - **Session Validation**: Secure session management
 
+### Forensic Audit System
+
+All financial and sensitive operations are protected by a centralized forensic audit system:
+
+- **Central Audit Server** (`/api/approval`): Validates all financial transactions
+- **Immutable Logging**: Cryptographic hash-based audit trail
+- **Suspicious Activity Detection**: Real-time threat detection
+- **User Identity Verification**: Multi-factor validation
+
+See [FORENSIC_AUDIT.md](./docs/FORENSIC_AUDIT.md) for the complete forensic audit documentation.
+
 See [SECURITY.md](./docs/SECURITY.md) for detailed security policies.
 
 ---
