@@ -226,7 +226,9 @@ function Dashboard({ session }) {
                           </td>
                           <td className="px-6 py-4 text-xs font-mono text-gray-400">
                             <div className="max-w-[150px] truncate" title={log.hash}>
-                              {log.hash.substring(0, 16)}...
+                              {log.hash && log.hash.length > 16 
+                                ? log.hash.substring(0, 16) + '...'
+                                : log.hash || 'N/A'}
                             </div>
                           </td>
                           <td className="px-6 py-4 text-sm text-gray-400">

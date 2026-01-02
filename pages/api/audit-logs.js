@@ -46,7 +46,8 @@ export default async function handler(req, res) {
     };
 
     // Only allow users to see their own logs unless they are admin
-    // For now, we'll allow users to see only their own logs
+    // TODO: Add admin role check to allow viewing all audit logs
+    // Admin users should be able to query logs for any user using the userId parameter
     options.userId = session.user.id;
 
     // Add optional filters
