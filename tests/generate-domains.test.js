@@ -41,6 +41,7 @@ describe('Path Sanitization - safe-paths', () => {
     test('should block path traversal with ../', () => {
       expect(() => safeResolveFile(baseDir, '../outside')).toThrow('Sovereign Security: Path traversal detected!');
       expect(() => safeResolveFile(baseDir, '../../etc/passwd')).toThrow('Sovereign Security: Path traversal detected!');
+      expect(() => safeResolveFile(baseDir, '..')).toThrow('Sovereign Security: Path traversal detected!');
     });
 
     test('should block path traversal with backslashes (Windows-style)', () => {
@@ -49,10 +50,11 @@ describe('Path Sanitization - safe-paths', () => {
         expect(() => safeResolveFile(baseDir, '..\\..\\windows')).toThrow('Sovereign Security: Path traversal detected!');
         expect(() => safeResolveFile(baseDir, '..\\outside')).toThrow('Sovereign Security: Path traversal detected!');
       } else {
-        // On Unix systems, backslashes are literal characters, so they create files with backslashes in names
-        // These should be allowed since they don't traverse outside the base directory
+        // On Unix systems, backslashes are literal characters in filenames
+        // path.resolve/path.join treat them as part of the filename, not path separators
+        // The resulting path stays within the base directory
         const resolved = safeResolveFile(baseDir, '..\\outside');
-        expect(resolved).toBe(path.join(baseDir, '..\\outside'));
+        expect(resolved).toBe(path.resolve(baseDir, '..\\outside'));
       }
     });
 
