@@ -1,5 +1,6 @@
 import { withAuth } from "../../lib/withAuth";
 import { USER_TIERS } from "../../lib/roles";
+import { useState, useEffect } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import Header from "../../components/Header";
@@ -7,6 +8,67 @@ import Footer from "../../components/Footer";
 
 function Dashboard({ session }) {
   const user = session?.user;
+  const [auditLogs, setAuditLogs] = useState([]);
+  const [isLoadingLogs, setIsLoadingLogs] = useState(false);
+
+  // Fetch audit logs on component mount
+  useEffect(() => {
+    fetchAuditLogs();
+  }, []);
+
+  const fetchAuditLogs = async () => {
+    setIsLoadingLogs(true);
+    try {
+      const response = await fetch('/api/audit-logs?limit=10');
+      if (response.ok) {
+        const data = await response.json();
+        setAuditLogs(data.data || []);
+      }
+    } catch (error) {
+      console.error('Error fetching audit logs:', error);
+    } finally {
+      setIsLoadingLogs(false);
+    }
+  };
+
+  const getStatusBadge = (approved) => {
+    if (approved) {
+      return (
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-500/20 text-green-400 border border-green-500/50">
+          ✓ موافق عليها
+        </span>
+      );
+    }
+    return (
+      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-500/20 text-red-400 border border-red-500/50">
+        ✕ مرفوضة
+      </span>
+    );
+  };
+
+  const getRiskBadge = (riskLevel) => {
+    const colors = {
+      low: 'bg-blue-500/20 text-blue-400 border-blue-500/50',
+      medium: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/50',
+      high: 'bg-orange-500/20 text-orange-400 border-orange-500/50',
+      critical: 'bg-red-500/20 text-red-400 border-red-500/50',
+    };
+    return (
+      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${colors[riskLevel] || colors.low}`}>
+        {riskLevel}
+      </span>
+    );
+  };
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleString('ar', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
 
   return (
     <>
@@ -105,11 +167,86 @@ function Dashboard({ session }) {
 
           {/* Recent Activity */}
           <div className="mt-8">
-            <h2 className="text-2xl font-bold mb-4">Recent Activity</h2>
-            <div className="bg-gray-800 border border-gray-700 rounded-xl p-6">
-              <p className="text-gray-400 text-center py-8">
-                No recent activity
-              </p>
+            <h2 className="text-2xl font-bold mb-4">سجل العمليات والموافقات</h2>
+            <div className="bg-gray-800 border border-gray-700 rounded-xl overflow-hidden">
+              {isLoadingLogs ? (
+                <div className="p-8 text-center text-gray-400">
+                  <div className="animate-spin inline-block w-8 h-8 border-4 border-current border-t-transparent rounded-full mb-2" role="status" aria-label="loading">
+                    <span className="sr-only">Loading...</span>
+                  </div>
+                  <p>جاري تحميل السجل...</p>
+                </div>
+              ) : auditLogs.length === 0 ? (
+                <div className="p-8 text-center text-gray-400">
+                  لا توجد عمليات مسجلة
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-gray-900/50">
+                      <tr>
+                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">
+                          نوع العملية
+                        </th>
+                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">
+                          الحالة
+                        </th>
+                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">
+                          مستوى المخاطرة
+                        </th>
+                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">
+                          الدمغة (Hash)
+                        </th>
+                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">
+                          السبب
+                        </th>
+                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">
+                          التاريخ
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-700">
+                      {auditLogs.map((log) => (
+                        <tr key={log.id} className="hover:bg-gray-700/30 transition-colors">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                            <div>
+                              <div className="font-medium">{log.operationType}</div>
+                              {log.domain && (
+                                <div className="text-xs text-gray-500 mt-1">
+                                  {log.domain}
+                                </div>
+                              )}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {getStatusBadge(log.approved)}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {getRiskBadge(log.riskLevel)}
+                          </td>
+                          <td className="px-6 py-4 text-xs font-mono text-gray-400">
+                            <div className="max-w-[150px] truncate" title={log.hash}>
+                              {log.hash.substring(0, 16)}...
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 text-sm text-gray-400">
+                            {log.rejectionReason ? (
+                              <div className="max-w-xs truncate text-red-400" title={log.rejectionReason}>
+                                {log.rejectionReason}
+                              </div>
+                            ) : (
+                              <span className="text-green-400">-</span>
+                            )}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                            {formatDate(log.createdAt)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
           </div>
         </main>

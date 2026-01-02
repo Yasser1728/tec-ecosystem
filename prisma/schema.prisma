@@ -263,3 +263,46 @@ model Subscription {
   @@index([status])
   @@map("subscriptions")
 }
+
+// Forensic Audit Logs
+model AuditLog {
+  id               String   @id @default(cuid())
+  userId           String?
+  operationType    String
+  operationData    Json
+  approved         Boolean
+  rejectionReason  String?
+  hash             String   @unique
+  
+  // Identity Check Results
+  identityVerified Boolean
+  identityReason   String?
+  
+  // Validation Results
+  operationValid   Boolean
+  validationErrors String[]
+  riskLevel        String
+  
+  // Suspicion Results
+  suspicious       Boolean
+  suspicionIndicators String[]
+  threatLevel      String?
+  
+  // Request Metadata
+  requestIp        String?
+  requestUserAgent String?
+  requestOrigin    String?
+  
+  // Context
+  domain           String?
+  context          Json?
+  
+  createdAt        DateTime @default(now())
+  
+  @@index([userId])
+  @@index([operationType])
+  @@index([approved])
+  @@index([createdAt])
+  @@index([domain])
+  @@map("audit_logs")
+}
