@@ -9,15 +9,15 @@ import Footer from "../components/Footer";
  */
 function generateSecureReferralCode() {
   // Use Web Crypto API for secure random generation
-  const array = new Uint8Array(4); // 4 bytes = 8 hex characters
+  const array = new Uint8Array(4);
   if (typeof window !== 'undefined' && window.crypto && window.crypto.getRandomValues) {
     window.crypto.getRandomValues(array);
-    // Convert to hex string for consistent 8-character length
+    // Convert to hex string and uppercase
     const hexString = Array.from(array)
       .map(b => b.toString(16).padStart(2, '0'))
       .join('')
       .toUpperCase();
-    return 'TEC-' + hexString;
+    return `TEC-${hexString}`;
   }
   // Fallback for SSR (will be replaced on client mount)
   return 'TEC-XXXXXXXX';
