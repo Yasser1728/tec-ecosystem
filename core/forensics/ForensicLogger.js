@@ -140,10 +140,11 @@ class ForensicLogger {
   }
 
   /**
-   * Generate unique log ID
+   * Generate unique log ID using cryptographically secure random
    */
   generateLogId() {
-    return `LOG-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+    const secureRandom = crypto.randomBytes(8).toString('hex');
+    return `LOG-${Date.now()}-${secureRandom}`;
   }
 
   /**

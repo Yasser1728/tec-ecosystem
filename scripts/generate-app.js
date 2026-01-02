@@ -19,6 +19,31 @@ const rl = readline.createInterface({
 const SOVEREIGN_CONTACT = 'yasserrr.fox17@gmail.com';
 
 /**
+ * Sanitize and validate path to prevent directory traversal attacks
+ * @param {string} basePath - Base directory path
+ * @param {string} userInput - User-provided path component
+ * @returns {string} Safe path
+ */
+function sanitizePath(basePath, userInput) {
+  // Remove any path traversal attempts
+  const sanitized = userInput.replace(/\.\./g, '').replace(/[\/\\]/g, '');
+  
+  // Join with base path
+  const fullPath = path.join(basePath, sanitized);
+  
+  // Resolve to absolute path
+  const resolvedPath = path.resolve(fullPath);
+  const resolvedBase = path.resolve(basePath);
+  
+  // Ensure the resolved path is within the base directory
+  if (!resolvedPath.startsWith(resolvedBase)) {
+    throw new Error('Sovereign Security Breach: Path Traversal Attempted!');
+  }
+  
+  return resolvedPath;
+}
+
+/**
  * Prompt user for input
  */
 function prompt(question) {
@@ -58,6 +83,8 @@ function generateModelTemplate(appName, modelName) {
  * Contact: ${SOVEREIGN_CONTACT}
  * Purpose: [Describe the purpose of this model]
  */
+
+const crypto = require('crypto');
 
 class ${modelName} {
   constructor(core) {
@@ -139,10 +166,11 @@ class ${modelName} {
   }
 
   /**
-   * Generate unique ID
+   * Generate unique ID using cryptographically secure random
    */
   generateId() {
-    return \`${modelName.toUpperCase()}-\${Date.now()}-\${Math.random().toString(36).substr(2, 9)}\`;
+    const secureRandom = crypto.randomBytes(8).toString('hex');
+    return \`${modelName.toUpperCase()}-\${Date.now()}-\${secureRandom}\`;
   }
 }
 
@@ -316,8 +344,9 @@ async function generateApp() {
     return;
   }
 
+  // Sanitize inputs to prevent path traversal
   const appsDir = path.join(process.cwd(), 'apps');
-  const appPath = path.join(appsDir, appName.toLowerCase());
+  const appPath = sanitizePath(appsDir, appName.toLowerCase());
 
   console.log(\`\nGenerating \${appName} app at: \${appPath}\n\`);
 

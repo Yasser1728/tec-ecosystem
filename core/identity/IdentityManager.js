@@ -6,6 +6,8 @@
  * Purpose: Manages user identities, authentication, and authorization with forensic tracking
  */
 
+const crypto = require('crypto');
+
 class IdentityManager {
   constructor() {
     this.contactEmail = 'yasserrr.fox17@gmail.com';
@@ -116,10 +118,11 @@ class IdentityManager {
   }
 
   /**
-   * Generate unique identity ID
+   * Generate unique identity ID using cryptographically secure random
    */
   generateIdentityId() {
-    return `ID-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+    const secureRandom = crypto.randomBytes(8).toString('hex');
+    return `ID-${Date.now()}-${secureRandom}`;
   }
 
   /**

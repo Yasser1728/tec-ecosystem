@@ -6,6 +6,8 @@
  * Purpose: Manages sovereign decisions requiring manual approval with notifications
  */
 
+const crypto = require('crypto');
+
 class ApprovalCenter {
   constructor(forensicLogger) {
     this.contactEmail = 'yasserrr.fox17@gmail.com';
@@ -157,17 +159,19 @@ class ApprovalCenter {
   }
 
   /**
-   * Generate unique approval ID
+   * Generate unique approval ID using cryptographically secure random
    */
   generateApprovalId() {
-    return `APR-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+    const secureRandom = crypto.randomBytes(8).toString('hex');
+    return `APR-${Date.now()}-${secureRandom}`;
   }
 
   /**
-   * Generate unique notification ID
+   * Generate unique notification ID using cryptographically secure random
    */
   generateNotificationId() {
-    return `NOT-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+    const secureRandom = crypto.randomBytes(8).toString('hex');
+    return `NOT-${Date.now()}-${secureRandom}`;
   }
 
   /**

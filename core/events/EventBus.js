@@ -6,6 +6,8 @@
  * Purpose: Enables real-time communication between micro-apps with sovereign monitoring
  */
 
+const crypto = require('crypto');
+
 class EventBus {
   constructor(forensicLogger) {
     this.contactEmail = 'yasserrr.fox17@gmail.com';
@@ -194,17 +196,19 @@ class EventBus {
   }
 
   /**
-   * Generate unique event ID
+   * Generate unique event ID using cryptographically secure random
    */
   generateEventId() {
-    return `EVT-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+    const secureRandom = crypto.randomBytes(8).toString('hex');
+    return `EVT-${Date.now()}-${secureRandom}`;
   }
 
   /**
-   * Generate unique subscription ID
+   * Generate unique subscription ID using cryptographically secure random
    */
   generateSubscriptionId() {
-    return `SUB-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+    const secureRandom = crypto.randomBytes(8).toString('hex');
+    return `SUB-${Date.now()}-${secureRandom}`;
   }
 
   /**

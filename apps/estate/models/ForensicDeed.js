@@ -6,6 +6,8 @@
  * Purpose: Manages property ownership deeds with complete forensic tracking
  */
 
+const crypto = require('crypto');
+
 class ForensicDeed {
   constructor(core) {
     this.core = core;
@@ -264,10 +266,11 @@ class ForensicDeed {
   }
 
   /**
-   * Generate unique deed ID
+   * Generate unique deed ID using cryptographically secure random
    */
   generateDeedId() {
-    return `DEED-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+    const secureRandom = crypto.randomBytes(8).toString('hex');
+    return `DEED-${Date.now()}-${secureRandom}`;
   }
 
   /**
