@@ -44,7 +44,8 @@ function generateDomains() {
     // Generate directories for each domain
     domains.forEach(domain => {
       try {
-        // Sanitize domain name
+        // Sanitize domain name and convert to lowercase for directory names
+        // (directory names are lowercase for URL-friendliness, but README titles preserve original case)
         const sanitizedName = sanitizeName(domain.toLowerCase());
         
         // Use safe path resolution
