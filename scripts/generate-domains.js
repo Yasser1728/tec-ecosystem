@@ -9,6 +9,7 @@ const path = require('path');
 const fs = require('fs');
 const {
   sanitizeName,
+  sanitizeTemplateText,
   safeResolveFile,
   safeCreateDirectory,
   safeWriteFile
@@ -85,10 +86,15 @@ function generateDomain(config) {
  * @returns {string} - Template content
  */
 function generateIndexTemplate(config) {
+  // Sanitize all template values to prevent XSS and template injection
+  const safeName = sanitizeTemplateText(config.name);
+  const safeDomain = sanitizeTemplateText(config.domain);
+  const safeCategory = sanitizeTemplateText(config.category);
+  
   return `/**
- * ${config.name} Domain
- * Category: ${config.category}
- * Domain: ${config.domain}
+ * ${safeName} Domain
+ * Category: ${safeCategory}
+ * Domain: ${safeDomain}
  */
 
 import React from 'react';
@@ -96,9 +102,9 @@ import React from 'react';
 export default function ${config.name}Page() {
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold mb-4">${config.name}</h1>
-      <p className="text-xl text-gray-600">Welcome to ${config.domain}</p>
-      <p className="mt-4">Category: ${config.category}</p>
+      <h1 className="text-4xl font-bold mb-4">${safeName}</h1>
+      <p className="text-xl text-gray-600">Welcome to ${safeDomain}</p>
+      <p className="mt-4">Category: ${safeCategory}</p>
     </div>
   );
 }
@@ -106,9 +112,9 @@ export default function ${config.name}Page() {
 export async function getStaticProps() {
   return {
     props: {
-      domain: '${config.domain}',
-      name: '${config.name}',
-      category: '${config.category}'
+      domain: '${safeDomain}',
+      name: '${safeName}',
+      category: '${safeCategory}'
     }
   };
 }
@@ -128,14 +134,47 @@ function main() {
     process.exit(1);
   }
   
-  // Parse arguments
+  // Parse arguments - protect against prototype pollution
   const name = args[0];
-  const options = {};
+  const options = Object.create(null); // Prevent prototype pollution
+  
+  // List of allowed option keys to prevent prototype pollution
+  const allowedOptions = ['domain', 'category', 'priority', 'status', 'description'];
   
   args.slice(1).forEach(arg => {
-    const [key, value] = arg.replace(/^--/, '').split('=');
-    options[key] = value;
+    const match = arg.match(/^--([^=]+)=(.*)$/);
+    if (match) {
+      const [, key, value] = match;
+      // Only allow whitelisted option keys
+      if (allowedOptions.includes(key)) {
+        options[key] = value;
+      } else {
+        console.warn(`Warning: Ignoring unknown option: ${key}`);
+      }
+    }
   });
+  
+  // Validate all text inputs
+  const validateTextInput = (text, fieldName) => {
+    if (!text || typeof text !== 'string') return true;
+    // Allow alphanumeric, spaces, hyphens, underscores, and dots for domains
+    if (fieldName === 'domain') {
+      return /^[a-zA-Z0-9._-]+$/.test(text);
+    }
+    // For other fields, allow alphanumeric, spaces, hyphens
+    return /^[a-zA-Z0-9 _-]+$/.test(text);
+  };
+  
+  // Validate domain and category inputs
+  if (options.domain && !validateTextInput(options.domain, 'domain')) {
+    console.error('Error: Invalid domain format. Only alphanumeric characters, dots, hyphens, and underscores allowed.');
+    process.exit(1);
+  }
+  
+  if (options.category && !validateTextInput(options.category, 'category')) {
+    console.error('Error: Invalid category format. Only alphanumeric characters, spaces, hyphens, and underscores allowed.');
+    process.exit(1);
+  }
   
   // Create domain configuration
   const config = {

@@ -8,6 +8,7 @@ const fs = require('fs');
 const os = require('os');
 const {
   sanitizeName,
+  sanitizeTemplateText,
   safeResolveFile,
   safeCreateDirectory,
   safeWriteFile,
@@ -92,6 +93,38 @@ describe('Path Security Utilities', () => {
       expect(() => sanitizeName('file.js')).toThrow('Invalid name');
       expect(() => sanitizeName('path/to/file')).toThrow('Invalid name');
       expect(() => sanitizeName('')).toThrow('Invalid name');
+    });
+    
+    it('should throw specific error for non-string input', () => {
+      expect(() => sanitizeName(123)).toThrow('Name must be a string');
+      expect(() => sanitizeName(null)).toThrow('Name must be a string');
+    });
+  });
+  
+  describe('sanitizeTemplateText', () => {
+    it('should escape HTML special characters', () => {
+      expect(sanitizeTemplateText('<script>alert("xss")</script>'))
+        .toBe('&lt;script&gt;alert(&quot;xss&quot;)&lt;&#x2F;script&gt;');
+    });
+    
+    it('should escape single quotes and backticks', () => {
+      expect(sanitizeTemplateText("it's")).toBe('it&#x27;s');
+      expect(sanitizeTemplateText('`template`')).toBe('&#96;template&#96;');
+    });
+    
+    it('should escape backslashes', () => {
+      expect(sanitizeTemplateText('path\\to\\file')).toBe('path&#92;to&#92;file');
+    });
+    
+    it('should return empty string for non-string input', () => {
+      expect(sanitizeTemplateText(null)).toBe('');
+      expect(sanitizeTemplateText(undefined)).toBe('');
+      expect(sanitizeTemplateText(123)).toBe('');
+    });
+    
+    it('should handle normal text without special characters', () => {
+      expect(sanitizeTemplateText('Hello World')).toBe('Hello World');
+      expect(sanitizeTemplateText('Test123')).toBe('Test123');
     });
   });
   

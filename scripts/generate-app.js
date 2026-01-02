@@ -9,6 +9,7 @@ const path = require('path');
 const fs = require('fs');
 const {
   sanitizeName,
+  sanitizeTemplateText,
   safeResolveFile,
   safeCreateDirectory,
   safeWriteFile
@@ -88,12 +89,24 @@ function generateApp(config) {
  * @returns {string} - Template content
  */
 function generateComponentTemplate(config) {
-  const componentName = config.name.charAt(0).toUpperCase() + config.name.slice(1);
+  // Validate and create safe component name
+  const safeName = sanitizeName(config.name);
+  const componentName = safeName.charAt(0).toUpperCase() + safeName.slice(1)
+    .replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+  
+  // Validate component name is a valid JavaScript identifier
+  if (!/^[A-Z][a-zA-Z0-9]*$/.test(componentName)) {
+    throw new Error(`Generated component name "${componentName}" is not a valid JavaScript identifier`);
+  }
+  
+  // Sanitize text values
+  const safeType = sanitizeTemplateText(config.type);
+  const safeDescription = sanitizeTemplateText(config.description || '');
   
   return `/**
  * ${componentName} Component
- * Type: ${config.type}
- * ${config.description || ''}
+ * Type: ${safeType}
+ * ${safeDescription}
  */
 
 import React from 'react';
@@ -140,19 +153,25 @@ function generateStylesTemplate(config) {
  * @returns {string} - README content
  */
 function generateReadmeTemplate(config) {
-  const componentName = config.name.charAt(0).toUpperCase() + config.name.slice(1);
+  const safeName = sanitizeName(config.name);
+  const componentName = safeName.charAt(0).toUpperCase() + safeName.slice(1)
+    .replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+  
+  // Sanitize text values
+  const safeDescription = sanitizeTemplateText(config.description || 'Component description');
+  const safeType = sanitizeTemplateText(config.type);
   
   return `# ${componentName}
 
-${config.description || 'Component description'}
+${safeDescription}
 
 ## Type
-${config.type}
+${safeType}
 
 ## Usage
 
 \`\`\`jsx
-import ${componentName} from '@/components/${config.name}';
+import ${componentName} from '@/components/${safeName}';
 
 function MyPage() {
   return (
@@ -186,14 +205,37 @@ function main() {
     process.exit(1);
   }
   
-  // Parse arguments
+  // Parse arguments - protect against prototype pollution
   const name = args[0];
-  const options = {};
+  const options = Object.create(null); // Prevent prototype pollution
+  
+  // List of allowed option keys to prevent prototype pollution
+  const allowedOptions = ['type', 'description'];
   
   args.slice(1).forEach(arg => {
-    const [key, value] = arg.replace(/^--/, '').split('=');
-    options[key] = value;
+    const match = arg.match(/^--([^=]+)=(.*)$/);
+    if (match) {
+      const [, key, value] = match;
+      // Only allow whitelisted option keys
+      if (allowedOptions.includes(key)) {
+        options[key] = value;
+      } else {
+        console.warn(`Warning: Ignoring unknown option: ${key}`);
+      }
+    }
   });
+  
+  // Validate text inputs
+  const validateTextInput = (text) => {
+    if (!text || typeof text !== 'string') return true;
+    // Allow alphanumeric, spaces, hyphens, underscores
+    return /^[a-zA-Z0-9 _-]+$/.test(text);
+  };
+  
+  if (options.type && !validateTextInput(options.type)) {
+    console.error('Error: Invalid type format. Only alphanumeric characters, spaces, hyphens, and underscores allowed.');
+    process.exit(1);
+  }
   
   // Create app configuration
   const config = {
