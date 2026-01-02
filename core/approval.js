@@ -38,7 +38,8 @@ export class ApprovalCenter {
     
     try {
       // Call central approval API
-      const response = await fetch('/api/approval', {
+      const apiEndpoint = process.env.APPROVAL_API_ENDPOINT || '/api/approval';
+      const response = await fetch(apiEndpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -144,9 +145,7 @@ export class ApprovalCenter {
    * Send sovereign email notification
    */
   async sendSovereignNotification({ operationType, operationData, user, domain, approvalResult }) {
-    // In production, this would integrate with an email service
-    // For now, we'll log the notification
-    
+    // Format notification
     const notification = {
       to: this.sovereignEmail,
       subject: `🚨 TEC Sovereign Alert: ${operationType} in ${domain}`,
@@ -164,10 +163,21 @@ export class ApprovalCenter {
     console.log('[SOVEREIGN NOTIFICATION]', JSON.stringify(notification, null, 2));
     
     // TODO: Integrate with email service (SendGrid, AWS SES, etc.)
-    // await sendEmail(notification);
+    // Production implementation should use actual email service:
+    // const emailService = require('./email-service');
+    // await emailService.send({
+    //   to: notification.to,
+    //   subject: notification.subject,
+    //   html: notification.body,
+    //   priority: notification.priority
+    // });
+    
+    // For now, log warning that email is not actually sent
+    console.warn('[SOVEREIGN NOTIFICATION] Email service not configured. Notification logged only. Configure email service for production.');
     
     return {
-      sent: true,
+      sent: false, // Will be true when email service is integrated
+      logged: true,
       notification
     };
   }

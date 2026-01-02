@@ -20,6 +20,11 @@ export class ForensicLogger {
     this.domain = config.domain;
     this.database = config.database;
     this.enabled = config.enabled !== false;
+    
+    // Log warning if forensic logging is disabled for critical operations
+    if (!this.enabled) {
+      console.warn(`[ForensicLogger] WARNING: Forensic logging is DISABLED for domain ${this.domain}. This is a security risk and audit trail will not be maintained.`);
+    }
   }
   
   /**

@@ -26,6 +26,10 @@ export class DomainBootstrap {
     
     // Initialize approval center
     if (this.approvalRequired) {
+      // Require SOVEREIGN_EMAIL to be set for production security
+      if (!process.env.SOVEREIGN_EMAIL) {
+        console.warn(`[DomainBootstrap] SOVEREIGN_EMAIL not set, using default for ${this.name}`);
+      }
       this.approvalCenter = new ApprovalCenter({
         domain: this.name,
         sovereignEmail: process.env.SOVEREIGN_EMAIL || 'yasserrr.fox17@gmail.com'

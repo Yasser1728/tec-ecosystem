@@ -118,8 +118,10 @@ apps/{domain}/
 
 - **Sovereign Email**: yasserrr.fox17@gmail.com
 - **Multi-level Authorization**: Tiered approval workflows
-- **Email Notifications**: Automatic alerts for major transactions
+- **Email Notifications**: Automatic alerts for major transactions (currently logged, email service integration required for production)
 - **Emergency Circuit Breaker**: System-wide lock capabilities
+
+**Note**: Email notifications are currently logged to console. For production deployment, integrate with an email service (SendGrid, AWS SES, etc.) by implementing the email service in `core/approval.js`.
 
 **Thresholds:**
 - Auto-approve: < 1,000 PI
@@ -128,7 +130,7 @@ apps/{domain}/
 
 **Features:**
 - `requestApproval()` - Request operation approval
-- `sendSovereignNotification()` - Send email to sovereign authority
+- `sendSovereignNotification()` - Send email to sovereign authority (requires email service integration)
 - `requiresEmailNotification()` - Check if notification needed
 - `getApprovalStats()` - Get approval statistics
 
