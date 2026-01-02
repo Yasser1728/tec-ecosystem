@@ -8,7 +8,7 @@ const db = {
     port: process.env.DATABASE_PORT || 5432,
     database: process.env.DATABASE_NAME || 'tec_ecosystem',
     user: process.env.DATABASE_USER || 'postgres',
-    password: process.env.DATABASE_PASSWORD || '',
+    password: process.env.DATABASE_PASSWORD || null,
   },
   
   // Connection pool settings
