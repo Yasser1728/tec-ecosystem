@@ -37,6 +37,7 @@ async function runFullDemo() {
   console.log('  - Event Bus');
 
   const estateApp = new EstateApp(core);
+  const estateService = estateApp.getService();
   console.log('✓ Estate Micro-App initialized');
 
   // Phase 2: Identity Creation
@@ -61,7 +62,7 @@ async function runFullDemo() {
   // Phase 3: Property Registration
   console.log('\n━━━ PHASE 3: Property Registration ━━━\n');
   
-  const property = await estateApp.getService().registerProperty({
+  const property = await estateService.registerProperty({
     propertyId: 'PROP-DXB-MARINA-2024-001',
     propertyType: 'LUXURY_APARTMENT',
     location: 'Dubai Marina, Marina 101 Tower, Floor 85, Unit 8501',
@@ -92,7 +93,7 @@ async function runFullDemo() {
   // Phase 4: Ownership Transfer
   console.log('\n━━━ PHASE 4: Ownership Transfer ━━━\n');
   
-  const transfer = await estateApp.getService().initiateTransfer(
+  const transfer = await estateService.initiateTransfer(
     property.deed.id,
     seller.id,
     buyer.id
@@ -107,7 +108,7 @@ async function runFullDemo() {
   // Wait for approval (simulated)
   console.log('\n⏳ Awaiting sovereign approval...');
   
-  const transferApproval = await estateApp.getService().processTransferApproval(
+  const transferApproval = await estateService.processTransferApproval(
     property.deed.id,
     transfer.approvalId,
     true,
@@ -121,7 +122,7 @@ async function runFullDemo() {
   // Phase 5: Forensic Verification
   console.log('\n━━━ PHASE 5: Forensic Verification ━━━\n');
   
-  const details = await estateApp.getService().getPropertyDetails(property.deed.id);
+  const details = await estateService.getPropertyDetails(property.deed.id);
   
   console.log('✓ Property Details:');
   console.log('  Status:', details.deed.status);
@@ -135,7 +136,7 @@ async function runFullDemo() {
 
   console.log('\n✓ System Logs:', details.systemLogs.length, 'entries');
   
-  const verification = await estateApp.getService().estateService.forensicDeed.verifyDeed(
+  const verification = await estateService.forensicDeed.verifyDeed(
     property.deed.id
   );
   console.log('\n✓ Authenticity Verification:');
@@ -158,7 +159,7 @@ async function runFullDemo() {
   console.log('  Event Bus:', health.systems.eventBus.status);
   console.log('    - Total events:', health.systems.eventBus.statistics.totalEvents);
 
-  const stats = estateApp.getService().getStatistics();
+  const stats = estateService.getStatistics();
   console.log('\n✓ Estate App Statistics:');
   console.log('  Total deeds:', stats.totalDeeds);
   console.log('  Active deeds:', stats.activeDeeds);
