@@ -58,8 +58,8 @@ function generateDomains() {
           console.log(`  Domain already exists: ${sanitizedName}`);
         }
         
-        // Create a basic README for each domain
-        const readmePath = path.join(domainPath, 'README.md');
+        // Create a basic README for each domain using safe path resolution
+        const readmePath = safeResolveFile(domainPath, 'README.md');
         if (!fs.existsSync(readmePath)) {
           const readmeContent = `# ${domain}\n\nBusiness domain for ${domain}.\n`;
           fs.writeFileSync(readmePath, readmeContent, 'utf8');
