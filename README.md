@@ -8,6 +8,20 @@
 
 **TEC (Titan Elite Commerce)** is the parent authority managing 24 independent business units powered by Pi Network. Each business unit operates as a standalone application within the ecosystem, accessible via dedicated routes (e.g., `fundx.pi`, `explorer.pi`, `commerce.pi`). This repository contains a professionally structured codebase with unified templates and shared components.
 
+## 🔥 NEW: Micro OS Sovereignty Architecture
+
+**معمارية السيادة البرمجية - Micro OS**
+
+This repository now includes a complete **sovereignty architecture** for building secure, auditable micro-applications with forensic tracking and manual approval workflows.
+
+### Key Features:
+- ✅ **Sovereign Core Systems** - Identity, Forensic Logging, Approvals, Event Bus
+- ✅ **Estate Micro-App** - Real estate management with forensic deeds
+- ✅ **CLI Generator** - Auto-generate new sovereign micro-apps
+- ✅ **Sovereign Oversight** - All critical operations notify **yasserrr.fox17@gmail.com**
+
+📘 **[Read Full Documentation](./MICRO_OS_README.md)** | 🚀 **[Quick Start](#micro-os-quick-start)**
+
 ## 🌐 Dual Language Support
 
 This project provides full documentation in both **English** and **Arabic**. See [README_AR.md](./README_AR.md) for Arabic documentation.
@@ -16,10 +30,31 @@ This project provides full documentation in both **English** and **Arabic**. See
 
 ## 📁 Repository Structure
 
-The repository is professionally organized with modular business units:
+The repository is professionally organized with modular business units and the new Micro OS sovereignty architecture:
 
 ```
 tec-ecosystem/
+├── core/                       # 🆕 Micro OS Core Systems
+│   ├── identity/              # Identity Management
+│   ├── forensics/             # Forensic Logger (SHA-256 hash chains)
+│   ├── approvals/             # Approval Center
+│   ├── events/                # Event Bus
+│   └── index.js               # Core orchestration
+│
+├── apps/                       # 🆕 Micro-Applications
+│   └── estate/                # Estate Micro-App (Real Estate)
+│       ├── models/            # Forensic Deeds
+│       ├── services/          # Estate business logic
+│       └── index.js           # App entry point
+│
+├── scripts/                    # 🆕 CLI Tools
+│   └── generate-app.js        # Generate new micro-apps
+│
+├── examples/                   # 🆕 Usage Examples
+│   ├── test-core.js           # Test core systems
+│   ├── test-estate.js         # Test estate app
+│   └── full-demo.js           # Complete integration demo
+│
 ├── pages/                     # Business Units & Pages
 │   ├── fundx/                 # FundX.pi - Investment Strategies
 │   ├── explorer/              # Explorer.pi - Discovery Platform
@@ -83,6 +118,63 @@ All financial and sensitive operations are protected by a centralized forensic a
 See [FORENSIC_AUDIT.md](./docs/FORENSIC_AUDIT.md) for the complete forensic audit documentation.
 
 See [SECURITY.md](./docs/SECURITY.md) for detailed security policies.
+
+---
+
+## 🚀 Micro OS Quick Start
+
+### Test Core Systems
+
+```bash
+npm run micro-os:test-core
+```
+
+### Test Estate App
+
+```bash
+npm run micro-os:test-estate
+```
+
+### Run Full Demo
+
+```bash
+npm run micro-os:demo
+```
+
+### Generate New Micro-App
+
+```bash
+npm run micro-os:generate
+# Follow prompts to create new sovereign micro-app
+```
+
+### Example Usage
+
+```javascript
+const { MicroOSCore } = require('./core');
+const EstateApp = require('./apps/estate');
+
+// Initialize
+const core = new MicroOSCore();
+const estateApp = new EstateApp(core);
+
+// Create identity
+const identity = await core.identityManager.registerIdentity({
+  name: 'John Doe',
+  email: 'john@example.com'
+});
+
+// Register property
+const property = await estateApp.getService().registerProperty({
+  propertyId: 'PROP-001',
+  location: 'Dubai Marina',
+  value: 1500000
+}, identity.id);
+
+// All operations notify yasserrr.fox17@gmail.com
+```
+
+📘 **[Complete Micro OS Documentation](./MICRO_OS_README.md)**
 
 ---
 
