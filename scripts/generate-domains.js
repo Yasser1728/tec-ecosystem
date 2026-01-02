@@ -3,6 +3,8 @@ const path = require("path");
 const { sanitizeName, safeResolveFile } = require("../lib/safe-paths");
 
 // Import business units configuration
+// Note: businessUnits.js uses ES6 exports but works with CommonJS require
+// in Next.js environment due to transpilation support
 const { businessUnits } = require("../lib/businessUnits");
 
 /**
