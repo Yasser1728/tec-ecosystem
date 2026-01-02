@@ -108,6 +108,16 @@ function AdminDashboard({ session }) {
 
           {/* Quick Actions */}
           <div className="grid md:grid-cols-3 gap-6 mb-8">
+            <Link href="/admin/command-center">
+              <div className="bg-gradient-to-br from-red-500/20 to-orange-500/20 border-2 border-red-500 rounded-xl p-6 hover:border-[#00ff9d] transition-all cursor-pointer">
+                <div className="text-4xl mb-3">🎯</div>
+                <h3 className="text-xl font-bold mb-2">Command Center</h3>
+                <p className="text-gray-400 text-sm">
+                  System control & circuit breaker
+                </p>
+              </div>
+            </Link>
+
             <Link href="/admin/users">
               <div className="bg-gray-800 border border-gray-700 rounded-xl p-6 hover:border-[#00ff9d] transition-all cursor-pointer">
                 <div className="text-4xl mb-3">👥</div>
@@ -127,7 +137,9 @@ function AdminDashboard({ session }) {
                 </p>
               </div>
             </Link>
+          </div>
 
+          <div className="grid md:grid-cols-3 gap-6 mb-8">
             <Link href="/admin/analytics">
               <div className="bg-gray-800 border border-gray-700 rounded-xl p-6 hover:border-[#00ff9d] transition-all cursor-pointer">
                 <div className="text-4xl mb-3">📊</div>
