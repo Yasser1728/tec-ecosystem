@@ -1,6 +1,30 @@
 // Jest setup file
 import "@testing-library/jest-dom";
 
+// Mock Prisma Client
+jest.mock("../lib/db/prisma", () => ({
+  prisma: {
+    auditLog: {
+      create: jest.fn(() =>
+        Promise.resolve({
+          id: "test-audit-id",
+          hash: "test-hash",
+        })
+      ),
+      findMany: jest.fn(() => Promise.resolve([])),
+      count: jest.fn(() => Promise.resolve(0)),
+    },
+    user: {
+      findUnique: jest.fn(),
+      create: jest.fn(),
+    },
+    payment: {
+      findMany: jest.fn(() => Promise.resolve([])),
+      create: jest.fn(),
+    },
+  },
+}));
+
 // Mock Next.js router
 jest.mock("next/router", () => ({
   useRouter: jest.fn(),
