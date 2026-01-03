@@ -1,4 +1,8 @@
 ---
+# Codacy configuration for TEC Ecosystem
+# This file configures Codacy to suppress false positive security warnings
+
+# Exclude common non-source directories from analysis
 exclude_paths:
   - 'tests/**'
   - 'node_modules/**'
@@ -6,6 +10,11 @@ exclude_paths:
 
 engines:
   semgrep:
+    # Exclude rules that produce false positives in our security utility files
+    # These files (lib/utils/path-security.js and lib/utils/validation.js) are
+    # designed specifically to validate and sanitize user input before using
+    # potentially dangerous operations like path.join, path.resolve, and new RegExp.
+    # The warnings are false positives because these files ARE the security layer.
     exclude_rules:
       - 'javascript.lang.security.audit.path-traversal.path-join-resolve-traversal'
       - 'javascript.lang.security.audit.detect-non-literal-regexp'
