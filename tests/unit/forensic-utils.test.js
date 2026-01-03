@@ -136,6 +136,13 @@ describe('Forensic Utils - Operation Validation', () => {
     expect(result.errors).toContain('Missing domain information');
   });
 
+  it('should handle missing operation data gracefully', () => {
+    const result = validateOperation(AUDIT_OPERATION_TYPES.PAYMENT_CREATE);
+
+    expect(result.valid).toBe(false);
+    expect(result.errors).toContain('Invalid payment amount');
+  });
+
   it('should validate NFT minting', () => {
     const result = validateOperation(AUDIT_OPERATION_TYPES.NFT_MINT, {
       domainName: 'test.pi',
@@ -247,6 +254,17 @@ describe('Forensic Utils - Suspicious Activity Detection', () => {
     expect(result.indicators).toContain('Unverified user attempting operation');
     expect(result.threatLevel).toBe(RISK_LEVELS.HIGH);
   });
+
+  it('should handle undefined operation data without throwing', () => {
+    const result = detectSuspiciousActivity(
+      user,
+      AUDIT_OPERATION_TYPES.PAYMENT_CREATE
+    );
+
+    expect(result.suspicious).toBe(false);
+    expect(result.indicators).toEqual([]);
+    expect(result.shouldBlock).toBe(false);
+  });
 });
 
 describe('Forensic Utils - Create Audit Entry', () => {
@@ -336,5 +354,16 @@ describe('Forensic Utils - Create Audit Entry', () => {
     expect(result.logEntry.request.ip).toBe('192.168.1.1');
     expect(result.logEntry.request.userAgent).toBe('Mozilla/5.0');
     expect(result.logEntry.request.origin).toBe('https://example.com');
+  });
+
+  it('should handle missing operation data safely', async () => {
+    const result = await createAuditEntry({
+      user,
+      operationType: AUDIT_OPERATION_TYPES.PAYMENT_CREATE,
+      approved: true,
+    });
+
+    expect(result.approved).toBe(false);
+    expect(result.validationResult.valid).toBe(false);
   });
 });
