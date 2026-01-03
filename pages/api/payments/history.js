@@ -18,7 +18,7 @@ export default async function handler(req, res) {
       : lowerBounded;
   };
 
-  const { userId, limit = 50, offset = 0, status } = req.query;
+  const { userId, limit, offset, status } = req.query;
 
   const limitNumber = sanitizeNumber(limit, DEFAULT_LIMIT, MIN_LIMIT, MAX_LIMIT);
   const offsetNumber = sanitizeNumber(offset, 0, 0);
