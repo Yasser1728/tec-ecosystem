@@ -58,6 +58,13 @@ describe("Path Security - sanitizePathComponent", () => {
     expect(sanitizePathComponent("..")).toBe("");
   });
 
+  it("should handle nested/repeated traversal sequences", () => {
+    expect(sanitizePathComponent("....")).toBe("");
+    expect(sanitizePathComponent("....//test")).toBe("test");
+    expect(sanitizePathComponent("..\\..\\test")).toBe("test");
+    expect(sanitizePathComponent("folder/....//file")).toBe("folder/file");
+  });
+
   it("should remove null bytes", () => {
     expect(sanitizePathComponent("file\0.txt")).toBe("file.txt");
     expect(sanitizePathComponent("test\0\0file")).toBe("testfile");
@@ -140,11 +147,15 @@ describe("Path Security - isValidFilename", () => {
     expect(isValidFilename("../secret.txt")).toBe(false);
   });
 
-  it("should reject dot files and directories", () => {
+  it("should reject path traversal patterns (. and .. only)", () => {
     expect(isValidFilename(".")).toBe(false);
     expect(isValidFilename("..")).toBe(false);
-    expect(isValidFilename(".hidden")).toBe(false);
-    expect(isValidFilename(".gitignore")).toBe(false);
+  });
+
+  it("should accept hidden/dot files", () => {
+    expect(isValidFilename(".hidden")).toBe(true);
+    expect(isValidFilename(".gitignore")).toBe(true);
+    expect(isValidFilename(".env")).toBe(true);
   });
 
   it("should reject empty or too long filenames", () => {
