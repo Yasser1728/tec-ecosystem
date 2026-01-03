@@ -56,8 +56,8 @@ function generateDomains() {
         console.log(`✓ Already exists: ${sanitizedName}`);
       }
       
-      // Create a placeholder index file
-      const indexPath = path.join(domainPath, 'index.js');
+      // Create a placeholder index file using safe path resolution
+      const indexPath = safeResolveFile(domainPath, 'index.js');
       if (!fs.existsSync(indexPath)) {
         fs.writeFileSync(
           indexPath,
