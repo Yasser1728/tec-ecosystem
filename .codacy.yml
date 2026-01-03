@@ -1,0 +1,11 @@
+---
+exclude_paths:
+  - 'tests/**'
+  - 'node_modules/**'
+  - '.next/**'
+
+engines:
+  semgrep:
+    exclude_rules:
+      - 'javascript.lang.security.audit.path-traversal.path-join-resolve-traversal'
+      - 'javascript.lang.security.audit.detect-non-literal-regexp'
