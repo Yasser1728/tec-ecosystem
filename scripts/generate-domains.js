@@ -61,7 +61,7 @@ function generateDomains() {
       if (!fs.existsSync(indexPath)) {
         fs.writeFileSync(
           indexPath,
-          `// ${domain} Domain\nexport default function ${domain}Page() {\n  return <div>${domain} Domain</div>;\n}\n`
+          `// ${domain} Domain\nmodule.exports = function ${domain}Page() {\n  return '${domain} Domain';\n};\n`
         );
       }
     } catch (error) {
