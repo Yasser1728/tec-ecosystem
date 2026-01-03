@@ -5,14 +5,23 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
+  const DEFAULT_LIMIT = 50;
+  const MIN_LIMIT = 1;
+  const MAX_LIMIT = 100;
+
+  const sanitizeNumber = (value, fallback, min, max) => {
+    const parsed = parseInt(value, 10);
+    if (Number.isNaN(parsed)) return fallback;
+    const lowerBounded = typeof min === "number" ? Math.max(parsed, min) : parsed;
+    return typeof max === "number"
+      ? Math.min(lowerBounded, max)
+      : lowerBounded;
+  };
+
   const { userId, limit = 50, offset = 0, status } = req.query;
 
-  const parsedLimit = parseInt(limit, 10);
-  const parsedOffset = parseInt(offset, 10);
-  const limitNumber = Number.isNaN(parsedLimit)
-    ? 50
-    : Math.min(Math.max(parsedLimit, 1), 100);
-  const offsetNumber = Number.isNaN(parsedOffset) ? 0 : Math.max(parsedOffset, 0);
+  const limitNumber = sanitizeNumber(limit, DEFAULT_LIMIT, MIN_LIMIT, MAX_LIMIT);
+  const offsetNumber = sanitizeNumber(offset, 0, 0);
 
   if (!userId) {
     return res.status(400).json({ error: "Missing userId" });
