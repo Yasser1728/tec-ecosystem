@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import { prisma } from "../../../lib/db/prisma";
 import { piAuth } from "../../../lib/pi-auth";
 
@@ -24,8 +25,9 @@ export default async function handler(req, res) {
       }
     }
 
-    // Generate unique token ID
-    const tokenId = `TEC-${domainName.toUpperCase()}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    // Generate unique token ID using crypto for security
+    const randomSuffix = crypto.randomInt(100000, 999999);
+    const tokenId = `TEC-${domainName.toUpperCase()}-${Date.now()}-${randomSuffix}`;
 
     // Create NFT record
     const nft = await prisma.nFT.create({
