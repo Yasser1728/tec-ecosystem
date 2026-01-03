@@ -335,9 +335,10 @@ describe("Path Security Utilities", () => {
       expect(result).toBe("file.txt");
     });
 
-    it("should return unnamed for empty input", () => {
+    it("should return empty string for invalid input", () => {
       expect(pathSecurityUtils.sanitizeFilename("")).toBe("");
       expect(pathSecurityUtils.sanitizeFilename(null)).toBe("");
+      expect(pathSecurityUtils.sanitizeFilename(undefined)).toBe("");
     });
   });
 
