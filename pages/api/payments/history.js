@@ -9,6 +9,14 @@ export default async function handler(req, res) {
   const MIN_LIMIT = 1;
   const MAX_LIMIT = 100;
 
+  /**
+   * Safely parse and clamp numeric query values.
+   * @param {string|number} value - Incoming value to sanitize.
+   * @param {number} fallback - Default value when parsing fails.
+   * @param {number} [min] - Minimum allowed value (inclusive).
+   * @param {number} [max] - Maximum allowed value (inclusive).
+   * @returns {number} Sanitized numeric value within the provided bounds.
+   */
   const sanitizeNumber = (value, fallback, min, max) => {
     const parsed = parseInt(value, 10);
     if (Number.isNaN(parsed)) return fallback;
