@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Image from "next/image";
 import {
   nftMinting,
   CERTIFICATE_TYPES,
@@ -52,11 +53,14 @@ export default function NFTMintingCard({ domainName }) {
         </div>
 
         <div className="bg-[#0a0e2b] rounded-lg p-4 mb-4">
-          <img
-            src={nftData.metadata.image}
-            alt={nftData.metadata.name}
-            className="w-full h-48 object-cover rounded-lg mb-4"
-          />
+          <div className="w-full h-48 relative mb-4">
+            <Image
+              src={nftData.metadata.image}
+              alt={nftData.metadata.name}
+              fill
+              className="object-cover rounded-lg"
+            />
+          </div>
           <h4 className="text-lg font-semibold text-white mb-2">
             {nftData.metadata.name}
           </h4>
