@@ -58,6 +58,7 @@ export default function NFTMintingCard({ domainName }) {
               src={nftData.metadata.image}
               alt={nftData.metadata.name}
               fill
+              sizes="(max-width: 768px) 100vw, 50vw"
               className="object-cover rounded-lg"
             />
           </div>
