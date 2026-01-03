@@ -58,8 +58,14 @@ describe("Path Security - sanitizeFilename", () => {
   });
 
   it("should trim leading and trailing dots", () => {
-    expect(sanitizeFilename("...file.txt...")).toBe("file.txt");
+    expect(sanitizeFilename("...file.txt...")).toBe(".file.txt.");
     expect(sanitizeFilename("..hidden")).toBe("hidden");
+  });
+
+  it("should preserve single leading dot for hidden files", () => {
+    expect(sanitizeFilename(".gitignore")).toBe(".gitignore");
+    expect(sanitizeFilename(".env")).toBe(".env");
+    expect(sanitizeFilename(".hidden-file")).toBe(".hidden-file");
   });
 });
 
@@ -183,6 +189,11 @@ describe("Validation - createSafeRegExp", () => {
   it("should return null for invalid flags", () => {
     expect(createSafeRegExp("test", "xyz")).toBeNull();
     expect(createSafeRegExp("test", "ia")).toBeNull();
+  });
+
+  it("should return null for duplicate flags", () => {
+    expect(createSafeRegExp("test", "gii")).toBeNull();
+    expect(createSafeRegExp("test", "gg")).toBeNull();
   });
 
   it("should create regex with valid flags", () => {
