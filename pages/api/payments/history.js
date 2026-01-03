@@ -7,6 +7,11 @@ export default async function handler(req, res) {
 
   const { userId, limit = 50, offset = 0, status } = req.query;
 
+  const parsedLimit = parseInt(limit, 10);
+  const parsedOffset = parseInt(offset, 10);
+  const limitNumber = Number.isNaN(parsedLimit) ? 50 : parsedLimit;
+  const offsetNumber = Number.isNaN(parsedOffset) ? 0 : parsedOffset;
+
   if (!userId) {
     return res.status(400).json({ error: "Missing userId" });
   }
@@ -26,8 +31,8 @@ export default async function handler(req, res) {
         orderBy: {
           createdAt: "desc",
         },
-        take: parseInt(limit),
-        skip: parseInt(offset),
+        take: limitNumber,
+        skip: offsetNumber,
         include: {
           user: {
             select: {
@@ -45,9 +50,9 @@ export default async function handler(req, res) {
       payments,
       pagination: {
         total,
-        limit: parseInt(limit),
-        offset: parseInt(offset),
-        hasMore: total > parseInt(offset) + parseInt(limit),
+        limit: limitNumber,
+        offset: offsetNumber,
+        hasMore: total > offsetNumber + limitNumber,
       },
     });
   } catch (error) {
