@@ -9,8 +9,10 @@ export default async function handler(req, res) {
 
   const parsedLimit = parseInt(limit, 10);
   const parsedOffset = parseInt(offset, 10);
-  const limitNumber = Number.isNaN(parsedLimit) ? 50 : parsedLimit;
-  const offsetNumber = Number.isNaN(parsedOffset) ? 0 : parsedOffset;
+  const limitNumber = Number.isNaN(parsedLimit)
+    ? 50
+    : Math.min(Math.max(parsedLimit, 1), 100);
+  const offsetNumber = Number.isNaN(parsedOffset) ? 0 : Math.max(parsedOffset, 0);
 
   if (!userId) {
     return res.status(400).json({ error: "Missing userId" });
