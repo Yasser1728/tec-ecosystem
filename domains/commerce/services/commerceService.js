@@ -66,6 +66,7 @@ const RANDOM_RANGES = {
   PO_NUMBER: 1000000, // 6 digits
   INVOICE_NUMBER: 100000, // 5 digits
   TRANSACTION_ID: 10000000000, // 10 digits
+  SKU_PART1: 1000000, // 6 digits
   SKU_SUFFIX: 1000, // 3 digits
 };
 
@@ -305,7 +306,14 @@ class CommerceService {
       
       await prisma.order.update({
         where: { id: data.orderId },
-        data: { paymentStatus: paymentStatus },
+        data: {
+          paymentStatus: paymentStatus,
+          metadata: {
+            ...(order.metadata || {}),
+            lastPaymentDate: new Date(),
+            totalPaid: totalPaid,
+          },
+        },
       });
       
       // Create invoice
@@ -449,7 +457,7 @@ class CommerceService {
     const categoryCode = category.substring(0, 3).toUpperCase();
     // SECURITY FIX: Use fully random components for unpredictable SKU generation
     // إصلاح أمني: استخدام مكونات عشوائية بالكامل لتوليد SKU غير قابل للتنبؤ
-    const random1 = crypto.randomInt(0, 1000000).toString().padStart(6, '0');
+    const random1 = crypto.randomInt(0, RANDOM_RANGES.SKU_PART1).toString().padStart(6, '0');
     const random2 = crypto.randomInt(0, RANDOM_RANGES.SKU_SUFFIX).toString().padStart(3, '0');
     
     return `${categoryCode}-${random1}-${random2}`;
