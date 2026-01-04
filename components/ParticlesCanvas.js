@@ -12,6 +12,15 @@ export default function ParticlesCanvas() {
     const ctx = canvas.getContext("2d");
     const dpr = window.devicePixelRatio || 1;
 
+    // Cryptographically secure random number generator
+    // Pre-allocate array for better performance
+    const randomArray = new Uint32Array(1);
+    const MAX_UINT32 = 0x100000000; // 2^32, used for normalizing to [0,1) range
+    function secureRandom() {
+      crypto.getRandomValues(randomArray);
+      return randomArray[0] / MAX_UINT32;
+    }
+
     function resize() {
       canvas.width = window.innerWidth * dpr;
       canvas.height = window.innerHeight * dpr;
@@ -25,11 +34,11 @@ export default function ParticlesCanvas() {
     const particleCount = window.innerWidth < 768 ? 30 : 60;
 
     const particles = Array.from({ length: particleCount }, () => ({
-      x: Math.random() * window.innerWidth,
-      y: Math.random() * window.innerHeight,
-      r: Math.random() * 2 + 0.8,
-      dx: (Math.random() - 0.5) * 0.5,
-      dy: (Math.random() - 0.5) * 0.5,
+      x: secureRandom() * window.innerWidth,
+      y: secureRandom() * window.innerHeight,
+      r: secureRandom() * 2 + 0.8,
+      dx: (secureRandom() - 0.5) * 0.5,
+      dy: (secureRandom() - 0.5) * 0.5,
     }));
 
     let animationId;
