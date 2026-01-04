@@ -566,12 +566,18 @@ class CommerceService {
    */
   async shipOrder(orderId, trackingNumber, carrier) {
     try {
+      // Get existing order to preserve metadata
+      const existingOrder = await prisma.order.findUnique({
+        where: { id: orderId },
+      });
+      
       const order = await prisma.order.update({
         where: { id: orderId },
         data: {
           status: ORDER_STATUS.SHIPPED,
           trackingNumber: trackingNumber,
           metadata: {
+            ...(existingOrder?.metadata || {}),
             carrier: carrier,
             shippedAt: new Date(),
           },
@@ -594,11 +600,17 @@ class CommerceService {
    */
   async completeOrder(orderId) {
     try {
+      // Get existing order to preserve metadata
+      const existingOrder = await prisma.order.findUnique({
+        where: { id: orderId },
+      });
+      
       const order = await prisma.order.update({
         where: { id: orderId },
         data: {
           status: ORDER_STATUS.COMPLETED,
           metadata: {
+            ...(existingOrder?.metadata || {}),
             completedAt: new Date(),
           },
         },
@@ -664,7 +676,7 @@ class CommerceService {
       throw new Error('Valid unit price is required');
     }
     
-    if (!data.stockQuantity || data.stockQuantity < 0) {
+    if (data.stockQuantity == null || data.stockQuantity < 0) {
       throw new Error('Valid stock quantity is required');
     }
   }
@@ -848,4 +860,6 @@ class CommerceService {
   }
 }
 
+// Export both the class and singleton instance for flexibility
 module.exports = new CommerceService();
+module.exports.CommerceService = CommerceService;
