@@ -56,6 +56,8 @@ class CommerceIntegrationService {
           }
         } catch (error) {
           console.error('[CommerceIntegration] Error handling asset valuation:', error);
+          // TODO: Implement retry mechanism with exponential backoff for critical integrations
+          // For production, consider using a queue-based retry system for resilience
         }
       },
       { domain: 'commerce', description: 'Handle asset valuation updates' }

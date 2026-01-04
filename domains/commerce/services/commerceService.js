@@ -415,7 +415,8 @@ class CommerceService {
    * Calculate payment due date based on terms
    */
   calculateDueDate(paymentTerms) {
-    const days = {
+    // Payment term mappings (configurable)
+    const PAYMENT_TERM_DAYS = {
       'NET_0': 0,
       'NET_15': 15,
       'NET_30': 30,
@@ -425,7 +426,8 @@ class CommerceService {
       'PARTIAL_ADVANCE': 0,
     };
     
-    const daysToAdd = days[paymentTerms] || 30;
+    const DEFAULT_PAYMENT_DAYS = 30;
+    const daysToAdd = PAYMENT_TERM_DAYS[paymentTerms] || DEFAULT_PAYMENT_DAYS;
     const dueDate = new Date();
     dueDate.setDate(dueDate.getDate() + daysToAdd);
     
