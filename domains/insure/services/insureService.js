@@ -74,6 +74,14 @@ const DEFAULT_RISK_VALUES = {
   PROPERTY_AGE: 10,
 };
 
+/**
+ * Premium calculation constants
+ */
+const PREMIUM_CONSTANTS = {
+  MONTHLY_PAYMENT_MULTIPLIER: 1.05, // 5% premium for monthly vs annual payment
+  QUOTE_VALIDITY_DAYS: 30, // Quote remains valid for 30 days
+};
+
 class InsureService {
   /**
    * Generate a cryptographically secure policy number
@@ -194,7 +202,9 @@ class InsureService {
         annualPremium: premium.annual,
         riskLevel: riskScore.level,
         riskScore: riskScore.score,
-        validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+        validUntil: new Date(
+          Date.now() + PREMIUM_CONSTANTS.QUOTE_VALIDITY_DAYS * 24 * 60 * 60 * 1000
+        ),
         createdAt: new Date(),
         relatedId: data.relatedId || null,
       };
@@ -371,8 +381,8 @@ class InsureService {
       const annualPremium =
         (coverageAmount * baseRiskFactor * riskMultiplier) / term;
 
-      // Calculate monthly premium (with slight discount for annual payment)
-      const monthlyPremium = (annualPremium / 12) * 1.05;
+      // Calculate monthly premium (with slight premium for monthly vs annual payment)
+      const monthlyPremium = (annualPremium / 12) * PREMIUM_CONSTANTS.MONTHLY_PAYMENT_MULTIPLIER;
 
       return {
         monthly: Math.round(monthlyPremium * 100) / 100,
