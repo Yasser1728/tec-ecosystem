@@ -14,10 +14,12 @@
  */
 
 const crypto = require('crypto');
-const { PrismaClient } = require('@prisma/client');
+// const { PrismaClient } = require('@prisma/client');
 const eventBus = require('../../../lib/eventBus');
 
-const prisma = new PrismaClient();
+// NOTE: PrismaClient is not instantiated until database schema is implemented
+// Uncomment when Prisma schema for insure domain is ready
+// const prisma = new PrismaClient();
 
 // Constants for risk assessment and premium calculation
 const RISK_LEVELS = {
@@ -205,6 +207,10 @@ class InsureService {
    * @param {Object} data - Policy purchase data
    * @param {string} data.quoteId - Quote ID
    * @param {string} data.userId - User ID
+   * @param {string} data.type - Policy type (LIFE, HEALTH, PROPERTY, etc.)
+   * @param {number} data.coverageAmount - Coverage amount
+   * @param {number} data.premium - Premium amount
+   * @param {number} data.term - Coverage term in years
    * @param {Object} data.paymentInfo - Payment information
    * @param {Array} [data.beneficiaries] - Policy beneficiaries
    * @returns {Promise<Object>} Created policy
@@ -214,7 +220,8 @@ class InsureService {
       // In a real implementation, this would interact with Prisma
       // For now, we create a mock policy object
 
-      const policyNumber = this.generatePolicyNumber(data.policyType || 'LIFE');
+      const policyType = data.type || 'LIFE';
+      const policyNumber = this.generatePolicyNumber(policyType);
       const startDate = new Date();
       const endDate = new Date(startDate);
       endDate.setFullYear(endDate.getFullYear() + (data.term || 1));
@@ -223,7 +230,7 @@ class InsureService {
         id: this.generatePolicyId(),
         userId: data.userId,
         policyNumber,
-        type: data.policyType,
+        type: policyType,
         product: data.productName || 'Standard Insurance',
         coverageAmount: data.coverageAmount,
         premium: data.premium,
@@ -344,8 +351,9 @@ class InsureService {
       const riskMultiplier = 1 + riskScore.score;
 
       // Calculate annual premium
+      // Formula: (coverageAmount × baseRiskFactor × riskMultiplier) ÷ term
       const annualPremium =
-        coverageAmount * baseRiskFactor * riskMultiplier / term;
+        (coverageAmount * baseRiskFactor * riskMultiplier) / term;
 
       // Calculate monthly premium (with slight discount for annual payment)
       const monthlyPremium = (annualPremium / 12) * 1.05;
