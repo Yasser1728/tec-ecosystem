@@ -463,6 +463,9 @@ finalPremium = adjustedPremium × (1 - discounts) + fees
 **التكامل التقني**:
 ```javascript
 // Insure service listening to Assets events
+// INSURANCE_THRESHOLD is configured in environment (e.g., 10000 Pi for high-value assets)
+const INSURANCE_THRESHOLD = process.env.INSURANCE_THRESHOLD || 10000;
+
 eventBus.on('assets.asset.created', async (data) => {
   if (data.value > INSURANCE_THRESHOLD) {
     const recommendation = await insuranceService.generateRecommendation({
@@ -609,12 +612,17 @@ eventBus.on('assets.asset.created', async (data) => {
 
 ### حساب القسط
 ```javascript
+// Constants for premium calculation
+const RISK_BASE_MULTIPLIER = 0.5;      // Minimum risk multiplier (50%)
+const RISK_MAX_MULTIPLIER = 2.0;        // Maximum risk multiplier (200%)
+const RISK_SCALE_FACTOR = 1.5;          // Risk scaling factor
+
 // صيغة حساب القسط الأساسية
 basePremium = coverageAmount × riskFactor × durationFactor
 
-// تعديلات درجة المخاطر
+// تعديلات درجة المخاطر (0-100 scale)
 riskScore = calculateRiskScore(userProfile, assetDetails, historicalData)
-riskMultiplier = 0.5 + (riskScore / 100) × 1.5
+riskMultiplier = RISK_BASE_MULTIPLIER + (riskScore / 100) × RISK_SCALE_FACTOR
 
 // تطبيق الخصومات
 discounts = {
