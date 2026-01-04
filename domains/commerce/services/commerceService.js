@@ -704,7 +704,7 @@ class CommerceService {
       throw new Error('Valid unit price is required');
     }
     
-    if (data.stockQuantity == null || data.stockQuantity < 0) {
+    if (data.stockQuantity === null || data.stockQuantity === undefined || data.stockQuantity < 0) {
       throw new Error('Stock quantity must be 0 or greater');
     }
   }
