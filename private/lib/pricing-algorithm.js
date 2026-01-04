@@ -184,10 +184,7 @@ export function calculatePrice(
     breakdown: {
       basePricePerUnit: service.basePriceUSD,
       tierDiscount: membershipTier.discount,
-      volumeDiscount: quantity >= VOLUME_DISCOUNTS.MEDIUM_QUANTITY_THRESHOLD ? 
-        (quantity >= VOLUME_DISCOUNTS.BULK_QUANTITY_THRESHOLD ? 
-          (1 - VOLUME_DISCOUNTS.BULK_DISCOUNT_RATE) : 
-          (1 - VOLUME_DISCOUNTS.MEDIUM_DISCOUNT_RATE)) : 0,
+      volumeDiscount: calculateVolumeDiscountRate(quantity),
       promoDiscount: options.promoCode
         ? validatePromoCode(options.promoCode)
         : 0,
@@ -335,6 +332,22 @@ function validatePromoCode(promoCode) {
   };
 
   return promoCodes[promoCode.toUpperCase()] || 0;
+}
+
+/**
+ * Calculate volume discount rate based on quantity
+ * @private
+ *
+ * @param {number} quantity - Purchase quantity
+ * @returns {number} Volume discount rate (0-1)
+ */
+function calculateVolumeDiscountRate(quantity) {
+  if (quantity >= VOLUME_DISCOUNTS.BULK_QUANTITY_THRESHOLD) {
+    return 1 - VOLUME_DISCOUNTS.BULK_DISCOUNT_RATE;
+  } else if (quantity >= VOLUME_DISCOUNTS.MEDIUM_QUANTITY_THRESHOLD) {
+    return 1 - VOLUME_DISCOUNTS.MEDIUM_DISCOUNT_RATE;
+  }
+  return 0;
 }
 
 /**
