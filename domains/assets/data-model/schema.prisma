@@ -26,6 +26,9 @@ model Portfolio {
   // Indexes
   @@index([userId])
   @@index([userId, isDefault])
+  
+  // Note: To enforce only one default portfolio per user, add application-level validation
+  // or use a partial unique index in PostgreSQL: CREATE UNIQUE INDEX ... WHERE isDefault = true
   @@map("portfolios")
 }
 

@@ -561,7 +561,8 @@ Track requests across domains:
 
 ```javascript
 // Initial request
-const correlationId = generateId()
+// Using built-in crypto (Node.js 14.17.0+) or uuid library
+const correlationId = crypto.randomUUID() // or: require('uuid').v4()
 
 // Passed to all downstream calls
 headers: {

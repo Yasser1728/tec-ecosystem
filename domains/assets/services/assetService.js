@@ -89,6 +89,7 @@ class AssetService {
       
       return asset;
     } catch (error) {
+      // TODO: Replace with proper logging library (e.g., Winston, Pino)
       console.error('Error creating asset:', error);
       throw new Error(`Failed to create asset: ${error.message}`);
     }
@@ -257,8 +258,12 @@ class AssetService {
    * @param {number} quantity - Quantity held
    * @param {number} price - Price per unit
    * @returns {number} Total value
+   * 
+   * @note For production, consider using a decimal library (e.g., decimal.js, big.js)
+   * to avoid floating-point precision issues in financial calculations
    */
   calculateValue(quantity, price) {
+    // Simple implementation - replace with decimal library for production
     return parseFloat((quantity * price).toFixed(8));
   }
   
@@ -607,5 +612,8 @@ class AssetService {
   }
 }
 
-// Export singleton instance
-module.exports = new AssetService();
+// Export class for flexibility in testing and dependency injection
+module.exports = AssetService;
+
+// Export singleton instance as default
+module.exports.default = new AssetService();
