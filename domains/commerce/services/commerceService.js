@@ -61,6 +61,14 @@ const PRICING = {
   MINIMUM_ORDER_VALUE: 100, // Minimum order value in Pi
 };
 
+// Random number generation ranges for ID generation
+const RANDOM_RANGES = {
+  PO_NUMBER: 1000000, // 6 digits
+  INVOICE_NUMBER: 100000, // 5 digits
+  TRANSACTION_ID: 10000000000, // 10 digits
+  SKU_SUFFIX: 1000, // 3 digits
+};
+
 class CommerceService {
   /**
    * Create a new business profile
@@ -381,7 +389,7 @@ class CommerceService {
     const month = String(new Date().getMonth() + 1).padStart(2, '0');
     // SECURITY FIX: Use crypto.randomInt instead of Math.random for secure random generation
     // إصلاح أمني: استخدام crypto.randomInt بدلاً من Math.random لتوليد آمن للأرقام العشوائية
-    const random = crypto.randomInt(0, 1000000).toString().padStart(6, '0');
+    const random = crypto.randomInt(0, RANDOM_RANGES.PO_NUMBER).toString().padStart(6, '0');
     
     return `${prefix}-${year}${month}-${random}`;
   }
@@ -402,7 +410,7 @@ class CommerceService {
     const day = String(new Date().getDate()).padStart(2, '0');
     // SECURITY FIX: Use crypto.randomInt instead of Math.random for secure random generation
     // إصلاح أمني: استخدام crypto.randomInt بدلاً من Math.random لتوليد آمن للأرقام العشوائية
-    const random = crypto.randomInt(0, 100000).toString().padStart(5, '0');
+    const random = crypto.randomInt(0, RANDOM_RANGES.INVOICE_NUMBER).toString().padStart(5, '0');
     
     return `${prefix}-${year}${month}${day}-${random}`;
   }
@@ -423,7 +431,7 @@ class CommerceService {
     const day = String(new Date().getDate()).padStart(2, '0');
     // SECURITY FIX: Use crypto.randomInt instead of Math.random for secure random generation
     // إصلاح أمني: استخدام crypto.randomInt بدلاً من Math.random لتوليد آمن للأرقام العشوائية
-    const random = crypto.randomInt(0, 10000000000).toString().padStart(10, '0');
+    const random = crypto.randomInt(0, RANDOM_RANGES.TRANSACTION_ID).toString().padStart(10, '0');
     
     return `${prefix}-${year}${month}${day}-${random}`;
   }
@@ -437,8 +445,10 @@ class CommerceService {
    */
   generateSKU(category) {
     const categoryCode = category.substring(0, 3).toUpperCase();
-    const timestamp = Date.now().toString().slice(-6);
-    const random = crypto.randomInt(0, 1000).toString().padStart(3, '0');
+    // SECURITY FIX: Use crypto.randomInt for both timestamp and suffix to avoid predictable patterns
+    // إصلاح أمني: استخدام crypto.randomInt لكل من الطابع الزمني واللاحقة لتجنب الأنماط القابلة للتنبؤ
+    const timestamp = crypto.randomInt(0, 1000000).toString().padStart(6, '0');
+    const random = crypto.randomInt(0, RANDOM_RANGES.SKU_SUFFIX).toString().padStart(3, '0');
     
     return `${categoryCode}-${timestamp}-${random}`;
   }
@@ -685,7 +695,7 @@ class CommerceService {
     }
     
     if (data.stockQuantity == null || data.stockQuantity < 0) {
-      throw new Error('Valid stock quantity is required');
+      throw new Error('Stock quantity must be 0 or greater');
     }
   }
 
