@@ -7,8 +7,7 @@
       "@/components/*": ["components/*"],
       "@/pages/*": ["pages/*"],
       "@/styles/*": ["styles/*"],
-      "@/public/*": ["public/*"],
-      "@/utils/*": ["lib/utils/*"]
+      "@/public/*": ["public/*"]
     }
   },
   "exclude": ["node_modules", ".next", "out"]
