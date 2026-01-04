@@ -499,11 +499,13 @@ class InsureService {
   }
 }
 
-// Export singleton instance
-const insureService = new InsureService();
+// Export class for flexibility in testing and dependency injection
+module.exports = InsureService;
 
-module.exports = insureService;
-module.exports.InsureService = InsureService;
+// Export singleton instance as default
+module.exports.default = new InsureService();
+
+// Export constants
 module.exports.POLICY_TYPES = POLICY_TYPES;
 module.exports.POLICY_STATUS = POLICY_STATUS;
 module.exports.CLAIM_STATUS = CLAIM_STATUS;
