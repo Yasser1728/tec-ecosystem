@@ -1,0 +1,288 @@
+// Assets Domain - Prisma Schema
+// This schema defines the database structure for the Assets domain
+// Portfolio management and asset tracking system
+
+// =====================================================
+// PORTFOLIO
+// =====================================================
+
+model Portfolio {
+  id          String   @id @default(uuid())
+  userId      String   // Reference to User in auth system
+  name        String
+  description String?
+  isDefault   Boolean  @default(false)
+  currency    String   @default("PI") // PI, USD, EUR, etc.
+  totalValue  Decimal  @default(0) @db.Decimal(20, 8)
+  
+  // Relationships
+  assets      Asset[]
+  valuations  Valuation[]
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Indexes
+  @@index([userId])
+  @@index([userId, isDefault])
+  @@map("portfolios")
+}
+
+// =====================================================
+// ASSET TYPE
+// =====================================================
+
+model AssetType {
+  id          String   @id @default(uuid())
+  name        String   @unique // CRYPTOCURRENCY, REAL_ESTATE, STOCK, BOND, DIGITAL_ASSET, COMMODITY, etc.
+  displayName String   // "Cryptocurrency", "Real Estate", etc.
+  icon        String?  // Icon identifier
+  color       String?  // Hex color code for UI
+  description String?
+  
+  // Relationships
+  assets      Asset[]
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("asset_types")
+}
+
+// =====================================================
+// CATEGORY
+// =====================================================
+
+model Category {
+  id          String   @id @default(uuid())
+  userId      String?  // null for system categories, user-specific otherwise
+  name        String
+  description String?
+  color       String?  // Hex color code
+  icon        String?  // Icon identifier
+  
+  // Relationships
+  assets      Asset[]
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Indexes
+  @@index([userId])
+  @@unique([userId, name])
+  @@map("categories")
+}
+
+// =====================================================
+// ASSET
+// =====================================================
+
+model Asset {
+  id                  String      @id @default(uuid())
+  portfolioId         String
+  assetTypeId         String
+  categoryId          String?
+  
+  // Basic Info
+  name                String
+  symbol              String?     // Ticker symbol if applicable
+  description         String?
+  
+  // Quantity & Pricing
+  quantity            Decimal     @db.Decimal(20, 8)
+  purchasePrice       Decimal     @db.Decimal(20, 8)
+  purchaseDate        DateTime
+  currentPrice        Decimal     @db.Decimal(20, 8)
+  currentValue        Decimal     @db.Decimal(20, 8)
+  costBasis           Decimal     @db.Decimal(20, 8)
+  unrealizedGainLoss  Decimal     @default(0) @db.Decimal(20, 8)
+  
+  // Status
+  status              String      @default("ACTIVE") // ACTIVE, SOLD, TRANSFERRED, ARCHIVED
+  
+  // Metadata (JSON for flexible type-specific data)
+  metadata            Json?       // Store type-specific data like property address, stock ISIN, etc.
+  
+  // Relationships
+  portfolio           Portfolio   @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  assetType           AssetType   @relation(fields: [assetTypeId], references: [id])
+  category            Category?   @relation(fields: [categoryId], references: [id])
+  transactions        Transaction[]
+  valuations          Valuation[]
+  documents           Document[]
+  
+  // Timestamps
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+  
+  // Indexes
+  @@index([portfolioId])
+  @@index([assetTypeId])
+  @@index([categoryId])
+  @@index([status])
+  @@index([portfolioId, status])
+  @@map("assets")
+}
+
+// =====================================================
+// TRANSACTION
+// =====================================================
+
+model Transaction {
+  id                    String   @id @default(uuid())
+  assetId               String
+  
+  // Transaction Details
+  type                  String   // BUY, SELL, TRANSFER, DIVIDEND, SPLIT, ADJUSTMENT
+  quantity              Decimal  @db.Decimal(20, 8)
+  price                 Decimal  @db.Decimal(20, 8)
+  totalAmount           Decimal  @db.Decimal(20, 8)
+  fee                   Decimal  @default(0) @db.Decimal(20, 8)
+  date                  DateTime
+  description           String?
+  
+  // Integration
+  relatedDomain         String?  // fundx, commerce, estate, etc.
+  relatedTransactionId  String?  // Reference to source transaction
+  
+  // Metadata
+  metadata              Json?    // Additional transaction-specific data
+  
+  // Relationships
+  asset                 Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  
+  // Timestamps
+  createdAt             DateTime @default(now())
+  
+  // Indexes
+  @@index([assetId])
+  @@index([type])
+  @@index([date])
+  @@index([relatedDomain, relatedTransactionId])
+  @@map("transactions")
+}
+
+// =====================================================
+// VALUATION
+// =====================================================
+
+model Valuation {
+  id              String    @id @default(uuid())
+  assetId         String?
+  portfolioId     String?
+  
+  // Valuation Details
+  price           Decimal   @db.Decimal(20, 8)
+  totalValue      Decimal   @db.Decimal(20, 8)
+  source          String    // API, MANUAL, CALCULATED
+  valuationDate   DateTime
+  
+  // Metadata
+  metadata        Json?     // Source-specific data, API response, etc.
+  
+  // Relationships
+  asset           Asset?    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  portfolio       Portfolio? @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  
+  // Timestamps
+  createdAt       DateTime  @default(now())
+  
+  // Indexes
+  @@index([assetId, valuationDate])
+  @@index([portfolioId, valuationDate])
+  @@index([valuationDate])
+  @@map("valuations")
+}
+
+// =====================================================
+// DOCUMENT
+// =====================================================
+
+model Document {
+  id          String   @id @default(uuid())
+  assetId     String
+  
+  // Document Details
+  type        String   // RECEIPT, CERTIFICATE, LEGAL, TAX, CONTRACT, APPRAISAL
+  name        String
+  url         String   // Storage URL (S3, Cloudflare, etc.)
+  fileSize    Int?     // Size in bytes
+  mimeType    String?  // MIME type
+  
+  // Metadata
+  metadata    Json?    // Additional document data
+  
+  // Relationships
+  asset       Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  
+  // Timestamps
+  uploadedAt  DateTime @default(now())
+  
+  // Indexes
+  @@index([assetId])
+  @@index([type])
+  @@map("documents")
+}
+
+// =====================================================
+// PRICE FEED (External API Integration)
+// =====================================================
+
+model PriceFeed {
+  id          String   @id @default(uuid())
+  symbol      String   @unique
+  assetType   String   // CRYPTOCURRENCY, STOCK, etc.
+  source      String   // API source identifier
+  lastPrice   Decimal  @db.Decimal(20, 8)
+  lastUpdate  DateTime
+  
+  // API Details
+  apiEndpoint String?
+  apiConfig   Json?    // API-specific configuration
+  
+  // Status
+  isActive    Boolean  @default(true)
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Indexes
+  @@index([symbol])
+  @@index([assetType])
+  @@map("price_feeds")
+}
+
+// =====================================================
+// ALERT
+// =====================================================
+
+model AssetAlert {
+  id          String   @id @default(uuid())
+  userId      String
+  assetId     String?
+  portfolioId String?
+  
+  // Alert Configuration
+  type        String   // PRICE_ABOVE, PRICE_BELOW, VALUE_CHANGE, REBALANCE_NEEDED
+  condition   Json     // Alert condition parameters
+  isActive    Boolean  @default(true)
+  
+  // Notification
+  lastTriggered DateTime?
+  triggerCount  Int      @default(0)
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Indexes
+  @@index([userId])
+  @@index([assetId])
+  @@index([portfolioId])
+  @@index([isActive])
+  @@map("asset_alerts")
+}
