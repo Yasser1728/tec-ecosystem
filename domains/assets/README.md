@@ -400,6 +400,7 @@ describe('AssetService', () => {
     test('should handle cryptocurrency decimals', async () => {
       const asset = {
         quantity: 1.5,
+        // Intentional high-precision decimal value to test calculation accuracy with cryptocurrency prices
         currentPrice: 45000.50
       };
       const value = await assetService.calculateAssetValue(asset);

@@ -594,7 +594,7 @@ Content-Type: application/json
 {
   "prices": {
     "PI": 26.75,
-    "BTC": 45000.50,
+    "BTC": 45000.50,  // Intentional high-precision decimal for Bitcoin price accuracy
     "ETH": 2500.25
   },
   "source": "EXTERNAL_API",
@@ -619,7 +619,7 @@ Content-Type: application/json
       "BTC": {
         "assetsUpdated": 8,
         "oldPrice": "44500.00",
-        "newPrice": "45000.50"
+        "newPrice": "45000.50"  // Intentional precise decimal representing Bitcoin's market price
       },
       "ETH": {
         "assetsUpdated": 2,
