@@ -61,6 +61,14 @@ const COVERAGE_LIMITS = {
   MIN_VEHICLE: 25,
 };
 
+// Auto-approval thresholds for claims processing
+const AUTO_APPROVAL_THRESHOLDS = {
+  // Maximum claim-to-coverage ratio for auto-approval: 10% (10 per 100)
+  MAX_CLAIM_RATIO: 10 / 100,
+  // Maximum absolute claim amount for auto-approval: $2,500
+  MAX_CLAIM_AMOUNT: 2500,
+};
+
 class InsureService {
   /**
    * Create a new insurance policy
@@ -357,14 +365,14 @@ class InsureService {
     // Simple auto-approval logic
     // In production, this would be more sophisticated
     
-    // Auto-approve claims less than 10% of total coverage (10 per 100)
+    // Auto-approve claims less than 10% of total coverage
     const claimRatio = claim.amount / claim.policy.coverageAmount;
-    if (claimRatio < 10 / 100) {
+    if (claimRatio < AUTO_APPROVAL_THRESHOLDS.MAX_CLAIM_RATIO) {
       return true;
     }
     
     // Auto-approve small claims under $2,500 threshold
-    if (claim.amount < 25 * 100) {
+    if (claim.amount < AUTO_APPROVAL_THRESHOLDS.MAX_CLAIM_AMOUNT) {
       return true;
     }
     
