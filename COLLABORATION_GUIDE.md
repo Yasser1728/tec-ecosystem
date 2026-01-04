@@ -1331,4 +1331,529 @@ The **Assets Domain** serves as the gold standard for domain development:
 
 ---
 
+## 🏥 Insure Domain: Complete Implementation Guide
+
+The **Insure Domain** serves as an exemplary implementation of a complete, production-ready insurance and risk management system within the TEC Ecosystem. This section provides comprehensive guidance for development teams on building, extending, and maintaining the insure domain.
+
+### Domain Architecture Overview
+
+The Insure domain follows a sophisticated event-driven architecture that seamlessly integrates with other domains to provide proactive insurance recommendations, policy management, and claim processing.
+
+**Key Components:**
+1. **Data Models** (Prisma Schema) - InsurancePolicy, Claim, PremiumPayment
+2. **Core Service** (insureService.js) - Business logic and calculations
+3. **Integration Service** (integrationService.js) - Event Bus coordination
+4. **Type Definitions** (TypeScript) - Type safety across the domain
+5. **Comprehensive Tests** - Unit and integration test suites
+
+### Building the Insure Domain: Step-by-Step
+
+#### Step 1: Understanding the Data Model
+
+The Insure domain uses three primary entities:
+
+**InsurancePolicy**
+- Represents an insurance contract between user and system
+- Links to assets being insured (optional)
+- Tracks coverage amount, premium, frequency, and term
+- Manages policy lifecycle (ACTIVE, PENDING, EXPIRED, CANCELLED, LAPSED)
+
+**Claim**
+- Represents user's insurance claim request
+- Links to specific policy and user
+- Tracks incident details, documentation, and review process
+- Manages claim lifecycle (SUBMITTED, UNDER_REVIEW, APPROVED, REJECTED, PAID, CLOSED)
+
+**PremiumPayment**
+- Represents scheduled premium payments
+- Links to policy and tracks payment status
+- Manages payment schedule and automation
+
+**Relationships:**
+```
+User (1) ----< (N) InsurancePolicy
+InsurancePolicy (1) ----< (N) Claim
+InsurancePolicy (1) ----< (N) PremiumPayment
+Asset (1) ----< (N) InsurancePolicy [optional]
+```
+
+#### Step 2: Core Service Implementation
+
+The `insureService.js` implements sophisticated business logic:
+
+**Premium Calculation**
+```javascript
+// Base formula
+basePremium = coverageAmount × baseRate × termMultiplier × riskMultiplier
+
+// Apply frequency
+finalPremium = basePremium / frequencyMultiplier
+
+// Base rates by policy type
+LIFE: 0.2%, HEALTH: 0.3%, PROPERTY: 0.4%, AUTO: 0.5%
+```
+
+**Risk Assessment**
+```javascript
+// Multi-factor risk scoring
+riskScore = baseScore + policyTypeAdjustment + factorAdjustments
+
+// Risk levels and multipliers
+LOW (< 40): 1.0x
+MEDIUM (40-60): 1.3x
+HIGH (60-80): 1.7x
+CRITICAL (> 80): 2.5x
+```
+
+**Key Methods:**
+- `createPolicy(data)` - Validates, calculates, creates policy + payment schedule
+- `submitClaim(data)` - Validates policy status, creates claim, publishes event
+- `reviewClaim(id, decision)` - Reviews claim, updates status, triggers payouts
+- `calculatePremium(data)` - Complex premium calculation with risk assessment
+- `generateInsuranceRecommendation(asset)` - Smart recommendation engine
+
+#### Step 3: Event-Driven Integration
+
+The `integrationService.js` orchestrates cross-domain communication:
+
+**Inbound Events (What Insure Listens To):**
+
+```javascript
+// Asset created → Generate recommendation
+'assets.asset.created' => {
+  if (value > 1000) {
+    recommendation = generateRecommendation(asset)
+    publish('insure.recommendation.generated')
+    publish('alert.notification.create')
+  }
+}
+
+// Property purchased → Offer property insurance
+'estate.property.purchased' => {
+  recommendation = generatePropertyInsurance(property)
+  publish('insure.recommendation.generated')
+  publish('alert.notification.create', { priority: 'HIGH' })
+}
+
+// High-value order → Offer transaction insurance
+'commerce.order.created' => {
+  if (total > 5000) {
+    recommendation = generateTransactionInsurance(order)
+    publish('alert.notification.create')
+  }
+}
+```
+
+**Outbound Events (What Insure Publishes):**
+
+```javascript
+// Policy lifecycle
+'insure.policy.created' => { policyId, userId, assetId, coverageAmount, ... }
+'insure.policy.updated' => { policyId, status, ... }
+
+// Claim lifecycle
+'insure.claim.submitted' => { claimId, policyId, claimAmount, ... }
+'insure.claim.approved' => { claimId, approvedAmount, assetId, ... }
+'insure.claim.rejected' => { claimId, rejectionReason, assetId, ... }
+'insure.claim.paid' => { claimId, paidAmount, paymentReference, ... }
+
+// Recommendations
+'insure.recommendation.generated' => { 
+  userId, assetId, recommendedPolicyType, 
+  estimatedPremium, coverageAmount, ...
+}
+```
+
+**Integration Flow Example:**
+```
+Asset Created (Assets Domain)
+  ↓ Event: assets.asset.created
+Insure listens and processes
+  ↓ Generate recommendation
+Publish: insure.recommendation.generated
+  ↓
+Publish: alert.notification.create
+  ↓ Alert Domain listens
+User receives notification
+```
+
+#### Step 4: Testing Strategy
+
+**Unit Tests (`tests/unit/insureService.test.js`)**
+
+Focus on isolated business logic:
+- Policy/Claim number generation (uniqueness)
+- Premium calculation (accuracy across scenarios)
+- Risk assessment (multi-factor scoring)
+- Data validation (comprehensive error cases)
+- Policy CRUD operations
+- Claim submission and review
+- Insurance recommendations
+
+**Integration Tests (`tests/integration/eventBus.test.js`)**
+
+Focus on cross-domain interactions:
+- Asset creation triggers recommendations
+- Property purchase triggers insurance offers
+- High-value orders trigger transaction insurance
+- Claim approval triggers asset updates + NBF payment
+- Claim rejection triggers asset updates + user notification
+- Asset value changes trigger coverage review
+
+**Test Coverage Target: 80%+**
+
+#### Step 5: API Integration Patterns
+
+**Synchronous Patterns (Direct API Calls):**
+```javascript
+// Get policy details
+GET /api/insure/policies/:id
+Response: { policy, claims, nextPayment }
+
+// Submit claim
+POST /api/insure/claims
+Body: { policyId, claimAmount, incidentDate, ... }
+Response: { claimId, claimNumber, status }
+```
+
+**Asynchronous Patterns (Event-Driven):**
+```javascript
+// Asset created in Assets domain
+Event published: assets.asset.created
+
+// Insure domain listens and processes
+Handler: generateInsuranceRecommendation()
+
+// Publishes recommendation event
+Event published: insure.recommendation.generated
+
+// Alert domain listens and notifies user
+Handler: sendNotification()
+```
+
+### Extending the Insure Domain
+
+#### Adding New Policy Types
+
+1. **Update Prisma Enum:**
+```prisma
+enum PolicyType {
+  LIFE
+  HEALTH
+  PROPERTY
+  AUTO
+  TRAVEL
+  TRANSACTION
+  ASSET
+  CYBER        // New type
+}
+```
+
+2. **Add Base Rate:**
+```javascript
+const BASE_PREMIUM_RATES = {
+  // ...
+  CYBER: 0.006,  // 0.6% of coverage
+};
+```
+
+3. **Update Risk Assessment:**
+```javascript
+const policyRiskAdjustments = {
+  // ...
+  CYBER: 12,  // Higher base risk
+};
+```
+
+4. **Add Integration Logic:**
+```javascript
+// Listen for relevant events
+'dx.website.created' => offerCyberInsurance()
+```
+
+5. **Write Tests:**
+```javascript
+it('should calculate premium for CYBER insurance', () => {
+  const result = service.calculatePremium({
+    policyType: 'CYBER',
+    coverageAmount: 50000,
+    term: 3,
+  });
+  expect(result.finalPremium).toBeGreaterThan(0);
+});
+```
+
+#### Adding New Event Subscriptions
+
+**Example: Listening to Vehicle Registration**
+
+```javascript
+// In integrationService.js
+subscribeVehicleEvents() {
+  const unsubVehicleRegistered = eventBus.subscribe(
+    'dmv.vehicle.registered',
+    async (eventData, metadata) => {
+      console.log('[InsureIntegration] Vehicle registered');
+      
+      // Generate auto insurance recommendation
+      const recommendation = this.insureService.generateInsuranceRecommendation({
+        userId: eventData.userId,
+        assetId: eventData.vehicleId,
+        assetType: 'VEHICLE',
+        assetValue: eventData.vehicleValue,
+      });
+      
+      // Publish recommendation
+      this.insureService.publishInsuranceRecommendation(recommendation);
+      
+      // Send notification
+      eventBus.publish('alert.notification.create', {
+        userId: eventData.userId,
+        type: 'AUTO_INSURANCE_AVAILABLE',
+        title: 'Auto Insurance for Your New Vehicle',
+        message: `Protect your new vehicle with auto insurance starting at ${recommendation.estimatedPremium} PI/month.`,
+        priority: 'HIGH',
+        data: {
+          vehicleId: eventData.vehicleId,
+          recommendationType: 'AUTO_INSURANCE',
+          estimatedPremium: recommendation.estimatedPremium,
+        },
+      }, metadata);
+    },
+    { domain: 'insure', description: 'Offer auto insurance for new vehicles' }
+  );
+  
+  this.subscribers.push(unsubVehicleRegistered);
+}
+
+// Add to initialize()
+initialize() {
+  // ...
+  this.subscribeVehicleEvents();
+  // ...
+}
+```
+
+**Integration Test:**
+```javascript
+it('should offer auto insurance for newly registered vehicles', (done) => {
+  const vehicleData = {
+    userId: 'user_123',
+    vehicleId: 'vehicle_456',
+    vehicleValue: 35000,
+  };
+  
+  const unsubscribe = eventBus.subscribe(
+    'alert.notification.create',
+    (eventData) => {
+      if (eventData.type === 'AUTO_INSURANCE_AVAILABLE') {
+        expect(eventData.data.vehicleId).toBe('vehicle_456');
+        unsubscribe();
+        done();
+      }
+    }
+  );
+  
+  eventBus.publish('dmv.vehicle.registered', vehicleData);
+});
+```
+
+#### Enhancing Risk Assessment
+
+**Example: Adding Health Factors for Life Insurance**
+
+```javascript
+assessRisk(policyType, riskFactors = {}) {
+  let riskScore = 50;
+  
+  // Existing logic...
+  
+  // Add health-specific factors for LIFE insurance
+  if (policyType === 'LIFE') {
+    if (riskFactors.age) {
+      if (riskFactors.age > 60) riskScore += 25;
+      else if (riskFactors.age > 45) riskScore += 15;
+      else if (riskFactors.age > 30) riskScore += 5;
+    }
+    
+    if (riskFactors.smoker) riskScore += 20;
+    if (riskFactors.prexistingConditions) riskScore += 15;
+    
+    if (riskFactors.healthScore) {
+      if (riskFactors.healthScore > 80) riskScore -= 10;
+      else if (riskFactors.healthScore < 50) riskScore += 15;
+    }
+  }
+  
+  // Continue with existing logic...
+}
+```
+
+### Deployment Checklist for Insure Domain
+
+**Pre-Deployment:**
+- [ ] All unit tests passing (80%+ coverage)
+- [ ] All integration tests passing
+- [ ] Prisma schema validated and migrated
+- [ ] Event Bus subscriptions tested
+- [ ] Premium calculation verified with test cases
+- [ ] Risk assessment reviewed by actuaries
+- [ ] Documentation updated
+- [ ] Code reviewed by senior developer
+
+**Deployment Steps:**
+1. Run database migration: `npx prisma migrate deploy`
+2. Generate Prisma client: `npx prisma generate`
+3. Deploy service to staging
+4. Initialize integration service
+5. Verify event subscriptions active
+6. Run smoke tests
+7. Monitor logs for 24 hours
+8. Deploy to production with same steps
+9. Enable monitoring alerts
+
+**Post-Deployment:**
+- [ ] Monitor policy creation rate
+- [ ] Track claim submission and processing
+- [ ] Verify event processing latency
+- [ ] Check premium payment success rate
+- [ ] Review user feedback
+- [ ] Analyze recommendation conversion rate
+
+### Performance Optimization Tips
+
+**Database:**
+- All foreign keys indexed
+- Query frequently accessed fields with includes
+- Use pagination for large result sets
+- Implement database connection pooling
+
+**Caching:**
+```javascript
+// Cache policy details for 5 minutes
+const cacheKey = `policy:${policyId}`;
+let policy = cache.get(cacheKey);
+if (!policy) {
+  policy = await prisma.insurancePolicy.findUnique({...});
+  cache.set(cacheKey, policy, 300); // 5 minutes
+}
+```
+
+**Event Processing:**
+- Keep event handlers lightweight
+- Offload heavy processing to background jobs
+- Use error boundaries to prevent cascading failures
+- Implement retry logic with exponential backoff
+
+### Common Pitfalls and Solutions
+
+**Pitfall 1: Synchronous Cross-Domain Calls**
+❌ Bad: Directly calling Assets API from Insure service
+✅ Good: Use Event Bus for asynchronous communication
+
+**Pitfall 2: Missing Event Handlers**
+❌ Bad: Publishing events without ensuring subscribers exist
+✅ Good: Initialize all subscriptions in `initialize()` method
+
+**Pitfall 3: Incomplete Validation**
+❌ Bad: Assuming data is valid
+✅ Good: Validate all inputs comprehensively
+
+**Pitfall 4: Ignoring Error Cases**
+❌ Bad: Not handling edge cases (expired policy, exceeding coverage)
+✅ Good: Explicit error handling with descriptive messages
+
+**Pitfall 5: Hard-Coded Values**
+❌ Bad: Magic numbers in calculations
+✅ Good: Named constants with clear meanings
+
+### Key Learnings from Insure Domain
+
+1. **Event-Driven Design**: Enables loose coupling and scalability
+2. **Validation First**: Catch errors early in the process
+3. **Clear Abstractions**: Separate concerns (service, integration, types)
+4. **Comprehensive Testing**: Unit + integration tests provide confidence
+5. **Documentation**: Clear docs enable team collaboration
+6. **Type Safety**: TypeScript types prevent runtime errors
+7. **User-Centric**: Design flows around user needs, not system constraints
+
+### Quick Reference for New Developers
+
+**To create a policy:**
+```javascript
+const insureService = new InsureService();
+const policy = await insureService.createPolicy({
+  userId: 'user_123',
+  assetId: 'asset_456',
+  policyType: 'PROPERTY',
+  productName: 'Home Insurance Premium',
+  coverageAmount: 500000,
+  premium: 166.67,
+  premiumFrequency: 'MONTHLY',
+  startDate: new Date(),
+  term: 10,
+});
+```
+
+**To submit a claim:**
+```javascript
+const claim = await insureService.submitClaim({
+  policyId: 'policy_123',
+  userId: 'user_123',
+  claimAmount: 25000,
+  incidentDate: new Date('2026-06-15'),
+  incidentType: 'NATURAL_DISASTER',
+  description: 'Roof damage from storm',
+  documents: [...],
+});
+```
+
+**To listen to events:**
+```javascript
+const integrationService = require('./integrationService');
+integrationService.initialize();
+
+// Events are now being processed
+```
+
+**To publish events:**
+```javascript
+const eventBus = require('../../../lib/eventBus');
+eventBus.publish('insure.policy.created', {
+  policyId: 'policy_123',
+  userId: 'user_123',
+  // ... other data
+}, {
+  userId: 'user_123',
+});
+```
+
+### Resources
+
+**Study These Files:**
+1. `/domains/insure/services/insureService.js` - Core business logic
+2. `/domains/insure/services/integrationService.js` - Event handling
+3. `/domains/insure/types/index.ts` - Type definitions
+4. `/domains/insure/tests/unit/insureService.test.js` - Unit testing patterns
+5. `/domains/insure/tests/integration/eventBus.test.js` - Integration testing
+6. `/domains/insure/user-journey-insure.md` - User flows and scenarios
+7. `/lib/eventBus.js` - Event Bus implementation
+
+**Reference Domains:**
+- **Assets Domain**: Similar service and integration patterns
+- **Insure Domain**: This domain (complete reference implementation)
+
+**Questions?**
+- Technical: Post in `#tec-insure` Slack channel
+- Architecture: Schedule review with Integration Team
+- Product: Reach out to Insure Domain Owner
+
+---
+
+**Maintained by**: Platform Team  
+**Last Updated**: January 2026  
+**Next Review**: March 2026
+
+---
+
 © 2024-2026 TEC Ecosystem - All Rights Reserved
