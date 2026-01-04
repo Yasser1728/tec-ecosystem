@@ -15,10 +15,10 @@ export default function ParticlesCanvas() {
     // Cryptographically secure random number generator
     // Pre-allocate array for better performance
     const randomArray = new Uint32Array(1);
+    const MAX_UINT32 = 0x100000000; // 2^32, used for normalizing to [0,1) range
     function secureRandom() {
       crypto.getRandomValues(randomArray);
-      // Use 0x100000000 for precise conversion to [0,1) range
-      return randomArray[0] / 0x100000000;
+      return randomArray[0] / MAX_UINT32;
     }
 
     function resize() {
