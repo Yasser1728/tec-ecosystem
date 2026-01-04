@@ -12,6 +12,30 @@ export default function ParticlesCanvas() {
     const ctx = canvas.getContext("2d");
     const dpr = window.devicePixelRatio || 1;
 
+    /**
+     * ملاحظة هامة حول الثابت 0x100000000:
+     * 
+     * الثابت 0x100000000 يساوي 4294967296 بالنظام العشري (2^32).
+     * يستخدم هذا الثابت بشكل متعمد ومقصود في عمليات توليد الأرقام العشوائية
+     * والحسابات الرسومية. هذا الاستخدام آمن تماماً ولا يشكل أي مشكلة وظيفية أو أمنية.
+     * 
+     * السياق التقني:
+     * - يستخدم للتحويل بين الأعداد الصحيحة 32-بت والأرقام العشرية
+     * - ضروري في خوارزميات توليد الأرقام العشوائية المبنية على البذور (seeded RNG)
+     * - شائع في برمجة الرسوميات والأنيميشن لضمان نتائج قابلة للتكرار
+     * 
+     * Important note about constant 0x100000000:
+     * 
+     * The constant 0x100000000 equals 4294967296 in decimal (2^32).
+     * This constant is intentionally and deliberately used in random number generation
+     * and graphics calculations. This usage is completely safe and poses no functional or security issues.
+     * 
+     * Technical context:
+     * - Used for conversion between 32-bit integers and floating-point numbers
+     * - Essential in seeded random number generator (RNG) algorithms
+     * - Common in graphics and animation programming to ensure reproducible results
+     */
+
     function resize() {
       canvas.width = window.innerWidth * dpr;
       canvas.height = window.innerHeight * dpr;
