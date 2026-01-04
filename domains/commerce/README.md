@@ -657,8 +657,8 @@ function calculateOrderTotal(items) {
 DATABASE_URL="postgresql://user:pass@host:5432/commerce"
 
 # Pi Network
-PI_API_KEY="your_pi_api_key"
-PI_WALLET_PRIVATE_KEY="your_wallet_key"
+PI_API_KEY="YOUR_PI_API_KEY_HERE"
+PI_WALLET_PRIVATE_KEY="YOUR_WALLET_PRIVATE_KEY_HERE"
 PI_NETWORK="mainnet" # or testnet
 
 # Event Bus
@@ -668,8 +668,8 @@ REDIS_URL="redis://localhost:6379"
 # Storage
 S3_BUCKET="commerce-assets"
 S3_REGION="us-east-1"
-S3_ACCESS_KEY="your_access_key"
-S3_SECRET_KEY="your_secret_key"
+S3_ACCESS_KEY="YOUR_S3_ACCESS_KEY_HERE"
+S3_SECRET_KEY="YOUR_S3_SECRET_KEY_HERE"
 
 # Search (Optional)
 ELASTICSEARCH_URL="http://localhost:9200"
@@ -689,8 +689,8 @@ FINANCING_OFFER_THRESHOLD=25000
 
 **1. Initial Setup**
 ```bash
-# Clone repository
-git clone https://github.com/Yasser1728/tec-ecosystem.git
+# Clone repository (replace with your repository URL)
+git clone https://github.com/<YOUR_ORG>/tec-ecosystem.git
 cd tec-ecosystem
 
 # Install dependencies
@@ -1146,8 +1146,8 @@ query {
 DATABASE_URL="postgresql://user:pass@host:5432/commerce"
 
 # شبكة Pi
-PI_API_KEY="your_pi_api_key"
-PI_WALLET_PRIVATE_KEY="your_wallet_key"
+PI_API_KEY="YOUR_PI_API_KEY_HERE"
+PI_WALLET_PRIVATE_KEY="YOUR_WALLET_PRIVATE_KEY_HERE"
 PI_NETWORK="mainnet" # أو testnet
 
 # ناقل الأحداث
@@ -1157,8 +1157,8 @@ REDIS_URL="redis://localhost:6379"
 # التخزين
 S3_BUCKET="commerce-assets"
 S3_REGION="us-east-1"
-S3_ACCESS_KEY="your_access_key"
-S3_SECRET_KEY="your_secret_key"
+S3_ACCESS_KEY="YOUR_S3_ACCESS_KEY_HERE"
+S3_SECRET_KEY="YOUR_S3_SECRET_KEY_HERE"
 
 # البحث (اختياري)
 ELASTICSEARCH_URL="http://localhost:9200"
@@ -1178,8 +1178,8 @@ FINANCING_OFFER_THRESHOLD=25000
 
 **1. الإعداد الأولي**
 ```bash
-# استنساخ المستودع
-git clone https://github.com/Yasser1728/tec-ecosystem.git
+# استنساخ المستودع (استبدل بعنوان URL لمستودعك)
+git clone https://github.com/<YOUR_ORG>/tec-ecosystem.git
 cd tec-ecosystem
 
 # تثبيت التبعيات
