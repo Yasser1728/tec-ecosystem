@@ -610,6 +610,378 @@ class AssetService {
       relatedTransactionId: data.orderId,
     });
   }
+  
+  /**
+   * Link asset to insurance policy
+   * 
+   * @param {string} assetId - Asset ID
+   * @param {Object} insuranceData - Insurance policy data
+   * @returns {Promise<Object>} Updated asset with insurance link
+   */
+  async linkToInsurance(assetId, insuranceData) {
+    try {
+      const asset = await this.getAssetById(assetId);
+      
+      // Update asset metadata with insurance information
+      const updatedMetadata = {
+        ...asset.metadata,
+        insurance: {
+          policyId: insuranceData.policyId,
+          provider: insuranceData.provider,
+          policyType: insuranceData.policyType,
+          coverage: insuranceData.coverage,
+          premium: insuranceData.premium,
+          startDate: insuranceData.startDate,
+          endDate: insuranceData.endDate,
+          linkedAt: new Date().toISOString(),
+        },
+      };
+      
+      const updatedAsset = await this.updateAsset(assetId, {
+        metadata: updatedMetadata,
+      });
+      
+      console.log(`Asset ${assetId} linked to insurance policy ${insuranceData.policyId}`);
+      
+      return {
+        success: true,
+        asset: updatedAsset,
+        insurance: updatedMetadata.insurance,
+      };
+    } catch (error) {
+      console.error('Error linking asset to insurance:', error);
+      throw error;
+    }
+  }
+  
+  /**
+   * Link asset to investment
+   * 
+   * @param {string} assetId - Asset ID
+   * @param {Object} investmentData - Investment data
+   * @returns {Promise<Object>} Updated asset with investment link
+   */
+  async linkToInvestment(assetId, investmentData) {
+    try {
+      const asset = await this.getAssetById(assetId);
+      
+      // Update asset metadata with investment information
+      const updatedMetadata = {
+        ...asset.metadata,
+        investment: {
+          investmentId: investmentData.investmentId,
+          strategy: investmentData.strategy,
+          riskLevel: investmentData.riskLevel,
+          targetReturn: investmentData.targetReturn,
+          linkedAt: new Date().toISOString(),
+        },
+      };
+      
+      const updatedAsset = await this.updateAsset(assetId, {
+        metadata: updatedMetadata,
+      });
+      
+      console.log(`Asset ${assetId} linked to investment ${investmentData.investmentId}`);
+      
+      return {
+        success: true,
+        asset: updatedAsset,
+        investment: updatedMetadata.investment,
+      };
+    } catch (error) {
+      console.error('Error linking asset to investment:', error);
+      throw error;
+    }
+  }
+  
+  /**
+   * Analyze asset data - comprehensive analytics
+   * 
+   * @param {string} assetId - Asset ID
+   * @param {Object} options - Analysis options
+   * @returns {Promise<Object>} Comprehensive asset analysis
+   */
+  async analyzeAssetData(assetId, options = {}) {
+    try {
+      const asset = await this.getAssetById(assetId, {
+        includeTransactions: true,
+        includeValuations: true,
+        transactionLimit: 100,
+        valuationLimit: 90,
+      });
+      
+      // Calculate performance metrics
+      const performance = await this.calculatePerformance(assetId);
+      
+      // Analyze price trends
+      const priceAnalysis = this.analyzePriceTrends(asset.valuations || []);
+      
+      // Analyze transaction patterns
+      const transactionAnalysis = this.analyzeTransactionPatterns(asset.transactions || []);
+      
+      // Risk assessment
+      const riskMetrics = this.calculateRiskMetrics(asset.valuations || [], asset);
+      
+      // Investment insights
+      const insights = this.generateInvestmentInsights(asset, performance, priceAnalysis);
+      
+      return {
+        success: true,
+        assetId: asset.id,
+        assetName: asset.name,
+        analysis: {
+          performance,
+          priceAnalysis,
+          transactionAnalysis,
+          riskMetrics,
+          insights,
+          metadata: {
+            analyzedAt: new Date().toISOString(),
+            dataPoints: {
+              valuations: asset.valuations?.length || 0,
+              transactions: asset.transactions?.length || 0,
+            },
+          },
+        },
+      };
+    } catch (error) {
+      console.error('Error analyzing asset data:', error);
+      throw error;
+    }
+  }
+  
+  /**
+   * Analyze price trends from valuations
+   * 
+   * @param {Array} valuations - Array of valuation records
+   * @returns {Object} Price trend analysis
+   */
+  analyzePriceTrends(valuations) {
+    if (!valuations || valuations.length < 2) {
+      return { trend: 'INSUFFICIENT_DATA', message: 'Not enough data for trend analysis' };
+    }
+    
+    const sortedValuations = [...valuations].sort((a, b) => 
+      new Date(a.valuationDate) - new Date(b.valuationDate)
+    );
+    
+    const prices = sortedValuations.map(v => parseFloat(v.price));
+    const firstPrice = prices[0];
+    const lastPrice = prices[prices.length - 1];
+    const highPrice = Math.max(...prices);
+    const lowPrice = Math.min(...prices);
+    
+    // Calculate simple moving average (if we have enough data)
+    const sma7 = prices.length >= 7 ? 
+      prices.slice(-7).reduce((a, b) => a + b, 0) / 7 : null;
+    
+    // Trend direction
+    const priceChange = lastPrice - firstPrice;
+    const priceChangePercent = (priceChange / firstPrice) * 100;
+    
+    let trend = 'STABLE';
+    if (priceChangePercent > 5) trend = 'UPWARD';
+    else if (priceChangePercent < -5) trend = 'DOWNWARD';
+    
+    // Volatility (standard deviation)
+    const mean = prices.reduce((a, b) => a + b, 0) / prices.length;
+    const variance = prices.reduce((sum, price) => sum + Math.pow(price - mean, 2), 0) / prices.length;
+    const volatility = Math.sqrt(variance);
+    const volatilityPercent = (volatility / mean) * 100;
+    
+    return {
+      trend,
+      priceChange: parseFloat(priceChange.toFixed(8)),
+      priceChangePercent: parseFloat(priceChangePercent.toFixed(2)),
+      currentPrice: lastPrice,
+      highPrice,
+      lowPrice,
+      averagePrice: mean,
+      volatility: parseFloat(volatility.toFixed(8)),
+      volatilityPercent: parseFloat(volatilityPercent.toFixed(2)),
+      sma7: sma7 ? parseFloat(sma7.toFixed(8)) : null,
+      dataPoints: prices.length,
+    };
+  }
+  
+  /**
+   * Analyze transaction patterns
+   * 
+   * @param {Array} transactions - Array of transaction records
+   * @returns {Object} Transaction pattern analysis
+   */
+  analyzeTransactionPatterns(transactions) {
+    if (!transactions || transactions.length === 0) {
+      return { message: 'No transactions to analyze' };
+    }
+    
+    const buyTransactions = transactions.filter(t => t.type === 'BUY');
+    const sellTransactions = transactions.filter(t => t.type === 'SELL');
+    const dividendTransactions = transactions.filter(t => t.type === 'DIVIDEND');
+    
+    const totalBought = buyTransactions.reduce((sum, t) => sum + parseFloat(t.quantity), 0);
+    const totalSold = sellTransactions.reduce((sum, t) => sum + parseFloat(t.quantity), 0);
+    const totalDividends = dividendTransactions.reduce((sum, t) => sum + parseFloat(t.totalAmount), 0);
+    
+    const avgBuyPrice = buyTransactions.length > 0 ?
+      buyTransactions.reduce((sum, t) => sum + parseFloat(t.price), 0) / buyTransactions.length : 0;
+    
+    const avgSellPrice = sellTransactions.length > 0 ?
+      sellTransactions.reduce((sum, t) => sum + parseFloat(t.price), 0) / sellTransactions.length : 0;
+    
+    return {
+      totalTransactions: transactions.length,
+      breakdown: {
+        buys: buyTransactions.length,
+        sells: sellTransactions.length,
+        dividends: dividendTransactions.length,
+        other: transactions.length - buyTransactions.length - sellTransactions.length - dividendTransactions.length,
+      },
+      quantities: {
+        totalBought: parseFloat(totalBought.toFixed(8)),
+        totalSold: parseFloat(totalSold.toFixed(8)),
+        netPosition: parseFloat((totalBought - totalSold).toFixed(8)),
+      },
+      prices: {
+        averageBuyPrice: parseFloat(avgBuyPrice.toFixed(8)),
+        averageSellPrice: avgSellPrice > 0 ? parseFloat(avgSellPrice.toFixed(8)) : null,
+      },
+      dividends: {
+        total: parseFloat(totalDividends.toFixed(2)),
+        count: dividendTransactions.length,
+      },
+    };
+  }
+  
+  /**
+   * Calculate risk metrics
+   * 
+   * @param {Array} valuations - Array of valuation records
+   * @param {Object} asset - Asset object
+   * @returns {Object} Risk assessment metrics
+   */
+  calculateRiskMetrics(valuations, asset) {
+    if (!valuations || valuations.length < 10) {
+      return { 
+        riskLevel: 'UNKNOWN', 
+        message: 'Insufficient data for risk assessment (need at least 10 valuations)' 
+      };
+    }
+    
+    const prices = valuations.map(v => parseFloat(v.price));
+    
+    // Calculate returns
+    const returns = [];
+    for (let i = 1; i < prices.length; i++) {
+      returns.push((prices[i] - prices[i - 1]) / prices[i - 1]);
+    }
+    
+    // Standard deviation of returns (volatility)
+    const meanReturn = returns.reduce((a, b) => a + b, 0) / returns.length;
+    const variance = returns.reduce((sum, ret) => sum + Math.pow(ret - meanReturn, 2), 0) / returns.length;
+    const stdDev = Math.sqrt(variance);
+    
+    // Max drawdown
+    let maxDrawdown = 0;
+    let peak = prices[0];
+    for (const price of prices) {
+      if (price > peak) peak = price;
+      const drawdown = (peak - price) / peak;
+      if (drawdown > maxDrawdown) maxDrawdown = drawdown;
+    }
+    
+    // Risk level classification
+    let riskLevel = 'LOW';
+    if (stdDev > 0.15) riskLevel = 'HIGH';
+    else if (stdDev > 0.08) riskLevel = 'MEDIUM';
+    
+    return {
+      riskLevel,
+      volatility: parseFloat(stdDev.toFixed(4)),
+      maxDrawdown: parseFloat(maxDrawdown.toFixed(4)),
+      maxDrawdownPercent: parseFloat((maxDrawdown * 100).toFixed(2)),
+      sharpeRatio: meanReturn > 0 ? parseFloat((meanReturn / stdDev).toFixed(2)) : null,
+      metadata: {
+        dataPoints: prices.length,
+        calculatedAt: new Date().toISOString(),
+      },
+    };
+  }
+  
+  /**
+   * Generate investment insights
+   * 
+   * @param {Object} asset - Asset object
+   * @param {Object} performance - Performance metrics
+   * @param {Object} priceAnalysis - Price trend analysis
+   * @returns {Array} Array of insights
+   */
+  generateInvestmentInsights(asset, performance, priceAnalysis) {
+    const insights = [];
+    
+    // Performance insights
+    if (performance.percentageGain > 20) {
+      insights.push({
+        type: 'POSITIVE',
+        category: 'PERFORMANCE',
+        message: `Strong performance with ${performance.percentageGain.toFixed(2)}% gain`,
+        recommendation: 'Consider taking partial profits',
+      });
+    } else if (performance.percentageGain < -10) {
+      insights.push({
+        type: 'WARNING',
+        category: 'PERFORMANCE',
+        message: `Asset is down ${Math.abs(performance.percentageGain).toFixed(2)}%`,
+        recommendation: 'Review investment thesis and consider position',
+      });
+    }
+    
+    // Trend insights
+    if (priceAnalysis.trend === 'UPWARD') {
+      insights.push({
+        type: 'POSITIVE',
+        category: 'TREND',
+        message: 'Price trend is positive',
+        recommendation: 'Monitor for continued momentum',
+      });
+    } else if (priceAnalysis.trend === 'DOWNWARD') {
+      insights.push({
+        type: 'WARNING',
+        category: 'TREND',
+        message: 'Price trend is negative',
+        recommendation: 'Consider risk management strategies',
+      });
+    }
+    
+    // Volatility insights
+    if (priceAnalysis.volatilityPercent > 20) {
+      insights.push({
+        type: 'INFO',
+        category: 'RISK',
+        message: `High volatility (${priceAnalysis.volatilityPercent.toFixed(2)}%)`,
+        recommendation: 'Suitable for risk-tolerant investors only',
+      });
+    }
+    
+    // Holding period insights
+    if (performance.holdingDays < 30) {
+      insights.push({
+        type: 'INFO',
+        category: 'STRATEGY',
+        message: 'Recent investment - early stage',
+        recommendation: 'Allow time for investment thesis to play out',
+      });
+    } else if (performance.holdingDays > 365) {
+      insights.push({
+        type: 'INFO',
+        category: 'STRATEGY',
+        message: 'Long-term holding (over 1 year)',
+        recommendation: 'Review if still aligned with investment goals',
+      });
+    }
+    
+    return insights;
+  }
 }
 
 // Export class for flexibility in testing and dependency injection
