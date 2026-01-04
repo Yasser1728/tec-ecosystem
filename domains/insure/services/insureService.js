@@ -66,6 +66,14 @@ const BASE_RISK_FACTORS = {
   TRANSACTION: 0.003,
 };
 
+/**
+ * Default values for risk assessment calculations
+ */
+const DEFAULT_RISK_VALUES = {
+  APPLICANT_AGE: 35,
+  PROPERTY_AGE: 10,
+};
+
 class InsureService {
   /**
    * Generate a cryptographically secure policy number
@@ -217,10 +225,18 @@ class InsureService {
    */
   async purchasePolicy(data) {
     try {
+      // Validate policy type is provided
+      if (!data.type) {
+        throw new Error('Policy type is required');
+      }
+      if (!Object.values(POLICY_TYPES).includes(data.type)) {
+        throw new Error(`Invalid policy type: ${data.type}`);
+      }
+
       // In a real implementation, this would interact with Prisma
       // For now, we create a mock policy object
 
-      const policyType = data.type || 'LIFE';
+      const policyType = data.type;
       const policyNumber = this.generatePolicyNumber(policyType);
       const startDate = new Date();
       const endDate = new Date(startDate);
@@ -309,10 +325,10 @@ class InsureService {
       
       // Adjust based on policy type
       if (data.type === POLICY_TYPES.LIFE) {
-        const age = data.applicantInfo?.age || 35;
-        baseScore += (age - 35) * 0.01; // Age factor
+        const age = data.applicantInfo?.age || DEFAULT_RISK_VALUES.APPLICANT_AGE;
+        baseScore += (age - DEFAULT_RISK_VALUES.APPLICANT_AGE) * 0.01; // Age factor
       } else if (data.type === POLICY_TYPES.PROPERTY) {
-        const propertyAge = data.applicantInfo?.propertyAge || 10;
+        const propertyAge = data.applicantInfo?.propertyAge || DEFAULT_RISK_VALUES.PROPERTY_AGE;
         baseScore += propertyAge * 0.005; // Property age factor
       }
 
