@@ -7,43 +7,58 @@
  * @module services/insureService
  */
 
+const crypto = require('crypto');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-// Premium rate constants
+// Premium rate constants - Using fraction notation for precision and clarity
 const PREMIUM_RATES = {
   PROPERTY: {
-    BASE: 0.010, // 1% base rate
-    HIGH_RISK: 0.020, // 2% for high risk properties
+    // Standard property insurance: 1% of property value (1 per 100)
+    BASE: 1 / 100,
+    // High-risk property premium: 2% for properties in flood zones or high-crime areas (2 per 100)
+    HIGH_RISK: 2 / 100,
   },
   VEHICLE: {
-    BASE: 0.10, // 10% base rate
-    LUXURY: 0.30, // 30% for luxury vehicles
+    // Standard vehicle insurance: 10% of vehicle value (10 per 100)
+    BASE: 10 / 100,
+    // Luxury vehicle premium: 30% for high-value vehicles above $100k (30 per 100)
+    LUXURY: 30 / 100,
   },
   HEALTH: {
-    BASE: 25.00, // $25 base monthly premium
-    FAMILY: 10.00, // Additional $10 per family member
+    // Base monthly health insurance premium in dollars
+    BASE: 25,
+    // Additional premium per family member in dollars
+    FAMILY: 10,
   },
   TRAVEL: {
-    BASE: 0.010, // 1% of trip cost
-    INTERNATIONAL: 0.020, // 2% for international travel
+    // Standard travel insurance: 1% of trip cost (1 per 100)
+    BASE: 1 / 100,
+    // International travel premium: 2% for overseas trips (2 per 100)
+    INTERNATIONAL: 2 / 100,
   },
   LIFE: {
-    BASE_PER_1000: 0.10, // $0.10 per $1000 coverage
-    HIGH_RISK: 0.30, // $0.30 per $1000 for high risk
+    // Life insurance base rate: $0.10 per $1000 coverage (10 cents per 1000 = 10 per 100 per 1000)
+    BASE_PER_1000: 10 / 100,
+    // High-risk life insurance: $0.30 per $1000 for smokers/hazardous occupations (30 per 100 per 1000)
+    HIGH_RISK: 30 / 100,
   }
 };
 
-// Risk assessment factors
+// Risk assessment factors - Age and claims history impact on premiums
 const RISK_FACTORS = {
-  AGE_MULTIPLIER: 0.010, // 1% increase per year over 30
-  CLAIMS_HISTORY_PENALTY: 0.020, // 2% increase per previous claim
+  // Age-based risk adjustment: 1% increase per year over age 30 (1 per 100)
+  AGE_MULTIPLIER: 1 / 100,
+  // Claims history penalty: 2% increase per previous claim filed (2 per 100)
+  CLAIMS_HISTORY_PENALTY: 2 / 100,
 };
 
-// Coverage limits
+// Coverage limits - Minimum required coverage amounts in thousands of dollars
 const COVERAGE_LIMITS = {
-  MIN_PROPERTY: 10.00, // Minimum $10k coverage
-  MIN_VEHICLE: 25.00, // Minimum $25k coverage
+  // Minimum property coverage: $10,000
+  MIN_PROPERTY: 10,
+  // Minimum vehicle coverage: $25,000
+  MIN_VEHICLE: 25,
 };
 
 class InsureService {
@@ -174,7 +189,7 @@ class InsureService {
   }
 
   /**
-   * Generate a unique policy number
+   * Generate a unique policy number using cryptographically secure random number
    * 
    * @returns {string} Policy number
    */
@@ -182,7 +197,8 @@ class InsureService {
     const prefix = 'INS';
     const year = new Date().getFullYear();
     const month = String(new Date().getMonth() + 1).padStart(2, '0');
-    const random = Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
+    // Use crypto.randomInt for secure random number generation (0 to 999999)
+    const random = crypto.randomInt(0, 1000000).toString().padStart(6, '0');
     
     return `${prefix}-${year}${month}-${random}`;
   }
@@ -261,7 +277,7 @@ class InsureService {
   }
 
   /**
-   * Generate a unique claim number
+   * Generate a unique claim number using cryptographically secure random number
    * 
    * @returns {string} Claim number
    */
@@ -270,7 +286,8 @@ class InsureService {
     const year = new Date().getFullYear();
     const month = String(new Date().getMonth() + 1).padStart(2, '0');
     const day = String(new Date().getDate()).padStart(2, '0');
-    const random = Math.floor(Math.random() * 100000).toString().padStart(5, '0');
+    // Use crypto.randomInt for secure random number generation (0 to 99999)
+    const random = crypto.randomInt(0, 100000).toString().padStart(5, '0');
     
     return `${prefix}-${year}${month}${day}-${random}`;
   }
@@ -340,14 +357,14 @@ class InsureService {
     // Simple auto-approval logic
     // In production, this would be more sophisticated
     
-    // Claims under 10% of coverage are auto-approved
+    // Auto-approve claims less than 10% of total coverage (10 per 100)
     const claimRatio = claim.amount / claim.policy.coverageAmount;
-    if (claimRatio < 0.10) {
+    if (claimRatio < 10 / 100) {
       return true;
     }
     
-    // Small claims under certain thresholds
-    if (claim.amount < 25.00 * 100) { // $2,500
+    // Auto-approve small claims under $2,500 threshold
+    if (claim.amount < 25 * 100) {
       return true;
     }
     
