@@ -540,11 +540,19 @@ class CommerceService {
    */
   async updateOrderStatus(orderId, status, metadata = {}) {
     try {
+      // Get existing order to preserve metadata
+      const existingOrder = await prisma.order.findUnique({
+        where: { id: orderId },
+      });
+      
       const order = await prisma.order.update({
         where: { id: orderId },
         data: {
           status: status,
-          metadata: metadata,
+          metadata: {
+            ...(existingOrder?.metadata || {}),
+            ...metadata,
+          },
         },
       });
       
