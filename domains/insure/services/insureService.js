@@ -106,6 +106,36 @@ class InsureService {
   }
 
   /**
+   * Generate a cryptographically secure policy ID
+   * 
+   * Uses crypto.randomBytes to generate unique internal policy IDs
+   * 
+   * @returns {string} Secure policy ID
+   */
+  generatePolicyId() {
+    // Generate 8 random bytes for internal ID
+    const randomBytes = crypto.randomBytes(8);
+    const randomHex = randomBytes.toString('hex');
+    
+    return `policy_insure_${randomHex}`;
+  }
+
+  /**
+   * Generate a cryptographically secure claim ID
+   * 
+   * Uses crypto.randomBytes to generate unique internal claim IDs
+   * 
+   * @returns {string} Secure claim ID
+   */
+  generateClaimId() {
+    // Generate 8 random bytes for internal ID
+    const randomBytes = crypto.randomBytes(8);
+    const randomHex = randomBytes.toString('hex');
+    
+    return `claim_insure_${randomHex}`;
+  }
+
+  /**
    * Generate a cryptographically secure quote ID
    * 
    * @returns {string} Secure quote ID
@@ -190,7 +220,7 @@ class InsureService {
       endDate.setFullYear(endDate.getFullYear() + (data.term || 1));
 
       const policy = {
-        id: `policy_insure_${crypto.randomBytes(8).toString('hex')}`,
+        id: this.generatePolicyId(),
         userId: data.userId,
         policyNumber,
         type: data.policyType,
@@ -235,7 +265,7 @@ class InsureService {
       const claimNumber = this.generateClaimNumber();
 
       const claim = {
-        id: `claim_insure_${crypto.randomBytes(8).toString('hex')}`,
+        id: this.generateClaimId(),
         policyId: data.policyId,
         claimNumber,
         claimAmount: data.claimAmount,
