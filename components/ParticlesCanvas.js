@@ -13,10 +13,12 @@ export default function ParticlesCanvas() {
     const dpr = window.devicePixelRatio || 1;
 
     // Cryptographically secure random number generator
+    // Pre-allocate array for better performance
+    const randomArray = new Uint32Array(1);
     function secureRandom() {
-      const array = new Uint32Array(1);
-      crypto.getRandomValues(array);
-      return array[0] / (0xffffffff + 1);
+      crypto.getRandomValues(randomArray);
+      // Use 0x100000000 for precise conversion to [0,1) range
+      return randomArray[0] / 0x100000000;
     }
 
     function resize() {
