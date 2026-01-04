@@ -8,19 +8,21 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  piId          String    @unique
-  username      String
-  email         String?   @unique
-  walletAddress String?   @unique
-  tier          String    @default("STANDARD")
-  status        String    @default("ACTIVE")
-  language      String    @default("en")
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  lastLoginAt   DateTime?
-  payments      Payment[]
-  nfts          NFT[]
+  id                String             @id @default(cuid())
+  piId              String             @unique
+  username          String
+  email             String?            @unique
+  walletAddress     String?            @unique
+  tier              String             @default("STANDARD")
+  status            String             @default("ACTIVE")
+  language          String             @default("en")
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  lastLoginAt       DateTime?
+  payments          Payment[]
+  nfts              NFT[]
+  insurancePolicies InsurancePolicy[]
+  claims            Claim[]
   
   @@index([piId])
   @@index([tier])
@@ -364,4 +366,153 @@ model Transfer {
   @@index([sourceDomain])
   @@index([targetDomain])
   @@map("transfers")
+}
+
+// ==================== Insurance Domain Models ====================
+
+model InsurancePolicy {
+  id                String           @id @default(cuid())
+  policyNumber      String           @unique
+  userId            String
+  user              User             @relation(fields: [userId], references: [id])
+  assetId           String?          // Optional link to asset being insured
+  
+  // Policy details
+  policyType        PolicyType
+  productName       String
+  coverageAmount    Float
+  premium           Float
+  premiumFrequency  PremiumFrequency @default(MONTHLY)
+  deductible        Float            @default(0)
+  
+  // Policy period
+  startDate         DateTime
+  endDate           DateTime
+  term              Int              // Duration in years
+  
+  // Status and metadata
+  status            PolicyStatus     @default(ACTIVE)
+  metadata          Json?            // Flexible data storage for policy specifics
+  
+  // Relationships
+  claims            Claim[]
+  premiumPayments   PremiumPayment[]
+  
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  
+  @@index([userId])
+  @@index([policyNumber])
+  @@index([status])
+  @@index([assetId])
+  @@map("insurance_policies")
+}
+
+model Claim {
+  id                String           @id @default(cuid())
+  claimNumber       String           @unique
+  policyId          String
+  policy            InsurancePolicy  @relation(fields: [policyId], references: [id])
+  userId            String
+  user              User             @relation(fields: [userId], references: [id])
+  
+  // Claim details
+  claimAmount       Float
+  approvedAmount    Float?
+  incidentDate      DateTime
+  incidentType      String
+  description       String
+  
+  // Documents and evidence
+  documents         Json?            // Array of document references
+  
+  // Processing
+  status            ClaimStatus      @default(SUBMITTED)
+  reviewNotes       String?
+  reviewedBy        String?
+  reviewedAt        DateTime?
+  
+  // Payout
+  paidAmount        Float?
+  paidAt            DateTime?
+  paymentReference  String?
+  
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  
+  @@index([userId])
+  @@index([policyId])
+  @@index([claimNumber])
+  @@index([status])
+  @@map("insurance_claims")
+}
+
+model PremiumPayment {
+  id                String           @id @default(cuid())
+  policyId          String
+  policy            InsurancePolicy  @relation(fields: [policyId], references: [id])
+  
+  // Payment details
+  amount            Float
+  dueDate           DateTime
+  paidDate          DateTime?
+  status            PremiumPaymentStatus @default(PENDING)
+  
+  // Payment method
+  paymentMethod     String?
+  transactionId     String?
+  
+  // Metadata
+  metadata          Json?
+  
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  
+  @@index([policyId])
+  @@index([status])
+  @@index([dueDate])
+  @@map("premium_payments")
+}
+
+// Enums for Insurance Domain
+
+enum PolicyType {
+  LIFE
+  HEALTH
+  PROPERTY
+  AUTO
+  TRAVEL
+  TRANSACTION
+  ASSET
+}
+
+enum PolicyStatus {
+  ACTIVE
+  PENDING
+  EXPIRED
+  CANCELLED
+  LAPSED
+}
+
+enum PremiumFrequency {
+  MONTHLY
+  QUARTERLY
+  SEMI_ANNUAL
+  ANNUAL
+}
+
+enum ClaimStatus {
+  SUBMITTED
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+  PAID
+  CLOSED
+}
+
+enum PremiumPaymentStatus {
+  PENDING
+  PAID
+  OVERDUE
+  WAIVED
 }
