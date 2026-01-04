@@ -286,7 +286,9 @@ class CommerceService {
           paymentMethod: data.paymentMethod,
           paymentDate: new Date(),
           status: 'COMPLETED',
-          transactionId: data.transactionId || null,
+          // Use external transaction ID if provided (e.g., from payment gateway),
+          // otherwise generate a secure internal transaction ID
+          transactionId: data.transactionId || this.generateTransactionId(),
           metadata: data.metadata || {},
         },
       });
@@ -445,12 +447,12 @@ class CommerceService {
    */
   generateSKU(category) {
     const categoryCode = category.substring(0, 3).toUpperCase();
-    // SECURITY FIX: Use crypto.randomInt for both timestamp and suffix to avoid predictable patterns
-    // إصلاح أمني: استخدام crypto.randomInt لكل من الطابع الزمني واللاحقة لتجنب الأنماط القابلة للتنبؤ
-    const timestamp = crypto.randomInt(0, 1000000).toString().padStart(6, '0');
-    const random = crypto.randomInt(0, RANDOM_RANGES.SKU_SUFFIX).toString().padStart(3, '0');
+    // SECURITY FIX: Use fully random components for unpredictable SKU generation
+    // إصلاح أمني: استخدام مكونات عشوائية بالكامل لتوليد SKU غير قابل للتنبؤ
+    const random1 = crypto.randomInt(0, 1000000).toString().padStart(6, '0');
+    const random2 = crypto.randomInt(0, RANDOM_RANGES.SKU_SUFFIX).toString().padStart(3, '0');
     
-    return `${categoryCode}-${timestamp}-${random}`;
+    return `${categoryCode}-${random1}-${random2}`;
   }
 
   /**
