@@ -81,6 +81,28 @@ const SERVICE_CATEGORIES = {
 };
 
 /**
+ * Volume discount thresholds and rates
+ * Used for bulk purchase discounts
+ */
+const VOLUME_DISCOUNTS = {
+  BULK_QUANTITY_THRESHOLD: 10,      // 10+ items for bulk discount
+  MEDIUM_QUANTITY_THRESHOLD: 5,     // 5+ items for medium discount
+  BULK_DISCOUNT_RATE: 0.9,          // 10% bulk discount (multiply by 0.9 = 10% off)
+  MEDIUM_DISCOUNT_RATE: 0.95,       // 5% medium discount (multiply by 0.95 = 5% off)
+};
+
+/**
+ * Tier recommendation thresholds
+ * Used to determine when users should upgrade their membership tier
+ */
+const TIER_RECOMMENDATION_THRESHOLDS = {
+  VIP_SAVINGS_THRESHOLD: 1000,      // Recommend VIP if savings exceed $1000/month
+  VIP_SERVICES_THRESHOLD: 10,       // Recommend VIP if using 10+ services
+  PREMIUM_SAVINGS_THRESHOLD: 500,   // Recommend Premium if savings exceed $500/month
+  PREMIUM_SERVICES_THRESHOLD: 5,    // Recommend Premium if using 5+ services
+};
+
+/**
  * Pi Network to USD conversion rate (dynamic)
  * TODO: PRODUCTION - Fetch from external API or database
  * Recommended approaches:
@@ -131,10 +153,10 @@ export function calculatePrice(
   }
 
   // Apply volume discount for bulk purchases
-  if (quantity >= 10) {
-    discountedPrice *= 0.9; // 10% bulk discount
-  } else if (quantity >= 5) {
-    discountedPrice *= 0.95; // 5% bulk discount
+  if (quantity >= VOLUME_DISCOUNTS.BULK_QUANTITY_THRESHOLD) {
+    discountedPrice *= VOLUME_DISCOUNTS.BULK_DISCOUNT_RATE; // 10% bulk discount
+  } else if (quantity >= VOLUME_DISCOUNTS.MEDIUM_QUANTITY_THRESHOLD) {
+    discountedPrice *= VOLUME_DISCOUNTS.MEDIUM_DISCOUNT_RATE; // 5% medium discount
   }
 
   // Calculate Pi price
@@ -162,7 +184,10 @@ export function calculatePrice(
     breakdown: {
       basePricePerUnit: service.basePriceUSD,
       tierDiscount: membershipTier.discount,
-      volumeDiscount: quantity >= 5 ? (quantity >= 10 ? 0.1 : 0.05) : 0,
+      volumeDiscount: quantity >= VOLUME_DISCOUNTS.MEDIUM_QUANTITY_THRESHOLD ? 
+        (quantity >= VOLUME_DISCOUNTS.BULK_QUANTITY_THRESHOLD ? 
+          (1 - VOLUME_DISCOUNTS.BULK_DISCOUNT_RATE) : 
+          (1 - VOLUME_DISCOUNTS.MEDIUM_DISCOUNT_RATE)) : 0,
       promoDiscount: options.promoCode
         ? validatePromoCode(options.promoCode)
         : 0,
@@ -258,10 +283,12 @@ export function recommendTier(usageData) {
   let recommendedTier = "FREE";
   let reasoning = "Your current usage does not justify a paid tier.";
 
-  if (vipSavings > 1000 || servicesUsed >= 10) {
+  if (vipSavings > TIER_RECOMMENDATION_THRESHOLDS.VIP_SAVINGS_THRESHOLD || 
+      servicesUsed >= TIER_RECOMMENDATION_THRESHOLDS.VIP_SERVICES_THRESHOLD) {
     recommendedTier = "VIP";
     reasoning = `You could save $${roundPrice(vipSavings)} per month with VIP membership.`;
-  } else if (premiumSavings > 500 || servicesUsed >= 5) {
+  } else if (premiumSavings > TIER_RECOMMENDATION_THRESHOLDS.PREMIUM_SAVINGS_THRESHOLD || 
+             servicesUsed >= TIER_RECOMMENDATION_THRESHOLDS.PREMIUM_SERVICES_THRESHOLD) {
     recommendedTier = "PREMIUM";
     reasoning = `You could save $${roundPrice(premiumSavings)} per month with Premium membership.`;
   }
