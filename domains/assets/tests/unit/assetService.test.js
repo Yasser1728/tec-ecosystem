@@ -195,10 +195,10 @@ describe('AssetService', () => {
 
     it('should detect upward trend', () => {
       const valuations = [
-        { price: 100, valuationDate: '2026-01-01' },
-        { price: 105, valuationDate: '2026-01-02' },
-        { price: 110, valuationDate: '2026-01-03' },
-        { price: 120, valuationDate: '2026-01-04' },
+        { price: 100, valuationDate: new Date('2026-01-01') },
+        { price: 105, valuationDate: new Date('2026-01-02') },
+        { price: 110, valuationDate: new Date('2026-01-03') },
+        { price: 120, valuationDate: new Date('2026-01-04') },
       ];
 
       const result = assetService.analyzePriceTrends(valuations);
@@ -208,10 +208,10 @@ describe('AssetService', () => {
 
     it('should detect downward trend', () => {
       const valuations = [
-        { price: 120, valuationDate: '2026-01-01' },
-        { price: 110, valuationDate: '2026-01-02' },
-        { price: 105, valuationDate: '2026-01-03' },
-        { price: 100, valuationDate: '2026-01-04' },
+        { price: 120, valuationDate: new Date('2026-01-01') },
+        { price: 110, valuationDate: new Date('2026-01-02') },
+        { price: 105, valuationDate: new Date('2026-01-03') },
+        { price: 100, valuationDate: new Date('2026-01-04') },
       ];
 
       const result = assetService.analyzePriceTrends(valuations);
@@ -221,10 +221,10 @@ describe('AssetService', () => {
 
     it('should detect stable trend', () => {
       const valuations = [
-        { price: 100, valuationDate: '2026-01-01' },
-        { price: 101, valuationDate: '2026-01-02' },
-        { price: 102, valuationDate: '2026-01-03' },
-        { price: 103, valuationDate: '2026-01-04' },
+        { price: 100, valuationDate: new Date('2026-01-01') },
+        { price: 101, valuationDate: new Date('2026-01-02') },
+        { price: 102, valuationDate: new Date('2026-01-03') },
+        { price: 103, valuationDate: new Date('2026-01-04') },
       ];
 
       const result = assetService.analyzePriceTrends(valuations);
@@ -234,10 +234,10 @@ describe('AssetService', () => {
 
     it('should calculate high and low prices correctly', () => {
       const valuations = [
-        { price: 100, valuationDate: '2026-01-01' },
-        { price: 150, valuationDate: '2026-01-02' },
-        { price: 80, valuationDate: '2026-01-03' },
-        { price: 120, valuationDate: '2026-01-04' },
+        { price: 100, valuationDate: new Date('2026-01-01') },
+        { price: 150, valuationDate: new Date('2026-01-02') },
+        { price: 80, valuationDate: new Date('2026-01-03') },
+        { price: 120, valuationDate: new Date('2026-01-04') },
       ];
 
       const result = assetService.analyzePriceTrends(valuations);
@@ -247,10 +247,10 @@ describe('AssetService', () => {
 
     it('should calculate volatility', () => {
       const valuations = [
-        { price: 100, valuationDate: '2026-01-01' },
-        { price: 200, valuationDate: '2026-01-02' },
-        { price: 50, valuationDate: '2026-01-03' },
-        { price: 150, valuationDate: '2026-01-04' },
+        { price: 100, valuationDate: new Date('2026-01-01') },
+        { price: 200, valuationDate: new Date('2026-01-02') },
+        { price: 50, valuationDate: new Date('2026-01-03') },
+        { price: 150, valuationDate: new Date('2026-01-04') },
       ];
 
       const result = assetService.analyzePriceTrends(valuations);

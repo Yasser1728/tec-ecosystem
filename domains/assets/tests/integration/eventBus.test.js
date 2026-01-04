@@ -11,6 +11,10 @@ const eventBus = require('../../../../lib/eventBus');
 const integrationService = require('../../services/integrationService');
 const AssetService = require('../../services/assetService');
 
+// Constants for test timeouts
+const EVENT_PROCESSING_TIMEOUT = 100;
+const ASYNC_TIMEOUT = 500;
+
 describe('Assets Domain Event Bus Integration', () => {
   let assetService;
 
@@ -63,7 +67,7 @@ describe('Assets Domain Event Bus Integration', () => {
       });
 
       // Wait for event processing
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, EVENT_PROCESSING_TIMEOUT));
 
       // Verify event was published
       const history = eventBus.getHistory({ eventType: 'fundx.investment.created' });
@@ -136,7 +140,7 @@ describe('Assets Domain Event Bus Integration', () => {
       });
 
       // Wait for event processing
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, EVENT_PROCESSING_TIMEOUT));
 
       // Verify event was published
       const history = eventBus.getHistory({ eventType: 'estate.property.purchased' });
@@ -209,7 +213,7 @@ describe('Assets Domain Event Bus Integration', () => {
       eventBus.publish('commerce.product.purchased', eventData);
 
       // Wait for event processing
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, EVENT_PROCESSING_TIMEOUT));
 
       const history = eventBus.getHistory({ eventType: 'commerce.product.purchased' });
       expect(history.length).toBe(1);
@@ -240,7 +244,7 @@ describe('Assets Domain Event Bus Integration', () => {
       eventBus.publish('commerce.product.purchased', eventData);
 
       // Wait for event processing
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, EVENT_PROCESSING_TIMEOUT));
 
       // Event should be published but not create asset
       const history = eventBus.getHistory({ eventType: 'assets.asset.created' });
@@ -282,7 +286,7 @@ describe('Assets Domain Event Bus Integration', () => {
       eventBus.publish('insure.policy.asset.linked', eventData);
 
       // Wait for event processing
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, EVENT_PROCESSING_TIMEOUT));
 
       const history = eventBus.getHistory({ eventType: 'insure.policy.asset.linked' });
       expect(history.length).toBe(1);
@@ -415,7 +419,7 @@ describe('Assets Domain Event Bus Integration', () => {
 
       eventBus.publish('test.mixed.events', {});
 
-      await new Promise(resolve => setTimeout(resolve, 50));
+      await new Promise(resolve => setTimeout(resolve, EVENT_PROCESSING_TIMEOUT/2));
 
       expect(successCount).toBe(1);
     });

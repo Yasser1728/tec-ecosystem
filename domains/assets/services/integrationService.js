@@ -94,7 +94,7 @@ class AssetsIntegrationService {
         try {
           // Find asset by metadata.sourceId
           const assets = await this.assetService.getUserAssets(eventData.userId, {
-            status: 'ACTIVE',
+            status: 'ACTIVE', // Use string constant for now, can be improved with enum
           });
           
           const linkedAsset = assets.find(a => 

@@ -10,6 +10,17 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
+// Constants for analysis thresholds
+const RISK_THRESHOLDS = {
+  HIGH: 0.15,
+  MEDIUM: 0.08,
+};
+
+const TREND_THRESHOLDS = {
+  UPWARD: 5,
+  DOWNWARD: -5,
+};
+
 class AssetService {
   /**
    * Create a new asset in a portfolio
@@ -780,8 +791,8 @@ class AssetService {
     const priceChangePercent = (priceChange / firstPrice) * 100;
     
     let trend = 'STABLE';
-    if (priceChangePercent > 5) trend = 'UPWARD';
-    else if (priceChangePercent < -5) trend = 'DOWNWARD';
+    if (priceChangePercent > TREND_THRESHOLDS.UPWARD) trend = 'UPWARD';
+    else if (priceChangePercent < TREND_THRESHOLDS.DOWNWARD) trend = 'DOWNWARD';
     
     // Volatility (standard deviation)
     const mean = prices.reduce((a, b) => a + b, 0) / prices.length;
@@ -892,8 +903,8 @@ class AssetService {
     
     // Risk level classification
     let riskLevel = 'LOW';
-    if (stdDev > 0.15) riskLevel = 'HIGH';
-    else if (stdDev > 0.08) riskLevel = 'MEDIUM';
+    if (stdDev > RISK_THRESHOLDS.HIGH) riskLevel = 'HIGH';
+    else if (stdDev > RISK_THRESHOLDS.MEDIUM) riskLevel = 'MEDIUM';
     
     return {
       riskLevel,
