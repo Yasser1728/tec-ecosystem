@@ -40,25 +40,25 @@ class MyDocument extends Document {
                 };
                 
                 window.PiSandbox.prototype.createPayment = function(paymentData, callbacks) {
-                  var self = this;
+                  const self = this;
                   console.log('🧪 [Sandbox] Creating payment:', paymentData);
                   
                   if (!self.authenticated) {
-                    var error = new Error('User must authenticate first');
+                    const error = new Error('User must authenticate first');
                     console.error('❌ [Sandbox]', error.message);
                     if (callbacks.onError) callbacks.onError(error, null);
                     return Promise.reject(error);
                   }
                   
                   if (!self.scopes.includes('payments')) {
-                    var error = new Error('Cannot create a payment without "payments" scope');
+                    const error = new Error('Cannot create a payment without "payments" scope');
                     console.error('❌ [Sandbox]', error.message);
                     if (callbacks.onError) callbacks.onError(error, null);
                     return Promise.reject(error);
                   }
                   
-                  var paymentId = 'sandbox_payment_' + Date.now();
-                  var txid = 'sandbox_txid_' + Date.now();
+                  const paymentId = 'sandbox_payment_' + Date.now();
+                  const txid = 'sandbox_txid_' + Date.now();
                   
                   setTimeout(function() {
                     console.log('✅ [Sandbox] Payment ready for approval:', paymentId);
@@ -90,10 +90,10 @@ class MyDocument extends Document {
                 
                 // Try to load real Pi SDK (will override if available)
                 (function() {
-                  var piCheckAttempts = 0;
-                  var maxAttempts = 30; // 3 seconds
+                  let piCheckAttempts = 0;
+                  const maxAttempts = 30; // 3 seconds
                   
-                  var checkPi = setInterval(function() {
+                  const checkPi = setInterval(function() {
                     piCheckAttempts++;
                     
                     // Check if real Pi SDK loaded (has different structure than our sandbox)
@@ -125,8 +125,8 @@ class MyDocument extends Document {
                     if (!window.Pi) {
                       console.warn('⚠️ Pi SDK not loaded. Using sandbox mode.');
                       // Create mock Pi object for sandbox
-                      var authenticatedScopes = [];
-                      var isAuthenticated = false;
+                      let authenticatedScopes = [];
+                      let isAuthenticated = false;
                       
                       window.Pi = {
                         authenticate: function(scopes, onIncompletePaymentFound) {
