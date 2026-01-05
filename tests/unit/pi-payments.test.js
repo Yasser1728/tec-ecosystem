@@ -227,10 +227,17 @@ describe("PiPayments", () => {
   });
 
   describe("handleApproval", () => {
-    it("should call approval API endpoint", async () => {
+    it("should call approval API endpoint with payment data", async () => {
       global.fetch.mockResolvedValue({
         ok: true,
         json: async () => ({ success: true }),
+      });
+
+      // Add payment to activePayments map
+      piPayments.activePayments.set("pi-payment-123", {
+        amount: 100,
+        metadata: { domain: "fundx" },
+        status: "pending",
       });
 
       await piPayments.handleApproval("pi-payment-123", "internal-123");
@@ -242,6 +249,26 @@ describe("PiPayments", () => {
           body: expect.stringContaining("pi-payment-123"),
         }),
       );
+
+      // Verify amount and domain are included
+      const callArgs = global.fetch.mock.calls[0][1];
+      const body = JSON.parse(callArgs.body);
+      expect(body.amount).toBe(100);
+      expect(body.domain).toBe("fundx");
+    });
+
+    it("should use default values when payment not in activePayments", async () => {
+      global.fetch.mockResolvedValue({
+        ok: true,
+        json: async () => ({ success: true }),
+      });
+
+      await piPayments.handleApproval("unknown-payment", "internal-456");
+
+      const callArgs = global.fetch.mock.calls[0][1];
+      const body = JSON.parse(callArgs.body);
+      expect(body.amount).toBe(0);
+      expect(body.domain).toBe("unknown");
     });
   });
 
