@@ -49,6 +49,12 @@ const FEE_THRESHOLDS = {
 // Tax rate for B2B transactions (simplified - would use tax service in production)
 const TAX_RATE = 0.1; // 10%
 
+// Currency precision multiplier for rounding to 2 decimal places
+const CURRENCY_PRECISION_MULTIPLIER = 100;
+
+// Random range for generating unique identifiers
+const ORDER_NUMBER_RANDOM_RANGE = 10000;
+
 class CommerceService {
   /**
    * Create a new B2B order
@@ -123,10 +129,10 @@ class CommerceService {
     const grandTotal = subtotal + tax + transactionFee;
     
     return {
-      subtotal: Math.round(subtotal * 100) / 100,
-      tax: Math.round(tax * 100) / 100,
-      transactionFee: Math.round(transactionFee * 100) / 100,
-      grandTotal: Math.round(grandTotal * 100) / 100,
+      subtotal: Math.round(subtotal * CURRENCY_PRECISION_MULTIPLIER) / CURRENCY_PRECISION_MULTIPLIER,
+      tax: Math.round(tax * CURRENCY_PRECISION_MULTIPLIER) / CURRENCY_PRECISION_MULTIPLIER,
+      transactionFee: Math.round(transactionFee * CURRENCY_PRECISION_MULTIPLIER) / CURRENCY_PRECISION_MULTIPLIER,
+      grandTotal: Math.round(grandTotal * CURRENCY_PRECISION_MULTIPLIER) / CURRENCY_PRECISION_MULTIPLIER,
     };
   }
   
@@ -175,7 +181,7 @@ class CommerceService {
   generateOrderNumber() {
     const prefix = 'ORD';
     const timestamp = Date.now();
-    const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+    const random = Math.floor(Math.random() * ORDER_NUMBER_RANDOM_RANGE).toString().padStart(4, '0');
     
     return `${prefix}-${timestamp}-${random}`;
   }
@@ -284,9 +290,9 @@ class CommerceService {
       
       return {
         sellerId,
-        totalRevenue: Math.round(totalRevenue * 100) / 100,
+        totalRevenue: Math.round(totalRevenue * CURRENCY_PRECISION_MULTIPLIER) / CURRENCY_PRECISION_MULTIPLIER,
         orderCount,
-        averageOrderValue: Math.round(averageOrderValue * 100) / 100,
+        averageOrderValue: Math.round(averageOrderValue * CURRENCY_PRECISION_MULTIPLIER) / CURRENCY_PRECISION_MULTIPLIER,
         calculatedAt: new Date().toISOString(),
       };
     } catch (error) {
