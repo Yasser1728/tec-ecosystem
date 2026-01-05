@@ -33,11 +33,11 @@ const PAYMENT_TERMS = {
   NET_90: 90,
 };
 
-// Transaction fee rates (as fractions for precision)
+// Transaction fee rates (as decimal fractions for precision)
 const TRANSACTION_FEES = {
-  STANDARD: 1 / 100, // 1%
-  PREMIUM: 0.5 / 100, // 0.5%
-  ENTERPRISE: 0.25 / 100, // 0.25%
+  STANDARD: 0.01, // 1%
+  PREMIUM: 0.005, // 0.5%
+  ENTERPRISE: 0.0025, // 0.25%
 };
 
 // Volume thresholds for transaction fee tiers
