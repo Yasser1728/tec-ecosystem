@@ -230,7 +230,7 @@ class InsureService {
 
       return policy;
     } catch (error) {
-      console.error('Error creating policy:', error);
+      // console.error('Error creating policy:', error);
       throw new Error(`Failed to create policy: ${error.message}`);
     }
   }
@@ -357,7 +357,7 @@ class InsureService {
 
       return policy;
     } catch (error) {
-      console.error('Error updating policy:', error);
+      // console.error('Error updating policy:', error);
       throw new Error(`Failed to update policy: ${error.message}`);
     }
   }
@@ -427,7 +427,7 @@ class InsureService {
 
       return claim;
     } catch (error) {
-      console.error('Error submitting claim:', error);
+      // console.error('Error submitting claim:', error);
       throw new Error(`Failed to submit claim: ${error.message}`);
     }
   }
@@ -490,7 +490,7 @@ class InsureService {
 
       return updatedClaim;
     } catch (error) {
-      console.error('Error reviewing claim:', error);
+      // console.error('Error reviewing claim:', error);
       throw new Error(`Failed to review claim: ${error.message}`);
     }
   }
@@ -535,7 +535,7 @@ class InsureService {
 
       return updatedClaim;
     } catch (error) {
-      console.error('Error processing payout:', error);
+      // console.error('Error processing payout:', error);
       throw new Error(`Failed to process payout: ${error.message}`);
     }
   }

@@ -84,7 +84,7 @@ class InsureIntegrationService {
             debug(`[InsureIntegration] Generated insurance recommendation for asset ${eventData.assetId}`);
           }
         } catch (error) {
-          console.error('[InsureIntegration] Error handling asset creation:', error);
+          // console.error('[InsureIntegration] Error handling asset creation:', error);
         }
       },
       { domain: 'insure', description: 'Generate insurance recommendations for new assets' }
@@ -126,7 +126,7 @@ class InsureIntegrationService {
             }
           }
         } catch (error) {
-          console.error('[InsureIntegration] Error handling asset update:', error);
+          // console.error('[InsureIntegration] Error handling asset update:', error);
         }
       },
       { domain: 'insure', description: 'Monitor asset value changes for insurance updates' }
@@ -175,7 +175,7 @@ class InsureIntegrationService {
 
           debug(`[InsureIntegration] Generated property insurance recommendation for ${eventData.propertyId}`);
         } catch (error) {
-          console.error('[InsureIntegration] Error handling property purchase:', error);
+          // console.error('[InsureIntegration] Error handling property purchase:', error);
         }
       },
       { domain: 'insure', description: 'Offer property insurance for new property purchases' }
@@ -219,7 +219,7 @@ class InsureIntegrationService {
             }, metadata);
           }
         } catch (error) {
-          console.error('[InsureIntegration] Error handling order creation:', error);
+          // console.error('[InsureIntegration] Error handling order creation:', error);
         }
       },
       { domain: 'insure', description: 'Offer transaction insurance for high-value orders' }
