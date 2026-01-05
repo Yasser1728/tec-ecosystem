@@ -7,6 +7,7 @@
  * @module services/insureService
  */
 
+const crypto = require('crypto');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
@@ -295,7 +296,7 @@ class InsureService {
   generatePolicyNumber(policyType) {
     const prefix = policyType.substring(0, 3).toUpperCase();
     const timestamp = Date.now().toString().substring(5);
-    const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+    const random = crypto.randomInt(0, 1000).toString().padStart(3, '0');
     
     return `INS-${prefix}-${timestamp}${random}`;
   }
@@ -443,7 +444,7 @@ class InsureService {
   generateClaimNumber() {
     const year = new Date().getFullYear();
     const timestamp = Date.now().toString().substring(5);
-    const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+    const random = crypto.randomInt(0, 1000).toString().padStart(3, '0');
     
     return `CLM-${year}-${timestamp}${random}`;
   }
