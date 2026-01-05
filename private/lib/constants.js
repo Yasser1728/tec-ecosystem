@@ -148,7 +148,7 @@ export const COMMERCE_CONSTANTS = {
   
   // Utility constants
   PRECISION_THRESHOLD,
-  BASE_MULTIPLIER,
+  BASE_MULTIPLIER
 };
 
 /**
