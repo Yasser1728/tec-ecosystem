@@ -48,6 +48,23 @@ export default function ParticlesCanvas() {
 
     const particleCount = window.innerWidth < 768 ? 30 : 60;
 
+    /**
+     * Note on Math.random() usage in particle generation:
+     * 
+     * Math.random() is used here ONLY for visual effects (particle animation).
+     * This is NOT security-sensitive code - it's purely for rendering graphics.
+     * 
+     * Using Math.random() for graphics is:
+     * - Safe and appropriate for non-security contexts
+     * - More performant than crypto.randomBytes()
+     * - Standard practice in animation/graphics programming
+     * 
+     * Security Note: Never use Math.random() for:
+     * - Authentication tokens
+     * - Session IDs
+     * - Cryptographic keys
+     * - Any security-sensitive randomness
+     */
     const particles = Array.from({ length: particleCount }, () => ({
       x: Math.random() * window.innerWidth,
       y: Math.random() * window.innerHeight,
