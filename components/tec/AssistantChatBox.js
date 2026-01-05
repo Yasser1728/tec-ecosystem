@@ -5,16 +5,23 @@ import { useState, useRef, useEffect } from 'react';
  * Interactive chat interface for the TEC AI Assistant
  */
 export default function AssistantChatBox({ onSendMessage, suggestions = [] }) {
-  const [messages, setMessages] = useState([
-    {
-      role: 'assistant',
-      content: 'Hello! I\'m the TEC Assistant. How can I help you navigate the ecosystem today?',
-      timestamp: new Date().toISOString(),
-    },
-  ]);
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const messagesEndRef = useRef(null);
+
+  // Initialize messages on client side only to avoid hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+    setMessages([
+      {
+        role: 'assistant',
+        content: 'Hello! I\'m the TEC Assistant. How can I help you navigate the ecosystem today?',
+        timestamp: new Date().toISOString(),
+      },
+    ]);
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -128,9 +135,11 @@ export default function AssistantChatBox({ onSendMessage, suggestions = [] }) {
                 </div>
               )}
               
-              <p className="text-xs opacity-50 mt-2">
-                {new Date(msg.timestamp).toLocaleTimeString()}
-              </p>
+              {mounted && (
+                <p className="text-xs opacity-50 mt-2">
+                  {new Date(msg.timestamp).toLocaleTimeString()}
+                </p>
+              )}
             </div>
           </div>
         ))}

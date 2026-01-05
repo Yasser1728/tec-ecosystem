@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import Header from '../../components/Header';
@@ -16,6 +16,12 @@ export default function AIAssistant() {
     'Tell me about TEC Estate',
     'What subscription tiers are available?',
   ]);
+  const [currentTime, setCurrentTime] = useState('');
+
+  // Set time on client side only to avoid hydration mismatch
+  useEffect(() => {
+    setCurrentTime(new Date().toLocaleTimeString());
+  }, []);
 
   return (
     <>
@@ -162,7 +168,7 @@ export default function AIAssistant() {
                   <h3 className="text-white font-semibold">Status: Online</h3>
                 </div>
                 <p className="text-xs text-gray-400">
-                  All systems operational • Last updated: {new Date().toLocaleTimeString()}
+                  All systems operational{currentTime && ` • Last updated: ${currentTime}`}
                 </p>
               </div>
             </div>
