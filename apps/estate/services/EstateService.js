@@ -24,12 +24,12 @@ class EstateService {
   setupEventHandlers() {
     // Monitor deed creation
     this.core.eventBus.subscribe('DEED_CREATED', async (event) => {
-      console.log('[ESTATE SERVICE] Deed created:', event.data.deedId);
+      // console.log('[ESTATE SERVICE] Deed created:', event.data.deedId);
     });
 
     // Monitor ownership transfers
     this.core.eventBus.subscribe('OWNERSHIP_TRANSFERRED', async (event) => {
-      console.log('[ESTATE SERVICE] Ownership transferred:', event.data);
+      // console.log('[ESTATE SERVICE] Ownership transferred:', event.data);
       
       // Update any related systems
       await this.updatePropertyRegistry(event.data);
@@ -178,7 +178,7 @@ class EstateService {
    */
   async updatePropertyRegistry(transferData) {
     // This would update any external property registries
-    console.log('[ESTATE SERVICE] Updating property registry:', transferData);
+    // console.log('[ESTATE SERVICE] Updating property registry:', transferData);
     
     // Log to forensic system
     this.core.forensicLogger.log({

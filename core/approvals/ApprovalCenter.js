@@ -141,10 +141,10 @@ class ApprovalCenter {
     this.notifications.push(notif);
 
     // In production, this would send email/SMS to yasserrr.fox17@gmail.com
-    console.log(`[SOVEREIGN NOTIFICATION] ${this.contactEmail}`);
-    console.log(`Type: ${notification.type}`);
-    console.log(`Priority: ${notification.priority || 'NORMAL'}`);
-    console.log(`Data:`, JSON.stringify(notification.data, null, 2));
+    // console.log(`[SOVEREIGN NOTIFICATION] ${this.contactEmail}`);
+    // console.log(`Type: ${notification.type}`);
+    // console.log(`Priority: ${notification.priority || 'NORMAL'}`);
+    // console.log(`Data:`, JSON.stringify(notification.data, null, 2));
 
     return notif;
   }

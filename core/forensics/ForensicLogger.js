@@ -153,10 +153,10 @@ class ForensicLogger {
    */
   async notifySovereignContact(logEntry) {
     // In production, this would send email/notification to yasserrr.fox17@gmail.com
-    console.log(`[FORENSIC ALERT] ${this.contactEmail}`);
-    console.log(`Critical Event: ${logEntry.event}`);
-    console.log(`Log ID: ${logEntry.id}`);
-    console.log(`Timestamp: ${logEntry.timestamp}`);
+    // console.log(`[FORENSIC ALERT] ${this.contactEmail}`);
+    // console.log(`Critical Event: ${logEntry.event}`);
+    // console.log(`Log ID: ${logEntry.id}`);
+    // console.log(`Timestamp: ${logEntry.timestamp}`);
     
     return {
       notified: true,

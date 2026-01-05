@@ -132,9 +132,9 @@ class IdentityManager {
    */
   async notifySovereignContact(event, data) {
     // In production, this would send email/notification to yasserrr.fox17@gmail.com
-    console.log(`[SOVEREIGN NOTIFICATION] ${this.contactEmail}`);
-    console.log(`Event: ${event}`);
-    console.log(`Data:`, JSON.stringify(data, null, 2));
+    // console.log(`[SOVEREIGN NOTIFICATION] ${this.contactEmail}`);
+    // console.log(`Event: ${event}`);
+    // console.log(`Data:`, JSON.stringify(data, null, 2));
     
     // Return notification receipt
     return {

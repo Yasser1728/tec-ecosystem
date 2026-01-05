@@ -103,7 +103,7 @@ class EventBus {
         try {
           promises.push(handler(eventData));
         } catch (error) {
-          console.error(`Error in event handler ${subscriptionId}:`, error);
+          // console.error(`Error in event handler ${subscriptionId}:`, error);
           
           // Log handler error
           this.forensicLogger.log({
@@ -217,11 +217,11 @@ class EventBus {
    */
   async notifySovereignContact(event) {
     // In production, this would send real-time notification to yasserrr.fox17@gmail.com
-    console.log(`[CRITICAL EVENT] ${this.contactEmail}`);
-    console.log(`Event Type: ${event.type}`);
-    console.log(`Event ID: ${event.id}`);
-    console.log(`Source: ${event.source}`);
-    console.log(`Data:`, JSON.stringify(event.data, null, 2));
+    // console.log(`[CRITICAL EVENT] ${this.contactEmail}`);
+    // console.log(`Event Type: ${event.type}`);
+    // console.log(`Event ID: ${event.id}`);
+    // console.log(`Source: ${event.source}`);
+    // console.log(`Data:`, JSON.stringify(event.data, null, 2));
 
     return {
       notified: true,
