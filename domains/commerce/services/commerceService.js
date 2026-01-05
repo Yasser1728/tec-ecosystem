@@ -40,6 +40,15 @@ const TRANSACTION_FEES = {
   ENTERPRISE: 0.25 / 100, // 0.25%
 };
 
+// Volume thresholds for transaction fee tiers
+const FEE_THRESHOLDS = {
+  ENTERPRISE: 1000000, // $1M+ for enterprise rate
+  PREMIUM: 100000, // $100k+ for premium rate
+};
+
+// Tax rate for B2B transactions (simplified - would use tax service in production)
+const TAX_RATE = 0.1; // 10%
+
 class CommerceService {
   /**
    * Create a new B2B order
@@ -100,13 +109,13 @@ class CommerceService {
     }, 0);
     
     // Calculate tax (simplified - would use tax service in production)
-    const tax = subtotal * 0.1; // 10% tax
+    const tax = subtotal * TAX_RATE;
     
     // Calculate transaction fee based on volume
     let feeRate = TRANSACTION_FEES.STANDARD;
-    if (subtotal > 1000000) {
+    if (subtotal > FEE_THRESHOLDS.ENTERPRISE) {
       feeRate = TRANSACTION_FEES.ENTERPRISE;
-    } else if (subtotal > 100000) {
+    } else if (subtotal > FEE_THRESHOLDS.PREMIUM) {
       feeRate = TRANSACTION_FEES.PREMIUM;
     }
     
