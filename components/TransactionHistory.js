@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { piAuth } from "../lib/pi-auth";
 
 export default function TransactionHistory() {
@@ -7,6 +7,35 @@ export default function TransactionHistory() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
   const [autoRefresh, setAutoRefresh] = useState(true);
+
+  const loadData = useCallback(async () => {
+    const user = piAuth.getUser();
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const statusParam = filter !== "all" ? `&status=${filter}` : "";
+
+      const [paymentsRes, statsRes] = await Promise.all([
+        fetch(`/api/payments/history?userId=${user.id}${statusParam}`),
+        fetch(`/api/payments/stats?userId=${user.id}`),
+      ]);
+
+      if (paymentsRes.ok && statsRes.ok) {
+        const paymentsData = await paymentsRes.json();
+        const statsData = await statsRes.json();
+
+        setPayments(paymentsData.payments);
+        setStats(statsData.stats);
+      }
+    } catch (error) {
+      console.error("Failed to load transaction data:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [filter]);
 
   useEffect(() => {
     loadData();
@@ -35,36 +64,7 @@ export default function TransactionHistory() {
         );
       }
     };
-  }, [autoRefresh, filter]);
-
-  const loadData = async () => {
-    const user = piAuth.getUser();
-    if (!user) {
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const statusParam = filter !== "all" ? `&status=${filter}` : "";
-
-      const [paymentsRes, statsRes] = await Promise.all([
-        fetch(`/api/payments/history?userId=${user.id}${statusParam}`),
-        fetch(`/api/payments/stats?userId=${user.id}`),
-      ]);
-
-      if (paymentsRes.ok && statsRes.ok) {
-        const paymentsData = await paymentsRes.json();
-        const statsData = await statsRes.json();
-
-        setPayments(paymentsData.payments);
-        setStats(statsData.stats);
-      }
-    } catch (error) {
-      console.error("Failed to load transaction data:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [autoRefresh, loadData]);
 
   const getStatusColor = (status) => {
     const colors = {
