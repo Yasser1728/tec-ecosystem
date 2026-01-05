@@ -205,7 +205,12 @@ describe.skip("Pi Payment Flow Integration", () => {
 
       await handler(req, res);
 
-      expect(prisma.payment.findMany).toHaveBeenCalled();
+      expect(prisma.payment.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          take: 50,
+          skip: 0,
+        }),
+      );
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith(
         expect.objectContaining({

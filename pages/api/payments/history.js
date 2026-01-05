@@ -5,7 +5,31 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { userId, limit = 50, offset = 0, status } = req.query;
+  const DEFAULT_LIMIT = 50;
+  const MIN_LIMIT = 1;
+  const MAX_LIMIT = 100;
+
+  /**
+   * Safely parse and clamp numeric query values.
+   * @param {string|number} value - Incoming value to sanitize.
+   * @param {number} fallback - Default value when parsing fails.
+   * @param {number} [min] - Minimum allowed value (inclusive).
+   * @param {number} [max] - Maximum allowed value (inclusive).
+   * @returns {number} Sanitized numeric value within the provided bounds.
+   */
+  const sanitizeNumber = (value, fallback, min, max) => {
+    const parsed = parseInt(value, 10);
+    if (Number.isNaN(parsed)) return fallback;
+    const lowerBounded = typeof min === "number" ? Math.max(parsed, min) : parsed;
+    return typeof max === "number"
+      ? Math.min(lowerBounded, max)
+      : lowerBounded;
+  };
+
+  const { userId, limit, offset, status } = req.query;
+
+  const limitNumber = sanitizeNumber(limit, DEFAULT_LIMIT, MIN_LIMIT, MAX_LIMIT);
+  const offsetNumber = sanitizeNumber(offset, 0, 0);
 
   if (!userId) {
     return res.status(400).json({ error: "Missing userId" });
@@ -26,8 +50,8 @@ export default async function handler(req, res) {
         orderBy: {
           createdAt: "desc",
         },
-        take: parseInt(limit),
-        skip: parseInt(offset),
+        take: limitNumber,
+        skip: offsetNumber,
         include: {
           user: {
             select: {
@@ -45,9 +69,9 @@ export default async function handler(req, res) {
       payments,
       pagination: {
         total,
-        limit: parseInt(limit),
-        offset: parseInt(offset),
-        hasMore: total > parseInt(offset) + parseInt(limit),
+        limit: limitNumber,
+        offset: offsetNumber,
+        hasMore: total > offsetNumber + limitNumber,
       },
     });
   } catch (error) {
