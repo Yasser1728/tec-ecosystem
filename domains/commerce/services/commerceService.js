@@ -61,7 +61,7 @@ class CommerceService {
       
       // Validate against maximum amount limit
       if (totals.grandTotal > MAX_AMOUNT_LIMIT) {
-        throw new Error(`Order total exceeds maximum limit of ${MAX_AMOUNT_LIMIT}`);
+        throw new Error(`Order total exceeds maximum limit of ${MAX_AMOUNT_LIMIT.toLocaleString()}`);
       }
       
       // Create order in database
@@ -153,7 +153,7 @@ class CommerceService {
       // Validate against maximum amount limit for individual items
       const itemTotal = item.quantity * item.unitPrice;
       if (itemTotal > MAX_AMOUNT_LIMIT) {
-        throw new Error(`Item ${index + 1}: Total exceeds maximum limit of ${MAX_AMOUNT_LIMIT}`);
+        throw new Error(`Item ${index + 1}: Total exceeds maximum limit of ${MAX_AMOUNT_LIMIT.toLocaleString()}`);
       }
     });
   }
@@ -217,7 +217,7 @@ class CommerceService {
       
       // Validate against maximum amount limit
       if (paymentData.amount > MAX_AMOUNT_LIMIT) {
-        throw new Error(`Payment amount exceeds maximum limit of ${MAX_AMOUNT_LIMIT}`);
+        throw new Error(`Payment amount exceeds maximum limit of ${MAX_AMOUNT_LIMIT.toLocaleString()}`);
       }
       
       // Create payment record
@@ -287,5 +287,8 @@ class CommerceService {
   }
 }
 
+// Export class for flexibility in testing and dependency injection
+module.exports = CommerceService;
+
 // Export singleton instance as default
-module.exports = new CommerceService();
+module.exports.default = new CommerceService();
