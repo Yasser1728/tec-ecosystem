@@ -104,10 +104,10 @@ class CommerceService {
     
     // Calculate transaction fee based on volume
     let feeRate = TRANSACTION_FEES.STANDARD;
-    if (subtotal > 100000) {
-      feeRate = TRANSACTION_FEES.PREMIUM;
-    } else if (subtotal > 1000000) {
+    if (subtotal > 1000000) {
       feeRate = TRANSACTION_FEES.ENTERPRISE;
+    } else if (subtotal > 100000) {
+      feeRate = TRANSACTION_FEES.PREMIUM;
     }
     
     const transactionFee = subtotal * feeRate;
@@ -287,8 +287,5 @@ class CommerceService {
   }
 }
 
-// Export class for flexibility in testing and dependency injection
-module.exports = CommerceService;
-
 // Export singleton instance as default
-module.exports.default = new CommerceService();
+module.exports = new CommerceService();
