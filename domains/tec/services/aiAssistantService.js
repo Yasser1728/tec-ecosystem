@@ -114,9 +114,13 @@ function selectWeightedResponse(options) {
   // Calculate total weight
   const totalWeight = options.reduce((sum, option) => sum + option.weight, 0);
   
+  // Precision multiplier for handling decimal weights with crypto.randomInt()
+  // crypto.randomInt() only works with integers, so we scale up by this factor
+  const WEIGHT_PRECISION = 1000;
+  
   // Generate a secure random number between 0 and totalWeight
-  // We multiply by 1000 to work with integers, then divide back
-  const randomValue = getSecureRandomInt(0, Math.floor(totalWeight * 1000)) / 1000;
+  // Scale by WEIGHT_PRECISION to maintain decimal accuracy, then scale back
+  const randomValue = getSecureRandomInt(0, Math.floor(totalWeight * WEIGHT_PRECISION)) / WEIGHT_PRECISION;
   
   // Select option based on weight
   let cumulativeWeight = 0;

@@ -255,13 +255,22 @@ describe('AI Assistant Service - Secure Random Number Generation', () => {
       const serviceFilePath = path.join(__dirname, '../../domains/tec/services/aiAssistantService.js');
       const serviceCode = fs.readFileSync(serviceFilePath, 'utf8');
       
-      // Check that Math.random() is not used in the code
-      // Allow it in comments but not in actual code
-      const codeWithoutComments = serviceCode
-        .replace(/\/\*[\s\S]*?\*\//g, '') // Remove block comments
-        .replace(/\/\/.*/g, ''); // Remove line comments
+      // Check that Math.random() is not used in actual executable code
+      // This is a simplified check - allows Math.random in comments and strings
+      // but will catch actual usage in code like: Math.random()
+      const lines = serviceCode.split('\n');
+      const codeLines = lines.filter(line => {
+        const trimmed = line.trim();
+        // Skip comment lines (starting with // or within /* */)
+        return !trimmed.startsWith('//') && !trimmed.startsWith('*');
+      });
+      const codeToCheck = codeLines.join('\n');
       
-      expect(codeWithoutComments).not.toMatch(/Math\.random\s*\(/);
+      // Remove multi-line comments more carefully
+      const withoutBlockComments = codeToCheck.replace(/\/\*[\s\S]*?\*\//g, '');
+      
+      // The pattern should NOT match Math.random() calls in executable code
+      expect(withoutBlockComments).not.toMatch(/Math\.random\s*\(/);
     });
 
     it('should import and use crypto module', () => {
