@@ -67,6 +67,7 @@ class TecPiService {
       }
 
       // Create user object
+      // TODO: Use uuid or nanoid library for production-grade ID generation
       const user = {
         id: `tecpi_user_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
         username: userData.username,
@@ -78,10 +79,13 @@ class TecPiService {
         updatedAt: new Date().toISOString(),
       };
 
-      // SECURITY WARNING: Password should be hashed with bcrypt before storage
-      // TODO: Implement password hashing before production deployment
-      // Example: user.passwordHash = await bcrypt.hash(userData.password, 10);
-      // For now, we don't store the password at all in the demo
+      // SECURITY WARNING: Password handling is intentionally incomplete in this demo
+      // Production implementation should:
+      // 1. Hash passwords with bcrypt: passwordHash = await bcrypt.hash(password, 10)
+      // 2. Store the hash, never the plain password
+      // 3. Implement authentication with password verification
+      // 4. Add password strength requirements
+      // The password parameter is accepted for API completeness but not stored
       this.users.set(userData.username, user);
 
       // Return user data (without sensitive information)
