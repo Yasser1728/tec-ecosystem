@@ -13,6 +13,21 @@
  * @license Proprietary
  */
 
+import {
+  PREMIUM_MULTIPLIER,
+  VIP_MULTIPLIER,
+  BULK_DISCOUNT_MULTIPLIER,
+  MEDIUM_DISCOUNT_MULTIPLIER,
+  PREMIUM_DISCOUNT_RATE,
+  PREMIUM_MAX_DISCOUNT,
+  VIP_DISCOUNT_RATE,
+  VIP_MAX_DISCOUNT,
+  PROMO_WELCOME_DISCOUNT,
+  PROMO_SAVE20_DISCOUNT,
+  PROMO_VIP50_DISCOUNT,
+  BASE_MULTIPLIER,
+} from './constants.js';
+
 /**
  * Membership tier configuration
  * Defines pricing multipliers and discount rates for each tier
@@ -20,7 +35,7 @@
 const MEMBERSHIP_TIERS = {
   FREE: {
     name: "Free",
-    multiplier: 1.0,
+    multiplier: BASE_MULTIPLIER,
     discount: 0,
     maxDiscount: 0,
     features: ["basic"],
@@ -28,17 +43,17 @@ const MEMBERSHIP_TIERS = {
   },
   PREMIUM: {
     name: "Premium",
-    multiplier: 0.85,
-    discount: 0.15,
-    maxDiscount: 0.25,
+    multiplier: PREMIUM_MULTIPLIER,
+    discount: PREMIUM_DISCOUNT_RATE,
+    maxDiscount: PREMIUM_MAX_DISCOUNT,
     features: ["basic", "premium"],
     piPriority: "high",
   },
   VIP: {
     name: "VIP",
-    multiplier: 0.7,
-    discount: 0.3,
-    maxDiscount: 0.4,
+    multiplier: VIP_MULTIPLIER,
+    discount: VIP_DISCOUNT_RATE,
+    maxDiscount: VIP_MAX_DISCOUNT,
     features: ["basic", "premium", "vip", "exclusive"],
     piPriority: "highest",
   },
@@ -87,8 +102,8 @@ const SERVICE_CATEGORIES = {
 const VOLUME_DISCOUNTS = {
   BULK_QUANTITY_THRESHOLD: 10,      // 10+ items for bulk discount
   MEDIUM_QUANTITY_THRESHOLD: 5,     // 5+ items for medium discount
-  BULK_DISCOUNT_RATE: 0.9,          // 10% bulk discount (multiply by 0.9 = 10% off)
-  MEDIUM_DISCOUNT_RATE: 0.95,       // 5% medium discount (multiply by 0.95 = 5% off)
+  BULK_DISCOUNT_RATE: BULK_DISCOUNT_MULTIPLIER,          // 10% bulk discount (multiply by 0.9 = 10% off)
+  MEDIUM_DISCOUNT_RATE: MEDIUM_DISCOUNT_MULTIPLIER,       // 5% medium discount (multiply by 0.95 = 5% off)
 };
 
 /**
@@ -326,9 +341,9 @@ function validatePromoCode(promoCode) {
 
   // SECURITY WARNING: Hard-coded promo codes are for demonstration only
   const promoCodes = {
-    WELCOME10: 0.1,
-    SAVE20: 0.2,
-    VIP50: 0.5,
+    WELCOME10: PROMO_WELCOME_DISCOUNT,
+    SAVE20: PROMO_SAVE20_DISCOUNT,
+    VIP50: PROMO_VIP50_DISCOUNT,
   };
 
   return promoCodes[promoCode.toUpperCase()] || 0;

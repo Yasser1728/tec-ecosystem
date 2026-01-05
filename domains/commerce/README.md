@@ -524,6 +524,14 @@ async function checkFinancingOptions(order) {
 
 ### Price Calculation
 ```javascript
+// Import constants from centralized constants file
+import {
+  PREMIUM_MULTIPLIER,
+  BULK_DISCOUNT_MULTIPLIER,
+  MEDIUM_DISCOUNT_MULTIPLIER,
+  VAT_RATE
+} from '../../private/lib/constants.js';
+
 // Calculate final price with volume discount
 function calculateOrderTotal(items) {
   let subtotal = 0;
@@ -532,19 +540,21 @@ function calculateOrderTotal(items) {
     let unitPrice = item.basePrice;
     
     // Apply volume discount
+    // Note: Using PREMIUM_MULTIPLIER (0.85) for highest volume tier
+    // as it provides the same 15% discount rate
     if (item.quantity >= 1000) {
-      unitPrice *= 0.85; // 15% discount
+      unitPrice *= PREMIUM_MULTIPLIER; // 15% discount (0.85 multiplier)
     } else if (item.quantity >= 500) {
-      unitPrice *= 0.90; // 10% discount
+      unitPrice *= BULK_DISCOUNT_MULTIPLIER; // 10% discount (0.90 multiplier)
     } else if (item.quantity >= 100) {
-      unitPrice *= 0.95; // 5% discount
+      unitPrice *= MEDIUM_DISCOUNT_MULTIPLIER; // 5% discount (0.95 multiplier)
     }
     
     subtotal += unitPrice * item.quantity;
   });
   
   // Apply tax
-  const tax = subtotal * 0.10; // 10% VAT
+  const tax = subtotal * VAT_RATE; // 10% VAT (0.10 rate)
   
   return subtotal + tax;
 }
