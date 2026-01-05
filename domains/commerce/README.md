@@ -540,6 +540,8 @@ function calculateOrderTotal(items) {
     let unitPrice = item.basePrice;
     
     // Apply volume discount
+    // Note: Using PREMIUM_MULTIPLIER (0.85) for highest volume tier
+    // as it provides the same 15% discount rate
     if (item.quantity >= 1000) {
       unitPrice *= PREMIUM_MULTIPLIER; // 15% discount (0.85 multiplier)
     } else if (item.quantity >= 500) {
