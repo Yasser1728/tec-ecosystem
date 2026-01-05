@@ -52,7 +52,12 @@ export default function AssistantChatBox({ onSendMessage, suggestions = [] }) {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message: input }),
-          }).then(res => res.json());
+          }).then(async res => {
+            if (!res.ok) {
+              throw new Error(`HTTP error! status: ${res.status}`);
+            }
+            return res.json();
+          });
 
       const assistantMessage = {
         role: 'assistant',

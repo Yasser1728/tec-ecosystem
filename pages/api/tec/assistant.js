@@ -7,6 +7,9 @@
 
 const AiAssistantService = require('../../../domains/tec/services/aiAssistantService');
 
+// Singleton instance to maintain conversation history across requests
+const assistantService = new AiAssistantService();
+
 export default async function handler(req, res) {
   // Only allow POST requests
   if (req.method !== 'POST') {
@@ -31,7 +34,6 @@ export default async function handler(req, res) {
     const effectiveUserId = userId || req.session?.user?.id || 'guest';
 
     // Process message through AI Assistant Service
-    const assistantService = new AiAssistantService();
     const response = await assistantService.processMessage(
       effectiveUserId,
       message,

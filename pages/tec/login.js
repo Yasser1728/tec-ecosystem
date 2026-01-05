@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 
@@ -9,6 +10,7 @@ import Footer from '../../components/Footer';
  * Placeholder authentication interface for TEC ecosystem
  */
 export default function Login() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -34,9 +36,9 @@ export default function Login() {
       
       if (formData.username && formData.password) {
         setMessage('✅ Login successful! Redirecting to dashboard...');
-        // Simulate redirect
+        // Use Next.js router for client-side navigation
         setTimeout(() => {
-          window.location.href = '/tec';
+          router.push('/tec');
         }, 1500);
       } else {
         setMessage('❌ Please fill in all fields');
