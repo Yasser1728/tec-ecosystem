@@ -8,9 +8,9 @@
  */
 
 const { getSession } = require('next-auth/react');
-const eventBus = require('@/lib/eventBus');
-const quickStartService = require('@/lib/services/quickStartService');
-const { QUICK_START_STEPS } = require('@/lib/services/quickStartService');
+const eventBus = require('../../../lib/eventBus');
+const quickStartService = require('../../../lib/services/quickStartService');
+const { QUICK_START_STEPS } = require('../../../lib/services/quickStartService');
 
 export default async function handler(req, res) {
   try {

@@ -8,7 +8,7 @@
  */
 
 const { getSession } = require('next-auth/react');
-const eventBus = require('@/lib/eventBus');
+const eventBus = require('../../../lib/eventBus');
 
 // Premium calculation constants
 const PREMIUM_RATE = 0.01; // 1% of asset value per year

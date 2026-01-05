@@ -7,7 +7,7 @@
  * including completed steps, next recommended action, and progress percentage.
  */
 
-const quickStartService = require('@/lib/services/quickStartService');
+const quickStartService = require('../../../lib/services/quickStartService');
 const { getSession } = require('next-auth/react');
 
 export default async function handler(req, res) {
