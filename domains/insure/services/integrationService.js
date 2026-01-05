@@ -11,6 +11,13 @@
 const eventBus = require('../../../lib/eventBus');
 const InsureService = require('./insureService');
 
+// Debug logging helper - only logs in development
+const debug = (message) => {
+  if (process.env.NODE_ENV !== 'production') {
+    debug(message);
+  }
+};
+
 class InsureIntegrationService {
   constructor() {
     this.insureService = new InsureService();
@@ -22,7 +29,7 @@ class InsureIntegrationService {
    * Sets up listeners for events from other domains
    */
   initialize() {
-    console.log('[InsureIntegration] Initializing cross-domain event subscriptions...');
+    debug('[InsureIntegration] Initializing cross-domain event subscriptions...');
 
     // Subscribe to Assets domain events
     this.subscribeAssetsEvents();
@@ -33,7 +40,7 @@ class InsureIntegrationService {
     // Subscribe to Commerce events (transaction insurance)
     this.subscribeCommerceEvents();
 
-    console.log('[InsureIntegration] All subscriptions initialized');
+    debug('[InsureIntegration] All subscriptions initialized');
   }
 
   /**
@@ -46,7 +53,7 @@ class InsureIntegrationService {
     const unsubAssetCreated = eventBus.subscribe(
       'assets.asset.created',
       async (eventData, metadata) => {
-        console.log('[InsureIntegration] Received assets.asset.created event');
+        debug('[InsureIntegration] Received assets.asset.created event');
         try {
           // Generate insurance recommendation for high-value assets
           if (eventData.value && eventData.value > 1000) {
@@ -74,7 +81,7 @@ class InsureIntegrationService {
               },
             }, metadata);
 
-            console.log(`[InsureIntegration] Generated insurance recommendation for asset ${eventData.assetId}`);
+            debug(`[InsureIntegration] Generated insurance recommendation for asset ${eventData.assetId}`);
           }
         } catch (error) {
           console.error('[InsureIntegration] Error handling asset creation:', error);
@@ -87,7 +94,7 @@ class InsureIntegrationService {
     const unsubAssetUpdated = eventBus.subscribe(
       'assets.asset.updated',
       async (eventData, metadata) => {
-        console.log('[InsureIntegration] Received assets.asset.updated event');
+        debug('[InsureIntegration] Received assets.asset.updated event');
         try {
           // Find existing policies for this asset
           const policies = await this.insureService.getUserPolicies(eventData.userId, {
@@ -138,7 +145,7 @@ class InsureIntegrationService {
     const unsubPropertyPurchased = eventBus.subscribe(
       'estate.property.purchased',
       async (eventData, metadata) => {
-        console.log('[InsureIntegration] Received estate.property.purchased event');
+        debug('[InsureIntegration] Received estate.property.purchased event');
         try {
           // Generate property insurance recommendation
           const recommendation = this.insureService.generateInsuranceRecommendation({
@@ -166,7 +173,7 @@ class InsureIntegrationService {
             },
           }, metadata);
 
-          console.log(`[InsureIntegration] Generated property insurance recommendation for ${eventData.propertyId}`);
+          debug(`[InsureIntegration] Generated property insurance recommendation for ${eventData.propertyId}`);
         } catch (error) {
           console.error('[InsureIntegration] Error handling property purchase:', error);
         }
@@ -187,7 +194,7 @@ class InsureIntegrationService {
     const unsubOrderCreated = eventBus.subscribe(
       'commerce.order.created',
       async (eventData, metadata) => {
-        console.log('[InsureIntegration] Received commerce.order.created event');
+        debug('[InsureIntegration] Received commerce.order.created event');
         try {
           // Only for high-value orders (> 5000 PI)
           if (eventData.total && eventData.total > 5000) {
@@ -227,7 +234,7 @@ class InsureIntegrationService {
    * This is called internally when a claim is approved to notify Assets domain
    */
   handleClaimApproved(claimData) {
-    console.log('[InsureIntegration] Handling claim approval for asset update');
+    debug('[InsureIntegration] Handling claim approval for asset update');
 
     // If claim is linked to an asset, notify Assets domain
     if (claimData.assetId) {
@@ -242,7 +249,7 @@ class InsureIntegrationService {
         userId: claimData.userId,
       });
 
-      console.log(`[InsureIntegration] Notified Assets domain about approved claim for asset ${claimData.assetId}`);
+      debug(`[InsureIntegration] Notified Assets domain about approved claim for asset ${claimData.assetId}`);
     }
 
     // Notify NBF for payout processing
@@ -263,7 +270,7 @@ class InsureIntegrationService {
    * This is called internally when a claim is rejected to notify Assets domain
    */
   handleClaimRejected(claimData) {
-    console.log('[InsureIntegration] Handling claim rejection for asset update');
+    debug('[InsureIntegration] Handling claim rejection for asset update');
 
     // If claim is linked to an asset, notify Assets domain
     if (claimData.assetId) {
@@ -278,7 +285,7 @@ class InsureIntegrationService {
         userId: claimData.userId,
       });
 
-      console.log(`[InsureIntegration] Notified Assets domain about rejected claim for asset ${claimData.assetId}`);
+      debug(`[InsureIntegration] Notified Assets domain about rejected claim for asset ${claimData.assetId}`);
     }
 
     // Notify user
@@ -328,7 +335,7 @@ class InsureIntegrationService {
   cleanup() {
     this.subscribers.forEach(unsubscribe => unsubscribe());
     this.subscribers = [];
-    console.log('[InsureIntegration] Cleaned up all subscriptions');
+    debug('[InsureIntegration] Cleaned up all subscriptions');
   }
 }
 
