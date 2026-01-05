@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Head from "next/head";
+import Link from "next/link";
 
 export default function PiTest() {
   const [logs, setLogs] = useState([]);
@@ -215,9 +216,9 @@ export default function PiTest() {
 
           {/* Back Link */}
           <div className="mt-6 text-center">
-            <a href="/" className="text-[#00ff9d] hover:underline">
+            <Link href="/" className="text-[#00ff9d] hover:underline">
               ← Back to Homepage
-            </a>
+            </Link>
           </div>
         </div>
       </div>

@@ -1,12 +1,12 @@
 import Document, { Html, Head, Main, NextScript } from "next/document";
+import Script from "next/script";
 
 class MyDocument extends Document {
   render() {
     return (
       <Html>
         <Head>
-          {/* Pi Network SDK v2.0 */}
-          <script src="https://sdk.minepi.com/pi-sdk.js" />
+          {/* Pi Network SDK v2.0 - loaded asynchronously via next/script */}
           <script
             dangerouslySetInnerHTML={{
               __html: `
@@ -180,6 +180,10 @@ class MyDocument extends Document {
         <body>
           <Main />
           <NextScript />
+          <Script
+            src="https://sdk.minepi.com/pi-sdk.js"
+            strategy="afterInteractive"
+          />
         </body>
       </Html>
     );
