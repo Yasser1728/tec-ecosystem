@@ -85,7 +85,7 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error('[Insurance Recommendations API] Error:', error);
+    // console.error('[Insurance Recommendations API] Error:', error);
     return res.status(500).json({
       success: false,
       error: 'Failed to retrieve insurance recommendations',

@@ -112,7 +112,7 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error('[Assets Portfolio API] Error:', error);
+    // console.error('[Assets Portfolio API] Error:', error);
     return res.status(500).json({
       success: false,
       error: 'Failed to process portfolio request',

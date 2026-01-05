@@ -7,6 +7,7 @@
  * Part of the Quick Start workflow - Step 5: Insurance Activation
  */
 
+const crypto = require('crypto');
 const { getSession } = require('next-auth/react');
 const eventBus = require('../../../lib/eventBus');
 const quickStartService = require('../../../lib/services/quickStartService');
@@ -32,7 +33,7 @@ export default async function handler(req, res) {
       const policies = [
         {
           id: `policy_ins_${userId}_1`,
-          policyNumber: `INS-ASSET-2026-${Math.floor(Math.random() * 100000)}`,
+          policyNumber: `INS-ASSET-2026-${crypto.randomInt(0, 100000)}`,
           userId,
           assetId: `asset_${userId}_1`,
           type: 'ASSET_PROTECTION',
@@ -79,7 +80,7 @@ export default async function handler(req, res) {
       // Create policy (mock)
       const policy = {
         id: `policy_ins_${userId}_${Date.now()}`,
-        policyNumber: `INS-ASSET-2026-${Math.floor(Math.random() * 100000).toString().padStart(6, '0')}`,
+        policyNumber: `INS-ASSET-2026-${crypto.randomInt(0, 100000).toString().padStart(6, '0')}`,
         userId,
         assetId,
         recommendationId,
@@ -145,7 +146,7 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error('[Insurance Policies API] Error:', error);
+    // console.error('[Insurance Policies API] Error:', error);
     return res.status(500).json({
       success: false,
       error: 'Failed to process insurance policy request',

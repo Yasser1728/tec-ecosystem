@@ -214,7 +214,7 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error('[FundX Opportunities API] Error:', error);
+    // console.error('[FundX Opportunities API] Error:', error);
     return res.status(500).json({
       success: false,
       error: 'Failed to retrieve investment opportunities',

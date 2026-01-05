@@ -210,7 +210,7 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error('[FundX Investments API] Error:', error);
+    // console.error('[FundX Investments API] Error:', error);
     return res.status(500).json({
       success: false,
       error: 'Failed to process investment request',

@@ -65,7 +65,7 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error('[QuickStart Status API] Error:', error);
+    // console.error('[QuickStart Status API] Error:', error);
     return res.status(500).json({
       success: false,
       error: 'Failed to retrieve Quick Start status',
