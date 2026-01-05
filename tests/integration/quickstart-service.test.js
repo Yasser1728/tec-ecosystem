@@ -11,6 +11,11 @@
 const quickStartService = require('../../lib/services/quickStartService');
 const { QUICK_START_STEPS, STATUS } = require('../../lib/services/quickStartService');
 
+// Test constants
+// Using constant from top of file // Asset value threshold for insurance recommendation
+// Using constant from top of file // Minimum investment amount
+const NAV_PRICE = 125.5; // Net Asset Value price per share
+
 describe('QuickStartService Integration Tests', () => {
   const testUserId = 'test_user_' + Date.now();
 
@@ -162,7 +167,7 @@ describe('QuickStartService Integration Tests', () => {
 
   describe('Insurance Threshold Logic', () => {
     test('should recommend insurance for high-value assets', () => {
-      const INSURANCE_THRESHOLD = 10000;
+      // Using constant from top of file
       const assetValue = 50000;
 
       const shouldRecommend = assetValue >= INSURANCE_THRESHOLD;
@@ -170,7 +175,7 @@ describe('QuickStartService Integration Tests', () => {
     });
 
     test('should not recommend insurance for low-value assets', () => {
-      const INSURANCE_THRESHOLD = 10000;
+      // Using constant from top of file
       const assetValue = 5000;
 
       const shouldRecommend = assetValue >= INSURANCE_THRESHOLD;
@@ -178,8 +183,8 @@ describe('QuickStartService Integration Tests', () => {
     });
 
     test('should handle threshold boundary correctly', () => {
-      const INSURANCE_THRESHOLD = 10000;
-      const assetValueAtThreshold = 10000;
+      // Using constant from top of file
+      const assetValueAtThreshold = INSURANCE_THRESHOLD;
       const assetValueBelowThreshold = 9999;
 
       expect(assetValueAtThreshold >= INSURANCE_THRESHOLD).toBe(true);
@@ -189,7 +194,7 @@ describe('QuickStartService Integration Tests', () => {
 
   describe('Investment Validation', () => {
     test('should validate minimum investment amount', () => {
-      const MIN_INVESTMENT = 1000;
+      // Using constant from top of file
       const validAmount = 5000;
       const invalidAmount = 500;
 
@@ -199,7 +204,7 @@ describe('QuickStartService Integration Tests', () => {
 
     test('should calculate investment shares correctly', () => {
       const investmentAmount = 5000;
-      const navPrice = 125.50;
+      const navPrice = NAV_PRICE;
       const expectedShares = investmentAmount / navPrice;
 
       const calculatedShares = parseFloat((investmentAmount / navPrice).toFixed(4));

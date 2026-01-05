@@ -12,6 +12,10 @@ const eventBus = require('../../../lib/eventBus');
 const quickStartService = require('../../../lib/services/quickStartService');
 const { QUICK_START_STEPS } = require('../../../lib/services/quickStartService');
 
+// Investment constants
+const NAV_PRICE = 125.5; // Net Asset Value price per share
+const MIN_INVESTMENT = 1000; // Minimum investment amount in PI
+
 export default async function handler(req, res) {
   try {
     // Get user session
@@ -37,9 +41,9 @@ export default async function handler(req, res) {
           strategyName: 'Balanced Growth Portfolio',
           amount: 5000,
           shares: 39.84,
-          entryPrice: 125.50,
+          entryPrice: NAV_PRICE,
           entryDate: new Date().toISOString(),
-          currentNAV: 125.50,
+          currentNAV: NAV_PRICE,
           currentValue: 5000,
           unrealizedPL: 0,
           percentageReturn: 0,
@@ -73,11 +77,11 @@ export default async function handler(req, res) {
         });
       }
 
-      // Validate minimum investment (example: 1000 PI)
-      if (amount < 1000) {
+      // Validate minimum investment
+      if (amount < MIN_INVESTMENT) {
         return res.status(400).json({
           success: false,
-          error: 'Minimum investment amount is 1000 PI'
+          error: `Minimum investment amount is ${MIN_INVESTMENT} PI`
         });
       }
 
@@ -85,8 +89,8 @@ export default async function handler(req, res) {
       const strategies = {
         strategy_balanced_growth: {
           name: 'Balanced Growth Portfolio',
-          currentNAV: 125.50,
-          minInvestment: 1000
+          currentNAV: NAV_PRICE,
+          minInvestment: MIN_INVESTMENT
         },
         strategy_conservative_income: {
           name: 'Conservative Income Portfolio',
