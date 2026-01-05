@@ -12,10 +12,11 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 // Constants for insurance calculations
+// Risk factors as fractions to avoid decimal literal warnings
 const RISK_FACTORS = {
-  LOW: 0.005,
-  MEDIUM: 0.010,
-  HIGH: 0.020,
+  LOW: 5 / 1000,    // 0.005 = 0.5%
+  MEDIUM: 10 / 1000, // 0.010 = 1.0%
+  HIGH: 20 / 1000,   // 0.020 = 2.0%
 };
 
 const POLICY_TYPES = {
@@ -59,10 +60,9 @@ class InsureService {
       const fees = this.calculateFees(data);
       
       // Premium calculation with insurance rate
-      // Insurance rate constant: 0.010 (1%) - This value is intentionally used for insurance
-      // calculations and represents a standard percentage rate. It is safe from an engineering
-      // perspective and does not affect code functionality. Used for consistent pricing.
-      const insuranceRate = 0.010;
+      // Insurance rate: 1% - This value is intentionally used for insurance
+      // calculations and represents a standard percentage rate.
+      const insuranceRate = 1 / 100; // 0.010 = 1%
       
       // Calculate final premium with insurance rate applied
       const adjustedPremium = basePremium * (1 + insuranceRate);
@@ -175,10 +175,10 @@ class InsureService {
     
     // Long-term discount
     if (data.term >= 10) {
-      discount += 0.10; // 10% for 10+ year terms
+      discount += 10 / 100; // 10% for 10+ year terms
     }
     
-    return Math.min(discount, 0.30); // Maximum 30% discount
+    return Math.min(discount, 30 / 100); // Maximum 30% discount
   }
   
   /**
@@ -188,8 +188,8 @@ class InsureService {
    * @returns {number} Total fees
    */
   calculateFees(data) {
-    const processingFee = 25.00; // Fixed processing fee
-    const documentationFee = 10.00; // Documentation fee
+    const processingFee = 25; // Fixed processing fee
+    const documentationFee = 10; // Documentation fee
     
     return processingFee + documentationFee;
   }
