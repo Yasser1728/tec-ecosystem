@@ -107,7 +107,7 @@ class InsureService {
         },
       };
     } catch (error) {
-      console.error('Error creating insurance quote:', error);
+      // console.error('Error creating insurance quote:', error);
       throw new Error(`Failed to create insurance quote: ${error.message}`);
     }
   }
@@ -282,7 +282,7 @@ class InsureService {
         policy: policy,
       };
     } catch (error) {
-      console.error('Error creating policy:', error);
+      // console.error('Error creating policy:', error);
       throw error;
     }
   }
@@ -329,7 +329,7 @@ class InsureService {
       
       return policy;
     } catch (error) {
-      console.error('Error fetching policy:', error);
+      // console.error('Error fetching policy:', error);
       throw error;
     }
   }
@@ -362,7 +362,7 @@ class InsureService {
       
       return policies;
     } catch (error) {
-      console.error('Error fetching user policies:', error);
+      // console.error('Error fetching user policies:', error);
       throw error;
     }
   }
@@ -407,7 +407,7 @@ class InsureService {
         claim: claim,
       };
     } catch (error) {
-      console.error('Error submitting claim:', error);
+      // console.error('Error submitting claim:', error);
       throw error;
     }
   }
