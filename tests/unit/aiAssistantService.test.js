@@ -248,9 +248,11 @@ describe('AIAssistantService path security', () => {
       const validAssistantId = 'assistant-123';
       fs.readFile.mockResolvedValue('{"id": "assistant-123"}');
       fs.writeFile.mockResolvedValue();
+      fs.mkdir.mockResolvedValue();
 
       await aiAssistantService.exportAssistantData(validAssistantId);
 
+      expect(fs.mkdir).toHaveBeenCalled();
       expect(fs.writeFile).toHaveBeenCalledWith(
         expect.stringContaining('assistant-123.json'),
         expect.any(String),
@@ -405,9 +407,11 @@ describe('AIAssistantService path security', () => {
     test('should sanitize filename before using in path.join', async () => {
       const validFilename = 'import-data.json';
       fs.readFile.mockResolvedValue('{"data": "content"}');
+      fs.mkdir.mockResolvedValue();
 
       await aiAssistantService.importAssistantData(validFilename);
 
+      expect(fs.mkdir).toHaveBeenCalled();
       expect(fs.readFile).toHaveBeenCalledWith(
         expect.stringContaining('import-data.json'),
         'utf8'
