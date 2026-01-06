@@ -1,4 +1,3 @@
-// index.js
 const fs = require('fs');
 const { execSync } = require('child_process');
 
@@ -18,45 +17,59 @@ async function askAI(modelName, prompt) {
     return data.choices?.[0]?.message?.content || "";
 }
 
-async function runSelfHealingDev() {
-    const fileName = "generated-api.js";
-    let prompt = "اكتب كود Node.js لإنشاء API بسيطة، تأكد من خلوه من الأخطاء.";
+async function runSuperAI() {
+    const fileName = "final-service.js";
+    const docName = "DOCUMENTATION.md";
+    let task = "إنشاء نظام متطور لإدارة وحساب قيمة الدومينات بناءً على الطول والامتداد والكلمات المفتاحية";
     let attempts = 0;
-    const maxAttempts = 3; // محاولة التصحيح حتى 3 مرات
+    const maxAttempts = 3;
     let success = false;
 
-    console.log("🚀 بدء عملية التطوير الذاتي...");
+    console.log("🚀 انطلاق النظام الشامل: تطوير، تصحيح، وتوثيق...");
 
     while (attempts < maxAttempts && !success) {
         attempts++;
-        console.log(`📡 محاولة رقم ${attempts}: جاري طلب الك code...`);
-        
-        const rawCode = await askAI(process.env.CLAUDE_MODEL, prompt);
-        const cleanCode = rawCode.replace(/```javascript|```/g, "").trim();
+        console.log(`\n--- 🏗️ محاولة رقم ${attempts} ---`);
 
-        try {
-            fs.writeFileSync('temp-test.js', cleanCode);
-            // اختبار الـ Syntax
-            execSync('node --check temp-test.js');
-            
-            // إذا نجح الاختبار
-            fs.writeFileSync(fileName, cleanCode);
-            console.log(`✅ نجح الاختبار في المحاولة رقم ${attempts}!`);
-            success = true;
-            if (fs.existsSync('temp-test.js')) fs.unlinkSync('temp-test.js');
-        } catch (error) {
-            console.error(`❌ فشل الاختبار في المحاولة ${attempts}. جاري إرسال الخطأ للتصحيح...`);
-            // إخبار الذكاء الاصطناعي بالخطأ الذي حدث تحديداً ليقوم بإصلاحه
-            prompt = `الكود الذي قدمته سابقاً يحتوي على خطأ: [${error.message}]. 
-                      يرجى إعادة كتابة الكود وإصلاح هذا الخطأ تحديداً. 
-                      تذكر أن تقدم الكود فقط.`;
+        // 1. كلود يكتب الكود (المنطق)
+        console.log("🤖 Claude: جاري بناء المنطق...");
+        const codeResponse = await askAI(process.env.CLAUDE_MODEL, `اكتب كود Node.js احترافي لـ: ${task}. قدم الكود فقط داخل وسم الكود.`);
+        const code = codeResponse.replace(/```javascript|```/g, "").trim();
+
+        // 2. جمني يراجع ويختبر المنطق (الأمان والجودة)
+        console.log("🔍 Gemini: جاري المراجعة الأمنية والمنطقية...");
+        const review = await askAI(process.env.GEMINI_MODEL, `حلل هذا الكود:\n${code}\nإذا كان مثالياً رد بـ "APPROVED". وإذا كان به خطأ اشرحه باختصار.`);
+
+        if (review.includes("APPROVED")) {
+            // 3. اختبار الـ Syntax العملي
+            try {
+                fs.writeFileSync('temp.js', code);
+                execSync('node --check temp.js');
+                
+                // 4. نجاح! الآن نطلب التوثيق من Gemini
+                console.log("📝 Gemini: جاري كتابة التوثيق الاحترافي...");
+                const documentation = await askAI(process.env.GEMINI_MODEL, `اكتب توثيقاً احترافياً بصيغة Markdown لهذا الكود:\n${code}\nاشرح الغرض والوظائف وكيفية الاستخدام.`);
+                
+                fs.writeFileSync(fileName, code);
+                fs.writeFileSync(docName, documentation);
+                
+                console.log(`✅ تم بنجاح! الملفات جاهزة: [${fileName}] و [${docName}]`);
+                success = true;
+                if (fs.existsSync('temp.js')) fs.unlinkSync('temp.js');
+            } catch (error) {
+                console.error("❌ فشل اختبار الـ Syntax. جاري إعادة المحاولة...");
+                task = `أصلح خطأ الـ Syntax التالي: ${error.message} في هذا الكود:\n${code}`;
+            }
+        } else {
+            console.warn(`⚠️ ملاحظة من المراجع: ${review}`);
+            task = `أعد كتابة الكود وتفادى هذه المشكلة: ${review}\nالكود السابق: ${code}`;
         }
     }
 
     if (!success) {
-        console.error("🚫 فشل التصحيح التلقائي بعد عدة محاولات.");
+        console.error("🚫 فشل النظام في الوصول لنتيجة مثالية.");
         process.exit(1);
     }
 }
 
-runSelfHealingDev();
+runSuperAI();
