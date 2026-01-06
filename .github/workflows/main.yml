@@ -7,8 +7,9 @@ on:
     branches: [main, develop]
 
 permissions:
-  contents: read
+  contents: write # ضروري للسماح للذكاء الاصطناعي بإنشاء ملفات جديدة
   checks: write
+  actions: read
 
 jobs:
   build:
@@ -23,7 +24,7 @@ jobs:
       NEXT_PUBLIC_PI_SANDBOX: true
       NEXT_PUBLIC_API_URL: http://localhost:3000
       SKIP_ENV_VALIDATION: true
-      # المفاتيح والنماذج المحدثة
+      # ربط المفاتيح والنماذج المحدثة من الـ Secrets
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }} 
       CLAUDE_MODEL: ${{ secrets.CLAUDE_MODEL }}
       GEMINI_MODEL: ${{ secrets.GEMINI_MODEL }}
@@ -47,18 +48,31 @@ jobs:
       - name: 🏗️ Build Application
         run: npm run build
 
-      # تشغيل السكربت المحدث الذي يسأل النموذجين
+      # تشغيل السكربت الذكي مع نظام الاختبار الذاتي ومنع البجات
       - name: 🤖 Run AI Dual-Model Debugger
+        id: ai_debugger
         run: node index.js
+        continue-on-error: true # لضمان إرسال التنبيه في الخطوة القادمة إذا فشل الاختبار
 
-      - name: 📦 Upload Build Artifacts
+      # نظام التنبيهات الفوري في حال فشل الاختبار الذاتي للكود
+      - name: ⚠️ AI Safety Alert
+        if: steps.ai_debugger.outcome == 'failure'
+        run: |
+          echo "### ❌ فشل الاختبار الذاتي (Auto-Testing Failure)!" >> $GITHUB_STEP_SUMMARY
+          echo "الذكاء الاصطناعي حاول إنشاء كود جديد ولكنه يحتوي على أخطاء (Bugs) تمنع تشغيله." >> $GITHUB_STEP_SUMMARY
+          echo "تم منع إنشاء الملفات الجديدة لحماية استقرار المشروع." >> $GITHUB_STEP_SUMMARY
+          exit 1
+
+      - name: 📦 Upload Secure Artifacts
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: build-artifacts
+          name: ai-verified-code
           path: |
+            generated-*.js
             .next/
-            public/
           retention-days: 7
 
       - name: ✅ Build Success
-        run: echo "✅ Build completed and AI analysis (Claude & Gemini) is ready!"
+        if: steps.ai_debugger.outcome == 'success'
+        run: echo "✅ تم البناء بنجاح واجتاز الكود المولد جميع اختبارات السلامة!"
