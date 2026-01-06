@@ -7,6 +7,7 @@
  * Part of the Quick Start workflow - Step 7: First Investment
  */
 
+const crypto = require('crypto');
 const { getSession } = require('next-auth/react');
 const eventBus = require('../../../lib/eventBus');
 const quickStartService = require('../../../lib/services/quickStartService');
@@ -118,7 +119,7 @@ export default async function handler(req, res) {
 
       // Create investment (mock)
       const investment = {
-        id: `inv_fundx_${userId}_${Date.now()}`,
+        id: `inv_fundx_${userId}_${crypto.randomBytes(16).toString('hex')}`,
         userId,
         strategyId,
         strategyName: strategy.name,
