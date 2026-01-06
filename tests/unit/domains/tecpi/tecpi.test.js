@@ -39,14 +39,21 @@ function generateTestId() {
  * Clearly marked as test-only and generated at runtime
  */
 function generateMockToken() {
-  const header = Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64');
-  const payload = Buffer.from(JSON.stringify({
+  // Use base64url encoding as per JWT specification
+  const base64url = (str) => Buffer.from(str)
+    .toString('base64')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=/g, '');
+  
+  const header = base64url(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
+  const payload = base64url(JSON.stringify({
     sub: generateTestId(),
-    iat: Date.now(),
-    exp: Date.now() + 3600000,
+    iat: Math.floor(Date.now() / 1000), // Unix timestamp in seconds
+    exp: Math.floor(Date.now() / 1000) + 3600, // Expires in 1 hour
     test: true // Marked as test token
-  })).toString('base64');
-  const signature = crypto.randomBytes(32).toString('base64');
+  }));
+  const signature = crypto.randomBytes(32).toString('base64url');
   return `${header}.${payload}.${signature}`;
 }
 
@@ -326,7 +333,8 @@ describe('TEC.PI Domain Integration', () => {
         new Error('Database connection failed')
       );
       
-      await expect(failingService.getDashboardData('user-123'))
+      // Use generated test ID instead of hardcoded value
+      await expect(failingService.getDashboardData(generateTestId()))
         .rejects.toThrow('Database connection failed');
     });
 
