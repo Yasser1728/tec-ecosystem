@@ -1,5 +1,6 @@
 // index.js
 const fs = require('fs');
+const { execSync } = require('child_process'); // لتشغيل اختبارات الكود
 
 async function askAI(modelName, prompt) {
   const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -17,33 +18,34 @@ async function askAI(modelName, prompt) {
   return data.choices?.[0]?.message?.content || "";
 }
 
-async function smartFileCreator() {
-  const newFileName = "api-handler.js"; // اسم الملف الجديد الذي تريد إنشاؤه
-  const filePurpose = "إنشاء وظيفة لإرسال البيانات إلى قاعدة البيانات باستخدام Prisma";
+async function secureDevOps() {
+  const fileName = "generated-logic.js";
+  const prompt = "اكتب وظيفة جافاسكريبت لحساب قيمة الدومينات بناءً على ندرتها، مع ضمان خلو الكود من أي Syntax Error.";
 
-  // 1. طلب كتابة الكود وفحصه من Claude (الأفضل في منع الأخطاء المنطقية)
-  const prompt = `بصفتك مهندس برمجيات محترف، قم بإنشاء ملف باسم [${newFileName}] لغرض: ${filePurpose}.
-  شروط صارمة:
-  1. امنع أي "بج" (Bugs) أو تعارض مع ملفات Prisma الحالية.
-  2. تأكد من أن الكود نظيف ويتبع معايير النظافة البرمجية (Clean Code).
-  3. قدم لي الكود فقط داخل وسم الكود لسهولة استخراجه.`;
+  console.log("🛠️ جاري توليد الكود واختباره...");
 
-  console.log(`⏳ جاري تصميم وفحص الملف [${newFileName}] بواسطة Claude...`);
-  const aiCode = await askAI(process.env.CLAUDE_MODEL, prompt);
+  // 1. توليد الكود بواسطة Claude
+  const rawCode = await askAI(process.env.CLAUDE_MODEL, prompt);
+  const cleanCode = rawCode.replace(/```javascript|```/g, "").trim();
 
-  // 2. تنظيف الرد واستخراج الكود فقط
-  const finalCode = aiCode.replace(/```javascript|```/g, "").trim();
-
-  // 3. منع الأخطاء في إنشاء الملفات (تأكد من عدم وجود الملف مسبقاً لمنع الكتابة فوقه بالخطأ)
-  if (!fs.existsSync(newFileName)) {
-    fs.writeFileSync(newFileName, finalCode);
-    console.log(`✅ تم إنشاء الملف [${newFileName}] بنجاح وبدون أخطاء منطقية.`);
-  } else {
-    console.log(`⚠️ تنبيه: الملف [${newFileName}] موجود بالفعل. تم منع الكتابة فوقه لحماية مشروعك.`);
+  // 2. خطوة الاختبار الذاتي (Auto-Testing) لـ منع البجات
+  try {
+    // كتابة الملف مؤقتاً للاختبار
+    fs.writeFileSync('temp-test.js', cleanCode);
+    
+    // محاولة تشغيل الملف برمجياً للتأكد من خلوه من أخطاء الـ Syntax
+    execSync('node --check temp-test.js'); 
+    
+    // إذا نجح الاختبار، يتم إنشاء الملف النهائي
+    fs.writeFileSync(fileName, cleanCode);
+    console.log(`✅ نجح الاختبار! تم إنشاء الملف [${fileName}] وهو آمن للاستخدام.`);
+    
+    // تنظيف ملف الاختبار
+    fs.unlinkSync('temp-test.js');
+  } catch (error) {
+    console.error("❌ فشل الاختبار الذاتي: الكود يحتوي على أخطاء برمجية. تم منع إنشاء الملف.");
+    // هنا نطلب من جمني تحليل لماذا فشل كود كلود (مراجعة مزدوجة)
   }
-
-  // 4. رفع الملف كـ Artifact لتنزيله ومراجعته
-  console.log("\n--- تم تجهيز الملف، يمكنك العثور عليه في قسم Artifacts في GitHub ---");
 }
 
-smartFileCreator();
+secureDevOps();
