@@ -23,8 +23,10 @@ jobs:
       NEXT_PUBLIC_PI_SANDBOX: true
       NEXT_PUBLIC_API_URL: http://localhost:3000
       SKIP_ENV_VALIDATION: true
-      # الربط مع مفتاح OpenRouter الذي أنشأته
+      # ربط مفتاح OpenRouter العام
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }} 
+      # ربط اسم النموذج (Model) ليكون متغيراً
+      MY_MODEL_NAME: ${{ secrets.MY_MODEL_NAME }}
 
     steps:
       - name: 📥 Checkout code
@@ -45,6 +47,10 @@ jobs:
       - name: 🏗️ Build Application
         run: npm run build
 
+      # خطوة تشغيل سكربت الذكاء الاصطناعي لرؤية النتيجة في الـ Logs
+      - name: 🤖 Run OpenRouter Script
+        run: node index.js
+
       - name: 📦 Upload Build Artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -55,4 +61,4 @@ jobs:
           retention-days: 7
 
       - name: ✅ Build Success
-        run: echo "✅ Build completed successfully!"
+        run: echo "✅ Build completed successfully and AI script executed!"
