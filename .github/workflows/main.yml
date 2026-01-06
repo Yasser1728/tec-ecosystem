@@ -1,4 +1,4 @@
-name: Build
+Name: Build
 
 on:
   push:
@@ -7,22 +7,20 @@ on:
     branches: [main, develop]
 
 permissions:
-  contents: read
+  contents: write 
   checks: write
+  actions: read
 
 jobs:
   build:
-    name: 🏗️ Build Application
+    name: 🏗️ Build & AI Secure Dev
     runs-on: ubuntu-latest
 
     env:
       NODE_ENV: production
-      NEXT_PUBLIC_BASE_URL: https://tec-ecosystem.vercel.app
-      DATABASE_URL: postgresql://dummy:user@dummy:5432/dummy?schema=public
-      NEXT_PUBLIC_PI_APP_ID: dummy_app_id
-      NEXT_PUBLIC_PI_SANDBOX: true
-      NEXT_PUBLIC_API_URL: http://localhost:3000
-      SKIP_ENV_VALIDATION: true
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }} 
+      CLAUDE_MODEL: ${{ secrets.CLAUDE_MODEL }}
+      GEMINI_MODEL: ${{ secrets.GEMINI_MODEL }}
 
     steps:
       - name: 📥 Checkout code
@@ -37,20 +35,29 @@ jobs:
       - name: 📚 Install dependencies
         run: npm ci
 
-      - name: 🔧 Generate Prisma Client
-        run: npx prisma generate
+      - name: 🤖 Run AI Self-Healing System
+        id: ai_process
+        run: node index.js
+        continue-on-error: true 
 
-      - name: 🏗️ Build Application
-        run: npm run build
+      - name: ⚠️ AI Failure Summary
+        if: steps.ai_process.outcome == 'failure'
+        run: |
+          echo "### ❌ فشل النظام الذكي في الوصول لكود مستقر" >> $GITHUB_STEP_SUMMARY
+          echo "تم إجراء 3 محاولات تصحيح تلقائي ولم ينجح الاختبار البرمجي." >> $GITHUB_STEP_SUMMARY
+          echo "يرجى مراجعة الـ Logs لإصلاح المشكلة يدوياً." >> $GITHUB_STEP_SUMMARY
+          exit 1
 
-      - name: 📦 Upload Build Artifacts
+      - name: 📦 Upload Final Deliverables
+        if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: build-artifacts
+          name: ai-verified-package
           path: |
-            .next/
-            public/
+            final-service.js
+            DOCUMENTATION.md
           retention-days: 7
 
       - name: ✅ Build Success
-        run: echo "✅ Build completed successfully!"
+        if: success()
+        run: echo "✅ تم إنشاء الكود وتوثيقه بنجاح!"
