@@ -1,4 +1,4 @@
-name: Build
+Name: Build
 
 on:
   push:
@@ -23,6 +23,8 @@ jobs:
       NEXT_PUBLIC_PI_SANDBOX: true
       NEXT_PUBLIC_API_URL: http://localhost:3000
       SKIP_ENV_VALIDATION: true
+      # الربط مع مفتاح OpenRouter الذي أنشأته
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }} 
 
     steps:
       - name: 📥 Checkout code
