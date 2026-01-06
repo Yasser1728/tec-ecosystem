@@ -1,12 +1,12 @@
 // index.js
+const fs = require('fs'); // مكتبة قراءة الملفات
 
 async function askAI(modelName, prompt) {
   try {
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
-        // يستخدم المفتاح الموحد من GitHub Secrets
-        "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
+        "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`, //
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
@@ -15,39 +15,37 @@ async function askAI(modelName, prompt) {
       })
     });
     const data = await response.json();
-    
-    // التحقق من وجود رد صحيح
-    if (data.choices && data.choices[0]) {
-      return data.choices[0].message.content;
-    } else {
-      return `لم يتم استلام رد من ${modelName}. تأكد من صحة المفتاح والنموذج.`;
-    }
+    return data.choices?.[0]?.message?.content || "لا يوجد رد.";
   } catch (error) {
     return `خطأ في الاتصال بـ ${modelName}: ${error.message}`;
   }
 }
 
-async function runDualAnalysis() {
-  // السؤال الموجه للنماذج
-  const prompt = "هل كل دومين يحتفظ بقيمته؟ وما هي أفضل طريقة لحل أخطاء الأكواد المعقدة؟";
+async function runAnalysis() {
+  // 1. قراءة محتوى ملف الـ YAML أو أي ملف كود تريد فحصه
+  // هنا سنقرأ ملف الـ Workflow نفسه كمثال
+  let codeSnippet = "";
+  try {
+    codeSnippet = fs.readFileSync('.github/workflows/main.yml', 'utf8');
+  } catch (e) {
+    codeSnippet = "لم يتم العثور على الملف المحدد لفحصه.";
+  }
 
-  console.log("⏳ جاري استشارة العمالقة (Claude & Gemini)...");
+  const prompt = `أنا مبرمج محترف، حلل هذا الكود واكتشف أي أخطاء أو تحسينات ممكنة:\n\n${codeSnippet}`;
 
-  // تشغيل الطلبين في وقت واحد لسرعة التنفيذ
+  console.log("⏳ جاري قراءة ملفاتك واستشارة العمالقة...");
+
+  // تشغيل الاستشارة المزدوجة
   const [claudeReply, geminiReply] = await Promise.all([
-    askAI(process.env.CLAUDE_MODEL || "anthropic/claude-3.5-sonnet", prompt),
-    askAI(process.env.GEMINI_MODEL || "google/gemini-pro-1.5", prompt)
+    askAI(process.env.CLAUDE_MODEL, prompt),
+    askAI(process.env.GEMINI_MODEL, prompt)
   ]);
 
-  console.log("\n========================================");
-  console.log("🤖 رد CLAUDE (للمنطق والبرمجة):");
-  console.log("========================================\n");
+  console.log("\n--- 🤖 تحليل Claude 3.5 (خبير المنطق) ---");
   console.log(claudeReply);
 
-  console.log("\n========================================");
-  console.log("🤖 رد GEMINI (للسياق الشامل):");
-  console.log("========================================\n");
+  console.log("\n--- 🤖 تحليل Gemini 1.5 (خبير السياق) ---");
   console.log(geminiReply);
 }
 
-runDualAnalysis();
+runAnalysis();
