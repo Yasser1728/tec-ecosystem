@@ -23,10 +23,10 @@ jobs:
       NEXT_PUBLIC_PI_SANDBOX: true
       NEXT_PUBLIC_API_URL: http://localhost:3000
       SKIP_ENV_VALIDATION: true
-      # ربط مفتاح OpenRouter العام
+      # المفاتيح والنماذج المحدثة
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }} 
-      # ربط اسم النموذج (Model) ليكون متغيراً
-      MY_MODEL_NAME: ${{ secrets.MY_MODEL_NAME }}
+      CLAUDE_MODEL: ${{ secrets.CLAUDE_MODEL }}
+      GEMINI_MODEL: ${{ secrets.GEMINI_MODEL }}
 
     steps:
       - name: 📥 Checkout code
@@ -47,8 +47,8 @@ jobs:
       - name: 🏗️ Build Application
         run: npm run build
 
-      # خطوة تشغيل سكربت الذكاء الاصطناعي لرؤية النتيجة في الـ Logs
-      - name: 🤖 Run OpenRouter Script
+      # تشغيل السكربت المحدث الذي يسأل النموذجين
+      - name: 🤖 Run AI Dual-Model Debugger
         run: node index.js
 
       - name: 📦 Upload Build Artifacts
@@ -61,4 +61,4 @@ jobs:
           retention-days: 7
 
       - name: ✅ Build Success
-        run: echo "✅ Build completed successfully and AI script executed!"
+        run: echo "✅ Build completed and AI analysis (Claude & Gemini) is ready!"
