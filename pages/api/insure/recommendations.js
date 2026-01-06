@@ -7,6 +7,7 @@
  * Automatically recommends insurance for high-value assets
  */
 
+const crypto = require('crypto');
 const { getSession } = require('next-auth/react');
 const eventBus = require('../../../lib/eventBus');
 
@@ -40,7 +41,7 @@ export default async function handler(req, res) {
     // For Quick Start demo, generate recommendations
     const recommendations = [
       {
-        id: `rec_ins_${userId}_${Date.now()}`,
+        id: `rec_ins_${userId}_${crypto.randomBytes(16).toString('hex')}`,
         userId,
         assetId: assetId || `asset_${userId}_1`,
         assetName: 'Bitcoin Holdings',

@@ -26,8 +26,8 @@ export default async function handler(req, res) {
     }
 
     // Generate unique token ID using crypto for security
-    const randomSuffix = crypto.randomInt(100000, 999999);
-    const tokenId = `TEC-${domainName.toUpperCase()}-${Date.now()}-${randomSuffix}`;
+    const randomHex = crypto.randomBytes(8).toString('hex');
+    const tokenId = `TEC-${domainName.toUpperCase()}-${randomHex}`;
 
     // Create NFT record
     const nft = await prisma.nFT.create({

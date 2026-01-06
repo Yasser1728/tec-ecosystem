@@ -7,6 +7,7 @@
  * Part of the Quick Start workflow - Step 3: Asset Addition
  */
 
+const crypto = require('crypto');
 const { getSession } = require('next-auth/react');
 const eventBus = require('../../../lib/eventBus');
 const quickStartService = require('../../../lib/services/quickStartService');
@@ -86,7 +87,7 @@ export default async function handler(req, res) {
 
       // Create asset (mock)
       const asset = {
-        id: `asset_${userId}_${Date.now()}`,
+        id: `asset_${userId}_${crypto.randomBytes(16).toString('hex')}`,
         portfolioId,
         userId,
         name,

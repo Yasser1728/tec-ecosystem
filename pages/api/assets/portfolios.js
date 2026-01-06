@@ -7,6 +7,7 @@
  * Part of the Quick Start workflow - Step 2: Portfolio Creation
  */
 
+const crypto = require('crypto');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const { getSession } = require('next-auth/react');
@@ -66,7 +67,7 @@ export default async function handler(req, res) {
 
       // Create portfolio (mock for now)
       const portfolio = {
-        id: `portfolio_${userId}_${Date.now()}`,
+        id: `portfolio_${userId}_${crypto.randomBytes(16).toString('hex')}`,
         userId,
         name,
         description: description || '',

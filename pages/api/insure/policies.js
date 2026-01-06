@@ -79,7 +79,7 @@ export default async function handler(req, res) {
 
       // Create policy (mock)
       const policy = {
-        id: `policy_ins_${userId}_${Date.now()}`,
+        id: `policy_ins_${userId}_${crypto.randomBytes(16).toString('hex')}`,
         policyNumber: `INS-ASSET-2026-${crypto.randomInt(0, 100000).toString().padStart(6, '0')}`,
         userId,
         assetId,

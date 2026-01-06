@@ -16,6 +16,13 @@ class MyDocument extends Document {
                   sandbox: ${process.env.NEXT_PUBLIC_PI_SANDBOX || "true"}
                 };
                 
+                // Secure random ID generator helper
+                function generateSecureId() {
+                  const array = new Uint8Array(16);
+                  crypto.getRandomValues(array);
+                  return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+                }
+                
                 // Pi Sandbox Implementation (immediate fallback)
                 window.PiSandbox = function() {
                   this.authenticated = false;
@@ -28,13 +35,13 @@ class MyDocument extends Document {
                   this.authenticated = true;
                   this.scopes = scopes || [];
                   this.user = {
-                    uid: 'sandbox_user_' + Date.now(),
+                    uid: 'sandbox_user_' + generateSecureId(),
                     username: 'sandbox_user',
                     wallet_address: null
                   };
                   console.log('✅ [Sandbox] Authentication successful:', this.user);
                   return Promise.resolve({
-                    accessToken: 'sandbox_token_' + Date.now(),
+                    accessToken: 'sandbox_token_' + generateSecureId(),
                     user: this.user
                   });
                 };
@@ -57,8 +64,8 @@ class MyDocument extends Document {
                     return Promise.reject(error);
                   }
                   
-                  const paymentId = 'sandbox_payment_' + Date.now();
-                  const txid = 'sandbox_txid_' + Date.now();
+                  const paymentId = 'sandbox_payment_' + generateSecureId();
+                  const txid = 'sandbox_txid_' + generateSecureId();
                   
                   setTimeout(function() {
                     console.log('✅ [Sandbox] Payment ready for approval:', paymentId);
@@ -134,9 +141,9 @@ class MyDocument extends Document {
                           authenticatedScopes = scopes || [];
                           isAuthenticated = true;
                           return Promise.resolve({
-                            accessToken: 'sandbox_token_' + Date.now(),
+                            accessToken: 'sandbox_token_' + generateSecureId(),
                             user: {
-                              uid: 'sandbox_user_' + Date.now(),
+                              uid: 'sandbox_user_' + generateSecureId(),
                               username: 'sandbox_user',
                               wallet_address: null
                             }
@@ -154,8 +161,8 @@ class MyDocument extends Document {
                           }
                           
                           console.log('🧪 Sandbox: Mock payment', paymentData);
-                          var paymentId = 'sandbox_payment_' + Date.now();
-                          var txid = 'sandbox_txid_' + Date.now();
+                          var paymentId = 'sandbox_payment_' + generateSecureId();
+                          var txid = 'sandbox_txid_' + generateSecureId();
                           
                           setTimeout(function() {
                             if (callbacks.onReadyForServerApproval) {
