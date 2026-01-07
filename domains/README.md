@@ -1,5 +1,9 @@
 # TEC Ecosystem - Domains Sovereignty Policy / سياسة سيادة النطاقات
 
+---
+
+## 🏛️ النسخة العربية / Arabic Version
+
 <div dir="rtl">
 
 ## 🏛️ السياسة الرسمية: سيادة النطاقات التعريفية
@@ -97,7 +101,9 @@ export async function createInvestment(data) {
 ```javascript
 // ❌ ممنوع: API route في domain
 // /domains/fundx/api/investments.js
-export default async function handler(req, res) { ... }
+export default async function handler(req, res) {
+  // Business logic here - NOT allowed in domains
+}
 
 // ✅ صحيح: API في التطبيق فقط
 // /apps/fundx/api/investments.js
@@ -142,6 +148,11 @@ export default async function handler(req, res) { ... }
 24. **TEC** - المركز الرئيسي لتنسيق النظام البيئي
 
 </div>
+<!-- End of Arabic Section / نهاية القسم العربي -->
+
+---
+
+## 🏛️ English Version / النسخة الإنجليزية
 
 ---
 
@@ -240,7 +251,9 @@ export async function createInvestment(data) {
 ```javascript
 // ❌ PROHIBITED: API route in domain
 // /domains/fundx/api/investments.js
-export default async function handler(req, res) { ... }
+export default async function handler(req, res) {
+  // Business logic here - NOT allowed in domains
+}
 
 // ✅ CORRECT: API in application only
 // /apps/fundx/api/investments.js
