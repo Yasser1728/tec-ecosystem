@@ -18,6 +18,8 @@ jobs:
     
     env:
       NODE_ENV: production
+
+      # 🔗 App / Sandbox / Base URLs
       NEXT_PUBLIC_BASE_URL: https://tec-ecosystem.vercel.app
       DATABASE_URL: postgresql://dummy:user@dummy:5432/dummy?schema=public
       NEXT_PUBLIC_PI_APP_ID: dummy_app_id
@@ -25,12 +27,16 @@ jobs:
       NEXT_PUBLIC_API_URL: http://localhost:3000
       SKIP_ENV_VALIDATION: true
 
-      # 🔐 AI & Models Secrets
+      # 🔐 AI Models & API Keys
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+
+      # 🏛️ Paid Core Models
       GPT_MODEL: ${{ secrets.GPT_MODEL }}
       CLAUDE_MODEL: ${{ secrets.CLAUDE_MODEL }}
       GEMINI_MODEL: ${{ secrets.GEMINI_MODEL }}
       CODEX_MODEL: ${{ secrets.CODEX_MODEL }}
+
+      # 🛡️ Free / Reserve Models
       DEEPSEEK_MODEL: ${{ secrets.DEEPSEEK_MODEL }}
       LLAMA_MODEL: ${{ secrets.LLAMA_MODEL }}
       QWEN_MODEL: ${{ secrets.QWEN_MODEL }}
@@ -41,32 +47,37 @@ jobs:
       DEVSTRAL_MODEL: ${{ secrets.DEVSTRAL_MODEL }}
 
     steps:
+      # 1️⃣ Checkout repository
       - name: 📥 Checkout code
         uses: actions/checkout@v4
 
+      # 2️⃣ Setup Node.js
       - name: 🟢 Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: "npm"
 
+      # 3️⃣ Install dependencies
       - name: 📚 Install dependencies
         run: npm ci
 
+      # 4️⃣ Generate Prisma Client
       - name: 🔧 Generate Prisma Client
         run: npx prisma generate
 
+      # 5️⃣ Build Next.js Application
       - name: 🏗️ Build Next.js Application
         run: npm run build
 
-      # 1️⃣ تشغيل المصنع السيادي فقط على main أو manual run
+      # 6️⃣ Run AI Sovereign Factory (Self-Healing & Agents)
       - name: 🤖 Run AI Self-Healing System (Sovereign Factory)
         if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
         id: ai_process
         run: node index.js
         continue-on-error: true
 
-      # 2️⃣ AI Failure Summary
+      # 7️⃣ AI Failure Summary
       - name: ⚠️ AI Failure Summary
         if: steps.ai_process.outcome == 'failure'
         run: |
@@ -75,7 +86,7 @@ jobs:
           echo "يرجى مراجعة الـ Logs يدوياً." >> $GITHUB_STEP_SUMMARY
           exit 1
 
-      # 3️⃣ رفع Build و Ledger و Artifacts الأخرى
+      # 8️⃣ Upload Build + Ledger + Artifacts
       - name: 📦 Upload Build & Ledger Artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -87,6 +98,7 @@ jobs:
             build.log
           retention-days: 7
 
+      # 9️⃣ Success Notification
       - name: ✅ Build & Factory Success
         if: success()
         run: echo "✅ Build + AI Factory completed successfully!"
