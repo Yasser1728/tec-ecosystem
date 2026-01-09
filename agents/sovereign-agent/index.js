@@ -216,7 +216,7 @@ async function runAgent() {
 }
 
 // Run if executed directly
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   runAgent().catch(error => {
     console.error('\n💥 Critical error:', error);
     process.exit(1);
