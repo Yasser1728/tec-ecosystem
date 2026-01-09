@@ -6,19 +6,22 @@ The Sovereign Agent is a secure filesystem management module for the TEC ecosyst
 
 ## Security Features
 
-### 1. Canonical Containment Resolver
+### 1. Canonical Containment Resolver with Symlink Protection
 
-The core security function `resolveSafePath(baseDir, targetPath)` implements a canonical containment pattern:
+The core security function `resolveSafePath(baseDir, targetPath)` implements a canonical containment pattern with enhanced symlink protection:
 
 ```javascript
 const safePath = resolveSafePath(DOMAINS_BASE, userInputPath);
 ```
 
 **How it works:**
-- Resolves both `baseDir` and `targetPath` to their canonical absolute forms
+- Uses `fs.realpathSync.native()` to resolve the base directory to its canonical form (following symlinks)
+- Resolves the target path and attempts to get its canonical form
+- For non-existent paths, checks if parent directories exist and resolves them canonically
 - Checks that the resolved target starts with the base directory + path separator
 - Throws an error if path traversal is detected
 - Prevents attacks using `../`, absolute paths, or symbolic links
+- Protects against symlink-based directory escapes
 
 ### 2. Guarded Filesystem Operations
 
@@ -142,7 +145,7 @@ Initialize or load the ledger with security guards.
 Save the ledger with security guards.
 
 #### `recordTransaction(transaction)`
-Record a transaction in the ledger.
+Record a transaction in the ledger. Transaction IDs are generated using `crypto.randomUUID()` for secure, cryptographically random identifiers.
 
 ### Task Execution
 
@@ -194,12 +197,14 @@ node agents/sovereign-agent/index.js
 This implementation addresses all Codacy critical security findings:
 
 1. ✅ **Stable Roots**: PROJECT_ROOT, DOMAINS_BASE, LEDGER_PATH defined
-2. ✅ **Canonical Resolver**: resolveSafePath() with path.resolve() + startsWith()
+2. ✅ **Canonical Resolver with Symlink Protection**: resolveSafePath() uses fs.realpathSync.native() + startsWith()
 3. ✅ **All Operations Guarded**: Every fs operation goes through resolveSafePath()
 4. ✅ **Ledger Security**: Ledger path validated against PROJECT_ROOT
 5. ✅ **Domain Security**: Domain paths validated against DOMAINS_BASE
-6. ✅ **ESM Preserved**: Full ES module structure maintained
-7. ✅ **Architecture Preserved**: Compatible with existing TEC ecosystem
+6. ✅ **Cryptographically Secure RNG**: Transaction IDs use crypto.randomUUID() instead of Math.random()
+7. ✅ **Test File Security**: Tests use guarded operations and mkdtempSync for cleanup
+8. ✅ **ESM Preserved**: Full ES module structure maintained
+9. ✅ **Architecture Preserved**: Compatible with existing TEC ecosystem
 
 **Expected Codacy Status: 0 CRITICAL issues**
 
