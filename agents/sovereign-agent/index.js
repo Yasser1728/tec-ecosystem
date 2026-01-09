@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import { runLLM } from './openrouter.client.js';
 import TASK_MAP from './task-map.js';
 
@@ -19,14 +20,27 @@ function resolveSafeDomainPath(relativePath) {
     throw new Error('Invalid relative path');
   }
 
-  const fullPath = path.resolve(DOMAINS_BASE, relativePath);
+  // Reject absolute paths explicitly
+  if (path.isAbsolute(relativePath)) {
+    throw new Error(`Absolute paths not allowed: ${relativePath}`);
+  }
 
-  // Enforce allowlist boundary
-  if (!fullPath.startsWith(DOMAINS_BASE + path.sep)) {
+  // Use path.join to prevent absolute path override
+  const fullPath = path.join(DOMAINS_BASE, relativePath);
+
+  // Normalize to handle different path separators (Windows/Unix)
+  const normalizedFull = path.normalize(fullPath);
+  const normalizedBase = path.normalize(DOMAINS_BASE);
+
+  // Use path.relative to detect traversal attempts
+  const relative = path.relative(normalizedBase, normalizedFull);
+  
+  // If the relative path starts with '..', it's trying to escape
+  if (relative.startsWith('..') || path.isAbsolute(relative)) {
     throw new Error(`Blocked path traversal attempt: ${relativePath}`);
   }
 
-  return fullPath;
+  return normalizedFull;
 }
 
 /**
@@ -69,7 +83,11 @@ async function runAgent() {
  * ============================
  */
 
-const LEDGER_PATH = path.resolve('agents/sovereign-agent/ledger.json');
+// Get the directory of the current module file
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const LEDGER_PATH = path.join(__dirname, 'ledger.json');
 
 function appendLedger(entry) {
   let ledger = [];
