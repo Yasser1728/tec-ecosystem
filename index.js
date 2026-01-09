@@ -31,6 +31,14 @@ const LEDGER_PATH = path.resolve(PROJECT_ROOT, 'ledger_full_log.json');
  * @throws {Error} - If the resolved path attempts to escape the base directory
  */
 function resolveSafePath(baseDir, targetPath) {
+    // Security: Validate inputs to prevent unexpected behavior
+    if (!baseDir || typeof baseDir !== 'string') {
+        throw new Error('Security: baseDir must be a non-empty string');
+    }
+    if (!targetPath || typeof targetPath !== 'string') {
+        throw new Error('Security: targetPath must be a non-empty string');
+    }
+    
     // Codacy Security: Canonical path resolution with explicit containment check
     const resolvedBase = path.resolve(baseDir);
     const resolvedTarget = path.resolve(baseDir, targetPath);
@@ -83,7 +91,13 @@ const CONFIG = {
 
 async function loadService(domain) {
     try {
+        // Security: Validate domain parameter to prevent malicious filenames
+        if (!domain || typeof domain !== 'string') {
+            throw new Error('Invalid domain parameter');
+        }
+        
         // Security: Use safe path resolution to prevent directory traversal
+        // Even if domain contains traversal sequences, resolveSafePath will catch it
         const servicePath = resolveSafePath(CONFIG.servicesFolder, `${domain}.js`);
         
         if (!fs.existsSync(servicePath)) {
