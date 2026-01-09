@@ -1,13 +1,11 @@
 // next.config.js
-const { i18n } = require("./next-i18next.config");
+import i18nConfig from './next-i18next.config.js';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  i18n,
+  i18n: i18nConfig.i18n,
   eslint: {
-    // Warning: This allows production builds to successfully complete even if
-    // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
   experimental: {
@@ -15,12 +13,8 @@ const nextConfig = {
       enabled: true,
     },
   },
-  // Serve static files from public without i18n prefix
   trailingSlash: false,
   skipTrailingSlashRedirect: true,
-  // Rewrites to bypass i18n for static validation file
-  // The source-to-same-destination rewrite intentionally bypasses i18n locale
-  // routing, allowing the file to be served directly from the public folder
   async rewrites() {
     return {
       beforeFiles: [
@@ -33,4 +27,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+export default nextConfig;
