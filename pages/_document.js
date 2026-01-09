@@ -1,15 +1,14 @@
-import Document, { Html, Head, Main, NextScript } from "next/document";
+import { Html, Head, Main, NextScript } from "next/document";
 import Script from "next/script";
 
-class MyDocument extends Document {
-  render() {
-    return (
-      <Html>
-        <Head>
-          {/* Pi Network SDK v2.0 - loaded asynchronously via next/script */}
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `
+export default function Document() {
+  return (
+    <Html>
+      <Head>
+        {/* Pi Network SDK v2.0 - loaded asynchronously via next/script */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
                 // Pi SDK Configuration
                 window.piConfig = {
                   appId: '${process.env.NEXT_PUBLIC_PI_APP_ID || "tec-titan-elite-commerce-04d84accdca2487c"}',
@@ -181,20 +180,17 @@ class MyDocument extends Document {
                   }, 10000);
                 })();
               `,
-            }}
-          />
-        </Head>
-        <body>
-          <Main />
-          <NextScript />
-          <Script
-            src="https://sdk.minepi.com/pi-sdk.js"
-            strategy="afterInteractive"
-          />
-        </body>
-      </Html>
-    );
-  }
+          }}
+        />
+      </Head>
+      <body>
+        <Main />
+        <NextScript />
+        <Script
+          src="https://sdk.minepi.com/pi-sdk.js"
+          strategy="afterInteractive"
+        />
+      </body>
+    </Html>
+  );
 }
-
-export default MyDocument;
