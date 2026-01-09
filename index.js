@@ -25,7 +25,7 @@ const LEDGER_PATH = path.resolve(PROJECT_ROOT, 'ledger_full_log.json');
 /**
  * Security Guard: Resolve and validate paths to prevent directory traversal
  * This function ensures all file operations stay within approved base directories
- * @param {string} baseDir - The approved base directory (must end with path.sep internally)
+ * @param {string} baseDir - The approved base directory path
  * @param {string} targetPath - The target path or filename to resolve
  * @returns {string} - Safe resolved absolute path
  * @throws {Error} - If the resolved path attempts to escape the base directory
@@ -37,6 +37,7 @@ function resolveSafePath(baseDir, targetPath) {
     
     // Security: Check if resolved path stays within base directory
     // Using startsWith with path.sep ensures exact directory boundary match
+    // Allow access to base directory itself OR files within it
     if (!resolvedTarget.startsWith(resolvedBase + path.sep) && resolvedTarget !== resolvedBase) {
         throw new Error(`Security: Path traversal attempt blocked. Target path "${targetPath}" would escape base directory "${baseDir}"`);
     }
@@ -97,9 +98,8 @@ export async function runDomainService(domain, prompt) {
             console.log(`✅ Created sandbox domain file: ${domain}.js`);
         }
         
-        // Security: Import using validated safe path
-        const moduleImportPath = resolveSafePath(CONFIG.servicesFolder, `${domain}.js`);
-        const module = await import(moduleImportPath);
+        // Security: Import using already validated safe path
+        const module = await import(servicePath);
         return module.runDomainService;
     } catch (err) {
         console.error(`❌ Failed to load service for ${domain}:`, err.message);
