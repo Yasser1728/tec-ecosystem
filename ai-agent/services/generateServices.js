@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { resolveSafePath, AI_AGENT_SERVICES_BASE } from '../../index.js';
 
 const DOMAINS = [
     'tec.pi', 'finance.pi', 'market.pi', 'wallet.pi', 'commerce.pi', 'analytics.pi',
@@ -8,12 +9,14 @@ const DOMAINS = [
     'research.pi', 'marketing.pi', 'support.pi', 'hr.pi', 'devops.pi', 'infra.pi'
 ];
 
-const servicesDir = path.join(process.cwd(), 'ai-agent', 'services');
+// Security: Use pre-validated base directory from index.js
+const servicesDir = AI_AGENT_SERVICES_BASE;
 
 if (!fs.existsSync(servicesDir)) fs.mkdirSync(servicesDir, { recursive: true });
 
 DOMAINS.forEach(domain => {
-    const filePath = path.join(servicesDir, `${domain}.js`);
+    // Security: Use safe path resolution imported from index.js
+    const filePath = resolveSafePath(servicesDir, `${domain}.js`);
     if (!fs.existsSync(filePath)) {
         const content = `import { runDomainService } from './baseService.js';\n\nexport const runDomainService = runDomainService;`;
         fs.writeFileSync(filePath, content);

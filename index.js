@@ -13,10 +13,51 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // ============================================
+// Security: Path Traversal Protection
+// ============================================
+// Define explicit filesystem boundaries to prevent path traversal attacks
+// Codacy Security: These constants establish the canonical base directories
+const PROJECT_ROOT = path.resolve(__dirname);
+const DOMAINS_BASE = path.resolve(PROJECT_ROOT, 'domains');
+const AI_AGENT_SERVICES_BASE = path.resolve(PROJECT_ROOT, 'ai-agent', 'services');
+const LEDGER_PATH = path.resolve(PROJECT_ROOT, 'ledger_full_log.json');
+
+/**
+ * Security Guard: Resolve and validate paths to prevent directory traversal
+ * This function ensures all file operations stay within approved base directories
+ * @param {string} baseDir - The approved base directory path
+ * @param {string} targetPath - The target path or filename to resolve
+ * @returns {string} - Safe resolved absolute path
+ * @throws {Error} - If the resolved path attempts to escape the base directory
+ */
+function resolveSafePath(baseDir, targetPath) {
+    // Security: Validate inputs to prevent unexpected behavior
+    if (!baseDir || typeof baseDir !== 'string') {
+        throw new Error('Security: baseDir must be a non-empty string');
+    }
+    if (!targetPath || typeof targetPath !== 'string') {
+        throw new Error('Security: targetPath must be a non-empty string');
+    }
+    
+    // Codacy Security: Canonical path resolution with explicit containment check
+    const resolvedBase = path.resolve(baseDir);
+    const resolvedTarget = path.resolve(baseDir, targetPath);
+    
+    // Security: Check if resolved path stays within base directory
+    // Using startsWith with path.sep ensures exact directory boundary match
+    // Allow access to base directory itself OR files within it
+    if (!resolvedTarget.startsWith(resolvedBase + path.sep) && resolvedTarget !== resolvedBase) {
+        throw new Error(`Security: Path traversal attempt blocked. Target path "${targetPath}" would escape base directory "${baseDir}"`);
+    }
+    
+    return resolvedTarget;
+}
+
+// ============================================
 // Configuration
 // ============================================
 const CONFIG = {
-    servicesFolder: path.join(__dirname, 'ai-agent', 'services'),
+    servicesFolder: AI_AGENT_SERVICES_BASE, // Security: Use pre-validated base path
     sandbox: true, // true = أي إنشاء ملفات دومين جديد سيكون في وضع Sandbox
     domains: [
         'tec.pi', 'finance.pi', 'market.pi', 'wallet.pi', 'commerce.pi', 'analytics.pi',
@@ -50,7 +91,15 @@ const CONFIG = {
 
 async function loadService(domain) {
     try {
-        const servicePath = path.join(CONFIG.servicesFolder, `${domain}.js`);
+        // Security: Validate domain parameter to prevent malicious filenames
+        if (!domain || typeof domain !== 'string') {
+            throw new Error('Invalid domain parameter');
+        }
+        
+        // Security: Use safe path resolution to prevent directory traversal
+        // Even if domain contains traversal sequences, resolveSafePath will catch it
+        const servicePath = resolveSafePath(CONFIG.servicesFolder, `${domain}.js`);
+        
         if (!fs.existsSync(servicePath)) {
             // إنشاء ملف دومين جديد في وضع Sandbox
             const template = `
@@ -58,10 +107,13 @@ export async function runDomainService(domain, prompt) {
     console.log('🟢 Running sandbox service for', domain);
     return { success: true, prompt };
 }`;
+            // Security: Write to validated safe path only
             fs.writeFileSync(servicePath, template.trim());
             console.log(`✅ Created sandbox domain file: ${domain}.js`);
         }
-        const module = await import(path.join(CONFIG.servicesFolder, `${domain}.js`));
+        
+        // Security: Import using already validated safe path
+        const module = await import(servicePath);
         return module.runDomainService;
     } catch (err) {
         console.error(`❌ Failed to load service for ${domain}:`, err.message);
@@ -153,10 +205,9 @@ async function runSovereignOS() {
     console.log("\n📊 Sovereign OS Final Operational Report:");
     console.log(JSON.stringify(report.summary, null, 2));
 
-    // Save full logs
-    const logsPath = path.join(__dirname, 'ledger_full_log.json');
-    fs.writeFileSync(logsPath, JSON.stringify(report.logs, null, 2));
-    console.log(`📁 Full ledger logs saved to ${logsPath}`);
+    // Security: Save full logs to pre-validated safe path (LEDGER_PATH)
+    fs.writeFileSync(LEDGER_PATH, JSON.stringify(report.logs, null, 2));
+    console.log(`📁 Full ledger logs saved to ${LEDGER_PATH}`);
 }
 
 // ============================================
@@ -172,4 +223,15 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 // ============================================
 // Exports
 // ============================================
-export { CONFIG, runSovereignOS, organizeDomainFiles, loadService, selectModel };
+export { 
+    CONFIG, 
+    runSovereignOS, 
+    organizeDomainFiles, 
+    loadService, 
+    selectModel,
+    resolveSafePath,
+    PROJECT_ROOT,
+    DOMAINS_BASE,
+    AI_AGENT_SERVICES_BASE,
+    LEDGER_PATH
+};
