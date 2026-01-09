@@ -1,17 +1,10 @@
-// ============================================
-// Sovereign OS 2026 - Domain Task Map & Auto Organizer
-// ============================================
-
 import fs from 'fs';
 import path from 'path';
 import { CONFIG, loadService } from './index.js';
 import { recordTransaction, generateFinalReport, getCostSignal } from './ai-agent/core/ledger.js';
 import { executeModel } from './ai-agent/core/openrouter.js';
 
-// ============================================
-// 1️⃣ Domain Task Map
-// كل دومين له مهمة محددة وواضحة
-// ============================================
+// كل دومين له مهمة محددة
 const DOMAIN_TASK_MAP = {
   'tec.pi': 'Manage TEC core services & dashboard',
   'finance.pi': 'Connect financial modules & audit ledger',
@@ -39,26 +32,26 @@ const DOMAIN_TASK_MAP = {
   'infra.pi': 'Infrastructure monitoring & scaling'
 };
 
-// ============================================
-// 2️⃣ Execute Sovereign Task
-// ============================================
+// تنفيذ مهمة لكل دومين مع OpenRouter
 async function runDomainTask(domain) {
   console.log(`\n🏗️ Starting task for ${domain}`);
-
   const taskPrompt = DOMAIN_TASK_MAP[domain] || 'Default maintenance & sync task';
-
-  // Load the domain service or create sandbox
   const runService = await loadService(domain);
   if (!runService) return;
 
   try {
-    // Execute via AI model (paid first, fallback to free)
-    const result = await executeModel(taskPrompt, { domain });
+    // 🔹 Execute via OpenRouter
+    // يحاول استخدام النماذج المدفوعة أولاً، ثم المجانية تلقائياً
+    const result = await executeModel(taskPrompt, {
+      domain,
+      preferPaid: true,   // true = حاول المدفوع أولاً
+      fallbackFree: true  // fallback للمجاني لو المدفوع مش متاح
+    });
 
-    // Run the local domain service
+    // تشغيل الخدمة المحلية للدومين
     const serviceResult = await runService(domain, taskPrompt);
 
-    // Ledger recording
+    // تسجيل المعاملة
     recordTransaction({
       domain,
       taskPrompt,
@@ -77,12 +70,9 @@ async function runDomainTask(domain) {
   }
 }
 
-// ============================================
-// 3️⃣ Orchestrator: Run all domains
-// ============================================
+// Orchestrator لجميع الدومينات
 export async function runSovereignTaskMap() {
   console.log('🚀 Running Sovereign Domain Task Map...');
-
   for (const domain of CONFIG.domains) {
     await runDomainTask(domain);
   }
@@ -93,9 +83,7 @@ export async function runSovereignTaskMap() {
   console.log(`📊 Final report saved to ${logsPath}`);
 }
 
-// ============================================
-// 4️⃣ Execute if main
-// ============================================
+// تشغيل مباشر لو هذا الملف تم تشغيله
 if (import.meta.url === `file://${process.argv[1]}`) {
   runSovereignTaskMap().catch(err => {
     console.error('💥 Critical failure in Sovereign Task Map:', err);
