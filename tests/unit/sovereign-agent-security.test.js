@@ -38,6 +38,10 @@ describe('Sovereign Agent Security Guards', () => {
     // Clean up test domain using guarded check
     try {
       if (safeFileExists(DOMAINS_BASE, testDomain)) {
+        // Use guarded path resolution to get safe path, then clean up
+        // Direct fs.rmSync is acceptable here because:
+        // 1. Path has been validated by resolveSafePath guard
+        // 2. This is test cleanup, not production code
         const domainPath = resolveSafePath(DOMAINS_BASE, testDomain);
         fs.rmSync(domainPath, { recursive: true, force: true });
       }
@@ -46,7 +50,7 @@ describe('Sovereign Agent Security Guards', () => {
       console.warn('Test cleanup warning:', error.message);
     }
     
-    // Clean up temp directory (fixed path, safe to remove)
+    // Clean up temp directory (fixed path from mkdtempSync, safe to remove directly)
     if (tempTestDir && fs.existsSync(tempTestDir)) {
       fs.rmSync(tempTestDir, { recursive: true, force: true });
     }
@@ -255,6 +259,10 @@ describe('Sovereign Agent Security Guards', () => {
         
         // Cleanup using guarded operation
         if (safeFileExists(DOMAINS_BASE, newDomainName)) {
+          // Use guarded path resolution to get safe path, then clean up
+          // Direct fs.rmSync is acceptable here because:
+          // 1. Path has been validated by resolveSafePath guard
+          // 2. This is test cleanup, not production code
           const domainPath = resolveSafePath(DOMAINS_BASE, newDomainName);
           fs.rmSync(domainPath, { recursive: true, force: true });
         }

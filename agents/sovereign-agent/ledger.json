@@ -190,11 +190,55 @@
       "domain": "new-test-domain",
       "path": "/home/runner/work/tec-ecosystem/tec-ecosystem/domains/new-test-domain",
       "success": true
+    },
+    {
+      "id": "tx-1767990202563-94f5d38d-4acd-4c20-8013-b9359a969487",
+      "timestamp": "2026-01-09T20:23:22.563Z",
+      "type": "domain_write",
+      "domain": "test-security-domain",
+      "fileName": "domain-write.txt",
+      "path": "/home/runner/work/tec-ecosystem/tec-ecosystem/domains/test-security-domain/domain-write.txt",
+      "success": true
+    },
+    {
+      "id": "tx-1767990202587-0b6942c5-064d-4bf5-9de0-0765ebcbdee0",
+      "timestamp": "2026-01-09T20:23:22.587Z",
+      "type": "domain_write",
+      "domain": "test-security-domain",
+      "fileName": "ledger-test.txt",
+      "path": "/home/runner/work/tec-ecosystem/tec-ecosystem/domains/test-security-domain/ledger-test.txt",
+      "success": true
+    },
+    {
+      "id": "tx-1767990202589-e340593a-1d0f-45ce-8e01-2ef4da480a1d",
+      "timestamp": "2026-01-09T20:23:22.589Z",
+      "type": "domain_write",
+      "domain": "../../../etc",
+      "fileName": "passwd",
+      "error": "Path traversal detected: ../../../etc/passwd escapes /home/runner/work/tec-ecosystem/tec-ecosystem/domains",
+      "success": false
+    },
+    {
+      "id": "tx-1767990202590-8edf77b2-9f05-43d8-b654-923a0370fee0",
+      "timestamp": "2026-01-09T20:23:22.590Z",
+      "type": "domain_write",
+      "domain": "test-security-domain",
+      "fileName": "read-domain.txt",
+      "path": "/home/runner/work/tec-ecosystem/tec-ecosystem/domains/test-security-domain/read-domain.txt",
+      "success": true
+    },
+    {
+      "id": "tx-1767990202595-e9acd0c4-d5c6-4b57-ac3d-8e4fd2a4201a",
+      "timestamp": "2026-01-09T20:23:22.595Z",
+      "type": "domain_mkdir",
+      "domain": "new-test-domain",
+      "path": "/home/runner/work/tec-ecosystem/tec-ecosystem/domains/new-test-domain",
+      "success": true
     }
   ],
   "summary": {
-    "totalOperations": 22,
-    "successfulOperations": 16,
-    "failedOperations": 6
+    "totalOperations": 27,
+    "successfulOperations": 20,
+    "failedOperations": 7
   }
 }
