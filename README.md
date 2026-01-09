@@ -274,6 +274,69 @@ TEC Ecosystem represents a revolutionary approach to building interconnected bus
 
 ---
 
+## 🤖 Sovereign AI Agent
+
+The TEC Ecosystem includes a production-ready, headless AI agent that automatically generates domain-specific documentation and content using OpenRouter's AI models.
+
+### Features
+
+- **Free-First Strategy**: Automatically tries free AI models before paid options
+- **Cost-Efficient**: Minimizes API costs while ensuring reliability
+- **Ledger Tracking**: Maintains detailed logs of all operations
+- **Domain Task Automation**: Processes tasks across all 24 domains
+- **Crash-Safe**: Incremental updates ensure data integrity
+
+### Quick Start
+
+1. **Get OpenRouter API Key**: Sign up at [https://openrouter.ai](https://openrouter.ai)
+
+2. **Configure Environment**:
+```bash
+# Copy .env.example to .env
+cp .env.example .env
+
+# Edit .env and add your API key
+OPENROUTER_API_KEY=your-key-here
+```
+
+3. **Run the Agent**:
+```bash
+npm run agent:run
+```
+
+4. **Check Outputs**:
+   - Generated files: `domains/<domain>/*.md`
+   - Operation logs: `agents/sovereign-agent/ledger.json`
+
+### How It Works
+
+The agent:
+1. Iterates through all domains (finance, commerce, analytics, etc.)
+2. Processes predefined tasks for each domain
+3. Tries free models first (Gemini Flash, Llama 3.2, Mistral 7B)
+4. Falls back to paid models if needed (GPT-4o Mini by default)
+5. Writes outputs to structured directories
+6. Tracks all operations in a ledger
+
+### Documentation
+
+For detailed information, see:
+- [Sovereign AI Agent README](agents/sovereign-agent/README.md)
+- Configuration options
+- Security best practices
+- Customization guide
+- Troubleshooting
+
+### Security Notes
+
+⚠️ **Important**:
+- Never commit your `.env` file
+- Keep your OpenRouter API key private
+- Review generated content before production use
+- The ledger and outputs are gitignored by default
+
+---
+
 ## 🏗️ Proposed Architecture
 
 ### System Architecture
