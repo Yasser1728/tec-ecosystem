@@ -2,7 +2,7 @@ name: TEC Sovereign AI Factory & Pi Network 2026
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   workflow_dispatch:
 
 permissions:
@@ -64,18 +64,34 @@ jobs:
       - name: 🏗️ Build Project
         run: npm run build --if-present
 
-      # 6️⃣ Run Sovereign AI Factory
-      - name: 🚀 Run Sovereign AI Factory
+      # 6️⃣ Run AI Sovereign Factory for all 24 Domains
+      - name: 🤖 Run AI Self-Healing System (Sovereign Factory)
         if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
-        run: node index.js
+        run: |
+          node index.js --all-domains
 
-      # 7️⃣ Archive Reports
-      - name: 📊 Archive Reports
-        if: always()
+      # 7️⃣ AI Failure Summary
+      - name: ⚠️ AI Failure Summary
+        if: failure()
+        run: |
+          echo "### ❌ فشل النظام الذكي في معالجة أحد الدومينات أو إنشاء الملفات" >> $GITHUB_STEP_SUMMARY
+          echo "تم إجراء محاولات تلقائية ولم تنجح بالكامل." >> $GITHUB_STEP_SUMMARY
+          echo "يرجى مراجعة الـ Logs يدوياً." >> $GITHUB_STEP_SUMMARY
+          exit 1
+
+      # 8️⃣ Upload Build + Ledger + Artifacts
+      - name: 📦 Upload Build & Ledger Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: sovereign-factory-output
           path: |
+            .next/
+            public/
             ledger_full_log.json
             build.log
           retention-days: 7
+
+      # 9️⃣ Success Notification
+      - name: ✅ Build & Factory Success
+        if: success()
+        run: echo "✅ Build + AI Factory for all domains completed successfully!"
