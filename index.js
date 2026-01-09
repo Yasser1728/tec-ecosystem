@@ -23,7 +23,25 @@ const CONFIG = {
         'security.pi', 'crm.pi', 'payments.pi', 'tokens.pi', 'nft.pi', 'exchange.pi',
         'staking.pi', 'governance.pi', 'insurance.pi', 'tax.pi', 'legal.pi', 'audit.pi',
         'research.pi', 'marketing.pi', 'support.pi', 'hr.pi', 'devops.pi', 'infra.pi'
-    ]
+    ],
+    models: {
+        paid: {
+            gpt: process.env.GPT_MODEL,
+            claude: process.env.CLAUDE_MODEL,
+            gemini: process.env.GEMINI_MODEL,
+            codex: process.env.CODEX_MODEL
+        },
+        free: {
+            deepseek: process.env.DEEPSEEK_MODEL,
+            llama: process.env.LLAMA_MODEL,
+            qwen: process.env.QWEN_MODEL,
+            hermes: process.env.HERMES_MODEL,
+            gpt_oss: process.env.GPT_OSS_FREE,
+            gemini_flash: process.env.GEMINI_FLASH_FREE,
+            o4: process.env.O4_ENGINEER_MODEL,
+            devstral: process.env.DEVSTRAL_MODEL
+        }
+    }
 };
 
 // ============================================
@@ -57,9 +75,24 @@ export async function runDomainService(domain, prompt) {
 async function organizeDomainFiles() {
     console.log('🗂️ Organizing domain files...');
     for (const domain of CONFIG.domains) {
-        await loadService(domain); // سيقوم بإنشاء الملفات الجديدة أو ترك القديمة
+        await loadService(domain); // إنشاء الملفات الجديدة أو ترك القديمة
     }
     console.log('✅ All domain files are organized.');
+}
+
+// ============================================
+// Select Model (Paid if available, else Free)
+// ============================================
+function selectModel() {
+    for (const [key, model] of Object.entries(CONFIG.models.paid)) {
+        if (model) return { type: 'paid', name: model };
+    }
+    // fallback to free models
+    for (const [key, model] of Object.entries(CONFIG.models.free)) {
+        if (model) return { type: 'free', name: model };
+    }
+    console.warn('⚠️ No model found. AI operations will use sandbox defaults.');
+    return { type: 'sandbox', name: null };
 }
 
 // ============================================
@@ -70,6 +103,9 @@ async function runSovereignOS() {
 
     // 1️⃣ تنظيم ملفات الدومينات أولاً
     await organizeDomainFiles();
+
+    const modelInfo = selectModel();
+    console.log(`🤖 Using ${modelInfo.type} model: ${modelInfo.name || 'Sandbox'}`);
 
     for (const domain of CONFIG.domains) {
         console.log(`\n🏗️ Processing domain: ${domain}`);
@@ -86,7 +122,7 @@ async function runSovereignOS() {
         if (!runService) continue;
 
         // 4️⃣ Prepare task prompt
-        const taskPrompt = `Generate a scalable, secure, production-ready module for ${domain} with local processing.`;
+        const taskPrompt = `Generate a scalable, secure, production-ready module for ${domain} using model: ${modelInfo.name}`;
 
         try {
             // 5️⃣ Run the service
@@ -96,7 +132,7 @@ async function runSovereignOS() {
             recordTransaction({
                 domain,
                 result,
-                modelUsed: 'primary',
+                modelUsed: modelInfo.type,
                 sandbox: CONFIG.sandbox
             });
 
@@ -136,4 +172,4 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 // ============================================
 // Exports
 // ============================================
-export { CONFIG, runSovereignOS, organizeDomainFiles, loadService };
+export { CONFIG, runSovereignOS, organizeDomainFiles, loadService, selectModel };
