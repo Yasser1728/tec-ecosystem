@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { CONFIG, loadService } from './index.js';
+import { CONFIG, loadService, LEDGER_PATH } from './index.js';
 import { recordTransaction, generateFinalReport, getCostSignal } from './ai-agent/core/ledger.js';
 import { executeModel } from './ai-agent/core/openrouter.js';
 
@@ -78,9 +78,9 @@ export async function runSovereignTaskMap() {
   }
 
   const report = generateFinalReport();
-  const logsPath = path.join(process.cwd(), 'ledger_full_log.json');
-  fs.writeFileSync(logsPath, JSON.stringify(report.logs, null, 2));
-  console.log(`📊 Final report saved to ${logsPath}`);
+  // Security: Use pre-validated LEDGER_PATH from index.js
+  fs.writeFileSync(LEDGER_PATH, JSON.stringify(report.logs, null, 2));
+  console.log(`📊 Final report saved to ${LEDGER_PATH}`);
 }
 
 // تشغيل مباشر لو هذا الملف تم تشغيله
