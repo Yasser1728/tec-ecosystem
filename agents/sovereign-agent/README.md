@@ -19,12 +19,9 @@ All file outputs are constrained to the `domains/` directory through the `resolv
  * No traversal
  */
 
-// Get the directory of the current module file
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 // Resolve domains directory relative to repository root (2 levels up from agents/sovereign-agent/)
-const DOMAINS_BASE = path.resolve(__dirname, '..', '..', 'domains');
+// Using URL API for secure module-relative path resolution
+const DOMAINS_BASE = fileURLToPath(new URL('../../domains/', import.meta.url));
 
 function resolveSafeDomainPath(relativePath) {
   if (!relativePath || typeof relativePath !== 'string') {
@@ -75,9 +72,10 @@ The guard function implements multiple layers of protection:
 - Blocks any path where the relative result starts with `..`
 
 **Layer 5: Module-Relative Base Path**
-- Uses `import.meta.url` to resolve DOMAINS_BASE relative to the module file
-- Prevents working directory manipulation attacks
-- Ensures consistent security boundaries regardless of where the process is started
+- Uses `new URL()` with `import.meta.url` for secure module-relative resolution
+- Immune to working directory manipulation attacks
+- Ensures consistent security boundaries regardless of process start location
+- More secure than `path.resolve()` with relative segments
 
 **Blocked Attack Vectors:**
 - Absolute paths: `/etc/passwd`, `C:\Windows\...`

@@ -13,12 +13,9 @@ import TASK_MAP from './task-map.js';
  * No traversal
  */
 
-// Get the directory of the current module file
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 // Resolve domains directory relative to repository root (2 levels up from agents/sovereign-agent/)
-const DOMAINS_BASE = path.resolve(__dirname, '..', '..', 'domains');
+// Using URL API for secure module-relative path resolution
+const DOMAINS_BASE = fileURLToPath(new URL('../../domains/', import.meta.url));
 
 function resolveSafeDomainPath(relativePath) {
   if (!relativePath || typeof relativePath !== 'string') {
@@ -88,13 +85,18 @@ async function runAgent() {
  * ============================
  */
 
-const LEDGER_PATH = path.join(__dirname, 'ledger.json');
+const LEDGER_PATH = fileURLToPath(new URL('./ledger.json', import.meta.url));
 
 function appendLedger(entry) {
   let ledger = [];
 
   if (fs.existsSync(LEDGER_PATH)) {
-    ledger = JSON.parse(fs.readFileSync(LEDGER_PATH, 'utf-8'));
+    try {
+      ledger = JSON.parse(fs.readFileSync(LEDGER_PATH, 'utf-8'));
+    } catch (parseError) {
+      console.warn('⚠️ Ledger file corrupted, initializing new ledger:', parseError.message);
+      ledger = [];
+    }
   }
 
   ledger.push(entry);
