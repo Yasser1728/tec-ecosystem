@@ -1,0 +1,73 @@
+name: TEC Sovereign AI Factory & Pi Network 2026
+
+on:
+  push:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  checks: write
+  actions: read
+
+jobs:
+  sovereign-pipeline:
+    runs-on: ubuntu-latest
+
+    env:
+      NODE_ENV: production
+
+      # 🔑 API Keys
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      
+      # 🏛️ Paid Core Models
+      GPT_MODEL: ${{ secrets.GPT_MODEL }}
+      CLAUDE_MODEL: ${{ secrets.CLAUDE_MODEL }}
+      GEMINI_MODEL: ${{ secrets.GEMINI_MODEL }}
+      CODEX_MODEL: ${{ secrets.CODEX_MODEL }}
+
+      # 🛡️ Free/Reserve Models
+      DEEPSEEK_MODEL: ${{ secrets.DEEPSEEK_MODEL }}
+      LLAMA_MODEL: ${{ secrets.LLAMA_MODEL }}
+      QWEN_MODEL: ${{ secrets.QWEN_MODEL }}
+      HERMES_MODEL: ${{ secrets.HERMES_MODEL }}
+      GPT_OSS_FREE: ${{ secrets.GPT_OSS_FREE }}
+      GEMINI_FLASH_FREE: ${{ secrets.GEMINI_FLASH_FREE }}
+      O4_ENGINEER_MODEL: ${{ secrets.O4_ENGINEER_MODEL }}
+      DEVSTRAL_MODEL: ${{ secrets.DEVSTRAL_MODEL }}
+
+      # 🔗 Pi Network App & Sandbox
+      NEXT_PUBLIC_PI_APP_ID: ${{ secrets.NEXT_PUBLIC_PI_APP_ID }}
+      NEXT_PUBLIC_PI_SANDBOX: ${{ secrets.NEXT_PUBLIC_PI_SANDBOX }}
+
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📚 Install Dependencies
+        run: npm ci
+
+      - name: 🔧 Generate Prisma Client
+        run: npx prisma generate
+
+      - name: 🏗️ Build Project
+        run: npm run build --if-present
+
+      - name: 🚀 Run Sovereign AI Factory
+        if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+        run: node index.js
+
+      - name: 📊 Archive Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sovereign-factory-output
+          path: |
+            ledger_full_log.json
+            build.log
