@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { resolveSafePath, AI_AGENT_SERVICES_BASE } from '../../index.js';
 
 const DOMAINS = [
     'tec.pi', 'finance.pi', 'market.pi', 'wallet.pi', 'commerce.pi', 'analytics.pi',
@@ -8,31 +9,14 @@ const DOMAINS = [
     'research.pi', 'marketing.pi', 'support.pi', 'hr.pi', 'devops.pi', 'infra.pi'
 ];
 
-// Security: Define canonical base directory for services
-const PROJECT_ROOT = path.resolve(process.cwd());
-const servicesDir = path.resolve(PROJECT_ROOT, 'ai-agent', 'services');
-
-/**
- * Security Guard: Validate service file path stays within services directory
- * @param {string} filename - The service filename (e.g., 'tec.pi.js')
- * @returns {string} - Safe resolved absolute path
- * @throws {Error} - If path traversal is detected
- */
-function resolveSafeServicePath(filename) {
-    const resolvedPath = path.resolve(servicesDir, filename);
-    // Security: Check containment within services directory
-    // Allow base directory itself OR files within it (using path.sep ensures exact boundary)
-    if (!resolvedPath.startsWith(servicesDir + path.sep) && resolvedPath !== servicesDir) {
-        throw new Error(`Security: Path traversal blocked for filename "${filename}"`);
-    }
-    return resolvedPath;
-}
+// Security: Use pre-validated base directory from index.js
+const servicesDir = AI_AGENT_SERVICES_BASE;
 
 if (!fs.existsSync(servicesDir)) fs.mkdirSync(servicesDir, { recursive: true });
 
 DOMAINS.forEach(domain => {
-    // Security: Use validated safe path
-    const filePath = resolveSafeServicePath(`${domain}.js`);
+    // Security: Use safe path resolution imported from index.js
+    const filePath = resolveSafePath(servicesDir, `${domain}.js`);
     if (!fs.existsSync(filePath)) {
         const content = `import { runDomainService } from './baseService.js';\n\nexport const runDomainService = runDomainService;`;
         fs.writeFileSync(filePath, content);
