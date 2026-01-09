@@ -5,10 +5,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import crypto from 'crypto';
 
 // ============================================
 // Stable Filesystem Roots (Codacy-compliant)
@@ -23,6 +20,7 @@ const LEDGER_PATH = path.resolve(PROJECT_ROOT, 'agents/sovereign-agent/ledger.js
 /**
  * Resolves a path and ensures it's contained within the base directory.
  * This prevents path traversal attacks by checking canonical paths.
+ * Uses fs.realpathSync.native to resolve symlinks and ensure canonical paths.
  * 
  * @param {string} baseDir - The base directory that must contain the target
  * @param {string} targetPath - The target path to resolve
@@ -30,17 +28,59 @@ const LEDGER_PATH = path.resolve(PROJECT_ROOT, 'agents/sovereign-agent/ledger.js
  * @throws {Error} If the resolved path escapes the base directory
  */
 function resolveSafePath(baseDir, targetPath) {
-    // Resolve both paths to their canonical form
-    const resolvedBase = path.resolve(baseDir);
+    // Resolve base to canonical form (follow symlinks)
+    let resolvedBase;
+    try {
+        resolvedBase = fs.realpathSync.native(baseDir);
+    } catch (error) {
+        // If base doesn't exist yet, use path.resolve
+        resolvedBase = path.resolve(baseDir);
+    }
+    
+    // Resolve target path relative to base
     const resolvedTarget = path.resolve(baseDir, targetPath);
+    
+    // For paths that don't exist yet, we can't use realpathSync
+    // But we can check if parent exists and resolve that
+    let canonicalTarget;
+    try {
+        canonicalTarget = fs.realpathSync.native(resolvedTarget);
+    } catch (error) {
+        // Target doesn't exist yet, use resolved path
+        // But check if any parent directories exist and resolve them
+        let checkPath = resolvedTarget;
+        let pathParts = [];
+        
+        while (checkPath !== path.dirname(checkPath)) {
+            if (fs.existsSync(checkPath)) {
+                try {
+                    const canonical = fs.realpathSync.native(checkPath);
+                    // Reconstruct the full path
+                    canonicalTarget = pathParts.length > 0 
+                        ? path.join(canonical, ...pathParts.reverse())
+                        : canonical;
+                    break;
+                } catch (e) {
+                    // Continue up the tree
+                }
+            }
+            pathParts.push(path.basename(checkPath));
+            checkPath = path.dirname(checkPath);
+        }
+        
+        // If we couldn't resolve any parent, use the resolved path
+        if (!canonicalTarget) {
+            canonicalTarget = resolvedTarget;
+        }
+    }
     
     // Ensure the target is within the base directory
     // Use path.sep to ensure proper directory boundary checking
-    if (!resolvedTarget.startsWith(resolvedBase + path.sep) && resolvedTarget !== resolvedBase) {
+    if (!canonicalTarget.startsWith(resolvedBase + path.sep) && canonicalTarget !== resolvedBase) {
         throw new Error(`Path traversal detected: ${targetPath} escapes ${baseDir}`);
     }
     
-    return resolvedTarget;
+    return canonicalTarget;
 }
 
 // ============================================
@@ -161,7 +201,7 @@ function recordTransaction(transaction) {
     const ledger = loadLedger();
     
     const entry = {
-        id: `tx-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        id: `tx-${Date.now()}-${crypto.randomUUID()}`,
         timestamp: new Date().toISOString(),
         ...transaction
     };

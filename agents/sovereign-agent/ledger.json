@@ -54,11 +54,103 @@
       "fileName": "attack.txt",
       "error": "Path traversal detected: ../../../tmp/attack.txt escapes /home/runner/work/tec-ecosystem/tec-ecosystem/domains",
       "success": false
+    },
+    {
+      "id": "tx-1767989982994-751b7890-3e02-48cd-83ee-ab88f3329659",
+      "timestamp": "2026-01-09T20:19:42.994Z",
+      "type": "test",
+      "success": true
+    },
+    {
+      "id": "tx-1767989982998-eeafa233-7e90-43ae-9488-6a5076239384",
+      "timestamp": "2026-01-09T20:19:42.998Z",
+      "type": "domain_write",
+      "domain": "test-domain-sec",
+      "fileName": "test.txt",
+      "path": "/home/runner/work/tec-ecosystem/tec-ecosystem/domains/test-domain-sec/test.txt",
+      "success": true
+    },
+    {
+      "id": "tx-1767989982999-867e1c7e-be32-4d75-92a3-7c0cf860176c",
+      "timestamp": "2026-01-09T20:19:42.999Z",
+      "type": "domain_write",
+      "domain": "../../../etc",
+      "fileName": "passwd",
+      "error": "Path traversal detected: ../../../etc/passwd escapes /home/runner/work/tec-ecosystem/tec-ecosystem/domains",
+      "success": false
+    },
+    {
+      "id": "tx-1767990016303-19b22249-ddf6-4244-b733-c0f48864efe5",
+      "timestamp": "2026-01-09T20:20:16.303Z",
+      "type": "domain_write",
+      "domain": "test-security-domain",
+      "fileName": "domain-write.txt",
+      "path": "/home/runner/work/tec-ecosystem/tec-ecosystem/domains/test-security-domain/domain-write.txt",
+      "success": true
+    },
+    {
+      "id": "tx-1767990016327-3e43bdca-d7bf-443a-997c-c04a1a4660bb",
+      "timestamp": "2026-01-09T20:20:16.327Z",
+      "type": "domain_write",
+      "domain": "test-security-domain",
+      "fileName": "ledger-test.txt",
+      "path": "/home/runner/work/tec-ecosystem/tec-ecosystem/domains/test-security-domain/ledger-test.txt",
+      "success": true
+    },
+    {
+      "id": "tx-1767990016329-a287db2d-c7b6-485c-9d94-b9733daaf171",
+      "timestamp": "2026-01-09T20:20:16.329Z",
+      "type": "domain_write",
+      "domain": "../../../etc",
+      "fileName": "passwd",
+      "error": "Path traversal detected: ../../../etc/passwd escapes /home/runner/work/tec-ecosystem/tec-ecosystem/domains",
+      "success": false
+    },
+    {
+      "id": "tx-1767990016330-866ebd77-9309-4ccf-bbb2-18fb572ab08f",
+      "timestamp": "2026-01-09T20:20:16.330Z",
+      "type": "domain_write",
+      "domain": "test-security-domain",
+      "fileName": "read-domain.txt",
+      "path": "/home/runner/work/tec-ecosystem/tec-ecosystem/domains/test-security-domain/read-domain.txt",
+      "success": true
+    },
+    {
+      "id": "tx-1767990016335-11734f9b-d8a6-47a3-a9bd-32319959e97a",
+      "timestamp": "2026-01-09T20:20:16.335Z",
+      "type": "domain_mkdir",
+      "domain": "new-test-domain",
+      "path": "/home/runner/work/tec-ecosystem/tec-ecosystem/domains/new-test-domain",
+      "success": true
+    },
+    {
+      "id": "tx-1767990023953-57c0a028-cc1d-4597-ae95-6ef8e0eacb1a",
+      "timestamp": "2026-01-09T20:20:23.954Z",
+      "type": "test",
+      "success": true
+    },
+    {
+      "id": "tx-1767990023957-b035ac3b-3fac-408e-8b25-92499e310438",
+      "timestamp": "2026-01-09T20:20:23.957Z",
+      "type": "domain_write",
+      "domain": "test-domain-sec",
+      "fileName": "test.txt",
+      "path": "/home/runner/work/tec-ecosystem/tec-ecosystem/domains/test-domain-sec/test.txt",
+      "success": true
+    },
+    {
+      "id": "tx-1767990023958-e0d67976-39fa-4b32-bbaf-510051d264e2",
+      "timestamp": "2026-01-09T20:20:23.958Z",
+      "type": "domain_write",
+      "domain": "../../../etc",
+      "fileName": "passwd",
+      "error": "Path traversal detected: ../../../etc/passwd escapes /home/runner/work/tec-ecosystem/tec-ecosystem/domains",
+      "success": false
     }
   ],
   "summary": {
-    "totalOperations": 6,
-    "successfulOperations": 4,
-    "failedOperations": 2
+    "totalOperations": 17,
+    "successfulOperations": 12,
+    "failedOperations": 5
   }
 }
