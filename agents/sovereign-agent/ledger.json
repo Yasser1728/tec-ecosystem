@@ -10,11 +10,37 @@
       "fileName": "test.txt",
       "path": "/home/runner/work/tec-ecosystem/tec-ecosystem/domains/test-domain/test.txt",
       "success": true
+    },
+    {
+      "id": "tx-1767987678917-h4mxonun1",
+      "timestamp": "2026-01-09T19:41:18.917Z",
+      "type": "domain_write",
+      "domain": "test-sec-domain",
+      "fileName": "test.txt",
+      "path": "/home/runner/work/tec-ecosystem/tec-ecosystem/domains/test-sec-domain/test.txt",
+      "success": true
+    },
+    {
+      "id": "tx-1767987678918-44ou4rlep",
+      "timestamp": "2026-01-09T19:41:18.918Z",
+      "type": "domain_write",
+      "domain": "../../../tmp",
+      "fileName": "malicious.txt",
+      "error": "Path traversal detected: ../../../tmp/malicious.txt escapes /home/runner/work/tec-ecosystem/tec-ecosystem/domains",
+      "success": false
+    },
+    {
+      "id": "tx-1767987678919-w3r1w8fr6",
+      "timestamp": "2026-01-09T19:41:18.919Z",
+      "type": "domain_mkdir",
+      "domain": "test-new-dir",
+      "path": "/home/runner/work/tec-ecosystem/tec-ecosystem/domains/test-new-dir",
+      "success": true
     }
   ],
   "summary": {
-    "totalOperations": 1,
-    "successfulOperations": 1,
-    "failedOperations": 0
+    "totalOperations": 4,
+    "successfulOperations": 3,
+    "failedOperations": 1
   }
 }
