@@ -110,6 +110,6 @@ function appendLedger(entry) {
 
 // Execute
 runAgent().catch(err => {
-  console.error('Agent failed:', err.message);
+  console.error('Agent failed:', err);
   process.exit(1);
 });
