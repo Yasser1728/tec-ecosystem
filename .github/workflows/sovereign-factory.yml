@@ -19,7 +19,7 @@ jobs:
 
       # 🔑 API Keys
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-      
+
       # 🏛️ Paid Core Models
       GPT_MODEL: ${{ secrets.GPT_MODEL }}
       CLAUDE_MODEL: ${{ secrets.CLAUDE_MODEL }}
@@ -41,28 +41,35 @@ jobs:
       NEXT_PUBLIC_PI_SANDBOX: ${{ secrets.NEXT_PUBLIC_PI_SANDBOX }}
 
     steps:
+      # 1️⃣ Checkout repository
       - name: 📥 Checkout Code
         uses: actions/checkout@v4
 
+      # 2️⃣ Setup Node.js
       - name: 🟢 Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
 
+      # 3️⃣ Install dependencies
       - name: 📚 Install Dependencies
         run: npm ci
 
+      # 4️⃣ Generate Prisma Client (DB & Sandbox)
       - name: 🔧 Generate Prisma Client
         run: npx prisma generate
 
+      # 5️⃣ Build Project
       - name: 🏗️ Build Project
         run: npm run build --if-present
 
+      # 6️⃣ Run Sovereign AI Factory
       - name: 🚀 Run Sovereign AI Factory
         if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
         run: node index.js
 
+      # 7️⃣ Archive Reports
       - name: 📊 Archive Reports
         if: always()
         uses: actions/upload-artifact@v4
@@ -71,3 +78,4 @@ jobs:
           path: |
             ledger_full_log.json
             build.log
+          retention-days: 7
