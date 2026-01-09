@@ -10,7 +10,21 @@ All file outputs are constrained to the `domains/` directory through the `resolv
 
 **Implementation:**
 ```javascript
-const DOMAINS_BASE = path.resolve('domains');
+/**
+ * ============================
+ * Sovereign Filesystem Guard
+ * ============================
+ * All outputs MUST live under /domains
+ * No absolute paths
+ * No traversal
+ */
+
+// Get the directory of the current module file
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Resolve domains directory relative to repository root (2 levels up from agents/sovereign-agent/)
+const DOMAINS_BASE = path.resolve(__dirname, '..', '..', 'domains');
 
 function resolveSafeDomainPath(relativePath) {
   if (!relativePath || typeof relativePath !== 'string') {
@@ -59,6 +73,11 @@ The guard function implements multiple layers of protection:
 **Layer 4: Relative Path Analysis**
 - Uses `path.relative()` to detect if the resolved path escapes the base
 - Blocks any path where the relative result starts with `..`
+
+**Layer 5: Module-Relative Base Path**
+- Uses `import.meta.url` to resolve DOMAINS_BASE relative to the module file
+- Prevents working directory manipulation attacks
+- Ensures consistent security boundaries regardless of where the process is started
 
 **Blocked Attack Vectors:**
 - Absolute paths: `/etc/passwd`, `C:\Windows\...`

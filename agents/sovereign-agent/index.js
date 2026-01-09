@@ -13,7 +13,12 @@ import TASK_MAP from './task-map.js';
  * No traversal
  */
 
-const DOMAINS_BASE = path.resolve('domains');
+// Get the directory of the current module file
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Resolve domains directory relative to repository root (2 levels up from agents/sovereign-agent/)
+const DOMAINS_BASE = path.resolve(__dirname, '..', '..', 'domains');
 
 function resolveSafeDomainPath(relativePath) {
   if (!relativePath || typeof relativePath !== 'string') {
@@ -82,10 +87,6 @@ async function runAgent() {
  * Ledger (append-only)
  * ============================
  */
-
-// Get the directory of the current module file
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const LEDGER_PATH = path.join(__dirname, 'ledger.json');
 
