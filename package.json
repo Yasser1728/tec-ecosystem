@@ -1,8 +1,9 @@
 {
   "name": "tec-ecosystem",
   "version": "1.0.0",
-  "description": "TEC (Titan Elite Commerce) - 24 luxury business domains powered by Pi Network",
+  "description": "TEC (Titan Elite Commerce) - 24 luxury business domains powered by Pi Network & Sovereign AI Factory",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && next build",
@@ -23,7 +24,14 @@
     "test:coverage": "jest --coverage",
     "test:watch": "jest --watch",
     "test:playwright": "playwright test",
-    "test:all": "npm run test:coverage && npm run test:playwright"
+    "test:all": "npm run test:coverage && npm run test:playwright",
+
+    // ======================================
+    // Sovereign AI Factory Scripts
+    // ======================================
+    "ai:run": "node index.js",
+    "ai:generate-services": "node ai-agent/services/generateServices.js",
+    "ai:build": "echo 'Sovereign AI Build Initiated...'"
   },
   "dependencies": {
     "@prisma/client": "^6.1.0",
@@ -39,7 +47,8 @@
     "react": "latest",
     "react-dom": "latest",
     "react-i18next": "^16.5.0",
-    "tailwindcss": "^3.4.19"
+    "tailwindcss": "^3.4.19",
+    "node-fetch": "^3.3.2"
   },
   "devDependencies": {
     "@commitlint/cli": "^18.0.0",
@@ -71,5 +80,8 @@
   },
   "prisma": {
     "seed": "node prisma/seed.js"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   }
 }
