@@ -25,10 +25,6 @@
     "test:watch": "jest --watch",
     "test:playwright": "playwright test",
     "test:all": "npm run test:coverage && npm run test:playwright",
-
-    // ======================================
-    // Sovereign AI Factory Scripts
-    // ======================================
     "ai:run": "node index.js",
     "ai:generate-services": "node ai-agent/services/generateServices.js",
     "ai:build": "echo 'Sovereign AI Build Initiated...'"
