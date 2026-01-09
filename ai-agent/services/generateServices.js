@@ -21,7 +21,8 @@ const servicesDir = path.resolve(PROJECT_ROOT, 'ai-agent', 'services');
 function resolveSafeServicePath(filename) {
     const resolvedPath = path.resolve(servicesDir, filename);
     // Security: Check containment within services directory
-    if (!resolvedPath.startsWith(servicesDir + path.sep)) {
+    // Allow base directory itself OR files within it (using path.sep ensures exact boundary)
+    if (!resolvedPath.startsWith(servicesDir + path.sep) && resolvedPath !== servicesDir) {
         throw new Error(`Security: Path traversal blocked for filename "${filename}"`);
     }
     return resolvedPath;

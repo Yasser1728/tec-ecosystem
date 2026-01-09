@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
-import { CONFIG, loadService, LEDGER_PATH } from './index.js';
-import { recordTransaction, generateFinalReport, getCostSignal } from './ai-agent/core/ledger.js';
-import { executeModel } from './ai-agent/core/openrouter.js';
+import { CONFIG, loadService, LEDGER_PATH } from '../index.js';
+import { recordTransaction, generateFinalReport, getCostSignal } from './core/ledger.js';
+import { executeModel } from './core/openrouter.js';
 
 // كل دومين له مهمة محددة
 const DOMAIN_TASK_MAP = {
