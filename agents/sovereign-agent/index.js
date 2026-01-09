@@ -5,7 +5,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 import { chatCompletion } from './openrouter.client.js';
 import { getAllDomains, getTasksForDomain } from './task-map.js';
 
@@ -23,11 +23,14 @@ const DOMAINS_ROOT = path.join(__dirname, '../../domains');
  * @returns {string} Safe filename
  */
 function safeSlug(text, maxLength = 50) {
-  return text
+  const slug = text
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
     .slice(0, maxLength);
+  
+  // Handle empty string case
+  return slug || 'untitled';
 }
 
 /**
@@ -213,7 +216,7 @@ async function runAgent() {
 }
 
 // Run if executed directly
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   runAgent().catch(error => {
     console.error('\n💥 Critical error:', error);
     process.exit(1);

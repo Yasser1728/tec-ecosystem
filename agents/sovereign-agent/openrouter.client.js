@@ -85,16 +85,23 @@ async function makeRequest(model, messages, config) {
  * @returns {Promise<Object>} Result with model, text, and usage
  */
 export async function chatCompletion(messages) {
+  // Validate message structure first (before config check)
+  if (!Array.isArray(messages) || messages.length === 0) {
+    throw new Error('Messages must be a non-empty array');
+  }
+
+  for (const msg of messages) {
+    if (!msg.role || !msg.content) {
+      throw new Error('Each message must have "role" and "content" properties');
+    }
+  }
+
   const config = getConfig();
 
   if (!config.apiKey) {
     throw new Error(
       'OPENROUTER_API_KEY environment variable is required'
     );
-  }
-
-  if (!Array.isArray(messages) || messages.length === 0) {
-    throw new Error('Messages must be a non-empty array');
   }
 
   // Try free models first
