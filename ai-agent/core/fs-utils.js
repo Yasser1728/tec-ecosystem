@@ -63,15 +63,16 @@ export function resolveSafePath(basePath, userPath) {
   } catch {
     // If path doesn't exist, verify parent exists and is safe
     const parentDir = path.dirname(fullPath);
-    if (!fs.existsSync(parentDir)) {
-      throw new Error('[FS-UTILS] Parent directory does not exist');
+    try {
+      const canonicalParent = fs.realpathSync.native(parentDir);
+      if (!canonicalParent.startsWith(canonicalBase)) {
+        throw new Error('[FS-UTILS] Path escapes base directory');
+      }
+      // For non-existent files, use the resolved path
+      canonicalFull = fullPath;
+    } catch {
+      throw new Error('[FS-UTILS] Parent directory does not exist or is invalid');
     }
-    const canonicalParent = fs.realpathSync.native(parentDir);
-    if (!canonicalParent.startsWith(canonicalBase)) {
-      throw new Error('[FS-UTILS] Path escapes base directory');
-    }
-    // For non-existent files, use the resolved path
-    canonicalFull = fullPath;
   }
   
   // Verify the resolved path is within base
@@ -89,9 +90,14 @@ export function getDomainServicePath(domain) {
   validateDomain(domain);
   const servicesBase = path.join(PROJECT_ROOT, 'ai-agent', 'services');
   
-  // Ensure services directory exists
-  if (!fs.existsSync(servicesBase)) {
+  // Ensure services directory exists using try-catch instead of existsSync
+  try {
     fs.mkdirSync(servicesBase, { recursive: true });
+  } catch (err) {
+    // Directory already exists or error creating it
+    if (err.code !== 'EEXIST') {
+      throw err;
+    }
   }
   
   return resolveSafePath(servicesBase, `${domain}.js`);
@@ -124,7 +130,9 @@ export function writeFullLedgerLog(data) {
 export function domainServiceExists(domain) {
   try {
     const servicePath = getDomainServicePath(domain);
-    return fs.existsSync(servicePath);
+    // Use statSync instead of existsSync for better error handling
+    fs.statSync(servicePath);
+    return true;
   } catch {
     return false;
   }
