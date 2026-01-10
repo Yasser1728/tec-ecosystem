@@ -124,9 +124,8 @@ function writeFullLedgerLog(ledger) {
 
   const json = JSON.stringify(ledger ?? {}, null, 2);
 
-  // eslint-disable-next-line security/detect-non-literal-fs-filename -- tmpPath is safely constructed via resolveSafePath with constant filename, preventing path traversal
+  // File paths are safely constructed via resolveSafePath with constant filename, preventing path traversal
   fs.writeFileSync(tmpPath, json, { encoding: 'utf8', mode: 0o600 });
-  // eslint-disable-next-line security/detect-non-literal-fs-filename -- ledgerPath is safely constructed via resolveSafePath with constant filename, preventing path traversal
   fs.renameSync(tmpPath, ledgerPath);
 }
 
