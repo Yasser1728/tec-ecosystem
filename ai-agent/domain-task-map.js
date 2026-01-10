@@ -6,13 +6,16 @@
 //  - safe path resolution guards (no path traversal, fixed base dir)
 //  - writing ledger_full_log.json via a fixed guarded path
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 /**
  * Absolute base directory for all file operations in this module.
- * Using __dirname ensures paths are scoped to this file's directory.
+ * Using __dirname equivalent ensures paths are scoped to this file's directory.
  */
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const BASE_DIR = path.resolve(__dirname);
 
 /**
@@ -147,7 +150,7 @@ function getTasksForDomain(domain) {
   return DOMAIN_TASK_MAP[d] ? [...DOMAIN_TASK_MAP[d]] : [];
 }
 
-module.exports = {
+export {
   DOMAIN_TASK_MAP,
   DOMAIN_ALLOWLIST,
   validateDomain,
