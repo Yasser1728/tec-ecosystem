@@ -1,8 +1,21 @@
 {
   "name": "tec-ecosystem",
   "version": "1.0.0",
-  "type": "module",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "ai:domain-map": "node ai-agent/domain-task-map.js"
-  }
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "ai:domain-map": "node scripts/ai-domain-map.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yasser1728/tec-ecosystem.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Yasser1728/tec-ecosystem/issues"
+  },
+  "homepage": "https://github.com/Yasser1728/tec-ecosystem#readme"
 }
