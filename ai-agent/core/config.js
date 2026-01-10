@@ -8,7 +8,8 @@
 function requireEnv(name) {
   const value = process.env[name];
   if (!value) {
-    throw new Error(`[CONFIG] Missing required secret: ${name}`);
+    console.warn(`[CONFIG] Missing optional secret: ${name} (sandbox mode)`);
+    return null;
   }
   return value;
 }
@@ -24,25 +25,25 @@ export const OPENROUTER_API_KEY = requireEnv('OPENROUTER_API_KEY');
 export const PAID_CORE = {
   STRATEGY: {
     name: 'GPT-5.2 Pro',
-    model: requireEnv('GPT_MODEL'),
+    model: process.env.GPT_MODEL || null,
     tier: 'PAID_CORE',
     costPerCall: 1.5
   },
   ARCHITECT: {
     name: 'Claude 4.5 Sonnet',
-    model: requireEnv('CLAUDE_MODEL'),
+    model: process.env.CLAUDE_MODEL || null,
     tier: 'PAID_CORE',
     costPerCall: 1.2
   },
   AUDITOR: {
     name: 'Gemini 3 Pro',
-    model: requireEnv('GEMINI_MODEL'),
+    model: process.env.GEMINI_MODEL || null,
     tier: 'PAID_CORE',
     costPerCall: 1.8
   },
   DEVELOPER: {
     name: 'GPT-5.1 Codex Max',
-    model: requireEnv('CODEX_MODEL'),
+    model: process.env.CODEX_MODEL || null,
     tier: 'PAID_CORE',
     costPerCall: 1.4
   }
