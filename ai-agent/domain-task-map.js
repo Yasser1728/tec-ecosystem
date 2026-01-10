@@ -119,10 +119,10 @@ function resolveSafePath(...segments) {
  */
 function writeFullLedgerLog(ledger) {
   const ledgerPath = resolveSafePath(LEDGER_FILENAME);
+  const tmpPath = resolveSafePath(`${LEDGER_FILENAME}.tmp`);
+
   const json = JSON.stringify(ledger ?? {}, null, 2);
 
-  // Write atomically to avoid partial writes.
-  const tmpPath = `${ledgerPath}.tmp`;
   fs.writeFileSync(tmpPath, json, { encoding: 'utf8', mode: 0o600 });
   fs.renameSync(tmpPath, ledgerPath);
 }
