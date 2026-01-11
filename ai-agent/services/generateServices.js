@@ -35,12 +35,6 @@ if (!ENABLE_SERVICE_GENERATION) {
 }
 
 DOMAINS.forEach(domain => {
-    // Double-check domain validation
-    if (!isValidDomain(domain)) {
-        console.error(`❌ Domain ${domain} is not in the allow-list. Skipping.`);
-        return;
-    }
-    
     const filePath = path.join(servicesDir, `${domain}.js`);
     if (!fs.existsSync(filePath)) {
         const content = [

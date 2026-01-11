@@ -56,19 +56,14 @@ async function handler(req, res) {
 
   try {
     // Apply guards
-    const { rateLimit, costLimit, bodySizeGuard, validateSchema, sanitizeInput } = await import('../../../lib/api-guard');
+    const { rateLimit, costLimit, bodySizeGuard, validateSchema, sanitizeInput, recordCost } = await import('../../../lib/api-guard');
     
     await runMiddleware(req, res, rateLimit(RATE_LIMIT));
     await runMiddleware(req, res, costLimit(COST_LIMIT));
     await runMiddleware(req, res, bodySizeGuard(BODY_SIZE_LIMIT));
     await runMiddleware(req, res, validateSchema(ASSISTANT_SCHEMA));
-  } catch (error) {
-    // Middleware already sent response
-    return;
-  }
-
-  try {
-    const { sanitizeInput, recordCost } = await import('../../../lib/api-guard');
+    
+    // Now process the request
     const { message, userId, context } = req.body;
 
     // Sanitize message

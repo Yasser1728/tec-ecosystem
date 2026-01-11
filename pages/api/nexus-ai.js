@@ -76,10 +76,12 @@ async function handler(req, res) {
 
     // Sanitize history
     const sanitizedHistory = Array.isArray(history) 
-      ? history.slice(-10).map(msg => ({
-          role: msg.role,
-          content: sanitizeInput(msg.content || '')
-        }))
+      ? history.slice(-10)
+          .filter(msg => msg && typeof msg === 'object' && msg.role)
+          .map(msg => ({
+            role: msg.role,
+            content: sanitizeInput(msg.content || '')
+          }))
       : [];
 
     const messages = [
