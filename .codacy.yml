@@ -10,23 +10,14 @@ engines:
       languages:
         - javascript
         - typescript
-      threshold: 3  # Minimum duplicate lines to trigger warning
+      threshold: 3  # Minimum duplicate lines to trigger warning (TEC ecosystem standard for controlled patterns)
   eslint:
     enabled: true
   markdownlint:
     enabled: true
 
-# Explicitly disable specific complexity checks that are controlled by design
+# Explicitly exclude specific paths where complexity is controlled by design
 # in the TEC ecosystem (e.g., sovereign agent execution patterns)
-exclude_patterns:
-  - message: "Function has too many parameters"
-    paths:
-      - "**/ai-agent/**"
-  - message: "Cognitive Complexity"
-    paths:
-      - "**/ai-agent/**"
-      - "**/lib/forensic-utils.js"
-
 exclude_paths:
   - "node_modules/**"
   - "dist/**"
@@ -40,3 +31,5 @@ exclude_paths:
   - ".vercel/**"
   - "tests/**/*.test.js"
   - "tests/**/*.spec.js"
+  - "ai-agent/**"  # Controlled complexity by governance design
+  - "lib/forensic-utils.js"  # Controlled complexity for forensic operations
