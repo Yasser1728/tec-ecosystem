@@ -44,8 +44,6 @@ exclude_paths:
   - ".nyc_output/**"
 
   # Minified files (already optimized)
-  - "*.min.js"
-  - "*.min.css"
   - "**/*.min.js"
   - "**/*.min.css"
 
