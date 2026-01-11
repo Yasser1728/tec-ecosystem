@@ -60,7 +60,7 @@ for (let i = shuffled.length - 1; i > 0; i--) {
 **Usage**: `Math.random()` is used for visual particle animation effects.
 
 **Status**: Appropriate and documented
-- Lines 55-67 contain extensive documentation explaining this is NOT security-sensitive
+- Lines 52-67 contain extensive documentation explaining this is NOT security-sensitive
 - Used only for rendering graphics (particle positions, velocities, radius)
 - Performance-optimized for animation (crypto random not needed)
 
