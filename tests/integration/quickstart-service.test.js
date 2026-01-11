@@ -12,8 +12,10 @@ const quickStartService = require('../../lib/services/quickStartService');
 const { QUICK_START_STEPS, STATUS } = require('../../lib/services/quickStartService');
 
 // Test constants
-// Using constant from top of file // Asset value threshold for insurance recommendation
-// Using constant from top of file // Minimum investment amount
+// Asset value threshold for insurance recommendation
+const INSURANCE_THRESHOLD = 10000;
+// Minimum investment amount
+const MIN_INVESTMENT = 1000;
 const NAV_PRICE = 125.5; // Net Asset Value price per share
 
 describe('QuickStartService Integration Tests', () => {
