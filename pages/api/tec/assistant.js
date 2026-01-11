@@ -5,12 +5,22 @@
  * @route POST /api/tec/assistant
  */
 
+import { z } from 'zod';
+import { withApiGuard } from '../../../lib/api-guard.js';
+
 const AiAssistantService = require('../../../domains/tec/services/aiAssistantService');
 
 // Singleton instance to maintain conversation history across requests
 const assistantService = new AiAssistantService();
 
-export default async function handler(req, res) {
+// Define validation schema
+const assistantRequestSchema = z.object({
+  message: z.string().min(1).max(5000),
+  userId: z.string().optional(),
+  context: z.record(z.any()).optional(),
+});
+
+async function handler(req, res) {
   // Only allow POST requests
   if (req.method !== 'POST') {
     return res.status(405).json({ 
@@ -21,14 +31,6 @@ export default async function handler(req, res) {
 
   try {
     const { message, userId, context } = req.body;
-
-    // Validate message
-    if (!message || typeof message !== 'string' || message.trim() === '') {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'Message is required and must be a non-empty string' 
-      });
-    }
 
     // Use session userId or default to 'guest'
     const effectiveUserId = userId || req.session?.user?.id || 'guest';
@@ -58,3 +60,10 @@ export default async function handler(req, res) {
     });
   }
 }
+
+// Export handler with API guard (20 requests per minute)
+export default withApiGuard(handler, {
+  schema: assistantRequestSchema,
+  rateLimit: 20,
+  maxBodySize: 1 * 1024 * 1024, // 1MB
+});

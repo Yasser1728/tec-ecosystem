@@ -79,18 +79,93 @@ async function organizeDomainFiles() {
 }
 
 // ============================================
-// Select Model (Paid if available, else Free)
+// Cost Guard: Track per-user costs
 // ============================================
-function selectModel() {
+const userCostTracker = new Map();
+const COST_THRESHOLDS = {
+    perUser: {
+        warning: 10,  // Warn at $10
+        limit: 50,    // Hard limit at $50
+    },
+    global: {
+        warning: 100,
+        limit: 500,
+    }
+};
+
+function trackUserCost(userId, cost) {
+    const current = userCostTracker.get(userId) || 0;
+    const updated = current + cost;
+    userCostTracker.set(userId, updated);
+    
+    if (updated > COST_THRESHOLDS.perUser.limit) {
+        console.error(`[COST GUARD] User ${userId} exceeded cost limit: $${updated.toFixed(2)}`);
+        throw new Error(`Cost limit exceeded for user ${userId}`);
+    } else if (updated > COST_THRESHOLDS.perUser.warning) {
+        console.warn(`[COST GUARD] User ${userId} approaching cost limit: $${updated.toFixed(2)}`);
+    }
+    
+    return updated;
+}
+
+function getCostReport() {
+    const report = {
+        users: Array.from(userCostTracker.entries()).map(([userId, cost]) => ({
+            userId,
+            cost: cost.toFixed(2),
+            status: cost > COST_THRESHOLDS.perUser.limit ? 'EXCEEDED' :
+                    cost > COST_THRESHOLDS.perUser.warning ? 'WARNING' : 'OK'
+        })),
+        total: Array.from(userCostTracker.values()).reduce((sum, cost) => sum + cost, 0)
+    };
+    return report;
+}
+
+// ============================================
+// Select Model (Paid if available, else Free)
+// Enhanced with fallback mechanisms
+// ============================================
+function selectModel(options = {}) {
+    const { forceType = null, requiresComplex = false } = options;
+    
+    // If forcing a specific type
+    if (forceType === 'free') {
+        for (const [key, model] of Object.entries(CONFIG.models.free)) {
+            if (model) {
+                console.log(`[MODEL SELECT] Forced free model: ${model}`);
+                return { type: 'free', name: model, key };
+            }
+        }
+    }
+    
+    // Prefer paid models for complex tasks or by default
+    if (requiresComplex || forceType === 'paid') {
+        for (const [key, model] of Object.entries(CONFIG.models.paid)) {
+            if (model) {
+                console.log(`[MODEL SELECT] Selected paid model: ${model}`);
+                return { type: 'paid', name: model, key };
+            }
+        }
+    }
+    
+    // Smart fallback: try paid first, then free
     for (const [key, model] of Object.entries(CONFIG.models.paid)) {
-        if (model) return { type: 'paid', name: model };
+        if (model) {
+            console.log(`[MODEL SELECT] Using paid model: ${model}`);
+            return { type: 'paid', name: model, key };
+        }
     }
-    // fallback to free models
+    
+    // Fallback to free models
     for (const [key, model] of Object.entries(CONFIG.models.free)) {
-        if (model) return { type: 'free', name: model };
+        if (model) {
+            console.log(`[MODEL SELECT] Fallback to free model: ${model}`);
+            return { type: 'free', name: model, key };
+        }
     }
-    console.warn('No model found. AI operations will use sandbox defaults.');
-    return { type: 'sandbox', name: null };
+    
+    console.warn('[MODEL SELECT] No model found. AI operations will use sandbox defaults.');
+    return { type: 'sandbox', name: null, key: 'sandbox' };
 }
 
 // ============================================
@@ -130,11 +205,22 @@ async function runSovereignOS() {
                     domain,
                     role: result.meta?.role || 'PRIMARY'
                 });
+                
+                // Track cost per domain (using domain as userId for simplicity)
+                const estimatedCost = (result.usage.total_tokens || 0) * 0.00001; // Rough estimate
+                try {
+                    trackUserCost(domain, estimatedCost);
+                } catch (costError) {
+                    console.error(`[COST GUARD] ${costError.message}`);
+                    break; // Stop processing if cost limit exceeded
+                }
             }
 
             // Budget control
-            if (getCostSignal().isLowBalance) {
+            const costSignal = getCostSignal();
+            if (costSignal.isLowBalance) {
                 console.warn(`Budget threshold reached for ${domain}. Switching to reserve mode.`);
+                // Could switch to free models here if needed
             }
 
             console.log(`Domain ${domain} processed successfully.`);
@@ -151,10 +237,24 @@ async function runSovereignOS() {
     const report = generateFinalReport();
     console.log("\n[Sovereign OS] Final Operational Report:");
     console.log(JSON.stringify(report.summary, null, 2));
+    
+    // Cost report
+    const costReport = getCostReport();
+    console.log("\n[Cost Analysis]:");
+    console.log(`Total estimated cost: $${costReport.total.toFixed(2)}`);
+    console.log(`Users tracked: ${costReport.users.length}`);
+    costReport.users.forEach(user => {
+        console.log(`  - ${user.userId}: $${user.cost} [${user.status}]`);
+    });
 
     // Save full logs
     const logsPath = path.join(__dirname, 'ledger_full_log.json');
-    fs.writeFileSync(logsPath, JSON.stringify(report.logs, null, 2));
+    const fullReport = {
+        ...report,
+        costAnalysis: costReport,
+        timestamp: new Date().toISOString()
+    };
+    fs.writeFileSync(logsPath, JSON.stringify(fullReport, null, 2));
     console.log(`Full ledger logs saved to ${logsPath}`);
 }
 
@@ -171,4 +271,4 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 // ============================================
 // Exports
 // ============================================
-export { CONFIG, runSovereignOS, organizeDomainFiles, loadService, selectModel };
+export { CONFIG, runSovereignOS, organizeDomainFiles, loadService, selectModel, trackUserCost, getCostReport };
