@@ -39,6 +39,13 @@ const CONFIG = {
             o4: process.env.O4_ENGINEER_MODEL,
             devstral: process.env.DEVSTRAL_MODEL
         }
+    },
+    // Cost control limits
+    limits: {
+        maxCostPerRun: parseFloat(process.env.MAX_COST_PER_RUN || '50.0'), // Max cost per execution
+        maxCostPerDomain: parseFloat(process.env.MAX_COST_PER_DOMAIN || '5.0'), // Max cost per domain
+        maxTokensPerDomain: parseInt(process.env.MAX_TOKENS_PER_DOMAIN || '100000', 10), // Max tokens per domain
+        enableCostGuards: process.env.ENABLE_COST_GUARDS !== 'false' // Enable by default
     }
 };
 
@@ -82,15 +89,58 @@ async function organizeDomainFiles() {
 // Select Model (Paid if available, else Free)
 // ============================================
 function selectModel() {
+    // Validate model configuration
+    const selectedModel = { type: 'sandbox', name: null, cost: 0 };
+    
+    // Check paid models first
     for (const [key, model] of Object.entries(CONFIG.models.paid)) {
-        if (model) return { type: 'paid', name: model };
+        if (model) {
+            selectedModel.type = 'paid';
+            selectedModel.name = model;
+            selectedModel.cost = 1.0; // Estimated cost per call
+            return selectedModel;
+        }
     }
-    // fallback to free models
+    
+    // Fallback to free models
     for (const [key, model] of Object.entries(CONFIG.models.free)) {
-        if (model) return { type: 'free', name: model };
+        if (model) {
+            selectedModel.type = 'free';
+            selectedModel.name = model;
+            selectedModel.cost = 0;
+            return selectedModel;
+        }
     }
+    
     console.warn('No model found. AI operations will use sandbox defaults.');
-    return { type: 'sandbox', name: null };
+    return selectedModel;
+}
+
+// ============================================
+// Cost Guard: Check if domain can proceed
+// ============================================
+function canProceedWithCost(domain, estimatedCost, totalCostSoFar) {
+    if (!CONFIG.limits.enableCostGuards) {
+        return { allowed: true };
+    }
+    
+    // Check total cost limit
+    if (totalCostSoFar + estimatedCost > CONFIG.limits.maxCostPerRun) {
+        return {
+            allowed: false,
+            reason: `Total run cost would exceed limit: ${CONFIG.limits.maxCostPerRun}`
+        };
+    }
+    
+    // Check per-domain cost limit
+    if (estimatedCost > CONFIG.limits.maxCostPerDomain) {
+        return {
+            allowed: false,
+            reason: `Domain cost would exceed limit: ${CONFIG.limits.maxCostPerDomain}`
+        };
+    }
+    
+    return { allowed: true };
 }
 
 // ============================================
@@ -103,9 +153,18 @@ async function runSovereignOS() {
 
     const modelInfo = selectModel();
     console.log(`Using ${modelInfo.type} model: ${modelInfo.name || 'Sandbox'}`);
+    
+    let totalCost = 0;
 
     for (const domain of CONFIG.domains) {
         console.log(`\n[PROCESS] Domain: ${domain}`);
+
+        // Cost guard check
+        const costCheck = canProceedWithCost(domain, modelInfo.cost, totalCost);
+        if (!costCheck.allowed) {
+            console.warn(`⚠️ Skipping ${domain}: ${costCheck.reason}`);
+            continue;
+        }
 
         // Load domain service dynamically
         const runService = await loadService(domain);
@@ -130,11 +189,21 @@ async function runSovereignOS() {
                     domain,
                     role: result.meta?.role || 'PRIMARY'
                 });
+                
+                // Track actual cost
+                totalCost += (modelDetails.costPerCall || 0);
             }
 
             // Budget control
-            if (getCostSignal().isLowBalance) {
+            const costSignal = getCostSignal();
+            if (costSignal.isLowBalance) {
                 console.warn(`Budget threshold reached for ${domain}. Switching to reserve mode.`);
+            }
+            
+            // Additional cost guard during execution
+            if (CONFIG.limits.enableCostGuards && totalCost >= CONFIG.limits.maxCostPerRun) {
+                console.warn(`⚠️ Maximum run cost reached (${CONFIG.limits.maxCostPerRun}). Stopping execution.`);
+                break;
             }
 
             console.log(`Domain ${domain} processed successfully.`);
@@ -151,6 +220,7 @@ async function runSovereignOS() {
     const report = generateFinalReport();
     console.log("\n[Sovereign OS] Final Operational Report:");
     console.log(JSON.stringify(report.summary, null, 2));
+    console.log(`Total estimated cost: $${totalCost.toFixed(2)}`);
 
     // Save full logs
     const logsPath = path.join(__dirname, 'ledger_full_log.json');
@@ -171,4 +241,4 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 // ============================================
 // Exports
 // ============================================
-export { CONFIG, runSovereignOS, organizeDomainFiles, loadService, selectModel };
+export { CONFIG, runSovereignOS, organizeDomainFiles, loadService, selectModel, canProceedWithCost };

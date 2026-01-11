@@ -10,7 +10,42 @@ const AiAssistantService = require('../../../domains/tec/services/aiAssistantSer
 // Singleton instance to maintain conversation history across requests
 const assistantService = new AiAssistantService();
 
-export default async function handler(req, res) {
+// Rate limiting configuration
+const RATE_LIMIT = { maxRequests: 30, windowMs: 60 * 1000 }; // 30 requests per minute
+const COST_LIMIT = { maxCostPerHour: 3.0 };
+const BODY_SIZE_LIMIT = { maxSize: 15 * 1024 }; // 15KB
+
+// Schema validation
+const ASSISTANT_SCHEMA = {
+  message: {
+    required: true,
+    type: 'string',
+    minLength: 1,
+    maxLength: 1000
+  },
+  userId: {
+    required: false,
+    type: 'string'
+  },
+  context: {
+    required: false,
+    type: 'object'
+  }
+};
+
+// Middleware runner helper
+async function runMiddleware(req, res, fn) {
+  return new Promise((resolve, reject) => {
+    fn(req, res, (result) => {
+      if (result instanceof Error) {
+        return reject(result);
+      }
+      return resolve(result);
+    });
+  });
+}
+
+async function handler(req, res) {
   // Only allow POST requests
   if (req.method !== 'POST') {
     return res.status(405).json({ 
@@ -20,15 +55,19 @@ export default async function handler(req, res) {
   }
 
   try {
+    // Apply guards
+    const { rateLimit, costLimit, bodySizeGuard, validateSchema, sanitizeInput, recordCost } = await import('../../../lib/api-guard');
+    
+    await runMiddleware(req, res, rateLimit(RATE_LIMIT));
+    await runMiddleware(req, res, costLimit(COST_LIMIT));
+    await runMiddleware(req, res, bodySizeGuard(BODY_SIZE_LIMIT));
+    await runMiddleware(req, res, validateSchema(ASSISTANT_SCHEMA));
+    
+    // Now process the request
     const { message, userId, context } = req.body;
 
-    // Validate message
-    if (!message || typeof message !== 'string' || message.trim() === '') {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'Message is required and must be a non-empty string' 
-      });
-    }
+    // Sanitize message
+    const sanitizedMessage = sanitizeInput(message);
 
     // Use session userId or default to 'guest'
     const effectiveUserId = userId || req.session?.user?.id || 'guest';
@@ -36,9 +75,12 @@ export default async function handler(req, res) {
     // Process message through AI Assistant Service
     const response = await assistantService.processMessage(
       effectiveUserId,
-      message,
+      sanitizedMessage,
       context || {}
     );
+    
+    // Record minimal cost (mock service, minimal cost)
+    recordCost(req, 0.001);
 
     // Return successful response
     return res.status(200).json({
@@ -58,3 +100,5 @@ export default async function handler(req, res) {
     });
   }
 }
+
+export default handler;
