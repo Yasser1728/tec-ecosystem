@@ -1,15 +1,22 @@
+import { z } from 'zod';
+import { withApiGuard } from "../../lib/api-guard.js";
 import { TEC_KNOWLEDGE, SYSTEM_PROMPT } from "../../lib/nexus-ai-knowledge";
 
-export default async function handler(req, res) {
+// Define validation schema
+const nexusAiRequestSchema = z.object({
+  message: z.string().min(1).max(5000),
+  history: z.array(z.object({
+    role: z.enum(['user', 'assistant', 'system']),
+    content: z.string(),
+  })).optional().default([]),
+});
+
+async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
   const { message, history = [] } = req.body;
-
-  if (!message) {
-    return res.status(400).json({ error: "Message is required" });
-  }
 
   if (!process.env.OPENAI_API_KEY) {
     return res.status(500).json({
@@ -78,3 +85,10 @@ How can I help you today?`;
     res.status(200).json({ response: fallbackResponse });
   }
 }
+
+// Export handler with API guard (15 requests per minute)
+export default withApiGuard(handler, {
+  schema: nexusAiRequestSchema,
+  rateLimit: 15,
+  maxBodySize: 1 * 1024 * 1024, // 1MB
+});
