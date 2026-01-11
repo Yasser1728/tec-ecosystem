@@ -70,6 +70,13 @@ jobs:
       - name: 🏗️ Build Next.js Application  
         run: npm run build  
 
+      # 5.5️⃣ Run Protection Layer Tests  
+      - name: 🧪 Run Protection Layer Tests  
+        run: |  
+          npm test -- tests/unit/api-guard.test.js  
+          npm test -- tests/unit/selectModel.test.js  
+        continue-on-error: false  
+
       # 6️⃣ Run AI Sovereign Factory (Self-Healing & Agents)  
       - name: 🤖 Run AI Self-Healing System (Sovereign Factory)  
         if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'  
