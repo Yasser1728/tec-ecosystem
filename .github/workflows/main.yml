@@ -61,6 +61,8 @@ jobs:
       # 3️⃣ Install dependencies  
       # ملاحظة مهندس AI: لو الـ npm ci بيفشل، شغل npm install محلياً وارفع الـ lock file الجديد
       - name: 📚 Install dependencies  
+        env:
+          NPM_CONFIG_PRODUCTION: "false"
         run: npm ci  
 
       # 🛡️ 4️⃣ اختبارات السيادة والحوكمة (AI Engineering Check)
