@@ -70,7 +70,7 @@ All constraints are mandatory and non-negotiable.
 
 - Task map schema versioning is not yet strictly enforced.
 - Ledger write failures are logged but may not halt execution in all cases.
-- Some Codacy complexity warnings are accepted due to controlled execution design.
+- Some Codacy complexity warnings may be present due to controlled execution design, but are intentionally accepted as they do not compromise security or governance guarantees.
 
 ---
 
@@ -93,3 +93,5 @@ All constraints are mandatory and non-negotiable.
 
 This agent is governance-enforced, policy-bound, and statically verifiable.
 Its behavior is constrained, auditable, and intentionally non-autonomous.
+
+**Security Status**: All critical Codacy security issues have been resolved, including the replacement of `Math.random()` with cryptographically secure alternatives (`crypto.randomInt`) in all security-sensitive code paths. The codebase maintains cryptographic security standards while preserving performance where appropriate (e.g., using `Math.random()` only for non-security visual effects).
