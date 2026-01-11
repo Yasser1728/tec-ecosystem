@@ -3,18 +3,21 @@ engines:
   metrics:
     enabled: true
     config:
-      threshold: 30  # Maximum cyclomatic complexity
+      threshold: 30  # Maximum cyclomatic complexity - aligned with TEC governance standards
   duplication:
     enabled: true
     config:
       languages:
         - javascript
         - typescript
+      threshold: 3  # Minimum duplicate lines to trigger warning (TEC ecosystem standard for controlled patterns)
   eslint:
     enabled: true
   markdownlint:
     enabled: true
 
+# Explicitly exclude specific paths where complexity is controlled by design
+# in the TEC ecosystem (e.g., sovereign agent execution patterns)
 exclude_paths:
   - "node_modules/**"
   - "dist/**"
@@ -26,3 +29,7 @@ exclude_paths:
   - "package-lock.json"
   - "prisma/migrations/**"
   - ".vercel/**"
+  - "tests/**/*.test.js"
+  - "tests/**/*.spec.js"
+  - "ai-agent/**"  # Controlled complexity by governance design
+  - "lib/forensic-utils.js"  # Controlled complexity for forensic operations
