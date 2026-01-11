@@ -15,7 +15,25 @@ if (!fs.existsSync(servicesDir)) fs.mkdirSync(servicesDir, { recursive: true });
 DOMAINS.forEach(domain => {
     const filePath = path.join(servicesDir, `${domain}.js`);
     if (!fs.existsSync(filePath)) {
-        const content = `import { runDomainService } from './baseService.js';\n\nexport const runDomainService = runDomainService;`;
+        const content = [
+            "import { createService } from './baseService.js';",
+            '',
+            'let runDomainService;',
+            '',
+            'try {',
+            '  const { run } = createService({',
+            "    domain: '" + domain + "',",
+            "    purpose: 'Sovereign operation for " + domain + "'",
+            '  });',
+            '  runDomainService = run;',
+            '} catch (error) {',
+            "  console.error('Failed to initialize service for " + domain + ":', error.message);",
+            "  runDomainService = async () => ({ ok: false, error: error.message, usage: { total_tokens: 0 }, meta: { domain: '" + domain + "', sandbox: true } });",
+            '}',
+            '',
+            'export { runDomainService };',
+            ''
+        ].join('\n');
         fs.writeFileSync(filePath, content);
         console.log(`✅ Created service module: ${domain}.js`);
     } else {
