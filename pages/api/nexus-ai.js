@@ -1,18 +1,66 @@
 import { TEC_KNOWLEDGE, SYSTEM_PROMPT } from "../../lib/nexus-ai-knowledge";
+import { sanitizeInput, recordCost } from "../../lib/api-guard";
 
-export default async function handler(req, res) {
+// Rate limiting configuration
+const RATE_LIMIT = { maxRequests: 20, windowMs: 60 * 1000 }; // 20 requests per minute
+const COST_LIMIT = { maxCostPerHour: 5.0 };
+const BODY_SIZE_LIMIT = { maxSize: 20 * 1024 }; // 20KB
+
+// Schema validation
+const MESSAGE_SCHEMA = {
+  message: {
+    required: true,
+    type: 'string',
+    minLength: 1,
+    maxLength: 2000
+  },
+  history: {
+    required: false,
+    type: 'object'
+  }
+};
+
+// Middleware runner helper
+async function runMiddleware(req, res, fn) {
+  return new Promise((resolve, reject) => {
+    fn(req, res, (result) => {
+      if (result instanceof Error) {
+        return reject(result);
+      }
+      return resolve(result);
+    });
+  });
+}
+
+async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
+    return res.status(405).json({ 
+      success: false,
+      error: "Method not allowed" 
+    });
+  }
+
+  try {
+    // Apply guards
+    const { rateLimit, costLimit, bodySizeGuard, validateSchema } = await import("../../lib/api-guard");
+    
+    await runMiddleware(req, res, rateLimit(RATE_LIMIT));
+    await runMiddleware(req, res, costLimit(COST_LIMIT));
+    await runMiddleware(req, res, bodySizeGuard(BODY_SIZE_LIMIT));
+    await runMiddleware(req, res, validateSchema(MESSAGE_SCHEMA));
+  } catch (error) {
+    // Middleware already sent response
+    return;
   }
 
   const { message, history = [] } = req.body;
 
-  if (!message) {
-    return res.status(400).json({ error: "Message is required" });
-  }
+  // Sanitize input
+  const sanitizedMessage = sanitizeInput(message);
 
   if (!process.env.OPENAI_API_KEY) {
     return res.status(500).json({
+      success: false,
       error: "OpenAI API key not configured",
       response:
         "TEC Nexus AI is currently being configured. Please try again later.",
@@ -26,15 +74,23 @@ export default async function handler(req, res) {
       apiKey: process.env.OPENAI_API_KEY,
     });
 
+    // Sanitize history
+    const sanitizedHistory = Array.isArray(history) 
+      ? history.slice(-10).map(msg => ({
+          role: msg.role,
+          content: sanitizeInput(msg.content || '')
+        }))
+      : [];
+
     const messages = [
       {
         role: "system",
         content: `${SYSTEM_PROMPT}\n\nKnowledge Base:\n${TEC_KNOWLEDGE}`,
       },
-      ...history.slice(-10), // Keep last 10 messages for context
+      ...sanitizedHistory,
       {
         role: "user",
-        content: message,
+        content: sanitizedMessage,
       },
     ];
 
@@ -46,14 +102,20 @@ export default async function handler(req, res) {
     });
 
     const response = completion.choices[0].message.content;
+    
+    // Record estimated cost (approximate: $0.01 per request)
+    recordCost(req, 0.01);
 
-    res.status(200).json({ response });
+    res.status(200).json({ 
+      success: true,
+      response 
+    });
   } catch (error) {
     console.error("TEC Nexus AI Error:", error);
 
     // Fallback response if OpenAI fails
     const fallbackResponse =
-      message.includes("عربي") || message.includes("العربية")
+      sanitizedMessage.includes("عربي") || sanitizedMessage.includes("العربية")
         ? `مرحباً بك في TEC Nexus AI! 🌟
 
 أنا هنا لمساعدتك في استكشاف 24 دومين فاخر في TEC. يمكنني مساعدتك في:
@@ -75,6 +137,11 @@ I'm here to help you explore TEC's 24 elite business services. I can assist you 
 
 How can I help you today?`;
 
-    res.status(200).json({ response: fallbackResponse });
+    res.status(200).json({ 
+      success: true,
+      response: fallbackResponse 
+    });
   }
 }
+
+export default handler;

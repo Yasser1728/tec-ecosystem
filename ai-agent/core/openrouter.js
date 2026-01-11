@@ -66,7 +66,23 @@ export async function executeModel({
   role = 'primary'
 }) {
   if (!model?.model) {
-    throw new Error(`[EXECUTOR] Invalid model configuration`);
+    const error = '[EXECUTOR] Invalid model configuration';
+    console.error(error);
+    return {
+      ok: false,
+      error,
+      meta: { role, domain }
+    };
+  }
+
+  if (!Array.isArray(messages) || messages.length === 0) {
+    const error = '[EXECUTOR] Messages must be a non-empty array';
+    console.error(error);
+    return {
+      ok: false,
+      error,
+      meta: { model: model.model, role, domain }
+    };
   }
 
   const payload = buildPayload({
@@ -79,6 +95,8 @@ export async function executeModel({
   let json;
 
   try {
+    console.log(`[EXECUTOR] Calling model ${model.model} for ${domain}...`);
+    
     response = await fetchWithTimeout(
       OPENROUTER_ENDPOINT,
       {
@@ -95,21 +113,48 @@ export async function executeModel({
 
     if (!response.ok) {
       const text = await response.text();
-      throw new Error(
-        `[OPENROUTER:${model.model}] ${response.status} ${text}`
-      );
+      const errorMsg = `[OPENROUTER:${model.model}] ${response.status} ${text}`;
+      console.error(errorMsg);
+      
+      return {
+        ok: false,
+        error: errorMsg,
+        statusCode: response.status,
+        meta: {
+          model: model.model,
+          role,
+          domain
+        }
+      };
     }
 
     json = await response.json();
 
+    // Validate response structure
+    if (!json.choices || json.choices.length === 0) {
+      console.error('[EXECUTOR] Invalid response: no choices returned');
+      return {
+        ok: false,
+        error: 'Invalid response structure: no choices',
+        meta: { model: model.model, role, domain }
+      };
+    }
+
   } catch (error) {
+    const errorMsg = error.name === 'AbortError' 
+      ? `Request timeout after ${DEFAULT_TIMEOUT}ms`
+      : error.message;
+    
+    console.error(`[EXECUTOR] Error calling ${model.model}:`, errorMsg);
+    
     return {
       ok: false,
-      error: error.message,
+      error: errorMsg,
       meta: {
         model: model.model,
         role,
-        domain
+        domain,
+        errorType: error.name
       }
     };
   }
@@ -118,11 +163,8 @@ export async function executeModel({
     json?.choices?.[0]?.message?.content || '';
 
   const usage = extractUsage(json);
-
-  /**
-   * 🔗 Ledger Hook (placeholder)
-   * ledger.record({ model, usage, role, domain })
-   */
+  
+  console.log(`[EXECUTOR] Success: ${model.model} | Tokens: ${usage.total_tokens}`);
 
   return {
     ok: true,
