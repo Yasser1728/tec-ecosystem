@@ -9,6 +9,7 @@
  * - Usage reporting (hook for ledger.js)
  */
 
+import fetch from 'node-fetch';
 import { OPENROUTER_API_KEY } from './config.js';
 
 const OPENROUTER_ENDPOINT = 'https://openrouter.ai/api/v1/chat/completions';

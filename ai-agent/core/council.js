@@ -18,6 +18,7 @@ const TASK_TYPES = {
   STRATEGY: 'STRATEGY',
   ARCHITECTURE: 'ARCHITECTURE',
   DEVELOPMENT: 'DEVELOPMENT',
+  OPERATION: 'OPERATION',
   AUDIT: 'AUDIT',
   FAST: 'FAST'
 };
@@ -71,6 +72,12 @@ export function councilDecision({ taskType, domain, requiresAudit = false }) {
     case TASK_TYPES.DEVELOPMENT:
       primaryModel = isLowBalance()
         ? MODEL_REGISTRY.ELITE_RESERVE.CODE_BACKUP
+        : MODEL_REGISTRY.PAID_CORE.DEVELOPER;
+      break;
+
+    case TASK_TYPES.OPERATION:
+      primaryModel = isLowBalance()
+        ? pickAvailableModel(MODEL_REGISTRY.ELITE_RESERVE)
         : MODEL_REGISTRY.PAID_CORE.DEVELOPER;
       break;
 

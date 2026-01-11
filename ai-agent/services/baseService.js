@@ -20,13 +20,13 @@ export function createService({ domain, purpose }) {
 
   /**
    * Entry point called by index.js
-   * @param {Object} CONFIG - global config injected by Orchestrator
+   * @param {string} taskPrompt - optional override prompt from orchestrator
    */
-  async function run(CONFIG) {
-    console.log(`\n🏗️ [SERVICE BOOT] ${domain}`);
-    console.log(`🎯 Purpose: ${purpose}`);
+  async function run(taskPrompt) {
+    console.log(`\n[SERVICE BOOT] ${domain}`);
+    console.log(`Purpose: ${purpose}`);
 
-    // 1️⃣ Ask the Council
+    // Council selection
     const decision = councilDecision({
       taskType: TASK_TYPES.OPERATION,
       domain,
@@ -35,12 +35,14 @@ export function createService({ domain, purpose }) {
     });
 
     if (!decision || !decision.primary) {
-      console.warn(`⚠️ Council returned no valid model for ${domain}`);
-      return;
+      console.warn(`[SERVICE WARN] Council returned no valid model for ${domain}`);
+      return { ok: false, error: 'No valid model available' };
     }
 
-    // 2️⃣ Build the prompt (can be overridden per service)
-    const prompt = `
+    // Build the prompt (can be overridden per service)
+    const prompt = (
+      taskPrompt ||
+      `
 You are the sovereign AI service for domain: ${domain}.
 Purpose: ${purpose}
 
@@ -51,9 +53,10 @@ Constraints:
 
 Task:
 Generate or process the core operation for this domain.
-    `.trim();
+      `
+    ).trim();
 
-    // 3️⃣ Execute via OpenRouter
+    // Execute via OpenRouter
     const result = await executeModel({
       model: decision.primary,
       messages: [{ role: 'user', content: prompt }],
@@ -61,11 +64,11 @@ Generate or process the core operation for this domain.
     });
 
     if (!result || !result.ok) {
-      console.error(`❌ Execution failed for ${domain}`);
-      return;
+      console.error(`[SERVICE ERROR] Execution failed for ${domain}`);
+      return { ok: false, error: 'Model execution failed' };
     }
 
-    // 4️⃣ Record transaction in the Ledger
+    // Record transaction in the Ledger
     recordTransaction({
       model: decision.primary,
       usage: result.usage,
@@ -73,12 +76,21 @@ Generate or process the core operation for this domain.
       role: 'PRIMARY'
     });
 
-    // 5️⃣ Optional: log output preview
-    console.log(`✅ [SERVICE DONE] ${domain}`);
-    console.log(`🧠 Model Used: ${decision.primary.name}`);
-    console.log(`📦 Tokens: ${result.usage?.total_tokens || 0}`);
+    // Optional: log output preview
+    console.log(`[SERVICE DONE] ${domain}`);
+    console.log(`Model Used: ${decision.primary.name}`);
+    console.log(`Tokens: ${result.usage?.total_tokens || 0}`);
 
-    return result.data;
+    return {
+      ok: true,
+      content: result.content ?? result.data ?? null,
+      usage: result.usage,
+      meta: {
+        ...result.meta,
+        modelConfig: decision.primary,
+        recorded: true
+      }
+    };
   }
 
   return { run };
