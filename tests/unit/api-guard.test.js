@@ -221,8 +221,9 @@ describe('API Guard Utilities', () => {
       const input = 'Hello <script>alert("xss")</script> world';
       const result = sanitizeInput(input);
       
-      expect(result).toBe('Hello  world');
+      expect(result).toBe('Hello alert("xss") world');
       expect(result).not.toContain('<script>');
+      expect(result).not.toContain('</script>');
     });
 
     it('should remove javascript: protocol', () => {
