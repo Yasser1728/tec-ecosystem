@@ -10,19 +10,37 @@ engines:
       languages:
         - javascript
         - typescript
+      minimum_tokens: 50  # Minimum tokens for duplication detection
   eslint:
     enabled: true
   markdownlint:
     enabled: true
 
 exclude_paths:
+  # Dependencies and generated files
   - "node_modules/**"
+  - "package-lock.json"
+  - ".next/**"
   - "dist/**"
   - "build/**"
-  - ".next/**"
+  - ".vercel/**"
+  
+  # Test and coverage
   - "coverage/**"
+  - "tests/**"
+  - "**/*.test.js"
+  - "**/*.test.ts"
+  - "**/*.spec.js"
+  - "**/*.spec.ts"
+  
+  # Database migrations
+  - "prisma/migrations/**"
+  
+  # Minified files
   - "*.min.js"
   - "*.min.css"
-  - "package-lock.json"
-  - "prisma/migrations/**"
-  - ".vercel/**"
+  
+  # Configuration files
+  - "*.config.js"
+  - "*.config.cjs"
+  - "*.config.ts"
