@@ -1,21 +1,45 @@
+import { z } from 'zod';
+import { withApiGuard } from "../../lib/api-guard.js";
 import { TEC_KNOWLEDGE, SYSTEM_PROMPT } from "../../lib/nexus-ai-knowledge";
 
-export default async function handler(req, res) {
+// Request validation schema
+const nexusRequestSchema = z.object({
+  message: z.string().min(1).max(4000),
+  history: z.array(z.object({
+    role: z.enum(['user', 'assistant', 'system']),
+    content: z.string(),
+  })).optional().default([]),
+});
+
+async function handler(req, res) {
+  const requestId = req.requestId;
+
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
+    return res.status(405).json({ 
+      error: "Method not allowed",
+      requestId,
+    });
   }
 
-  const { message, history = [] } = req.body;
-
-  if (!message) {
-    return res.status(400).json({ error: "Message is required" });
+  // Validate request body with zod
+  const validationResult = nexusRequestSchema.safeParse(req.body);
+  
+  if (!validationResult.success) {
+    return res.status(400).json({ 
+      error: "Invalid request payload",
+      details: validationResult.error.errors,
+      requestId,
+    });
   }
+
+  const { message, history } = validationResult.data;
 
   if (!process.env.OPENAI_API_KEY) {
     return res.status(500).json({
       error: "OpenAI API key not configured",
       response:
         "TEC Nexus AI is currently being configured. Please try again later.",
+      requestId,
     });
   }
 
@@ -47,9 +71,13 @@ export default async function handler(req, res) {
 
     const response = completion.choices[0].message.content;
 
-    res.status(200).json({ response });
+    res.status(200).json({ 
+      response,
+      requestId,
+      timestamp: new Date().toISOString(),
+    });
   } catch (error) {
-    console.error("TEC Nexus AI Error:", error);
+    console.error(`[Nexus AI] Error (requestId: ${requestId}):`, error.message);
 
     // Fallback response if OpenAI fails
     const fallbackResponse =
@@ -75,6 +103,16 @@ I'm here to help you explore TEC's 24 elite business services. I can assist you 
 
 How can I help you today?`;
 
-    res.status(200).json({ response: fallbackResponse });
+    res.status(200).json({ 
+      response: fallbackResponse,
+      requestId,
+      timestamp: new Date().toISOString(),
+    });
   }
 }
+
+// Apply API guard with rate limiting (15 req/min) and body size limit (64 KB)
+export default withApiGuard(handler, {
+  maxRequests: 15,
+  maxBodySize: 64 * 1024,
+});
