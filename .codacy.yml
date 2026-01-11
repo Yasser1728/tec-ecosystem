@@ -1,28 +1,61 @@
 ---
+# Codacy configuration for TEC Ecosystem
+# Defines code quality standards, complexity thresholds, and excluded paths
+
 engines:
+  # Complexity and maintainability metrics
   metrics:
     enabled: true
     config:
-      threshold: 30  # Maximum cyclomatic complexity
+      threshold: 30  # Maximum cyclomatic complexity per function
+
+  # Duplication detection for DRY principle enforcement
   duplication:
     enabled: true
     config:
       languages:
         - javascript
         - typescript
+      minimum_tokens: 50  # Minimum tokens for duplication detection
+
+  # ESLint for JavaScript/TypeScript code quality
   eslint:
     enabled: true
+
+  # Markdown linting for documentation quality
   markdownlint:
     enabled: true
 
+# Paths to exclude from analysis
 exclude_paths:
+  # Dependencies and external libraries
   - "node_modules/**"
+  - ".pnpm-store/**"
+
+  # Build outputs and generated files
   - "dist/**"
   - "build/**"
   - ".next/**"
-  - "coverage/**"
-  - "*.min.js"
-  - "*.min.css"
-  - "package-lock.json"
-  - "prisma/migrations/**"
+  - "out/**"
   - ".vercel/**"
+
+  # Test coverage reports
+  - "coverage/**"
+  - ".nyc_output/**"
+
+  # Minified files (already optimized)
+  - "**/*.min.js"
+  - "**/*.min.css"
+
+  # Lock files and generated configs
+  - "package-lock.json"
+  - "yarn.lock"
+  - "pnpm-lock.yaml"
+
+  # Database migrations (auto-generated)
+  - "prisma/migrations/**"
+
+  # Temporary and cache directories
+  - ".cache/**"
+  - "tmp/**"
+  - "temp/**"
