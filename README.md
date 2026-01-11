@@ -552,6 +552,96 @@ All financial and sensitive operations are protected by a centralized forensic a
 
 See [FORENSIC_AUDIT.md](./docs/FORENSIC_AUDIT.md) for the complete forensic audit documentation.
 
+### API Security & Hardening
+
+The TEC Ecosystem implements comprehensive API protection and hardening measures:
+
+#### API Guards
+
+All API endpoints are protected with the `withApiGuard` middleware (`lib/api-guard.js`) which provides:
+
+- **Rate Limiting**: Configurable per-endpoint rate limits (default: 20 req/min for TEC Assistant, 15 req/min for Nexus AI)
+- **Body Size Validation**: 64 KB payload limit to prevent abuse
+- **Request ID Tracking**: Every request receives a unique ID for tracing and debugging
+- **Structured Error Responses**: Consistent error format with detailed information
+
+#### Request Validation
+
+All API requests are validated using Zod schemas:
+
+- **Type Safety**: Strong typing for all request payloads
+- **Schema Validation**: Automatic validation of message, userId, context, and history fields
+- **Error Details**: Clear validation errors returned to clients
+
+#### Cost Guard System
+
+The AI agent system includes intelligent cost management (`index.js`):
+
+- **Per-Request Cost Ceiling**: Configurable maximum cost per request (default: $2.0)
+- **Per-Minute Cost Ceiling**: Per-user budget limits (default: $10.0/min)
+- **Model Selection**: Automatic fallback from paid → free → sandbox models based on budget
+- **Cost Tracking**: Real-time cost monitoring and budget enforcement
+
+Configuration via environment variables:
+```bash
+MAX_COST_PER_REQUEST=2.0    # Maximum cost per single request
+MAX_COST_PER_MINUTE=10.0    # Maximum cost per user per minute
+```
+
+#### Service Generation Safety
+
+Service generation is gated for security (`ai-agent/services/generateServices.js`):
+
+- **Domain Allow-List**: Only pre-approved domains can have services generated
+- **Environment Flag**: Generation disabled by default, requires `ENABLE_SERVICE_GENERATION=true`
+- **Audit Logging**: All generation attempts are logged
+
+#### Service Execution Hardening
+
+All domain services (`ai-agent/services/baseService.js`) include:
+
+- **Timeout Protection**: 45-second execution timeout
+- **Response Validation**: Schema validation of model responses
+- **Content Sanitization**: Automatic sanitization of AI-generated content
+- **Safe Fallbacks**: Graceful degradation on failures
+- **Slow Execution Warnings**: Alerts when services exceed 30 seconds
+- **Structured Logging**: Consistent, secure logging (no secrets leaked)
+
+### Required Environment Variables
+
+For AI models and services:
+
+```bash
+# OpenRouter API Key (required)
+OPENROUTER_API_KEY=your_openrouter_key
+
+# Paid Core Models (optional, falls back to free)
+GPT_MODEL=openai/gpt-4-turbo
+CLAUDE_MODEL=anthropic/claude-3.5-sonnet
+GEMINI_MODEL=google/gemini-pro
+CODEX_MODEL=openai/codex
+
+# Free/Reserve Models (optional)
+DEEPSEEK_MODEL=deepseek/deepseek-r1
+LLAMA_MODEL=meta-llama/llama-3.1-405b
+QWEN_MODEL=qwen/qwen-3-coder-480b
+HERMES_MODEL=nousresearch/hermes-3-405b
+GPT_OSS_FREE=huggingface/gpt-oss-120b
+GEMINI_FLASH_FREE=google/gemini-flash
+O4_ENGINEER_MODEL=openai/o4-mini-high
+DEVSTRAL_MODEL=mistral/devstral
+
+# Service Generation Control (optional, default: false)
+ENABLE_SERVICE_GENERATION=true
+
+# Cost Guard Limits (optional, defaults shown)
+MAX_COST_PER_REQUEST=2.0
+MAX_COST_PER_MINUTE=10.0
+
+# OpenAI Key for Nexus AI (optional)
+OPENAI_API_KEY=your_openai_key
+```
+
 See [SECURITY.md](./docs/SECURITY.md) for detailed security policies.
 
 ---
