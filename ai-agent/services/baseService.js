@@ -48,7 +48,7 @@ function sanitizeResponse(result) {
     const content = String(result.content);
     // Basic sanitization: limit length and remove control characters
     sanitized.content = content
-      .substring(0, 50000) // Max 50KB
+      .substring(0, 50000) // Max 50,000 characters
       .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, ''); // Remove control chars
   } else if (result.data) {
     sanitized.content = result.data;

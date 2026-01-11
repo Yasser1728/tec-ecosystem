@@ -21,18 +21,9 @@ const servicesDir = path.join(process.cwd(), 'ai-agent', 'services');
 
 if (!fs.existsSync(servicesDir)) fs.mkdirSync(servicesDir, { recursive: true });
 
-// Filter only allowed domains
-const validDomains = ALLOWED_DOMAINS.filter(domain => {
-    if (!ALLOWED_DOMAINS.includes(domain)) {
-        console.warn(`[Generate Services] Skipping unauthorized domain: ${domain}`);
-        return false;
-    }
-    return true;
-});
+console.log(`[Generate Services] Processing ${ALLOWED_DOMAINS.length} authorized domains...`);
 
-console.log(`[Generate Services] Processing ${validDomains.length} authorized domains...`);
-
-validDomains.forEach(domain => {
+ALLOWED_DOMAINS.forEach(domain => {
     const filePath = path.join(servicesDir, `${domain}.js`);
     if (!fs.existsSync(filePath)) {
         const content = [
