@@ -29,20 +29,37 @@ function validateOutput(content, domain) {
   }
 
   // Check for potentially harmful content patterns
+  // Expanded list covering more security risks
   const harmfulPatterns = [
-    /eval\(/gi,
-    /exec\(/gi,
-    /__import__/gi,
-    /subprocess/gi,
-    /os\.system/gi,
-    /rm\s+-rf/gi,
+    // Code execution
+    { pattern: /\beval\s*\(/gi, description: 'eval() function call' },
+    { pattern: /\bexec\s*\(/gi, description: 'exec() function call' },
+    { pattern: /\bFunction\s*\(/gi, description: 'Function() constructor' },
+    { pattern: /__import__/gi, description: 'Python import bypass' },
+    { pattern: /subprocess\./gi, description: 'subprocess module' },
+    { pattern: /os\.system/gi, description: 'os.system call' },
+    { pattern: /child_process/gi, description: 'child_process module' },
+    
+    // File system operations
+    { pattern: /rm\s+-rf\s+[\/~]/gi, description: 'dangerous rm command' },
+    { pattern: /mkfifo|nc\s+-l/gi, description: 'potential backdoor' },
+    { pattern: /\/etc\/passwd|\/etc\/shadow/gi, description: 'system file access' },
+    
+    // Network/injection
+    { pattern: /<script[^>]*>|javascript:/gi, description: 'XSS attempt' },
+    { pattern: /union\s+select|drop\s+table/gi, description: 'SQL injection attempt' },
+    { pattern: /\$\{.*?\}|`.*?`/g, description: 'template injection' },
   ];
 
   const contentStr = typeof content === 'string' ? content : JSON.stringify(content);
   
-  for (const pattern of harmfulPatterns) {
+  for (const { pattern, description } of harmfulPatterns) {
     if (pattern.test(contentStr)) {
-      validation.warnings.push(`Potentially harmful pattern detected: ${pattern.source}`);
+      validation.warnings.push(`Potentially harmful pattern detected: ${description}`);
+      // For critical patterns, mark as invalid
+      if (description.includes('injection') || description.includes('backdoor')) {
+        validation.isValid = false;
+      }
     }
   }
 
