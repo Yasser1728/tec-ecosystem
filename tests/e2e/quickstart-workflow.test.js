@@ -14,9 +14,9 @@
  */
 
 const request = require('supertest');
-const { PrismaClient } = require('@prisma/client');
 
-const prisma = new PrismaClient();
+// Lightweight Prisma stub to satisfy lifecycle hooks in tests
+const prisma = { $disconnect: jest.fn(() => Promise.resolve()) };
 
 // Mock the session
 jest.mock('next-auth/react', () => ({

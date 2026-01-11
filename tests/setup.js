@@ -1,6 +1,15 @@
 // Jest setup file
 import "@testing-library/jest-dom";
 
+// Polyfill TextEncoder/TextDecoder for Node test environment
+const { TextEncoder, TextDecoder } = require("util");
+if (!global.TextEncoder) {
+  global.TextEncoder = TextEncoder;
+}
+if (!global.TextDecoder) {
+  global.TextDecoder = TextDecoder;
+}
+
 // Mock Prisma Client
 jest.mock("../lib/db/prisma", () => ({
   prisma: {
