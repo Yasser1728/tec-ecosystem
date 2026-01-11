@@ -1,28 +1,61 @@
 ---
+# Codacy Configuration for TEC Ecosystem
+# Version: 1.1.0
+# Last Updated: 2026-01-11
+# Purpose: Define code quality rules and analysis settings for the TEC ecosystem
+
 engines:
+  # Code complexity metrics
   metrics:
     enabled: true
     config:
-      threshold: 30  # Maximum cyclomatic complexity
+      threshold: 30  # Maximum cyclomatic complexity per function
+  
+  # Code duplication detection
   duplication:
     enabled: true
     config:
       languages:
         - javascript
         - typescript
+      
+  # ESLint for JavaScript/TypeScript code quality
   eslint:
     enabled: true
+  
+  # Markdown documentation linting
   markdownlint:
     enabled: true
 
+# Exclude paths from analysis
 exclude_paths:
+  # Dependencies
   - "node_modules/**"
+  
+  # Build artifacts
   - "dist/**"
   - "build/**"
   - ".next/**"
+  - ".vercel/**"
+  
+  # Test coverage reports
   - "coverage/**"
+  
+  # Minified files
   - "*.min.js"
   - "*.min.css"
+  
+  # Lock files
   - "package-lock.json"
+  - "yarn.lock"
+  
+  # Database migrations (auto-generated)
   - "prisma/migrations/**"
-  - ".vercel/**"
+  
+  # Configuration files (often require specific formats)
+  - "*.config.js"
+  - "*.config.cjs"
+  - "*.config.mjs"
+  
+  # Locale files (translation data)
+  - "public/locales/**"

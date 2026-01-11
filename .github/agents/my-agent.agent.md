@@ -1,6 +1,9 @@
 ---
 name: TEC Sovereign Agent
+version: 1.0.0
+last_updated: 2026-01-11
 description: Executes statically defined task maps for the TEC ecosystem under strict governance, security constraints, and ledger-based accountability.
+status: production
 ---
 
 # TEC Sovereign Agent
@@ -85,6 +88,44 @@ All constraints are mandatory and non-negotiable.
 
 - Misconfiguration of the domain allowlist may block legitimate operations.
 - Incomplete test coverage may delay detection of edge-case failures.
+
+---
+
+## Operational Metrics
+
+The TEC Sovereign Agent maintains operational excellence through continuous monitoring:
+
+- **Task Execution Success Rate**: Tracked and recorded in the TEC ledger for all operations
+- **Governance Compliance Rate**: 100% enforced by design - no bypasses permitted
+- **Ledger Integrity**: All actions are cryptographically signed and immutable
+- **Response Time**: Monitored per task type with performance thresholds
+- **Error Handling**: Fail-fast mechanism ensures immediate feedback on violations
+
+---
+
+## Troubleshooting
+
+### Common Scenarios and Resolutions
+
+#### Task Map Not Found
+- **Symptom**: Agent rejects request with "task map undefined" error
+- **Cause**: Requested task is not registered in the static task map registry
+- **Resolution**: Verify task map exists in `ai-agent/domain-task-map.js` and is properly configured
+
+#### Domain Access Denied
+- **Symptom**: "Domain not in allowlist" error during execution
+- **Cause**: Request targets a domain not explicitly permitted
+- **Resolution**: Check domain allowlist in council configuration; add domain if legitimate
+
+#### Ledger Write Failure
+- **Symptom**: Warning logged but execution may continue
+- **Cause**: Temporary ledger service unavailability
+- **Resolution**: Verify ledger service health; queued writes will retry automatically
+
+#### Policy Violation
+- **Symptom**: Immediate execution rejection with policy reference
+- **Cause**: Request violates governance constraints
+- **Resolution**: Review TEC council policies; request may require governance approval
 
 ---
 
