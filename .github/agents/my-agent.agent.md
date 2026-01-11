@@ -70,7 +70,6 @@ All constraints are mandatory and non-negotiable.
 
 - Task map schema versioning is not yet strictly enforced.
 - Ledger write failures are logged but may not halt execution in all cases.
-- Some Codacy complexity warnings may be present due to controlled execution design, but are intentionally accepted as they do not compromise security or governance guarantees.
 
 ---
 

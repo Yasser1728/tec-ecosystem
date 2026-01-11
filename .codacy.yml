@@ -1,0 +1,28 @@
+---
+engines:
+  metrics:
+    enabled: true
+    config:
+      threshold: 30  # Maximum cyclomatic complexity
+  duplication:
+    enabled: true
+    config:
+      languages:
+        - javascript
+        - typescript
+  eslint:
+    enabled: true
+  markdownlint:
+    enabled: true
+
+exclude_paths:
+  - "node_modules/**"
+  - "dist/**"
+  - "build/**"
+  - ".next/**"
+  - "coverage/**"
+  - "*.min.js"
+  - "*.min.css"
+  - "package-lock.json"
+  - "prisma/migrations/**"
+  - ".vercel/**"
