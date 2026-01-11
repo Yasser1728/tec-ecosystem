@@ -1,3 +1,4 @@
+/** @jest-environment node */
 /**
  * End-to-End Test for Quick Start Workflow
  * 
