@@ -67,6 +67,42 @@ const routeConfig = {
   ],
 };
 
+/**
+ * Helper function to check domain authentication and redirect if needed
+ */
+async function checkDomainAuth(request, domainConfig, pathname) {
+  if (domainConfig && domainConfig.requiresAuth) {
+    const token = await getToken({
+      req: request,
+      secret: process.env.NEXTAUTH_SECRET,
+    });
+    
+    if (!token) {
+      const signInUrl = new URL("/auth/signin", request.url);
+      signInUrl.searchParams.set("callbackUrl", pathname);
+      signInUrl.searchParams.set("domain", domainConfig.domain);
+      return NextResponse.redirect(signInUrl);
+    }
+  }
+  return null;
+}
+
+/**
+ * Helper function to add domain headers to response
+ */
+function addDomainHeaders(response, domainConfig) {
+  if (domainConfig) {
+    response.headers.set('X-Domain-Name', domainConfig.name);
+    response.headers.set('X-Domain-Name-Ar', domainConfig.nameAr);
+    response.headers.set('X-Domain-Tier', domainConfig.tier);
+    response.headers.set('X-Domain-Theme', domainConfig.theme);
+    response.headers.set('X-Domain-Analytics', domainConfig.analytics);
+    response.headers.set('X-Domain-Independent', String(domainConfig.independent));
+    response.headers.set('X-Domain-Value', domainConfig.value);
+  }
+  return response;
+}
+
 export async function middleware(request) {
   const { pathname } = request.nextUrl;
   const hostname = request.headers.get("host") || "";
@@ -91,34 +127,13 @@ export async function middleware(request) {
       const url = request.nextUrl.clone();
       url.pathname = targetRoute;
       
-      // Create response with domain headers
-      const response = NextResponse.rewrite(url);
+      // Check authentication first
+      const authRedirect = await checkDomainAuth(request, domainConfig, pathname);
+      if (authRedirect) return authRedirect;
       
-      // Add domain intelligence headers
-      if (domainConfig) {
-        response.headers.set('X-Domain-Name', domainConfig.name);
-        response.headers.set('X-Domain-Name-Ar', domainConfig.nameAr);
-        response.headers.set('X-Domain-Tier', domainConfig.tier);
-        response.headers.set('X-Domain-Theme', domainConfig.theme);
-        response.headers.set('X-Domain-Analytics', domainConfig.analytics);
-        response.headers.set('X-Domain-Independent', String(domainConfig.independent));
-        response.headers.set('X-Domain-Value', domainConfig.value);
-        
-        // Check if domain requires authentication
-        if (domainConfig.requiresAuth) {
-          const token = await getToken({
-            req: request,
-            secret: process.env.NEXTAUTH_SECRET,
-          });
-          
-          if (!token) {
-            const signInUrl = new URL("/auth/signin", request.url);
-            signInUrl.searchParams.set("callbackUrl", pathname);
-            signInUrl.searchParams.set("domain", domainConfig.domain);
-            return NextResponse.redirect(signInUrl);
-          }
-        }
-      }
+      // Create response with domain headers
+      let response = NextResponse.rewrite(url);
+      response = addDomainHeaders(response, domainConfig);
       
       return response;
     }
@@ -127,29 +142,12 @@ export async function middleware(request) {
     // e.g., life.pi/about stays on /life/about
     // But still add domain headers
     if (domainConfig && pathname.startsWith("/api") === false) {
-      const response = NextResponse.next();
-      response.headers.set('X-Domain-Name', domainConfig.name);
-      response.headers.set('X-Domain-Name-Ar', domainConfig.nameAr);
-      response.headers.set('X-Domain-Tier', domainConfig.tier);
-      response.headers.set('X-Domain-Theme', domainConfig.theme);
-      response.headers.set('X-Domain-Analytics', domainConfig.analytics);
-      response.headers.set('X-Domain-Independent', String(domainConfig.independent));
-      response.headers.set('X-Domain-Value', domainConfig.value);
+      // Check authentication
+      const authRedirect = await checkDomainAuth(request, domainConfig, pathname);
+      if (authRedirect) return authRedirect;
       
-      // Check authentication for protected domains
-      if (domainConfig.requiresAuth) {
-        const token = await getToken({
-          req: request,
-          secret: process.env.NEXTAUTH_SECRET,
-        });
-        
-        if (!token) {
-          const signInUrl = new URL("/auth/signin", request.url);
-          signInUrl.searchParams.set("callbackUrl", pathname);
-          signInUrl.searchParams.set("domain", domainConfig.domain);
-          return NextResponse.redirect(signInUrl);
-        }
-      }
+      let response = NextResponse.next();
+      response = addDomainHeaders(response, domainConfig);
       
       return response;
     }

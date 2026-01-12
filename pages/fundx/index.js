@@ -11,7 +11,18 @@ export default function Fundx() {
     fetch('/api/domain/info')
       .then(res => res.json())
       .then(data => setDomainInfo(data))
-      .catch(err => console.error('Failed to fetch domain info:', err));
+      .catch(err => {
+        console.error('Failed to fetch domain info:', err);
+        // Set default domain info on error
+        setDomainInfo({
+          name: 'FundX',
+          nameAr: 'فَنْد إكس',
+          tier: 'Finance & Investment',
+          theme: 'tec-gradient',
+          independent: true,
+          value: 'sovereign-unit'
+        });
+      });
   }, []);
 
   return (

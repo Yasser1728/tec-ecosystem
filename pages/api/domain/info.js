@@ -62,7 +62,8 @@ export default function handler(req, res) {
     });
 
   } catch (error) {
-    console.error('Domain info API error:', error);
+    // Log error without sensitive details
+    console.error('Domain info API error:', error.message);
     return res.status(500).json({ error: 'Internal server error' });
   }
 }
