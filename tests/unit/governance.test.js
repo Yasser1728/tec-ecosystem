@@ -20,6 +20,19 @@ describe('🏛️ TEC Sovereign Governance Map', () => {
   beforeEach(() => {
     servicePreExists = fs.existsSync(lifeServicePath());
     ledgerPreExists = fs.existsSync(ledgerPath);
+    
+    // ✅ Create base directories if they don't exist
+    const serviceDir = path.dirname(lifeServicePath());
+    const ledgerDir = path.dirname(ledgerPath);
+    
+    if (!fs.existsSync(serviceDir)) {
+      fs.mkdirSync(serviceDir, { recursive: true });
+    }
+    if (!fs.existsSync(ledgerDir)) {
+      fs.mkdirSync(ledgerDir, { recursive: true });
+    }
+    
+    // Clean up files from previous tests
     if (servicePreExists) {
       fs.rmSync(lifeServicePath(), { force: true });
     }
@@ -29,10 +42,10 @@ describe('🏛️ TEC Sovereign Governance Map', () => {
   });
 
   afterEach(() => {
-    if (!servicePreExists) {
+    if (!servicePreExists && fs.existsSync(lifeServicePath())) {
       fs.rmSync(lifeServicePath(), { force: true });
     }
-    if (!ledgerPreExists) {
+    if (!ledgerPreExists && fs.existsSync(ledgerPath)) {
       fs.rmSync(ledgerPath, { force: true });
     }
   });
@@ -59,6 +72,11 @@ describe('🏛️ TEC Sovereign Governance Map', () => {
   });
 
   test('runSovereignTaskMap creates sandbox service and logs ledger', async () => {
+    // ✅ Verify domain exists in task map
+    expect(domainTaskMap['life.pi']).toBeDefined();
+    expect(Array.isArray(domainTaskMap['life.pi'])).toBe(true);
+    expect(domainTaskMap['life.pi'].length).toBeGreaterThan(0);
+    
     const task = domainTaskMap['life.pi'][0];
     const response = await runSovereignTaskMap('life.pi', task);
 
@@ -67,10 +85,17 @@ describe('🏛️ TEC Sovereign Governance Map', () => {
     expect(response?.meta?.sandbox).toBe(true);
     expect(fs.existsSync(lifeServicePath())).toBe(true);
 
+    // ✅ Verify ledger file exists before reading
+    expect(fs.existsSync(ledgerPath)).toBe(true);
+    
     const ledgerData = JSON.parse(fs.readFileSync(ledgerPath, 'utf8'));
     expect(Array.isArray(ledgerData.events)).toBe(true);
-    expect(ledgerData.events.at(-1).domain).toBe('life.pi');
-    expect(ledgerData.events.at(-1).task).toBe(task);
+    expect(ledgerData.events.length).toBeGreaterThan(0);
+    
+    // ✅ Use compatible method
+    const lastEvent = ledgerData.events[ledgerData.events.length - 1];
+    expect(lastEvent.domain).toBe('life.pi');
+    expect(lastEvent.task).toBe(task);
   });
 
   test('runSovereignTaskMap rejects tasks outside the map', async () => {
