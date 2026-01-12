@@ -1,18 +1,29 @@
 import fs from 'fs';
 import path from 'path';
 
-const DOMAINS = [
+// Domain allow-list for security
+const ALLOWED_DOMAINS = [
     'tec.pi', 'finance.pi', 'market.pi', 'wallet.pi', 'commerce.pi', 'analytics.pi',
     'security.pi', 'crm.pi', 'payments.pi', 'tokens.pi', 'nft.pi', 'exchange.pi',
     'staking.pi', 'governance.pi', 'insurance.pi', 'tax.pi', 'legal.pi', 'audit.pi',
     'research.pi', 'marketing.pi', 'support.pi', 'hr.pi', 'devops.pi', 'infra.pi'
 ];
 
+// Check if service generation is enabled
+const SERVICE_GENERATION_ENABLED = process.env.ENABLE_SERVICE_GENERATION === 'true';
+
+if (!SERVICE_GENERATION_ENABLED) {
+    console.log('[Generate Services] Service generation is disabled. Set ENABLE_SERVICE_GENERATION=true to enable.');
+    process.exit(0);
+}
+
 const servicesDir = path.join(process.cwd(), 'ai-agent', 'services');
 
 if (!fs.existsSync(servicesDir)) fs.mkdirSync(servicesDir, { recursive: true });
 
-DOMAINS.forEach(domain => {
+console.log(`[Generate Services] Processing ${ALLOWED_DOMAINS.length} authorized domains...`);
+
+ALLOWED_DOMAINS.forEach(domain => {
     const filePath = path.join(servicesDir, `${domain}.js`);
     if (!fs.existsSync(filePath)) {
         const content = [
@@ -40,3 +51,5 @@ DOMAINS.forEach(domain => {
         console.log(`ℹ️ Service module already exists: ${domain}.js`);
     }
 });
+
+console.log('[Generate Services] Service generation complete.');

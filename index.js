@@ -6,9 +6,129 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { generateFinalReport, getCostSignal, recordTransaction } from './ai-agent/core/ledger.js';
+import { councilDecision, TASK_TYPES } from './ai-agent/core/council.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const BASE_DIR = path.dirname(__filename);
+
+// ============================================
+// Cost Guard Configuration
+// ============================================
+const COST_GUARD = {
+    // Per-request cost ceiling
+    MAX_COST_PER_REQUEST: parseFloat(process.env.MAX_COST_PER_REQUEST || '2.0'),
+    
+    // Per-minute cost ceiling per user
+    MAX_COST_PER_MINUTE: parseFloat(process.env.MAX_COST_PER_MINUTE || '10.0'),
+    
+    // Cost tracking by user
+    userCosts: new Map(),
+    
+    // Cleanup interval (60 seconds)
+    cleanupInterval: null,
+};
+
+/**
+ * Estimate cost by model name
+ */
+function estimateRequestCost(modelName) {
+    if (!modelName) return 0;
+    
+    const modelLower = modelName.toLowerCase();
+    
+    // Paid models
+    if (modelLower.includes('gpt-5') || modelLower.includes('gpt-4')) return 1.5;
+    if (modelLower.includes('claude')) return 1.2;
+    if (modelLower.includes('gemini') && modelLower.includes('pro')) return 1.8;
+    if (modelLower.includes('codex')) return 1.4;
+    
+    // Fast ops (low cost)
+    if (modelLower.includes('o4-mini')) return 0.2;
+    if (modelLower.includes('flash')) return 0.0;
+    
+    // Free models
+    return 0.0;
+}
+
+/**
+ * Check if user/request is within cost limits
+ */
+function checkCostGuard(userId, modelName) {
+    const requestCost = estimateRequestCost(modelName);
+    
+    // Check per-request ceiling
+    if (requestCost > COST_GUARD.MAX_COST_PER_REQUEST) {
+        return {
+            allowed: false,
+            reason: 'Per-request cost ceiling exceeded',
+            requestCost,
+            maxCost: COST_GUARD.MAX_COST_PER_REQUEST,
+        };
+    }
+    
+    // Check per-minute ceiling
+    const now = Date.now();
+    const userKey = userId || 'system';
+    const userCostData = COST_GUARD.userCosts.get(userKey) || {
+        totalCost: 0,
+        windowStart: now,
+        requests: [],
+    };
+    
+    // Remove requests older than 1 minute
+    userCostData.requests = userCostData.requests.filter(
+        req => now - req.timestamp < 60000
+    );
+    
+    // Calculate current minute cost
+    const currentMinuteCost = userCostData.requests.reduce(
+        (sum, req) => sum + req.cost, 0
+    );
+    
+    if (currentMinuteCost + requestCost > COST_GUARD.MAX_COST_PER_MINUTE) {
+        return {
+            allowed: false,
+            reason: 'Per-minute cost ceiling exceeded',
+            currentCost: currentMinuteCost,
+            requestCost,
+            maxCost: COST_GUARD.MAX_COST_PER_MINUTE,
+        };
+    }
+    
+    // Update user cost data
+    userCostData.requests.push({
+        timestamp: now,
+        cost: requestCost,
+    });
+    userCostData.totalCost += requestCost;
+    
+    COST_GUARD.userCosts.set(userKey, userCostData);
+    
+    return {
+        allowed: true,
+        requestCost,
+        remainingBudget: COST_GUARD.MAX_COST_PER_MINUTE - (currentMinuteCost + requestCost),
+    };
+}
+
+/**
+ * Cleanup old cost tracking data
+ */
+function cleanupCostGuard() {
+    const now = Date.now();
+    for (const [userId, data] of COST_GUARD.userCosts.entries()) {
+        data.requests = data.requests.filter(
+            req => now - req.timestamp < 60000
+        );
+        
+        if (data.requests.length === 0) {
+            COST_GUARD.userCosts.delete(userId);
+        }
+    }
+}
+
+// Start cleanup interval
+COST_GUARD.cleanupInterval = setInterval(cleanupCostGuard, 60000);
 
 // ============================================
 // Configuration
@@ -79,18 +199,124 @@ async function organizeDomainFiles() {
 }
 
 // ============================================
-// Select Model (Paid if available, else Free)
+// Select Model (Paid if available, else Free, with Cost Guard integration)
 // ============================================
-function selectModel() {
+function selectModel(options = {}) {
+    const costSignal = getCostSignal();
+    const userId = options.userId || 'system';
+    
+    // If budget is low, skip paid models
+    if (costSignal.isLowBalance) {
+        console.log('[Model Selection] Low balance detected, using free models');
+        for (const [key, model] of Object.entries(CONFIG.models.free)) {
+            if (model) return { type: 'free', name: model, tier: 'free' };
+        }
+    }
+    
+    // Try paid models first
     for (const [key, model] of Object.entries(CONFIG.models.paid)) {
-        if (model) return { type: 'paid', name: model };
+        if (model) {
+            // Check cost guard
+            const costCheck = checkCostGuard(userId, model);
+            if (costCheck.allowed) {
+                return { type: 'paid', name: model, tier: 'paid', costCheck };
+            }
+            console.log(`[Model Selection] Cost guard blocked paid model: ${costCheck.reason}`);
+        }
     }
-    // fallback to free models
+    
+    // Fallback to free models
     for (const [key, model] of Object.entries(CONFIG.models.free)) {
-        if (model) return { type: 'free', name: model };
+        if (model) return { type: 'free', name: model, tier: 'free' };
     }
-    console.warn('No model found. AI operations will use sandbox defaults.');
-    return { type: 'sandbox', name: null };
+    
+    console.warn('[Model Selection] No model found. AI operations will use sandbox defaults.');
+    return { type: 'sandbox', name: null, tier: 'sandbox' };
+}
+
+/**
+ * Run Domain Task Utility
+ * Wraps model selection, cost guard, and service invocation
+ * 
+ * @param {Object} options
+ * @param {string} options.domain - Domain to run task for
+ * @param {string} options.taskPrompt - Task prompt/description
+ * @param {string} options.userId - User identifier for cost tracking
+ * @param {string} options.taskType - Task type (from TASK_TYPES)
+ * @returns {Promise} Task result with metadata
+ */
+async function runDomainTask(options) {
+    const { domain, taskPrompt, userId = 'system', taskType = TASK_TYPES.OPERATION } = options;
+    
+    if (!domain) {
+        throw new Error('[runDomainTask] Domain is required');
+    }
+    
+    console.log(`\n[DOMAIN TASK] Starting: ${domain}`);
+    
+    // Get model with cost guard
+    const modelInfo = selectModel({ userId });
+    
+    if (!modelInfo.name && modelInfo.type !== 'sandbox') {
+        console.error(`[DOMAIN TASK] No model available for ${domain}`);
+        return {
+            ok: false,
+            error: 'No model available',
+            domain,
+            usage: { total_tokens: 0 },
+        };
+    }
+    
+    // Check cost guard one more time before execution
+    if (modelInfo.type === 'paid') {
+        const costCheck = checkCostGuard(userId, modelInfo.name);
+        if (!costCheck.allowed) {
+            console.log(`[DOMAIN TASK] Cost guard prevented execution: ${costCheck.reason}`);
+            return {
+                ok: false,
+                error: 'Cost limit exceeded',
+                reason: costCheck.reason,
+                domain,
+                usage: { total_tokens: 0 },
+            };
+        }
+    }
+    
+    console.log(`[DOMAIN TASK] Using ${modelInfo.type} model: ${modelInfo.name || 'Sandbox'}`);
+    
+    // Load and run service
+    const runService = await loadService(domain);
+    if (!runService) {
+        return {
+            ok: false,
+            error: 'Failed to load service',
+            domain,
+            usage: { total_tokens: 0 },
+        };
+    }
+    
+    try {
+        const result = await runService(taskPrompt);
+        
+        // Log cost info if available
+        if (modelInfo.costCheck) {
+            console.log(`[DOMAIN TASK] Cost: ${modelInfo.costCheck.requestCost}, Remaining: ${modelInfo.costCheck.remainingBudget}`);
+        }
+        
+        return {
+            ...result,
+            domain,
+            modelInfo,
+        };
+    } catch (err) {
+        console.error(`[DOMAIN TASK] Error in ${domain}:`, err.message);
+        return {
+            ok: false,
+            error: err.message,
+            domain,
+            usage: { total_tokens: 0 },
+        };
+    }
 }
 
 // ============================================
@@ -164,6 +390,10 @@ async function runSovereignOS() {
 if (import.meta.url === `file://${process.argv[1]}`) {
     runSovereignOS().catch(err => {
         console.error("\n💥 Critical failure in Sovereign OS:", err);
+        // Clear cost guard interval before exit
+        if (COST_GUARD.cleanupInterval) {
+            clearInterval(COST_GUARD.cleanupInterval);
+        }
         process.exit(1);
     });
 }
@@ -171,4 +401,13 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 // ============================================
 // Exports
 // ============================================
-export { CONFIG, runSovereignOS, organizeDomainFiles, loadService, selectModel };
+export { 
+    CONFIG, 
+    runSovereignOS, 
+    organizeDomainFiles, 
+    loadService, 
+    selectModel, 
+    runDomainTask,
+    checkCostGuard,
+    estimateRequestCost,
+};
