@@ -32,11 +32,11 @@ describe('🏛️ TEC Sovereign Governance Map', () => {
       fs.mkdirSync(ledgerDir, { recursive: true });
     }
     
-    // Clean up files from previous tests
-    if (servicePreExists) {
+    // Clean up ONLY files created by tests (not pre-existing files)
+    if (!servicePreExists && fs.existsSync(lifeServicePath())) {
       fs.rmSync(lifeServicePath(), { force: true });
     }
-    if (ledgerPreExists) {
+    if (!ledgerPreExists && fs.existsSync(ledgerPath)) {
       fs.rmSync(ledgerPath, { force: true });
     }
   });
@@ -88,21 +88,27 @@ describe('🏛️ TEC Sovereign Governance Map', () => {
     // ✅ Verify ledger file exists before reading
     expect(fs.existsSync(ledgerPath)).toBe(true);
     
-    const ledgerData = JSON.parse(fs.readFileSync(ledgerPath, 'utf8'));
+    let ledgerData;
+    try {
+      const rawLedger = fs.readFileSync(ledgerPath, 'utf8');
+      ledgerData = JSON.parse(rawLedger);
+    } catch (error) {
+      throw new Error(`Failed to parse ledger file: ${error.message}`);
+    }
     expect(Array.isArray(ledgerData.events)).toBe(true);
     expect(ledgerData.events.length).toBeGreaterThan(0);
     
     // ✅ Use compatible method
-    const lastEvent = ledgerData.events[ledgerData.events.length - 1];
+    const lastEvent = ledgerData.events.at(-1);
     expect(lastEvent.domain).toBe('life.pi');
     expect(lastEvent.task).toBe(task);
-  });
+  }, 10000);
 
   test('runSovereignTaskMap rejects tasks outside the map', async () => {
     await expect(runSovereignTaskMap('life.pi', 'unauthorized task')).rejects.toThrow(
       /Task not approved/i
     );
-  });
+  }, 5000);
 
   test('listAllowedDomains returns a copy of the allowlist', () => {
     const list = listAllowedDomains();

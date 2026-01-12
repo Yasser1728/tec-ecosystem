@@ -165,13 +165,13 @@ function recordLedger(domain, task, meta = {}) {
   const ledgerPath = SAFE_PATHS.ledger;
   let existing = { events: [] };
   if (fs.existsSync(ledgerPath)) {
-    const raw = fs.readFileSync(ledgerPath, 'utf8');
-    if (raw && raw.trim()) {
-      try {
+    try {
+      const raw = fs.readFileSync(ledgerPath, 'utf8');
+      if (raw && raw.trim()) {
         existing = JSON.parse(raw);
-      } catch (error) {
-        throw new Error(`[LEDGER] Ledger file is corrupted: ${error.message}`);
       }
+    } catch (error) {
+      throw new Error(`[LEDGER] Failed to read or parse ledger: ${error.message}`);
     }
   }
   if (!Array.isArray(existing.events)) {
@@ -221,16 +221,19 @@ async function runSovereignTaskMap(domain, task) {
   try {
     const serviceModule = await import(pathToFileURL(servicePath).href);
     runDomainService = serviceModule?.runDomainService;
-  } catch (error) {
+  } catch (_error) {
+    // Import failed, will use fallback
     runDomainService = null;
   }
   if (typeof runDomainService !== 'function') {
-    runDomainService = async taskPrompt => ({
-      ok: true,
-      content: taskPrompt,
-      usage: { total_tokens: 0 },
-      meta: { domain: safeDomain, sandbox: true, role: 'PRIMARY', fallback: true }
-    });
+    runDomainService = async (taskPrompt) => {
+      return {
+        ok: true,
+        content: taskPrompt,
+        usage: { total_tokens: 0 },
+        meta: { domain: safeDomain, sandbox: true, role: 'PRIMARY', fallback: true }
+      };
+    };
   }
 
   const response = await runDomainService(selectedTask);
