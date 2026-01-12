@@ -66,3 +66,8 @@ Thumbs.db
 test-results/
 playwright-report/
 
+# AI Agent generated files
+ai-agent/services/*.pi.js
+ledger_governance.json
+ledger_full_log.json
+
