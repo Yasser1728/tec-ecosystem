@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 import { getDomainRoute, isPiDomain } from "./lib/domainRedirect";
+import { getDomainConfig } from "./lib/config/domain-registry";
 
 // Define route access levels
 const routeConfig = {
@@ -75,6 +76,12 @@ export async function middleware(request) {
     return NextResponse.next();
   }
 
+  // Get domain configuration for .pi domains
+  let domainConfig = null;
+  if (isPiDomain(hostname)) {
+    domainConfig = getDomainConfig(hostname);
+  }
+
   // Handle .pi domain routing
   if (isPiDomain(hostname)) {
     const targetRoute = getDomainRoute(hostname);
@@ -83,11 +90,69 @@ export async function middleware(request) {
     if (pathname === "/" && targetRoute !== "/") {
       const url = request.nextUrl.clone();
       url.pathname = targetRoute;
-      return NextResponse.rewrite(url);
+      
+      // Create response with domain headers
+      const response = NextResponse.rewrite(url);
+      
+      // Add domain intelligence headers
+      if (domainConfig) {
+        response.headers.set('X-Domain-Name', domainConfig.name);
+        response.headers.set('X-Domain-Name-Ar', domainConfig.nameAr);
+        response.headers.set('X-Domain-Tier', domainConfig.tier);
+        response.headers.set('X-Domain-Theme', domainConfig.theme);
+        response.headers.set('X-Domain-Analytics', domainConfig.analytics);
+        response.headers.set('X-Domain-Independent', String(domainConfig.independent));
+        response.headers.set('X-Domain-Value', domainConfig.value);
+        
+        // Check if domain requires authentication
+        if (domainConfig.requiresAuth) {
+          const token = await getToken({
+            req: request,
+            secret: process.env.NEXTAUTH_SECRET,
+          });
+          
+          if (!token) {
+            const signInUrl = new URL("/auth/signin", request.url);
+            signInUrl.searchParams.set("callbackUrl", pathname);
+            signInUrl.searchParams.set("domain", domainConfig.domain);
+            return NextResponse.redirect(signInUrl);
+          }
+        }
+      }
+      
+      return response;
     }
 
     // If user visits a path on .pi domain, keep them on that path
     // e.g., life.pi/about stays on /life/about
+    // But still add domain headers
+    if (domainConfig && pathname.startsWith("/api") === false) {
+      const response = NextResponse.next();
+      response.headers.set('X-Domain-Name', domainConfig.name);
+      response.headers.set('X-Domain-Name-Ar', domainConfig.nameAr);
+      response.headers.set('X-Domain-Tier', domainConfig.tier);
+      response.headers.set('X-Domain-Theme', domainConfig.theme);
+      response.headers.set('X-Domain-Analytics', domainConfig.analytics);
+      response.headers.set('X-Domain-Independent', String(domainConfig.independent));
+      response.headers.set('X-Domain-Value', domainConfig.value);
+      
+      // Check authentication for protected domains
+      if (domainConfig.requiresAuth) {
+        const token = await getToken({
+          req: request,
+          secret: process.env.NEXTAUTH_SECRET,
+        });
+        
+        if (!token) {
+          const signInUrl = new URL("/auth/signin", request.url);
+          signInUrl.searchParams.set("callbackUrl", pathname);
+          signInUrl.searchParams.set("domain", domainConfig.domain);
+          return NextResponse.redirect(signInUrl);
+        }
+      }
+      
+      return response;
+    }
   }
 
   // Allow API routes and static files
