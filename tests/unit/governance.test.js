@@ -7,7 +7,7 @@ import { runSovereignTaskMap } from '../../ai-agent/domain-task-map.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const lifeServicePath = () => path.join(CONFIG.servicesFolder, 'life.pi.js');
+const testServicePath = () => path.join(CONFIG.servicesFolder, 'governance.pi.js');
 const ledgerPath = path.join(path.dirname(__dirname), '..', 'ledger_governance.json');
 
 describe('Sovereign governance constraints', () => {
@@ -17,13 +17,13 @@ describe('Sovereign governance constraints', () => {
 
   beforeEach(() => {
     // Record which files exist BEFORE tests
-    servicePreExists = fs.existsSync(lifeServicePath());
+    servicePreExists = fs.existsSync(testServicePath());
     ledgerPreExists = fs.existsSync(ledgerPath);
 
     // Clean up files from previous tests ONLY
     // Only delete if file was NOT pre-existing (i.e., created by a previous test)
-    if (!servicePreExists && fs.existsSync(lifeServicePath())) {
-      fs.rmSync(lifeServicePath(), { force: true });
+    if (!servicePreExists && fs.existsSync(testServicePath())) {
+      fs.rmSync(testServicePath(), { force: true });
     }
     if (!ledgerPreExists && fs.existsSync(ledgerPath)) {
       fs.rmSync(ledgerPath, { force: true });
@@ -33,8 +33,8 @@ describe('Sovereign governance constraints', () => {
   afterEach(() => {
     // Clean up test artifacts
     // Only delete files that were created during tests (not pre-existing)
-    if (!servicePreExists && fs.existsSync(lifeServicePath())) {
-      fs.rmSync(lifeServicePath(), { force: true });
+    if (!servicePreExists && fs.existsSync(testServicePath())) {
+      fs.rmSync(testServicePath(), { force: true });
     }
     if (!ledgerPreExists && fs.existsSync(ledgerPath)) {
       fs.rmSync(ledgerPath, { force: true });
