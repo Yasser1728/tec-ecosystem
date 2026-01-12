@@ -28,7 +28,8 @@
     "test:all": "npm run test:coverage && npm run test:playwright",
     "ai:run": "node index.js",
     "ai:generate-services": "node ai-agent/services/generateServices.js",
-    "ai:build": "echo 'Sovereign AI Build Initiated...'"
+    "ai:build": "echo 'Sovereign AI Build Initiated...'",
+    "agent:run": "node agents/sovereign-agent/index.js"
   },
   "dependencies": {
     "@prisma/client": "^6.1.0",

@@ -66,3 +66,8 @@ Thumbs.db
 test-results/
 playwright-report/
 
+# Sovereign Agent Runtime Outputs
+agents/sovereign-agent/ledger.json
+domains/*/*.md
+!domains/README.md
+
