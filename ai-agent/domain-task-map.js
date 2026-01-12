@@ -165,13 +165,13 @@ function recordLedger(domain, task, meta = {}) {
   const ledgerPath = SAFE_PATHS.ledger;
   let existing = { events: [] };
   if (fs.existsSync(ledgerPath)) {
-    const raw = fs.readFileSync(ledgerPath, 'utf8');
-    if (raw && raw.trim()) {
-      try {
+    try {
+      const raw = fs.readFileSync(ledgerPath, 'utf8');
+      if (raw && raw.trim()) {
         existing = JSON.parse(raw);
-      } catch (error) {
-        throw new Error(`[LEDGER] Ledger file is corrupted: ${error.message}`);
       }
+    } catch (error) {
+      throw new Error(`[LEDGER] Failed to read or parse ledger: ${error.message}`);
     }
   }
   if (!Array.isArray(existing.events)) {
