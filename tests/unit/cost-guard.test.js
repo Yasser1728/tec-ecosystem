@@ -3,31 +3,17 @@
  * Tests cost estimation, rate limiting, and budget enforcement
  */
 
-// Mock the cost estimation and guard functions
-// Since index.js uses ESM and has complex imports, we'll test the logic separately
+let estimateRequestCost;
+let checkCostGuard;
+
+beforeAll(async () => {
+  const module = await import('../../index.js');
+  estimateRequestCost = module.estimateRequestCost;
+  checkCostGuard = module.checkCostGuard;
+});
 
 describe('Cost Guard System', () => {
   describe('Cost Estimation Logic', () => {
-    // Test the cost estimation logic
-    function estimateRequestCost(modelName) {
-      if (!modelName) return 0;
-      
-      const modelLower = modelName.toLowerCase();
-      
-      // Paid models
-      if (modelLower.includes('gpt-5') || modelLower.includes('gpt-4')) return 1.5;
-      if (modelLower.includes('claude')) return 1.2;
-      if (modelLower.includes('gemini') && modelLower.includes('pro')) return 1.8;
-      if (modelLower.includes('codex')) return 1.4;
-      
-      // Fast ops (low cost)
-      if (modelLower.includes('o4-mini')) return 0.2;
-      if (modelLower.includes('flash')) return 0.0;
-      
-      // Free models
-      return 0.0;
-    }
-
     it('should estimate cost for paid GPT models', () => {
       const cost = estimateRequestCost('openai/gpt-5.2-pro');
       expect(cost).toBe(1.5);
@@ -60,6 +46,11 @@ describe('Cost Guard System', () => {
 
     it('should return zero cost for flash models', () => {
       const cost = estimateRequestCost('google/gemini-flash');
+      expect(cost).toBe(0.0);
+    });
+
+    it('should prioritize flash detection over pro detection', () => {
+      const cost = estimateRequestCost('google/gemini-pro-flash');
       expect(cost).toBe(0.0);
     });
 

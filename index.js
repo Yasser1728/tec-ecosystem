@@ -6,7 +6,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { generateFinalReport, getCostSignal, recordTransaction } from './ai-agent/core/ledger.js';
-import { councilDecision, TASK_TYPES } from './ai-agent/core/council.js';
+import { TASK_TYPES } from './ai-agent/core/council.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const BASE_DIR = path.dirname(__filename);
@@ -21,6 +21,9 @@ const COST_GUARD = {
     // Per-minute cost ceiling per user
     MAX_COST_PER_MINUTE: parseFloat(process.env.MAX_COST_PER_MINUTE || '10.0'),
     
+    // Max entries to prevent memory leak
+    MAX_USER_COST_ENTRIES: 5000,
+    
     // Cost tracking by user
     userCosts: new Map(),
     
@@ -29,29 +32,50 @@ const COST_GUARD = {
 };
 
 /**
+ * Sanitize user ID to prevent injection attacks
+ * @param {string} userId - Raw user ID
+ * @returns {string} Sanitized user ID (alphanumeric only, max 50 chars)
+ */
+function sanitizeUserId(userId) {
+    if (!userId || typeof userId !== 'string') return 'system';
+    // Allow only alphanumeric characters, hyphens, and underscores
+    // Limit to 50 characters
+    return userId.replace(/[^a-zA-Z0-9_-]/g, '').substring(0, 50) || 'system';
+}
+
+/**
  * Estimate cost by model name
+ * Checks most specific patterns first to avoid conflicts
  */
 function estimateRequestCost(modelName) {
     if (!modelName) return 0;
     
     const modelLower = modelName.toLowerCase();
     
-    // Paid models
-    if (modelLower.includes('gpt-5') || modelLower.includes('gpt-4')) return 1.5;
-    if (modelLower.includes('claude')) return 1.2;
-    if (modelLower.includes('gemini') && modelLower.includes('pro')) return 1.8;
-    if (modelLower.includes('codex')) return 1.4;
-    
-    // Fast ops (low cost)
-    if (modelLower.includes('o4-mini')) return 0.2;
+    // Check for flash models first (free tier)
     if (modelLower.includes('flash')) return 0.0;
     
-    // Free models
+    // Check for paid models (most specific to least specific)
+    if (modelLower.includes('gpt-5') || modelLower.includes('gpt-4')) {
+        return 1.5;
+    }
+    if (modelLower.includes('gemini') && modelLower.includes('pro')) {
+        return 1.8;
+    }
+    if (modelLower.includes('claude')) return 1.2;
+    if (modelLower.includes('codex')) return 1.4;
+    
+    // Fast/cheap ops
+    if (modelLower.includes('o4-mini')) return 0.2;
+    
+    // Free models (default)
     return 0.0;
 }
 
 /**
  * Check if user/request is within cost limits
+ * Note: This operation is not fully atomic. In high-concurrency production environments,
+ * consider using a mutex/lock mechanism or Redis with atomic operations.
  */
 function checkCostGuard(userId, modelName) {
     const requestCost = estimateRequestCost(modelName);
@@ -68,7 +92,7 @@ function checkCostGuard(userId, modelName) {
     
     // Check per-minute ceiling
     const now = Date.now();
-    const userKey = userId || 'system';
+    const userKey = sanitizeUserId(userId || 'system');
     const userCostData = COST_GUARD.userCosts.get(userKey) || {
         totalCost: 0,
         windowStart: now,
@@ -112,10 +136,12 @@ function checkCostGuard(userId, modelName) {
 }
 
 /**
- * Cleanup old cost tracking data
+ * Cleanup old cost tracking data and enforce size limit
  */
 function cleanupCostGuard() {
     const now = Date.now();
+    
+    // Remove entries with no recent requests
     for (const [userId, data] of COST_GUARD.userCosts.entries()) {
         data.requests = data.requests.filter(
             req => now - req.timestamp < 60000
@@ -123,6 +149,21 @@ function cleanupCostGuard() {
         
         if (data.requests.length === 0) {
             COST_GUARD.userCosts.delete(userId);
+        }
+    }
+    
+    // If still over limit, remove oldest entries (LRU eviction)
+    if (COST_GUARD.userCosts.size > COST_GUARD.MAX_USER_COST_ENTRIES) {
+        const entriesToRemove = COST_GUARD.userCosts.size - COST_GUARD.MAX_USER_COST_ENTRIES;
+        const sortedEntries = Array.from(COST_GUARD.userCosts.entries())
+            .sort((a, b) => {
+                const aLatest = Math.max(...a[1].requests.map(r => r.timestamp), 0);
+                const bLatest = Math.max(...b[1].requests.map(r => r.timestamp), 0);
+                return aLatest - bLatest;
+            });
+        
+        for (let i = 0; i < entriesToRemove; i++) {
+            COST_GUARD.userCosts.delete(sortedEntries[i][0]);
         }
     }
 }
@@ -208,13 +249,13 @@ function selectModel(options = {}) {
     // If budget is low, skip paid models
     if (costSignal.isLowBalance) {
         console.log('[Model Selection] Low balance detected, using free models');
-        for (const [key, model] of Object.entries(CONFIG.models.free)) {
+        for (const [_, model] of Object.entries(CONFIG.models.free)) {
             if (model) return { type: 'free', name: model, tier: 'free' };
         }
     }
     
     // Try paid models first
-    for (const [key, model] of Object.entries(CONFIG.models.paid)) {
+    for (const [_, model] of Object.entries(CONFIG.models.paid)) {
         if (model) {
             // Check cost guard
             const costCheck = checkCostGuard(userId, model);
@@ -226,7 +267,7 @@ function selectModel(options = {}) {
     }
     
     // Fallback to free models
-    for (const [key, model] of Object.entries(CONFIG.models.free)) {
+    for (const [_, model] of Object.entries(CONFIG.models.free)) {
         if (model) return { type: 'free', name: model, tier: 'free' };
     }
     
@@ -246,7 +287,7 @@ function selectModel(options = {}) {
  * @returns {Promise} Task result with metadata
  */
 async function runDomainTask(options) {
-    const { domain, taskPrompt, userId = 'system', taskType = TASK_TYPES.OPERATION } = options;
+    const { domain, taskPrompt, userId = 'system' } = options;
     
     if (!domain) {
         throw new Error('[runDomainTask] Domain is required');
