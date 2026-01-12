@@ -62,8 +62,8 @@ export default function handler(req, res) {
     });
 
   } catch (error) {
-    // Log error without sensitive details
-    console.error('Domain info API error:', error.message);
+    // Log error with context
+    console.error('Failed to retrieve domain info:', error.message);
     return res.status(500).json({ error: 'Internal server error' });
   }
 }
