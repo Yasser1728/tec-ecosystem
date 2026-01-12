@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 import { getDomainRoute, isPiDomain } from "./lib/domainRedirect";
+import { getDomainConfig } from "./lib/config/domain-registry";
 
 // Define route access levels
 const routeConfig = {
@@ -66,6 +67,42 @@ const routeConfig = {
   ],
 };
 
+/**
+ * Helper function to check domain authentication and redirect if needed
+ */
+async function checkDomainAuth(request, domainConfig, pathname) {
+  if (domainConfig && domainConfig.requiresAuth) {
+    const token = await getToken({
+      req: request,
+      secret: process.env.NEXTAUTH_SECRET,
+    });
+    
+    if (!token) {
+      const signInUrl = new URL("/auth/signin", request.url);
+      signInUrl.searchParams.set("callbackUrl", pathname);
+      signInUrl.searchParams.set("domain", domainConfig.domain);
+      return NextResponse.redirect(signInUrl);
+    }
+  }
+  return null;
+}
+
+/**
+ * Helper function to add domain headers to response
+ */
+function addDomainHeaders(response, domainConfig) {
+  if (domainConfig) {
+    response.headers.set('X-Domain-Name', domainConfig.name);
+    response.headers.set('X-Domain-Name-Ar', domainConfig.nameAr);
+    response.headers.set('X-Domain-Tier', domainConfig.tier);
+    response.headers.set('X-Domain-Theme', domainConfig.theme);
+    response.headers.set('X-Domain-Analytics', domainConfig.analytics);
+    response.headers.set('X-Domain-Independent', String(domainConfig.independent));
+    response.headers.set('X-Domain-Value', domainConfig.value);
+  }
+  return response;
+}
+
 export async function middleware(request) {
   const { pathname } = request.nextUrl;
   const hostname = request.headers.get("host") || "";
@@ -73,6 +110,12 @@ export async function middleware(request) {
   // Handle validation-key.txt - serve directly
   if (pathname === "/validation-key.txt") {
     return NextResponse.next();
+  }
+
+  // Get domain configuration for .pi domains
+  let domainConfig = null;
+  if (isPiDomain(hostname)) {
+    domainConfig = getDomainConfig(hostname);
   }
 
   // Handle .pi domain routing
@@ -83,11 +126,31 @@ export async function middleware(request) {
     if (pathname === "/" && targetRoute !== "/") {
       const url = request.nextUrl.clone();
       url.pathname = targetRoute;
-      return NextResponse.rewrite(url);
+      
+      // Check authentication first
+      const authRedirect = await checkDomainAuth(request, domainConfig, pathname);
+      if (authRedirect) return authRedirect;
+      
+      // Create response with domain headers
+      let response = NextResponse.rewrite(url);
+      response = addDomainHeaders(response, domainConfig);
+      
+      return response;
     }
 
     // If user visits a path on .pi domain, keep them on that path
     // e.g., life.pi/about stays on /life/about
+    // But still add domain headers
+    if (domainConfig && pathname.startsWith("/api") === false) {
+      // Check authentication
+      const authRedirect = await checkDomainAuth(request, domainConfig, pathname);
+      if (authRedirect) return authRedirect;
+      
+      let response = NextResponse.next();
+      response = addDomainHeaders(response, domainConfig);
+      
+      return response;
+    }
   }
 
   // Allow API routes and static files
