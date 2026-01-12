@@ -5,10 +5,16 @@
 
 import { checkRateLimit, getClientId, checkBodySize } from '../../lib/api-guard.js';
 
+// Generate unique IDs for each test to avoid pollution
+let testCounter = 0;
+function getUniqueTestId() {
+  return `test-${Date.now()}-${testCounter++}`;
+}
+
 describe('API Guard', () => {
   describe('checkRateLimit', () => {
     it('should allow requests within rate limit', () => {
-      const clientId = 'test-user-1';
+      const clientId = getUniqueTestId();
       const maxRequests = 5;
       
       const result = checkRateLimit(clientId, maxRequests);
@@ -18,7 +24,7 @@ describe('API Guard', () => {
     });
 
     it('should block requests exceeding rate limit', () => {
-      const clientId = 'test-user-2';
+      const clientId = getUniqueTestId();
       const maxRequests = 3;
       
       // Make requests up to the limit
@@ -34,7 +40,7 @@ describe('API Guard', () => {
     });
 
     it('should reset rate limit after window expires', async () => {
-      const clientId = 'test-user-3';
+      const clientId = getUniqueTestId();
       const maxRequests = 2;
       
       // Make requests up to the limit

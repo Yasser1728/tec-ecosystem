@@ -47,9 +47,10 @@ function sanitizeResponse(result) {
   if (result.content) {
     const content = String(result.content);
     // Basic sanitization: limit length and remove control characters
+    // If displaying in HTML context, use proper HTML escaping library (e.g., DOMPurify)
     sanitized.content = content
       .substring(0, 50000) // Max 50,000 characters
-      .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, ''); // Remove control chars
+      .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, ''); // Remove control chars
   } else if (result.data) {
     sanitized.content = result.data;
   }
@@ -121,6 +122,8 @@ Generate or process the core operation for this domain.
         domain
       });
 
+      // Note: The original promise continues running in background on timeout
+      // TODO: Implement AbortController if executeModel API supports it
       const timeoutPromise = new Promise((_, reject) => 
         setTimeout(() => reject(new Error('Service execution timeout')), SERVICE_TIMEOUT_MS)
       );

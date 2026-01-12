@@ -27,7 +27,8 @@ async function handler(req, res) {
   if (!validationResult.success) {
     return res.status(400).json({ 
       error: "Invalid request payload",
-      details: validationResult.error.errors,
+      // Only include validation details in development
+      ...(process.env.NODE_ENV === 'development' && { details: validationResult.error.errors }),
       requestId,
     });
   }
