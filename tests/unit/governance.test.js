@@ -21,7 +21,7 @@ describe('🏛️ TEC Sovereign Governance Map', () => {
     servicePreExists = fs.existsSync(lifeServicePath());
     ledgerPreExists = fs.existsSync(ledgerPath);
     
-    // ✅ إنشاء المجلدات الأساسية إذا لم تكن موجودة
+    // ✅ Create base directories if they don't exist
     const serviceDir = path.dirname(lifeServicePath());
     const ledgerDir = path.dirname(ledgerPath);
     
@@ -32,7 +32,7 @@ describe('🏛️ TEC Sovereign Governance Map', () => {
       fs.mkdirSync(ledgerDir, { recursive: true });
     }
     
-    // تنظيف الملفات من الاختبارات السابقة
+    // Clean up files from previous tests
     if (servicePreExists) {
       fs.rmSync(lifeServicePath(), { force: true });
     }
@@ -72,7 +72,7 @@ describe('🏛️ TEC Sovereign Governance Map', () => {
   });
 
   test('runSovereignTaskMap creates sandbox service and logs ledger', async () => {
-    // ✅ التحقق من وجود domain في task map
+    // ✅ Verify domain exists in task map
     expect(domainTaskMap['life.pi']).toBeDefined();
     expect(Array.isArray(domainTaskMap['life.pi'])).toBe(true);
     expect(domainTaskMap['life.pi'].length).toBeGreaterThan(0);
@@ -85,14 +85,14 @@ describe('🏛️ TEC Sovereign Governance Map', () => {
     expect(response?.meta?.sandbox).toBe(true);
     expect(fs.existsSync(lifeServicePath())).toBe(true);
 
-    // ✅ التحقق من وجود ledger file قبل القراءة
+    // ✅ Verify ledger file exists before reading
     expect(fs.existsSync(ledgerPath)).toBe(true);
     
     const ledgerData = JSON.parse(fs.readFileSync(ledgerPath, 'utf8'));
     expect(Array.isArray(ledgerData.events)).toBe(true);
     expect(ledgerData.events.length).toBeGreaterThan(0);
     
-    // ✅ استخدام طريقة متوافقة
+    // ✅ Use compatible method
     const lastEvent = ledgerData.events[ledgerData.events.length - 1];
     expect(lastEvent.domain).toBe('life.pi');
     expect(lastEvent.task).toBe(task);
