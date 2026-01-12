@@ -59,25 +59,34 @@ jobs:
           cache: "npm"  
 
       # 3️⃣ Install dependencies  
+      # ملاحظة مهندس AI: لو الـ npm ci بيفشل، شغل npm install محلياً وارفع الـ lock file الجديد
       - name: 📚 Install dependencies  
+        env:
+          NPM_CONFIG_PRODUCTION: "false"
         run: npm ci  
 
-      # 4️⃣ Generate Prisma Client  
+      # 🛡️ 4️⃣ اختبارات السيادة والحوكمة (AI Engineering Check)
+      # تضمن هذه الخطوة أن الـ AI يلتزم بالمسارات المسموحة والـ Ledger
+      - name: 🏛️ Run Sovereign Governance Tests
+        run: npm run test:governance
+        # في حال لم تكن الاختبارات مضافة للـ scripts بعد، استخدم: npx jest tests/unit/governance.test.js
+
+      # 5️⃣ Generate Prisma Client  
       - name: 🔧 Generate Prisma Client  
         run: npx prisma generate  
 
-      # 5️⃣ Build Next.js Application  
+      # 6️⃣ Build Next.js Application  
       - name: 🏗️ Build Next.js Application  
         run: npm run build  
 
-      # 6️⃣ Run AI Sovereign Factory (Self-Healing & Agents)  
+      # 7️⃣ Run AI Sovereign Factory (Self-Healing & Agents)  
       - name: 🤖 Run AI Self-Healing System (Sovereign Factory)  
         if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'  
         id: ai_process  
         run: node index.js  
         continue-on-error: true  
 
-      # 7️⃣ AI Failure Summary  
+      # 8️⃣ AI Failure Summary  
       - name: ⚠️ AI Failure Summary  
         if: steps.ai_process.outcome == 'failure'  
         run: |  
@@ -86,7 +95,7 @@ jobs:
           echo "يرجى مراجعة الـ Logs يدوياً." >> $GITHUB_STEP_SUMMARY  
           exit 1  
 
-      # 8️⃣ Upload Build + Ledger + Artifacts  
+      # 9️⃣ Upload Build + Ledger + Artifacts  
       - name: 📦 Upload Build & Ledger Artifacts  
         uses: actions/upload-artifact@v4  
         with:  
@@ -94,11 +103,11 @@ jobs:
           path: |  
             .next/  
             public/  
-            ledger_full_log.json  
+            agents/sovereign-agent/ledger.json
             build.log  
           retention-days: 7  
 
-      # 9️⃣ Success Notification  
+      # 🔟 Success Notification  
       - name: ✅ Build & Factory Success  
         if: success()  
         run: echo "✅ Build + AI Factory completed successfully!"

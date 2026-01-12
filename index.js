@@ -9,7 +9,7 @@ import { generateFinalReport, getCostSignal, recordTransaction } from './ai-agen
 import { councilDecision, TASK_TYPES } from './ai-agent/core/council.js';
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const BASE_DIR = path.dirname(__filename);
 
 // ============================================
 // Cost Guard Configuration
@@ -134,7 +134,7 @@ COST_GUARD.cleanupInterval = setInterval(cleanupCostGuard, 60000);
 // Configuration
 // ============================================
 const CONFIG = {
-    servicesFolder: path.join(__dirname, 'ai-agent', 'services'),
+    servicesFolder: path.join(BASE_DIR, 'ai-agent', 'services'),
     sandbox: true, // new domain files are created in sandbox mode
     domains: [
         'tec.pi', 'finance.pi', 'market.pi', 'wallet.pi', 'commerce.pi', 'analytics.pi',
@@ -379,7 +379,7 @@ async function runSovereignOS() {
     console.log(JSON.stringify(report.summary, null, 2));
 
     // Save full logs
-    const logsPath = path.join(__dirname, 'ledger_full_log.json');
+    const logsPath = path.join(BASE_DIR, 'ledger_full_log.json');
     fs.writeFileSync(logsPath, JSON.stringify(report.logs, null, 2));
     console.log(`Full ledger logs saved to ${logsPath}`);
 }
