@@ -7,6 +7,34 @@
  * - Transaction logging and reporting
  */
 
+import { randomUUID } from 'crypto';
+
+/**
+ * Generate a unique session ID using cryptographically secure random values
+ * @returns {string} Unique session identifier
+ */
+function generateSessionId() {
+  try {
+    // Use crypto.randomUUID for cryptographically secure session IDs
+    return `session_${Date.now()}_${randomUUID().split('-')[0]}`;
+  } catch {
+    // Fallback for environments without crypto support (shouldn't happen in Node.js)
+    return `session_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+  }
+}
+
+/**
+ * Generate a unique transaction ID
+ * @returns {string} Unique transaction identifier
+ */
+function generateTransactionId() {
+  try {
+    return `tx_${Date.now()}_${randomUUID().split('-')[0]}`;
+  } catch {
+    return `tx_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+  }
+}
+
 // Ledger state (In-memory)
 let ledgerState = {
   totalTokens: 0,
@@ -17,14 +45,6 @@ let ledgerState = {
   sessionId: generateSessionId(),
   startTime: new Date().toISOString()
 };
-
-/**
- * Generate a unique session ID
- * @returns {string} Unique session identifier
- */
-function generateSessionId() {
-  return `session_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-}
 
 /**
  * 🔄 Reset the ledger state
@@ -66,7 +86,7 @@ export function recordTransaction({ model, usage, domain, role }) {
   ledgerState.balance -= unitCost;
 
   const entry = {
-    id: `tx_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+    id: generateTransactionId(),
     timestamp: new Date().toISOString(),
     sessionId: ledgerState.sessionId,
     domain,

@@ -45,33 +45,62 @@ function sleep(ms) {
 }
 
 /**
+ * Validate domain name to prevent code injection
+ * @param {string} domain - Domain name to validate
+ * @returns {boolean} True if domain is valid
+ */
+function isValidDomain(domain) {
+    // Only allow alphanumeric characters, dots, and hyphens
+    // Must match the format: name.pi
+    const domainPattern = /^[a-z][a-z0-9-]*\.pi$/;
+    return typeof domain === 'string' && domainPattern.test(domain);
+}
+
+/**
+ * Escape string for safe use in template literals
+ * @param {string} str - String to escape
+ * @returns {string} Escaped string
+ */
+function escapeForTemplate(str) {
+    return str.replace(/[`\\$]/g, '\\$&').replace(/'/g, "\\'");
+}
+
+/**
  * Load a domain service dynamically
  * @param {string} domain - Domain name
  * @returns {Promise<Function|null>} Service run function or null
  */
 async function loadService(domain) {
+    // Validate domain name to prevent injection attacks
+    if (!isValidDomain(domain)) {
+        console.error(`[SECURITY] Invalid domain name rejected: ${domain}`);
+        return null;
+    }
+
     try {
         const servicePath = path.join(CONFIG.servicesFolder, `${domain}.js`);
         
         // Create sandbox service file if it doesn't exist
         if (!fs.existsSync(servicePath)) {
+            // Use escaped domain name for template safety
+            const safeDomain = escapeForTemplate(domain);
             const template = `import { createService } from './baseService.js';
 
 let runDomainService;
 
 try {
   const { run } = createService({
-    domain: '${domain}',
-    purpose: 'Sovereign operation for ${domain}'
+    domain: '${safeDomain}',
+    purpose: 'Sovereign operation for ${safeDomain}'
   });
   runDomainService = run;
 } catch (error) {
-  console.error('Failed to initialize service for ${domain}:', error.message);
+  console.error('Failed to initialize service for ${safeDomain}:', error.message);
   runDomainService = async () => ({ 
     ok: false, 
     error: error.message, 
     usage: { total_tokens: 0 }, 
-    meta: { domain: '${domain}', sandbox: true } 
+    meta: { domain: '${safeDomain}', sandbox: true } 
   });
 }
 
@@ -292,14 +321,40 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     // Parse command line arguments
     if (args.length > 0) {
         if (args[0].startsWith('--group=')) {
-            options.group = args[0].split('=')[1];
+            const group = args[0].split('=')[1];
+            if (CONFIG.domainGroups[group]) {
+                options.group = group;
+            } else {
+                console.error(`Invalid group: ${group}. Available: ${Object.keys(CONFIG.domainGroups).join(', ')}`);
+                process.exit(1);
+            }
         } else if (args[0].startsWith('--priority=')) {
-            options.priority = parseInt(args[0].split('=')[1], 10);
+            const priorityStr = args[0].split('=')[1];
+            const priority = parseInt(priorityStr, 10);
+            if (isNaN(priority) || priority < 1 || priority > 10) {
+                console.error(`Invalid priority: ${priorityStr}. Must be a number between 1 and 10.`);
+                process.exit(1);
+            }
+            options.priority = priority;
         } else if (args[0].startsWith('--domain=')) {
-            options.domains = args[0].split('=')[1].split(',');
+            const domains = args[0].split('=')[1].split(',');
+            // Validate each domain
+            for (const domain of domains) {
+                if (!isValidDomain(domain)) {
+                    console.error(`Invalid domain: ${domain}. Must match pattern: name.pi`);
+                    process.exit(1);
+                }
+            }
+            options.domains = domains;
         } else {
             // Assume it's a group name for backward compatibility
-            options.group = args[0];
+            const group = args[0];
+            if (CONFIG.domainGroups[group]) {
+                options.group = group;
+            } else {
+                console.error(`Invalid argument: ${args[0]}. Use --group=, --priority=, or --domain=`);
+                process.exit(1);
+            }
         }
     }
     

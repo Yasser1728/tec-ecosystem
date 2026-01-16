@@ -224,8 +224,15 @@ export async function executeModel({
       lastError = error;
       console.warn(`[EXECUTOR] Attempt ${attempt}/${MAX_RETRIES + 1} failed for ${model.model}: ${error.message}`);
 
-      // Don't retry on abort (timeout)
-      if (error.name === 'AbortError') {
+      // Don't retry on abort/timeout errors (check multiple error types for compatibility)
+      const isAbortError = error.name === 'AbortError' || 
+                          error.name === 'TimeoutError' ||
+                          error.code === 'ABORT_ERR' ||
+                          error.code === 'ETIMEDOUT' ||
+                          (error.message && error.message.toLowerCase().includes('aborted'));
+      
+      if (isAbortError) {
+        console.warn(`[EXECUTOR] Request timed out for ${model.model}, not retrying`);
         break;
       }
 
