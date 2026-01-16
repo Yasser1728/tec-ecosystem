@@ -10,6 +10,9 @@ import { generateFinalReport, getCostSignal, recordTransaction } from './ai-agen
 const __filename = fileURLToPath(import.meta.url);
 const BASE_DIR = path.dirname(__filename);
 
+// Static log file path (safe from user input manipulation)
+const LEDGER_LOG_PATH = path.join(BASE_DIR, 'ledger_full_log.json');
+
 // ============================================
 // Configuration
 // ============================================
@@ -46,9 +49,51 @@ const CONFIG = {
 // Helpers
 // ============================================
 
+/**
+ * Validate domain name to prevent code injection
+ * Only allows alphanumeric characters, dots, and hyphens matching format: name.pi
+ * @param {string} domain - Domain name to validate
+ * @returns {boolean} True if domain is valid
+ */
+function isValidDomain(domain) {
+    const domainPattern = /^[a-z][a-z0-9-]*\.pi$/;
+    return typeof domain === 'string' && domainPattern.test(domain);
+}
+
+/**
+ * Safely resolve a path within a base directory
+ * Prevents path traversal attacks by ensuring resolved path stays within baseDir
+ * @param {string} baseDir - Base directory (must be a trusted static path)
+ * @param {string} filename - Filename to resolve (may contain user input)
+ * @returns {string|null} Safe path or null if traversal detected
+ */
+function safePathResolve(baseDir, filename) {
+    // Resolve both paths to absolute form for comparison
+    const resolvedBase = path.resolve(baseDir);
+    const resolvedPath = path.resolve(baseDir, filename);
+    
+    // Ensure the resolved path is within the base directory
+    if (!resolvedPath.startsWith(resolvedBase + path.sep)) {
+        return null;
+    }
+    return resolvedPath;
+}
+
 async function loadService(domain) {
+    // Validate domain name to prevent injection attacks
+    if (!isValidDomain(domain)) {
+        console.error(`[SECURITY] Invalid domain name rejected: ${domain}`);
+        return null;
+    }
+
     try {
-        const servicePath = path.join(CONFIG.servicesFolder, `${domain}.js`);
+        // Use safe path resolution to prevent path traversal
+        const servicePath = safePathResolve(CONFIG.servicesFolder, `${domain}.js`);
+        if (!servicePath) {
+            console.error(`[SECURITY] Path traversal detected for domain: ${domain}`);
+            return null;
+        }
+        
         if (!fs.existsSync(servicePath)) {
             const template = [
                 'export async function runDomainService(taskPrompt) {',
@@ -59,7 +104,7 @@ async function loadService(domain) {
             fs.writeFileSync(servicePath, template.trim());
             console.log(`Created sandbox domain file: ${domain}.js`);
         }
-        const module = await import(path.join(CONFIG.servicesFolder, `${domain}.js`));
+        const module = await import(servicePath);
         return module.runDomainService;
     } catch (err) {
         console.error(`Failed to load service for ${domain}:`, err.message);
@@ -152,10 +197,9 @@ async function runSovereignOS() {
     console.log("\n[Sovereign OS] Final Operational Report:");
     console.log(JSON.stringify(report.summary, null, 2));
 
-    // Save full logs
-    const logsPath = path.join(BASE_DIR, 'ledger_full_log.json');
-    fs.writeFileSync(logsPath, JSON.stringify(report.logs, null, 2));
-    console.log(`Full ledger logs saved to ${logsPath}`);
+    // Save full logs to static path (no user input)
+    fs.writeFileSync(LEDGER_LOG_PATH, JSON.stringify(report.logs, null, 2));
+    console.log(`Full ledger logs saved to ${LEDGER_LOG_PATH}`);
 }
 
 // ============================================
@@ -171,4 +215,4 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 // ============================================
 // Exports
 // ============================================
-export { CONFIG, runSovereignOS, organizeDomainFiles, loadService, selectModel };
+export { CONFIG, runSovereignOS, organizeDomainFiles, loadService, selectModel, isValidDomain, safePathResolve };
