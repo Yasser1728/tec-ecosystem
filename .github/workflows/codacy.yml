@@ -1,0 +1,47 @@
+# هذا المسار مخصص لفحص الأمان وحماية مصنع الذكاء الاصطناعي السيادي TEC
+# يضمن التزام الوكلاء بالمعايير الأمنية ومنع تسريب البيانات
+
+name: "فحص الأمان عبر كوداسي - Codacy Security Scan"
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main" ]
+  schedule:
+    - cron: '23 6 * * 4' 
+
+permissions:
+  contents: read
+
+jobs:
+  codacy-security-scan:
+    permissions:
+      contents: read 
+      security-events: write 
+      actions: read 
+    
+    name: "بدء عملية فحص الحوكمة والأمان"
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: "📥 جلب الكود المصدري"
+        uses: actions/checkout@v4
+
+      - name: "🛡️ تشغيل محرك فحص كوداسي"
+        uses: codacy/codacy-analysis-cli-action@v4
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          verbose: true
+          output: results.sarif
+          format: sarif
+          directory: |
+            agents
+            ai-agent
+            tests
+            core
+
+      - name: "📊 رفع تقرير الأمان إلى جيت هاب"
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: results.sarif
