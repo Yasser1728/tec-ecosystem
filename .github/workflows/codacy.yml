@@ -46,14 +46,16 @@ jobs:
 
       - name: "🛡️ تشغيل محرك فحص كوداسي"
         uses: codacy/codacy-analysis-cli-action@v4
+        # Continue even if Codacy upload fails (e.g., if Repository Analysis is disabled)
+        continue-on-error: true
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           verbose: true
           output: results.sarif
           format: sarif
           directory: "/github/workspace"
-          # Upload results to Codacy
-          upload: true
+          # Skip upload to Codacy API - results are uploaded to GitHub via SARIF
+          upload: false
 
       - name: "🔍 فحص نتائج الأمان"
         id: check-sarif
