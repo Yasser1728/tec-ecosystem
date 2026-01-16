@@ -73,7 +73,7 @@ export async function initializeDomainDatabase(domainName) {
   
   // Note: In production, create separate database or schema per domain
   // Current implementation uses shared Prisma client with domain field filtering
-  // See: https://github.com/[org]/tec-ecosystem/issues/XXX
+  // Tracking: Production database isolation implementation planned
   
   return {
     initialized: true,

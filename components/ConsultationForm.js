@@ -66,7 +66,7 @@ export default function ConsultationForm({ service = "General", onClose }) {
     e.preventDefault();
 
     // Note: Send to backend API endpoint
-    console.log("Consultation Request:", {
+    logger.info("Consultation Request:", {
       ...formData,
       service,
       tier,
