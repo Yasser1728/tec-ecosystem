@@ -12,11 +12,37 @@
 
 import { OPENROUTER_API_KEY, isSandboxMode } from './config.js';
 import { recordTransaction } from './ledger.js';
+import { DEFAULTS } from './constants.js';
 
 const OPENROUTER_ENDPOINT = 'https://openrouter.ai/api/v1/chat/completions';
-const DEFAULT_TIMEOUT = 60000; // 60s timeout (increased for complex tasks)
-const MAX_RETRIES = 2;
-const RETRY_DELAY = 1000; // 1 second base delay
+
+/**
+ * Check if an error is an abort/timeout error
+ * Works across different JavaScript environments
+ * @param {Error} error - The error to check
+ * @returns {boolean} True if the error is an abort/timeout error
+ */
+function isAbortError(error) {
+  if (!error) return false;
+  
+  // Check error name
+  if (error.name === 'AbortError' || error.name === 'TimeoutError') {
+    return true;
+  }
+  
+  // Check error code
+  if (error.code === 'ABORT_ERR' || error.code === 'ETIMEDOUT') {
+    return true;
+  }
+  
+  // Check error message as fallback
+  if (error.message && typeof error.message === 'string') {
+    const msg = error.message.toLowerCase();
+    return msg.includes('aborted') || msg.includes('timeout') || msg.includes('timed out');
+  }
+  
+  return false;
+}
 
 /**
  * ⏱️ Timeout wrapper using AbortController
@@ -25,7 +51,7 @@ const RETRY_DELAY = 1000; // 1 second base delay
  * @param {number} timeout - Timeout in milliseconds
  * @returns {Promise<Response>} Fetch response
  */
-async function fetchWithTimeout(url, options, timeout = DEFAULT_TIMEOUT) {
+async function fetchWithTimeout(url, options, timeout = DEFAULTS.API_TIMEOUT_MS) {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeout);
 
@@ -132,7 +158,7 @@ export async function executeModel({
   domain,
   role = 'primary',
   recordUsage = true,
-  timeout = DEFAULT_TIMEOUT
+  timeout = DEFAULTS.API_TIMEOUT_MS
 }) {
   // Validate model configuration
   if (!model?.model) {
@@ -171,7 +197,7 @@ export async function executeModel({
   let lastError = null;
 
   // Retry loop
-  for (let attempt = 1; attempt <= MAX_RETRIES + 1; attempt++) {
+  for (let attempt = 1; attempt <= DEFAULTS.MAX_RETRIES + 1; attempt++) {
     try {
       const response = await fetchWithTimeout(
         OPENROUTER_ENDPOINT,
@@ -222,23 +248,17 @@ export async function executeModel({
 
     } catch (error) {
       lastError = error;
-      console.warn(`[EXECUTOR] Attempt ${attempt}/${MAX_RETRIES + 1} failed for ${model.model}: ${error.message}`);
+      console.warn(`[EXECUTOR] Attempt ${attempt}/${DEFAULTS.MAX_RETRIES + 1} failed for ${model.model}: ${error.message}`);
 
-      // Don't retry on abort/timeout errors (check multiple error types for compatibility)
-      const isAbortError = error.name === 'AbortError' || 
-                          error.name === 'TimeoutError' ||
-                          error.code === 'ABORT_ERR' ||
-                          error.code === 'ETIMEDOUT' ||
-                          (error.message && error.message.toLowerCase().includes('aborted'));
-      
-      if (isAbortError) {
+      // Don't retry on abort/timeout errors
+      if (isAbortError(error)) {
         console.warn(`[EXECUTOR] Request timed out for ${model.model}, not retrying`);
         break;
       }
 
       // Wait before retry with exponential backoff
-      if (attempt <= MAX_RETRIES) {
-        await sleep(RETRY_DELAY * attempt);
+      if (attempt <= DEFAULTS.MAX_RETRIES) {
+        await sleep(DEFAULTS.RETRY_DELAY_MS * attempt);
       }
     }
   }
@@ -251,7 +271,7 @@ export async function executeModel({
       model: model.model,
       role,
       domain,
-      retries: MAX_RETRIES
+      retries: DEFAULTS.MAX_RETRIES
     }
   };
 }

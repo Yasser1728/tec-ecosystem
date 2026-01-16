@@ -1,7 +1,7 @@
 // Domain task map for the AI agent. Tasks are grouped per domain.
 // This file defines the task configurations for each domain in the TEC ecosystem.
 
-import { TASK_TYPES } from './core/council.js';
+import { TASK_TYPES } from './core/constants.js';
 
 /**
  * Domain Task Map

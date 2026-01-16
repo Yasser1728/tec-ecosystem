@@ -11,29 +11,15 @@
 
 import { MODEL_REGISTRY, isSandboxMode, findModelByCapability } from './config.js';
 import { getCostSignal } from './ledger.js';
-
-/**
- * 🧠 Task Types (Canonical)
- * Defines the types of tasks the AI agent can perform
- */
-const TASK_TYPES = {
-  STRATEGY: 'STRATEGY',
-  ARCHITECTURE: 'ARCHITECTURE',
-  DEVELOPMENT: 'DEVELOPMENT',
-  OPERATION: 'OPERATION',
-  AUDIT: 'AUDIT',
-  FAST: 'FAST',
-  REASONING: 'REASONING',
-  DATA: 'DATA'
-};
+import { TASK_TYPES, DEFAULTS } from './constants.js';
 
 /**
  * 💰 Runtime State (will be linked to ledger.js)
  * Tracks the current budget and operational status
  */
 let RUNTIME_STATE = {
-  balance: 100, // virtual credits (placeholder)
-  lowBalanceThreshold: 20,
+  balance: DEFAULTS.DEFAULT_BALANCE,
+  lowBalanceThreshold: DEFAULTS.LOW_BALANCE_THRESHOLD,
   sandboxMode: false
 };
 
