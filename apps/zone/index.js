@@ -57,7 +57,7 @@ export class ZoneDomain extends DomainBootstrap {
       request,
       async () => {
         // Domain-specific operation logic goes here
-        console.log(`[Zone] Executing ${operationType}`);
+        logger.info(`[Zone] Executing ${operationType}`);
         
         // Note: Domain-specific operations to be implemented per business requirements
         

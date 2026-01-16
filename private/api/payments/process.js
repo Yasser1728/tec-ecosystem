@@ -225,9 +225,9 @@ async function logTransaction(transactionData) {
   try {
     // Note: Implement transaction logging to separate audit table for compliance
     // await prisma.transactionLog.create({ data: transactionData });
-    console.log("Transaction logged:", transactionData);
+    logger.info("Transaction logged:", { transactionData });
   } catch (error) {
-    console.error("Transaction logging error:", error);
+    logger.error("Transaction logging error:", { error });
   }
 }
 
@@ -256,8 +256,8 @@ async function logError(errorData) {
   try {
     // Note: Implement centralized error logging system
     // await prisma.errorLog.create({ data: errorData });
-    console.error("Error logged:", errorData);
+    logger.error("Error logged:", { errorData });
   } catch (error) {
-    console.error("Error logging failed:", error);
+    logger.error("Error logging failed:", { error });
   }
 }

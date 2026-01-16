@@ -102,7 +102,7 @@ class AssetService {
       return asset;
     } catch (error) {
       // Note: Using built-in logger utility (lib/utils/logger.js)
-      console.error('Error creating asset:', error);
+      logger.error('Error creating asset:', { error });
       throw new Error(`Failed to create asset: ${error.message}`);
     }
   }

@@ -5,8 +5,8 @@
  * Integrates with the central forensic-utils library
  */
 
-import {
 import { logger } from '../lib/utils/logger.js';
+import {
   createAuditEntry,
   createImmutableLogEntry,
   verifyUserIdentity,
