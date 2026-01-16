@@ -13,6 +13,9 @@ import { domainTaskMap, getTaskConfig, getAllDomains, getDomainsByPriority } fro
 const __filename = fileURLToPath(import.meta.url);
 const BASE_DIR = path.dirname(__filename);
 
+// Static log file path (no user input, safe from path traversal)
+const LEDGER_LOG_PATH = path.join(BASE_DIR, 'ledger_full_log.json');
+
 // ============================================
 // Configuration
 // ============================================
@@ -66,6 +69,24 @@ function escapeForTemplate(str) {
 }
 
 /**
+ * Safely resolve a path within a base directory
+ * Prevents path traversal attacks
+ * @param {string} baseDir - Base directory
+ * @param {string} filename - Filename to resolve
+ * @returns {string|null} Safe path or null if traversal detected
+ */
+function safePathResolve(baseDir, filename) {
+    const resolvedBase = path.resolve(baseDir);
+    const resolvedPath = path.resolve(baseDir, filename);
+    
+    // Ensure the resolved path is within the base directory
+    if (!resolvedPath.startsWith(resolvedBase + path.sep)) {
+        return null;
+    }
+    return resolvedPath;
+}
+
+/**
  * Load a domain service dynamically
  * @param {string} domain - Domain name
  * @returns {Promise<Function|null>} Service run function or null
@@ -78,7 +99,12 @@ async function loadService(domain) {
     }
 
     try {
-        const servicePath = path.join(CONFIG.servicesFolder, `${domain}.js`);
+        // Use safe path resolution to prevent path traversal
+        const servicePath = safePathResolve(CONFIG.servicesFolder, `${domain}.js`);
+        if (!servicePath) {
+            console.error(`[SECURITY] Path traversal detected for domain: ${domain}`);
+            return null;
+        }
         
         // Create sandbox service file if it doesn't exist
         if (!fs.existsSync(servicePath)) {
@@ -294,15 +320,14 @@ Requirements:
     console.log(`  🪙 Total Cost: ${report.summary.totalCost.toFixed(4)}`);
     console.log(`  📊 Total Tokens: ${report.summary.totalTokens}`);
 
-    // Save full logs
-    const logsPath = path.join(BASE_DIR, 'ledger_full_log.json');
-    fs.writeFileSync(logsPath, JSON.stringify({
+    // Save full logs to static path (no user input)
+    fs.writeFileSync(LEDGER_LOG_PATH, JSON.stringify({
         report,
         results,
         executedAt: new Date().toISOString(),
         duration
     }, null, 2));
-    console.log(`\n📁 Full logs saved to: ${logsPath}`);
+    console.log(`\n📁 Full logs saved to: ${LEDGER_LOG_PATH}`);
 
     return {
         report,

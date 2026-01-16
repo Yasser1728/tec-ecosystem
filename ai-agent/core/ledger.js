@@ -14,13 +14,8 @@ import { randomUUID } from 'crypto';
  * @returns {string} Unique session identifier
  */
 function generateSessionId() {
-  try {
-    // Use crypto.randomUUID for cryptographically secure session IDs
-    return `session_${Date.now()}_${randomUUID().split('-')[0]}`;
-  } catch {
-    // Fallback for environments without crypto support (shouldn't happen in Node.js)
-    return `session_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-  }
+  // Use crypto.randomUUID for cryptographically secure session IDs
+  return `session_${Date.now()}_${randomUUID().split('-')[0]}`;
 }
 
 /**
@@ -28,11 +23,7 @@ function generateSessionId() {
  * @returns {string} Unique transaction identifier
  */
 function generateTransactionId() {
-  try {
-    return `tx_${Date.now()}_${randomUUID().split('-')[0]}`;
-  } catch {
-    return `tx_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
-  }
+  return `tx_${Date.now()}_${randomUUID().split('-')[0]}`;
 }
 
 // Ledger state (In-memory)
