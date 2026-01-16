@@ -31,7 +31,7 @@ export class EliteDomain extends DomainBootstrap {
       approvalRequired: true
     });
     
-    console.log(`[Elite] Domain initialized with sovereign controls`);
+    logger.info(`[Elite] Domain initialized with sovereign controls`);
   }
   
   /**
@@ -57,7 +57,7 @@ export class EliteDomain extends DomainBootstrap {
       request,
       async () => {
         // Domain-specific operation logic goes here
-        console.log(`[Elite] Executing ${operationType}`);
+        logger.info(`[Elite] Executing ${operationType}`);
         
         // Note: Domain-specific operations to be implemented per business requirements
         

@@ -31,7 +31,7 @@ export class FundXDomain extends DomainBootstrap {
       approvalRequired: true
     });
     
-    console.log(`[FundX] Domain initialized with sovereign controls`);
+    logger.info(`[FundX] Domain initialized with sovereign controls`);
   }
   
   /**
@@ -57,7 +57,7 @@ export class FundXDomain extends DomainBootstrap {
       request,
       async () => {
         // Domain-specific operation logic goes here
-        console.log(`[FundX] Executing ${operationType}`);
+        logger.info(`[FundX] Executing ${operationType}`);
         
         // Note: Domain-specific operations to be implemented per business requirements
         

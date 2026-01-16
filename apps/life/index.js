@@ -31,7 +31,7 @@ export class LifeDomain extends DomainBootstrap {
       approvalRequired: true
     });
     
-    console.log(`[Life] Domain initialized with sovereign controls`);
+    logger.info(`[Life] Domain initialized with sovereign controls`);
   }
   
   /**
@@ -57,7 +57,7 @@ export class LifeDomain extends DomainBootstrap {
       request,
       async () => {
         // Domain-specific operation logic goes here
-        console.log(`[Life] Executing ${operationType}`);
+        logger.info(`[Life] Executing ${operationType}`);
         
         // Note: Domain-specific operations to be implemented per business requirements
         

@@ -31,7 +31,7 @@ export class BrookfieldDomain extends DomainBootstrap {
       approvalRequired: true
     });
     
-    console.log(`[Brookfield] Domain initialized with sovereign controls`);
+    logger.info(`[Brookfield] Domain initialized with sovereign controls`);
   }
   
   /**
@@ -57,7 +57,7 @@ export class BrookfieldDomain extends DomainBootstrap {
       request,
       async () => {
         // Domain-specific operation logic goes here
-        console.log(`[Brookfield] Executing ${operationType}`);
+        logger.info(`[Brookfield] Executing ${operationType}`);
         
         // Note: Domain-specific operations to be implemented per business requirements
         

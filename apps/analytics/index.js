@@ -31,7 +31,7 @@ export class AnalyticsDomain extends DomainBootstrap {
       approvalRequired: true
     });
     
-    console.log(`[Analytics] Domain initialized with sovereign controls`);
+    logger.info(`[Analytics] Domain initialized with sovereign controls`);
   }
   
   /**
@@ -57,7 +57,7 @@ export class AnalyticsDomain extends DomainBootstrap {
       request,
       async () => {
         // Domain-specific operation logic goes here
-        console.log(`[Analytics] Executing ${operationType}`);
+        logger.info(`[Analytics] Executing ${operationType}`);
         
         // Note: Domain-specific operations to be implemented per business requirements
         

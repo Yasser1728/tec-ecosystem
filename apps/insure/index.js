@@ -31,7 +31,7 @@ export class InsureDomain extends DomainBootstrap {
       approvalRequired: true
     });
     
-    console.log(`[Insure] Domain initialized with sovereign controls`);
+    logger.info(`[Insure] Domain initialized with sovereign controls`);
   }
   
   /**
@@ -57,7 +57,7 @@ export class InsureDomain extends DomainBootstrap {
       request,
       async () => {
         // Domain-specific operation logic goes here
-        console.log(`[Insure] Executing ${operationType}`);
+        logger.info(`[Insure] Executing ${operationType}`);
         
         // Note: Domain-specific operations to be implemented per business requirements
         

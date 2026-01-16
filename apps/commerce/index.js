@@ -31,7 +31,7 @@ export class CommerceDomain extends DomainBootstrap {
       approvalRequired: true
     });
     
-    console.log(`[Commerce] Domain initialized with sovereign controls`);
+    logger.info(`[Commerce] Domain initialized with sovereign controls`);
   }
   
   /**
@@ -57,7 +57,7 @@ export class CommerceDomain extends DomainBootstrap {
       request,
       async () => {
         // Domain-specific operation logic goes here
-        console.log(`[Commerce] Executing ${operationType}`);
+        logger.info(`[Commerce] Executing ${operationType}`);
         
         // Note: Domain-specific operations to be implemented per business requirements
         

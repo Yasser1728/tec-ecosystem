@@ -31,7 +31,7 @@ export class DXDomain extends DomainBootstrap {
       approvalRequired: true
     });
     
-    console.log(`[DX] Domain initialized with sovereign controls`);
+    logger.info(`[DX] Domain initialized with sovereign controls`);
   }
   
   /**
@@ -57,7 +57,7 @@ export class DXDomain extends DomainBootstrap {
       request,
       async () => {
         // Domain-specific operation logic goes here
-        console.log(`[DX] Executing ${operationType}`);
+        logger.info(`[DX] Executing ${operationType}`);
         
         // Note: Domain-specific operations to be implemented per business requirements
         

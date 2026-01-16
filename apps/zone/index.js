@@ -31,7 +31,7 @@ export class ZoneDomain extends DomainBootstrap {
       approvalRequired: true
     });
     
-    console.log(`[Zone] Domain initialized with sovereign controls`);
+    logger.info(`[Zone] Domain initialized with sovereign controls`);
   }
   
   /**

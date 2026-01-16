@@ -140,7 +140,7 @@ class AssetService {
       
       return asset;
     } catch (error) {
-      console.error('Error fetching asset:', error);
+      logger.error('Error fetching asset:', { error });
       throw error;
     }
   }

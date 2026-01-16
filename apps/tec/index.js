@@ -31,7 +31,7 @@ export class TECDomain extends DomainBootstrap {
       approvalRequired: true
     });
     
-    console.log(`[TEC] Domain initialized with sovereign controls`);
+    logger.info(`[TEC] Domain initialized with sovereign controls`);
   }
   
   /**
@@ -57,7 +57,7 @@ export class TECDomain extends DomainBootstrap {
       request,
       async () => {
         // Domain-specific operation logic goes here
-        console.log(`[TEC] Executing ${operationType}`);
+        logger.info(`[TEC] Executing ${operationType}`);
         
         // Note: Domain-specific operations to be implemented per business requirements
         

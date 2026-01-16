@@ -31,7 +31,7 @@ export class LegendDomain extends DomainBootstrap {
       approvalRequired: true
     });
     
-    console.log(`[Legend] Domain initialized with sovereign controls`);
+    logger.info(`[Legend] Domain initialized with sovereign controls`);
   }
   
   /**
@@ -57,7 +57,7 @@ export class LegendDomain extends DomainBootstrap {
       request,
       async () => {
         // Domain-specific operation logic goes here
-        console.log(`[Legend] Executing ${operationType}`);
+        logger.info(`[Legend] Executing ${operationType}`);
         
         // Note: Domain-specific operations to be implemented per business requirements
         

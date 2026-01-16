@@ -31,7 +31,7 @@ export class TitanDomain extends DomainBootstrap {
       approvalRequired: true
     });
     
-    console.log(`[Titan] Domain initialized with sovereign controls`);
+    logger.info(`[Titan] Domain initialized with sovereign controls`);
   }
   
   /**
@@ -57,7 +57,7 @@ export class TitanDomain extends DomainBootstrap {
       request,
       async () => {
         // Domain-specific operation logic goes here
-        console.log(`[Titan] Executing ${operationType}`);
+        logger.info(`[Titan] Executing ${operationType}`);
         
         // Note: Domain-specific operations to be implemented per business requirements
         

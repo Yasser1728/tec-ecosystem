@@ -31,7 +31,7 @@ export class ExplorerDomain extends DomainBootstrap {
       approvalRequired: true
     });
     
-    console.log(`[Explorer] Domain initialized with sovereign controls`);
+    logger.info(`[Explorer] Domain initialized with sovereign controls`);
   }
   
   /**
@@ -57,7 +57,7 @@ export class ExplorerDomain extends DomainBootstrap {
       request,
       async () => {
         // Domain-specific operation logic goes here
-        console.log(`[Explorer] Executing ${operationType}`);
+        logger.info(`[Explorer] Executing ${operationType}`);
         
         // Note: Domain-specific operations to be implemented per business requirements
         

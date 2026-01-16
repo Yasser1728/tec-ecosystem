@@ -31,7 +31,7 @@ export class SystemDomain extends DomainBootstrap {
       approvalRequired: true
     });
     
-    console.log(`[System] Domain initialized with sovereign controls`);
+    logger.info(`[System] Domain initialized with sovereign controls`);
   }
   
   /**
@@ -57,7 +57,7 @@ export class SystemDomain extends DomainBootstrap {
       request,
       async () => {
         // Domain-specific operation logic goes here
-        console.log(`[System] Executing ${operationType}`);
+        logger.info(`[System] Executing ${operationType}`);
         
         // Note: Domain-specific operations to be implemented per business requirements
         

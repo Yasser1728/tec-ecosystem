@@ -31,7 +31,7 @@ export class EpicDomain extends DomainBootstrap {
       approvalRequired: true
     });
     
-    console.log(`[Epic] Domain initialized with sovereign controls`);
+    logger.info(`[Epic] Domain initialized with sovereign controls`);
   }
   
   /**
@@ -57,7 +57,7 @@ export class EpicDomain extends DomainBootstrap {
       request,
       async () => {
         // Domain-specific operation logic goes here
-        console.log(`[Epic] Executing ${operationType}`);
+        logger.info(`[Epic] Executing ${operationType}`);
         
         // Note: Domain-specific operations to be implemented per business requirements
         

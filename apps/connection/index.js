@@ -31,7 +31,7 @@ export class ConnectionDomain extends DomainBootstrap {
       approvalRequired: true
     });
     
-    console.log(`[Connection] Domain initialized with sovereign controls`);
+    logger.info(`[Connection] Domain initialized with sovereign controls`);
   }
   
   /**
@@ -57,7 +57,7 @@ export class ConnectionDomain extends DomainBootstrap {
       request,
       async () => {
         // Domain-specific operation logic goes here
-        console.log(`[Connection] Executing ${operationType}`);
+        logger.info(`[Connection] Executing ${operationType}`);
         
         // Note: Domain-specific operations to be implemented per business requirements
         
