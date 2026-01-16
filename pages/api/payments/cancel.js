@@ -1,4 +1,5 @@
 import { prisma } from "../../../lib/db/prisma";
+import { logger } from '../../../lib/utils/logger.js';
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {

@@ -1,5 +1,6 @@
 import { Html, Head, Main, NextScript } from "next/document";
 import Script from "next/script";
+import { logger } from '../lib/utils/logger.js';
 
 export default function Document() {
   return (

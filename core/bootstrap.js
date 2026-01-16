@@ -8,6 +8,7 @@
 
 import { ForensicLogger } from './forensic';
 import { ApprovalCenter } from './approval';
+import { logger } from '../lib/utils/logger.js';
 
 export class DomainBootstrap {
   constructor(config = {}) {

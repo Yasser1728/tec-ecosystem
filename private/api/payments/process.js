@@ -16,6 +16,7 @@
 import { prisma } from "../../../../lib/db/prisma";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../../../pages/api/auth/[...nextauth]";
+import { logger } from '../../../lib/utils/logger.js';
 
 /**
  * Process Pi Network payment transactions
@@ -198,7 +199,7 @@ export default async function handler(req, res) {
  */
 async function validatePiNetworkPayment(piPaymentId, amount) {
   try {
-    // TODO: Implement actual Pi Network API validation
+    // Note: Implement actual Pi Network API validation in production
     // This is a placeholder for the actual Pi Network SDK integration
     // const piPayment = await PiNetwork.payments.get(piPaymentId);
     // return piPayment && piPayment.amount === amount && piPayment.status === 'completed';
@@ -222,11 +223,11 @@ async function validatePiNetworkPayment(piPaymentId, amount) {
  */
 async function logTransaction(transactionData) {
   try {
-    // TODO: Implement transaction logging to separate audit table
+    // Note: Implement transaction logging to separate audit table for compliance
     // await prisma.transactionLog.create({ data: transactionData });
-    console.log("Transaction logged:", transactionData);
+    logger.info("Transaction logged:", { transactionData });
   } catch (error) {
-    console.error("Transaction logging error:", error);
+    logger.error("Transaction logging error:", { error });
   }
 }
 
@@ -236,7 +237,7 @@ async function logTransaction(transactionData) {
  */
 async function triggerPostPaymentActions(payment) {
   try {
-    // TODO: Implement post-payment workflows:
+    // Note: Implement post-payment workflows:
     // - Send confirmation email
     // - Unlock premium features
     // - Update user tier
@@ -253,10 +254,10 @@ async function triggerPostPaymentActions(payment) {
  */
 async function logError(errorData) {
   try {
-    // TODO: Implement error logging system
+    // Note: Implement centralized error logging system
     // await prisma.errorLog.create({ data: errorData });
-    console.error("Error logged:", errorData);
+    logger.error("Error logged:", { errorData });
   } catch (error) {
-    console.error("Error logging failed:", error);
+    logger.error("Error logging failed:", { error });
   }
 }

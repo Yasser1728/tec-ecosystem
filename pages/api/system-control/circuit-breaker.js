@@ -7,6 +7,7 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/[...nextauth]';
 import { USER_TIERS } from '../../../lib/roles';
 import { toggleCircuitBreaker } from '../../../lib/forensic-utils';
+import { logger } from '../../../lib/utils/logger.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {

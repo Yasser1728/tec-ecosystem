@@ -3,6 +3,7 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import PiAuthButton from "../../components/PiAuthButton";
 import TransactionHistory from "../../components/TransactionHistory";
+import { logger } from '../../lib/utils/logger.js';
 
 export default function TransactionsDashboard() {
   const [authenticated, setAuthenticated] = useState(false);

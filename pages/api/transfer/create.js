@@ -4,6 +4,7 @@
  */
 
 import { prisma } from '../../../lib/db/prisma';
+import { logger } from '../../../lib/utils/logger.js';
 import {
   emergencyCircuitBreaker,
   dualForensicCheck,

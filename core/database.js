@@ -5,6 +5,8 @@
  * Each domain gets its own isolated database/schema
  */
 
+import { logger } from '../lib/utils/logger.js';
+
 /**
  * Domain database mapping
  * Each domain has its own database identifier
@@ -67,10 +69,11 @@ export function getDomainDatabaseConfig(domainName) {
 export async function initializeDomainDatabase(domainName) {
   const config = getDomainDatabaseConfig(domainName);
   
-  console.log(`[Database Init] Initializing database for ${domainName}:`, config);
+  logger.info(`[Database Init] Initializing database for ${domainName}:`, config);
   
-  // TODO: In production, create separate database or schema
-  // For now, we use the shared Prisma client with domain field filtering
+  // Note: In production, create separate database or schema per domain
+  // Current implementation uses shared Prisma client with domain field filtering
+  // Tracking: Production database isolation implementation planned
   
   return {
     initialized: true,

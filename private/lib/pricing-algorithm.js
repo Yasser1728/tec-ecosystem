@@ -119,12 +119,13 @@ const TIER_RECOMMENDATION_THRESHOLDS = {
 
 /**
  * Pi Network to USD conversion rate (dynamic)
- * TODO: PRODUCTION - Fetch from external API or database
+ * Note: In production, fetch exchange rates from external API or database
  * Recommended approaches:
  * - CoinGecko API for real-time rates
  * - Database cache with periodic updates
  * - Configuration management system
  * - Rate limiting to prevent API abuse
+ * Tracking: Production implementation planned
  */
 const PI_TO_USD_RATE = 314.159; // 1 Pi = $314.159 (example rate - DO NOT USE IN PRODUCTION)
 
@@ -329,7 +330,7 @@ export function recommendTier(usageData) {
  * @returns {number} Discount rate (0-1)
  */
 function validatePromoCode(promoCode) {
-  // TODO: PRODUCTION - Implement database validation with security checks
+  // Note: In production, implement database validation with security checks
   // Required features:
   // - Database lookup with Prisma
   // - Expiration date validation

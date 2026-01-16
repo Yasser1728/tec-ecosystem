@@ -16,6 +16,7 @@
 
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from './auth/[...nextauth]';
+import { logger } from '../../lib/utils/logger.js';
 import {
   createAuditEntry,
   AUDIT_OPERATION_TYPES,

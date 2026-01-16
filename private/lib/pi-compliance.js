@@ -1,3 +1,5 @@
+import { logger } from '../../lib/utils/logger.js';
+
 /**
  * Pi Network Compliance Module
  * Ensures compliance with Pi Network policies and guidelines

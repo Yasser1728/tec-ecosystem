@@ -6,6 +6,7 @@ import Link from "next/link";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { USER_TIERS, TIER_PRICING, TIER_BENEFITS } from "../lib/roles";
+import { logger } from '../lib/utils/logger.js';
 
 export default function Upgrade() {
   const { data: session } = useSession();

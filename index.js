@@ -6,6 +6,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { generateFinalReport, getCostSignal, recordTransaction } from './ai-agent/core/ledger.js';
+import { logger } from './lib/utils/logger.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const BASE_DIR = path.dirname(__filename);
@@ -51,18 +52,20 @@ async function loadService(domain) {
         const servicePath = path.join(CONFIG.servicesFolder, `${domain}.js`);
         if (!fs.existsSync(servicePath)) {
             const template = [
+                'import { logger } from "../../lib/utils/logger.js";',
+                '',
                 'export async function runDomainService(taskPrompt) {',
-                "    console.log('[SANDBOX] Running service for " + domain + "');",
+                "    logger.info('[SANDBOX] Running service for " + domain + "');",
                 '    return { ok: true, content: taskPrompt, usage: { total_tokens: 0 }, meta: { domain: "' + domain + '", sandbox: true, role: "PRIMARY" } };',
                 '}'
             ].join('\n');
             fs.writeFileSync(servicePath, template.trim());
-            console.log(`Created sandbox domain file: ${domain}.js`);
+            logger.info(`Created sandbox domain file: ${domain}.js`);
         }
         const module = await import(path.join(CONFIG.servicesFolder, `${domain}.js`));
         return module.runDomainService;
     } catch (err) {
-        console.error(`Failed to load service for ${domain}:`, err.message);
+        logger.error(`Failed to load service for ${domain}:`, { error: err.message });
         return null;
     }
 }
@@ -71,11 +74,11 @@ async function loadService(domain) {
 // AI Agent: Organize Domain Files
 // ============================================
 async function organizeDomainFiles() {
-    console.log('Organizing domain files...');
+    logger.info('Organizing domain files...');
     for (const domain of CONFIG.domains) {
         await loadService(domain);
     }
-    console.log('All domain files are organized.');
+    logger.info('All domain files are organized.');
 }
 
 // ============================================
@@ -89,7 +92,7 @@ function selectModel() {
     for (const [key, model] of Object.entries(CONFIG.models.free)) {
         if (model) return { type: 'free', name: model };
     }
-    console.warn('No model found. AI operations will use sandbox defaults.');
+    logger.warn('No model found. AI operations will use sandbox defaults.');
     return { type: 'sandbox', name: null };
 }
 
@@ -97,15 +100,15 @@ function selectModel() {
 // Main Sovereign Runner
 // ============================================
 async function runSovereignOS() {
-    console.log("\n[Sovereign OS] Factory Booting...\n");
+    logger.info("\n[Sovereign OS] Factory Booting...\n");
 
     await organizeDomainFiles();
 
     const modelInfo = selectModel();
-    console.log(`Using ${modelInfo.type} model: ${modelInfo.name || 'Sandbox'}`);
+    logger.info(`Using ${modelInfo.type} model: ${modelInfo.name || 'Sandbox'}`);
 
     for (const domain of CONFIG.domains) {
-        console.log(`\n[PROCESS] Domain: ${domain}`);
+        logger.info(`\n[PROCESS] Domain: ${domain}`);
 
         // Load domain service dynamically
         const runService = await loadService(domain);
@@ -134,28 +137,28 @@ async function runSovereignOS() {
 
             // Budget control
             if (getCostSignal().isLowBalance) {
-                console.warn(`Budget threshold reached for ${domain}. Switching to reserve mode.`);
+                logger.warn(`Budget threshold reached for ${domain}. Switching to reserve mode.`);
             }
 
-            console.log(`Domain ${domain} processed successfully.`);
+            logger.info(`Domain ${domain} processed successfully.`);
             if (result?.usage) {
-                console.log(`Tokens used: ${result.usage.total_tokens || 0}`);
+                logger.info(`Tokens used: ${result.usage.total_tokens || 0}`);
             }
 
         } catch (err) {
-            console.error(`Error in domain ${domain}:`, err.message);
+            logger.error(`Error in domain ${domain}:`, { error: err.message });
         }
     }
 
     // Final report
     const report = generateFinalReport();
-    console.log("\n[Sovereign OS] Final Operational Report:");
-    console.log(JSON.stringify(report.summary, null, 2));
+    logger.info("\n[Sovereign OS] Final Operational Report:");
+    logger.info(JSON.stringify(report.summary, null, 2));
 
     // Save full logs
     const logsPath = path.join(BASE_DIR, 'ledger_full_log.json');
     fs.writeFileSync(logsPath, JSON.stringify(report.logs, null, 2));
-    console.log(`Full ledger logs saved to ${logsPath}`);
+    logger.info(`Full ledger logs saved to ${logsPath}`);
 }
 
 // ============================================
@@ -163,7 +166,7 @@ async function runSovereignOS() {
 // ============================================
 if (import.meta.url === `file://${process.argv[1]}`) {
     runSovereignOS().catch(err => {
-        console.error("\n💥 Critical failure in Sovereign OS:", err);
+        logger.error("\n💥 Critical failure in Sovereign OS:", { error: err });
         process.exit(1);
     });
 }

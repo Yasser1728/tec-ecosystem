@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { piPayments, DOMAIN_PRICES } from "../lib/pi-payments";
 import { piAuth } from "../lib/pi-auth";
+import { logger } from '../lib/utils/logger.js';
 
 export default function DomainPurchaseButton({
   domain,

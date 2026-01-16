@@ -1,3 +1,5 @@
+import { logger } from '../../../lib/utils/logger.js';
+
 /**
  * TEC AI Assistant API Endpoint
  * Handles chat interactions with the TEC AI Assistant

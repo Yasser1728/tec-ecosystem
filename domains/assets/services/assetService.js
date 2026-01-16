@@ -8,6 +8,7 @@
  */
 
 const { PrismaClient } = require('@prisma/client');
+const { logger } = require('../../../lib/utils/logger.js');
 const prisma = new PrismaClient();
 
 // Constants for analysis thresholds
@@ -100,8 +101,8 @@ class AssetService {
       
       return asset;
     } catch (error) {
-      // TODO: Replace with proper logging library (e.g., Winston, Pino)
-      console.error('Error creating asset:', error);
+      // Note: Using built-in logger utility (lib/utils/logger.js)
+      logger.error('Error creating asset:', { error });
       throw new Error(`Failed to create asset: ${error.message}`);
     }
   }
@@ -139,7 +140,7 @@ class AssetService {
       
       return asset;
     } catch (error) {
-      console.error('Error fetching asset:', error);
+      logger.error('Error fetching asset:', { error });
       throw error;
     }
   }

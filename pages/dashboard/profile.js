@@ -6,6 +6,7 @@ import Link from "next/link";
 import { signOut } from "next-auth/react";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import { logger } from '../../lib/utils/logger.js';
 
 function Profile({ session }) {
   const user = session?.user;

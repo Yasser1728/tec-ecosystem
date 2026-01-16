@@ -10,6 +10,7 @@
 import { DomainBootstrap } from '../../core/bootstrap';
 import { getDomainDatabaseConfig } from '../../core/database';
 import domainConfig from './config';
+import { logger } from '../../lib/utils/logger.js';
 
 /**
  * Ecommerce Domain Class
@@ -30,7 +31,7 @@ export class EcommerceDomain extends DomainBootstrap {
       approvalRequired: true
     });
     
-    console.log(`[Ecommerce] Domain initialized with sovereign controls`);
+    logger.info(`[Ecommerce] Domain initialized with sovereign controls`);
   }
   
   /**
@@ -56,9 +57,9 @@ export class EcommerceDomain extends DomainBootstrap {
       request,
       async () => {
         // Domain-specific operation logic goes here
-        console.log(`[Ecommerce] Executing ${operationType}`);
+        logger.info(`[Ecommerce] Executing ${operationType}`);
         
-        // TODO: Implement domain-specific operations
+        // Note: Domain-specific operations to be implemented per business requirements
         
         return {
           success: true,

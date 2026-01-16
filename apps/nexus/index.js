@@ -10,6 +10,7 @@
 import { DomainBootstrap } from '../../core/bootstrap';
 import { getDomainDatabaseConfig } from '../../core/database';
 import domainConfig from './config';
+import { logger } from '../../lib/utils/logger.js';
 
 /**
  * Nexus Domain Class
@@ -30,7 +31,7 @@ export class NexusDomain extends DomainBootstrap {
       approvalRequired: true
     });
     
-    console.log(`[Nexus] Domain initialized with sovereign controls`);
+    logger.info(`[Nexus] Domain initialized with sovereign controls`);
   }
   
   /**
@@ -56,9 +57,9 @@ export class NexusDomain extends DomainBootstrap {
       request,
       async () => {
         // Domain-specific operation logic goes here
-        console.log(`[Nexus] Executing ${operationType}`);
+        logger.info(`[Nexus] Executing ${operationType}`);
         
-        // TODO: Implement domain-specific operations
+        // Note: Domain-specific operations to be implemented per business requirements
         
         return {
           success: true,

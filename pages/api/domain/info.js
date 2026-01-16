@@ -2,6 +2,7 @@
 // Exposes domain metadata to frontend
 
 import { getDomainConfig } from '../../../lib/config/domain-registry';
+import { logger } from '../../../lib/utils/logger.js';
 
 export default function handler(req, res) {
   if (req.method !== 'GET') {
