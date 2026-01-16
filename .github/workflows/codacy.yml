@@ -30,8 +30,8 @@ jobs:
           verbose: true
           output: results.sarif
           format: sarif
-          # تم تعديل المسارات هنا لتكون متوافقة مع محرك Docker
-          directory: "."
+          # تم التعديل هنا لاستخدام المسار المطلق للمجلد
+          directory: "/github/workspace"
 
       - name: "📊 رفع تقرير الأمان إلى جيت هاب"
         uses: github/codeql-action/upload-sarif@v3
