@@ -8,14 +8,11 @@ on:
 
 permissions:
   contents: read
+  security-events: write # دي الصلاحية اللي كانت ناقصة عشان يرفع النتائج
+  actions: read
 
 jobs:
   codacy-security-scan:
-    permissions:
-      contents: read 
-      security-events: write 
-      actions: read 
-    
     name: "بدء عملية فحص الحوكمة والأمان"
     runs-on: ubuntu-latest
     
@@ -30,10 +27,12 @@ jobs:
           verbose: true
           output: results.sarif
           format: sarif
-          # تم التعديل هنا لاستخدام المسار المطلق للمجلد
           directory: "/github/workspace"
 
       - name: "📊 رفع تقرير الأمان إلى جيت هاب"
+        # حدثنا الإصدار لـ v4 بناءً على تنبيه جيت هاب في الـ Logs
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: results.sarif
+          # إضافة الـ token لضمان نجاح الرفع
+          token: ${{ github.token }}
