@@ -2,20 +2,20 @@ name: "فحص الأمان عبر كوداسي - Codacy Security Scan"
 
 on:
   push:
-    branches: [ "main", "develop" ]
+    branches: ["main", "develop"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 permissions:
   contents: read
-  security-events: write # دي الصلاحية اللي كانت ناقصة عشان يرفع النتائج
+  security-events: write  # دي الصلاحية اللي كانت ناقصة عشان يرفع النتائج
   actions: read
 
 jobs:
   codacy-security-scan:
     name: "بدء عملية فحص الحوكمة والأمان"
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: "📥 جلب الكود المصدري"
         uses: actions/checkout@v4
@@ -34,7 +34,8 @@ jobs:
         run: |
           if [ -f results.sarif ]; then
             echo "✅ ملف النتائج موجود"
-            SARIF_SIZE=$(stat -f%z results.sarif 2>/dev/null || stat -c%s results.sarif 2>/dev/null)
+            SARIF_SIZE=$(stat -f%z results.sarif 2>/dev/null || \
+              stat -c%s results.sarif 2>/dev/null)
             echo "📊 حجم الملف: $SARIF_SIZE بايت"
             if [ "$SARIF_SIZE" -gt 100 ]; then
               echo "has_results=true" >> $GITHUB_OUTPUT
