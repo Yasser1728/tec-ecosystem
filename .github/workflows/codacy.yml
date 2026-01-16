@@ -29,9 +29,32 @@ jobs:
           format: sarif
           directory: "/github/workspace"
 
+      - name: "🔍 فحص نتائج الأمان"
+        id: check-sarif
+        run: |
+          if [ -f results.sarif ]; then
+            echo "✅ ملف النتائج موجود"
+            SARIF_SIZE=$(stat -f%z results.sarif 2>/dev/null || stat -c%s results.sarif 2>/dev/null)
+            echo "📊 حجم الملف: $SARIF_SIZE بايت"
+            if [ "$SARIF_SIZE" -gt 100 ]; then
+              echo "has_results=true" >> $GITHUB_OUTPUT
+              echo "✅ الملف يحتوي على نتائج"
+            else
+              echo "has_results=false" >> $GITHUB_OUTPUT
+              echo "⚠️ الملف فارغ أو لا يحتوي على نتائج كافية"
+            fi
+          else
+            echo "has_results=false" >> $GITHUB_OUTPUT
+            echo "❌ ملف النتائج غير موجود"
+          fi
+
       - name: "📊 رفع تقرير الأمان إلى جيت هاب"
         # حدثنا الإصدار لـ v4 بناءً على تنبيه جيت هاب في الـ Logs
+        # نرفع فقط إذا كان الملف يحتوي على نتائج
+        if: steps.check-sarif.outputs.has_results == 'true'
         uses: github/codeql-action/upload-sarif@v3
+        # نتابع حتى لو كان الملف فارغاً
+        continue-on-error: true
         with:
           sarif_file: results.sarif
           # إضافة الـ token لضمان نجاح الرفع
