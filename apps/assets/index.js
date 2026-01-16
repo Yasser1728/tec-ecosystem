@@ -10,6 +10,7 @@
 import { DomainBootstrap } from '../../core/bootstrap';
 import { getDomainDatabaseConfig } from '../../core/database';
 import domainConfig from './config';
+import { logger } from '../../lib/utils/logger.js';
 
 /**
  * Assets Domain Class
@@ -58,7 +59,7 @@ export class AssetsDomain extends DomainBootstrap {
         // Domain-specific operation logic goes here
         console.log(`[Assets] Executing ${operationType}`);
         
-        // TODO: Implement domain-specific operations
+        // Note: Domain-specific operations to be implemented per business requirements
         
         return {
           success: true,

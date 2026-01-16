@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Image from "next/image";
+import { logger } from '../lib/utils/logger.js';
 import {
   nftMinting,
   CERTIFICATE_TYPES,

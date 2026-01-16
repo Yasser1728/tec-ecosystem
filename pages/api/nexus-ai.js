@@ -1,4 +1,5 @@
 import { TEC_KNOWLEDGE, SYSTEM_PROMPT } from "../../lib/nexus-ai-knowledge";
+import { logger } from '../../lib/utils/logger.js';
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {

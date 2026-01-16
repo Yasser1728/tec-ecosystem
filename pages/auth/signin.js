@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
+import { logger } from '../../lib/utils/logger.js';
 
 export default function SignIn() {
   const router = useRouter();

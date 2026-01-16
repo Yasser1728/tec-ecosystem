@@ -9,6 +9,7 @@
 
 const crypto = require('crypto');
 const { PrismaClient } = require('@prisma/client');
+const { logger } = require('../../../lib/utils/logger.js');
 const prisma = new PrismaClient();
 
 // Premium rate constants - Using fraction notation for precision and clarity

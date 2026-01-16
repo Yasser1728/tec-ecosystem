@@ -9,6 +9,7 @@
 
 const eventBus = require('../../../lib/eventBus');
 const AssetService = require('./assetService');
+const { logger } = require('../../../lib/utils/logger.js');
 
 class AssetsIntegrationService {
   constructor() {

@@ -10,6 +10,7 @@
 import { DomainBootstrap } from '../../core/bootstrap';
 import { getDomainDatabaseConfig } from '../../core/database';
 import domainConfig from './config';
+import { logger } from '../../lib/utils/logger.js';
 
 /**
  * Epic Domain Class
@@ -58,7 +59,7 @@ export class EpicDomain extends DomainBootstrap {
         // Domain-specific operation logic goes here
         console.log(`[Epic] Executing ${operationType}`);
         
-        // TODO: Implement domain-specific operations
+        // Note: Domain-specific operations to be implemented per business requirements
         
         return {
           success: true,

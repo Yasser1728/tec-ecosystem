@@ -5,6 +5,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import ParticlesCanvas from "../components/ParticlesCanvas";
 import PiAuthButton from "../components/PiAuthButton";
+import { logger } from '../lib/utils/logger.js';
 
 export default function Home() {
   const [piUser, setPiUser] = useState(null);

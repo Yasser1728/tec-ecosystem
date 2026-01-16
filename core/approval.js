@@ -7,6 +7,7 @@
 
 import { AUDIT_OPERATION_TYPES, RISK_LEVELS } from '../lib/forensic-utils.js';
 import emailService from '../lib/services/emailService.js';
+import { logger } from '../lib/utils/logger.js';
 
 // Sovereign email for major transaction approvals
 const SOVEREIGN_EMAIL = process.env.SOVEREIGN_EMAIL || 'yasserrr.fox17@gmail.com';

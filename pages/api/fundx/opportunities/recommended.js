@@ -1,3 +1,5 @@
+import { logger } from '../../../../lib/utils/logger.js';
+
 /**
  * FundX Investment Opportunities API
  * 

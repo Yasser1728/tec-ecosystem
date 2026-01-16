@@ -8,6 +8,7 @@
  */
 
 const crypto = require('crypto');
+const { logger } = require('../../../lib/utils/logger.js');
 
 class AiAssistantService {
   constructor() {

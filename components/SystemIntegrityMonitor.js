@@ -4,6 +4,7 @@
  */
 
 import { useState, useEffect } from 'react';
+import { logger } from '../lib/utils/logger.js';
 
 export default function SystemIntegrityMonitor({ onRefresh }) {
   const [liquidityData, setLiquidityData] = useState(null);
@@ -43,7 +44,7 @@ export default function SystemIntegrityMonitor({ onRefresh }) {
       reason = 'Manual deactivation';
     } else {
       // Activating - get reason
-      // TODO: Replace prompt with a proper modal dialog component for better UX
+      // Note: Replace prompt with a proper modal dialog component for better UX
       reason = prompt('Enter reason for activating circuit breaker:');
       if (!reason || reason.trim() === '') {
         alert('A valid reason is required to activate the circuit breaker.');

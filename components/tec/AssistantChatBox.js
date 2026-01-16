@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { logger } from '../../lib/utils/logger.js';
 
 /**
  * AssistantChatBox Component

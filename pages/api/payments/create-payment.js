@@ -1,5 +1,6 @@
 import { prisma } from "../../../lib/db/prisma";
 import { AUDIT_OPERATION_TYPES } from "../../../lib/forensic-utils";
+import { logger } from '../../../lib/utils/logger.js';
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {

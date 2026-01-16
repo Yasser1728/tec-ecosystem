@@ -5,6 +5,7 @@ import Head from "next/head";
 import Link from "next/link";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import { logger } from '../../lib/utils/logger.js';
 
 function Dashboard({ session }) {
   const user = session?.user;

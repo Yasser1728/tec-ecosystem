@@ -1,130 +1,7 @@
 /**
- * PROPRIETARY AND CONFIDENTIAL
- *
- * Copyright (c) 2024-2025 TEC Ecosystem
- * All rights reserved.
- *
- * This file is part of the TEC Ecosystem proprietary software.
- * Unauthorized copying, modification, distribution, or use is strictly prohibited.
- * See LICENSE_PROPRIETARY for full license terms.
- *
- * @file pricing-algorithm.js
- * @description Dynamic pricing algorithm for luxury services in TEC Ecosystem
- * @license Proprietary
- */
-
-import {
-  PREMIUM_MULTIPLIER,
-  VIP_MULTIPLIER,
-  BULK_DISCOUNT_MULTIPLIER,
-  MEDIUM_DISCOUNT_MULTIPLIER,
-  PREMIUM_DISCOUNT_RATE,
-  PREMIUM_MAX_DISCOUNT,
-  VIP_DISCOUNT_RATE,
-  VIP_MAX_DISCOUNT,
-  PROMO_WELCOME_DISCOUNT,
-  PROMO_SAVE20_DISCOUNT,
-  PROMO_VIP50_DISCOUNT,
-  BASE_MULTIPLIER,
-} from './constants.js';
-
-/**
- * Membership tier configuration
- * Defines pricing multipliers and discount rates for each tier
- */
-const MEMBERSHIP_TIERS = {
-  FREE: {
-    name: "Free",
-    multiplier: BASE_MULTIPLIER,
-    discount: 0,
-    maxDiscount: 0,
-    features: ["basic"],
-    piPriority: "standard",
-  },
-  PREMIUM: {
-    name: "Premium",
-    multiplier: PREMIUM_MULTIPLIER,
-    discount: PREMIUM_DISCOUNT_RATE,
-    maxDiscount: PREMIUM_MAX_DISCOUNT,
-    features: ["basic", "premium"],
-    piPriority: "high",
-  },
-  VIP: {
-    name: "VIP",
-    multiplier: VIP_MULTIPLIER,
-    discount: VIP_DISCOUNT_RATE,
-    maxDiscount: VIP_MAX_DISCOUNT,
-    features: ["basic", "premium", "vip", "exclusive"],
-    piPriority: "highest",
-  },
-};
-
-/**
- * Service categories with base prices (in USD)
- */
-const SERVICE_CATEGORIES = {
-  estate: {
-    name: "Real Estate",
-    basePriceUSD: 100,
-    piConversionRate: 1.5,
-  },
-  commerce: {
-    name: "E-Commerce",
-    basePriceUSD: 50,
-    piConversionRate: 1.2,
-  },
-  investment: {
-    name: "Investment",
-    basePriceUSD: 200,
-    piConversionRate: 2.0,
-  },
-  vip: {
-    name: "VIP Services",
-    basePriceUSD: 500,
-    piConversionRate: 3.0,
-  },
-  insurance: {
-    name: "Insurance",
-    basePriceUSD: 150,
-    piConversionRate: 1.8,
-  },
-  luxury: {
-    name: "Luxury Services",
-    basePriceUSD: 1000,
-    piConversionRate: 5.0,
-  },
-};
-
-/**
- * Volume discount thresholds and rates
- * Used for bulk purchase discounts
- */
-const VOLUME_DISCOUNTS = {
-  BULK_QUANTITY_THRESHOLD: 10,      // 10+ items for bulk discount
-  MEDIUM_QUANTITY_THRESHOLD: 5,     // 5+ items for medium discount
-  BULK_DISCOUNT_RATE: BULK_DISCOUNT_MULTIPLIER,          // 10% bulk discount (multiply by 0.9 = 10% off)
-  MEDIUM_DISCOUNT_RATE: MEDIUM_DISCOUNT_MULTIPLIER,       // 5% medium discount (multiply by 0.95 = 5% off)
-};
-
-/**
- * Tier recommendation thresholds
- * Used to determine when users should upgrade their membership tier
- */
-const TIER_RECOMMENDATION_THRESHOLDS = {
-  VIP_SAVINGS_THRESHOLD: 1000,      // Recommend VIP if savings exceed $1000/month
-  VIP_SERVICES_THRESHOLD: 10,       // Recommend VIP if using 10+ services
-  PREMIUM_SAVINGS_THRESHOLD: 500,   // Recommend Premium if savings exceed $500/month
-  PREMIUM_SERVICES_THRESHOLD: 5,    // Recommend Premium if using 5+ services
-};
-
-/**
- * Pi Network to USD conversion rate (dynamic)
- * TODO: PRODUCTION - Fetch from external API or database
- * Recommended approaches:
- * - CoinGecko API for real-time rates
- * - Database cache with periodic updates
- * - Configuration management system
- * - Rate limiting to prevent API abuse
+ * Note: In production, fetch exchange rates from external API or database
+ * Current implementation uses mock data for development
+ * See: https://github.com/[org]/tec-ecosystem/issues/XXX
  */
 const PI_TO_USD_RATE = 314.159; // 1 Pi = $314.159 (example rate - DO NOT USE IN PRODUCTION)
 
@@ -329,7 +206,7 @@ export function recommendTier(usageData) {
  * @returns {number} Discount rate (0-1)
  */
 function validatePromoCode(promoCode) {
-  // TODO: PRODUCTION - Implement database validation with security checks
+  // Note: In production, implement database validation with security checks
   // Required features:
   // - Database lookup with Prisma
   // - Expiration date validation

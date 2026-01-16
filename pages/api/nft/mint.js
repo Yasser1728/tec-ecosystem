@@ -1,6 +1,7 @@
 import crypto from "crypto";
 import { prisma } from "../../../lib/db/prisma";
 import { piAuth } from "../../../lib/pi-auth";
+import { logger } from '../../../lib/utils/logger.js';
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {

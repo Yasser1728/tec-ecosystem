@@ -6,6 +6,7 @@
  */
 
 import {
+import { logger } from '../lib/utils/logger.js';
   createAuditEntry,
   createImmutableLogEntry,
   verifyUserIdentity,

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Head from "next/head";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import { logger } from '../../lib/utils/logger.js';
 
 export default function Fundx() {
   const [domainInfo, setDomainInfo] = useState(null);

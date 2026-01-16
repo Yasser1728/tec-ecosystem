@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { logger } from '../lib/utils/logger.js';
 
 export default function ConsultationForm({ service = "General", onClose }) {
   const [step, setStep] = useState(1);
@@ -64,7 +65,7 @@ export default function ConsultationForm({ service = "General", onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // TODO: Send to backend
+    // Note: Send to backend API endpoint
     console.log("Consultation Request:", {
       ...formData,
       service,

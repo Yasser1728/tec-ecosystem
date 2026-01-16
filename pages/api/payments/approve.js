@@ -8,6 +8,7 @@
  * Now integrated with central forensic audit server for security validation.
  */
 import { AUDIT_OPERATION_TYPES } from "../../../lib/forensic-utils";
+import { logger } from '../../../lib/utils/logger.js';
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {

@@ -1,3 +1,5 @@
+const { logger } = require('../../../lib/utils/logger.js');
+
 /**
  * TEC Service - Core Business Logic for TEC Domain
  * 

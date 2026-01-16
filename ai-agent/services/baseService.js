@@ -6,6 +6,7 @@
 import { executeModel } from '../core/openrouter.js';
 import { recordTransaction, getCostSignal } from '../core/ledger.js';
 import { councilDecision, TASK_TYPES } from '../core/council.js';
+import { logger } from '../../lib/utils/logger.js';
 
 /**
  * Factory to create a domain service
