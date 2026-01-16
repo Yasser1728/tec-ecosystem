@@ -1,0 +1,61 @@
+name: "فحص الأمان عبر كوداسي - Codacy Security Scan"
+
+on:
+  push:
+    branches: ["main", "develop"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+  security-events: write  # دي الصلاحية اللي كانت ناقصة عشان يرفع النتائج
+  actions: read
+
+jobs:
+  codacy-security-scan:
+    name: "بدء عملية فحص الحوكمة والأمان"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "📥 جلب الكود المصدري"
+        uses: actions/checkout@v4
+
+      - name: "🛡️ تشغيل محرك فحص كوداسي"
+        uses: codacy/codacy-analysis-cli-action@v4
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          verbose: true
+          output: results.sarif
+          format: sarif
+          directory: "/github/workspace"
+
+      - name: "🔍 فحص نتائج الأمان"
+        id: check-sarif
+        run: |
+          MIN_SARIF_SIZE=100  # الحد الأدنى لملف SARIF صالح (بنية JSON أساسية)
+          if [ -f results.sarif ]; then
+            echo "✅ ملف النتائج موجود"
+            # استخدام wc -c للتوافق عبر المنصات المختلفة
+            SARIF_SIZE=$(wc -c < results.sarif || echo "0")
+            echo "📊 حجم الملف: $SARIF_SIZE بايت"
+            if [ "$SARIF_SIZE" -gt "$MIN_SARIF_SIZE" ]; then
+              echo "has_results=true" >> $GITHUB_OUTPUT
+              echo "✅ الملف يحتوي على نتائج"
+            else
+              echo "has_results=false" >> $GITHUB_OUTPUT
+              echo "⚠️ الملف فارغ أو لا يحتوي على نتائج كافية"
+            fi
+          else
+            echo "has_results=false" >> $GITHUB_OUTPUT
+            echo "❌ ملف النتائج غير موجود"
+          fi
+
+      - name: "📊 رفع تقرير الأمان إلى جيت هاب"
+        # نرفع فقط إذا كان الملف يحتوي على نتائج صالحة
+        if: steps.check-sarif.outputs.has_results == 'true'
+        uses: github/codeql-action/upload-sarif@v3
+        # نتابع حتى لو فشل الرفع لأسباب أخرى
+        continue-on-error: true
+        with:
+          sarif_file: results.sarif
+          token: ${{ github.token }}
