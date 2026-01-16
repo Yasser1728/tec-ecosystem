@@ -77,9 +77,6 @@
       "prettier --write"
     ]
   },
-  "prisma": {
-    "seed": "node prisma/seed.js"
-  },
   "engines": {
     "node": ">=20.0.0"
   }

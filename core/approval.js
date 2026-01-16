@@ -6,6 +6,7 @@
  */
 
 import { AUDIT_OPERATION_TYPES, RISK_LEVELS } from '../lib/forensic-utils.js';
+import emailService from '../lib/services/emailService.js';
 
 // Sovereign email for major transaction approvals
 const SOVEREIGN_EMAIL = process.env.SOVEREIGN_EMAIL || 'yasserrr.fox17@gmail.com';
@@ -170,69 +171,32 @@ export class ApprovalCenter {
    * Send sovereign email notification
    */
   async sendSovereignNotification({ operationType, operationData, user, domain, approvalResult }) {
-    // Format notification
-    const notification = {
+    // Use the centralized email service
+    const result = await emailService.sendSovereignNotification({
       to: this.sovereignEmail,
-      subject: `🚨 TEC Sovereign Alert: ${operationType} in ${domain}`,
-      body: this.formatNotificationEmail({
-        operationType,
-        operationData,
-        user,
-        domain,
-        approvalResult
-      }),
-      timestamp: new Date().toISOString(),
-      priority: this.isCriticalOperation(operationType, operationData) ? 'CRITICAL' : 'HIGH'
-    };
-    
-    console.log('[SOVEREIGN NOTIFICATION]', JSON.stringify(notification, null, 2));
-    
-    // TODO: Integrate with email service (SendGrid, AWS SES, etc.)
-    // Production implementation should use actual email service:
-    // const emailService = require('./email-service');
-    // await emailService.send({
-    //   to: notification.to,
-    //   subject: notification.subject,
-    //   html: notification.body,
-    //   priority: notification.priority
-    // });
-    
-    // For now, log warning that email is not actually sent
-    console.warn('[SOVEREIGN NOTIFICATION] Email service not configured. Notification logged only. Configure email service for production.');
-    
+      operationType,
+      domain: domain || this.domain,
+      operationData,
+      approvalResult,
+      user,
+    });
+
+    // Log for audit trail regardless of send status
+    console.log('[SOVEREIGN NOTIFICATION]', {
+      to: this.sovereignEmail,
+      operationType,
+      domain: domain || this.domain,
+      sent: result.sent,
+      logged: result.logged,
+      provider: result.provider,
+    });
+
     return {
-      sent: false, // Will be true when email service is integrated
-      logged: true,
-      notification
+      sent: result.sent,
+      logged: result.logged,
+      provider: result.provider,
+      messageId: result.messageId,
     };
-  }
-  
-  /**
-   * Format notification email
-   */
-  formatNotificationEmail({ operationType, operationData, user, domain, approvalResult }) {
-    return `
-TEC Ecosystem - Sovereign Control Notification
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-🏢 DOMAIN: ${domain.toUpperCase()}
-📋 OPERATION: ${operationType}
-👤 USER: ${user?.email || user?.id || 'Unknown'}
-⏰ TIMESTAMP: ${new Date().toISOString()}
-
-💰 TRANSACTION DETAILS:
-${JSON.stringify(operationData, null, 2)}
-
-✅ APPROVAL STATUS: ${approvalResult.approved ? 'APPROVED' : 'REJECTED'}
-📊 RISK LEVEL: ${approvalResult.riskLevel || 'N/A'}
-🔐 AUDIT LOG ID: ${approvalResult.auditLogId || 'N/A'}
-
-${approvalResult.message || ''}
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-This is an automated sovereign control notification from the TEC Ecosystem.
-All operations are logged immutably for forensic audit purposes.
-    `.trim();
   }
   
   /**
