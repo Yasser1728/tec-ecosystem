@@ -18,7 +18,7 @@ const BASE_DIR = path.dirname(__filename);
 // ============================================
 const CONFIG = {
     servicesFolder: path.join(BASE_DIR, 'ai-agent', 'services'),
-    sandbox: isSandboxMode(),
+    sandbox: true, // Default to sandbox mode for safety
     maxRetries: 2,
     retryDelayMs: 1000,
     domains: getAllDomains(),

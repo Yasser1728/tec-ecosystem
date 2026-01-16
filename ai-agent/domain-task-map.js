@@ -13,9 +13,10 @@ import { TASK_TYPES } from './core/constants.js';
  * - priority: Execution priority (1 = highest)
  * - capabilities: Required AI capabilities
  * - description: Human-readable description
+ * 
+ * NOTE: Domain order must match the governance test expectations
  */
 export const domainTaskMap = Object.freeze({
-  // Core Domains
   'tec.pi': {
     taskType: TASK_TYPES.STRATEGY,
     requiresAudit: true,
@@ -51,14 +52,33 @@ export const domainTaskMap = Object.freeze({
     capabilities: ['coding', 'general'],
     description: 'E-commerce and marketplace operations'
   },
-
-  // Analytics Domains
   'analytics.pi': {
     taskType: TASK_TYPES.DATA,
     requiresAudit: false,
     priority: 3,
     capabilities: ['data-processing', 'analysis'],
     description: 'Data analytics and insights generation'
+  },
+  'security.pi': {
+    taskType: TASK_TYPES.AUDIT,
+    requiresAudit: false,
+    priority: 1,
+    capabilities: ['security', 'audit'],
+    description: 'Security monitoring and threat detection'
+  },
+  'crm.pi': {
+    taskType: TASK_TYPES.FAST,
+    requiresAudit: false,
+    priority: 4,
+    capabilities: ['general', 'conversation'],
+    description: 'Customer relationship management'
+  },
+  'payments.pi': {
+    taskType: TASK_TYPES.OPERATION,
+    requiresAudit: true,
+    priority: 1,
+    capabilities: ['security', 'verification'],
+    description: 'Payment processing and reconciliation'
   },
   'tokens.pi': {
     taskType: TASK_TYPES.OPERATION,
@@ -81,21 +101,12 @@ export const domainTaskMap = Object.freeze({
     capabilities: ['security', 'verification'],
     description: 'Exchange operations and order processing'
   },
-
-  // Management Domains
-  'crm.pi': {
-    taskType: TASK_TYPES.FAST,
-    requiresAudit: false,
-    priority: 4,
-    capabilities: ['general', 'conversation'],
-    description: 'Customer relationship management'
-  },
-  'payments.pi': {
+  'staking.pi': {
     taskType: TASK_TYPES.OPERATION,
     requiresAudit: true,
-    priority: 1,
-    capabilities: ['security', 'verification'],
-    description: 'Payment processing and reconciliation'
+    priority: 2,
+    capabilities: ['calculation', 'verification'],
+    description: 'Staking rewards and management'
   },
   'governance.pi': {
     taskType: TASK_TYPES.STRATEGY,
@@ -103,29 +114,6 @@ export const domainTaskMap = Object.freeze({
     priority: 2,
     capabilities: ['strategy', 'reasoning'],
     description: 'Governance and voting mechanisms'
-  },
-  'legal.pi': {
-    taskType: TASK_TYPES.REASONING,
-    requiresAudit: true,
-    priority: 2,
-    capabilities: ['reasoning', 'analysis'],
-    description: 'Legal compliance and documentation'
-  },
-  'audit.pi': {
-    taskType: TASK_TYPES.AUDIT,
-    requiresAudit: false,
-    priority: 1,
-    capabilities: ['audit', 'verification', 'security'],
-    description: 'Internal audit and compliance verification'
-  },
-
-  // Security & Compliance
-  'security.pi': {
-    taskType: TASK_TYPES.AUDIT,
-    requiresAudit: false,
-    priority: 1,
-    capabilities: ['security', 'audit'],
-    description: 'Security monitoring and threat detection'
   },
   'insurance.pi': {
     taskType: TASK_TYPES.OPERATION,
@@ -141,14 +129,19 @@ export const domainTaskMap = Object.freeze({
     capabilities: ['calculation', 'analysis'],
     description: 'Tax calculations and reporting'
   },
-
-  // Operations
-  'staking.pi': {
-    taskType: TASK_TYPES.OPERATION,
+  'legal.pi': {
+    taskType: TASK_TYPES.REASONING,
     requiresAudit: true,
     priority: 2,
-    capabilities: ['calculation', 'verification'],
-    description: 'Staking rewards and management'
+    capabilities: ['reasoning', 'analysis'],
+    description: 'Legal compliance and documentation'
+  },
+  'audit.pi': {
+    taskType: TASK_TYPES.AUDIT,
+    requiresAudit: false,
+    priority: 1,
+    capabilities: ['audit', 'verification', 'security'],
+    description: 'Internal audit and compliance verification'
   },
   'research.pi': {
     taskType: TASK_TYPES.REASONING,
