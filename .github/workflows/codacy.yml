@@ -32,13 +32,13 @@ jobs:
       - name: "🔍 فحص نتائج الأمان"
         id: check-sarif
         run: |
+          MIN_SARIF_SIZE=100  # الحد الأدنى لملف SARIF صالح (بنية JSON أساسية)
           if [ -f results.sarif ]; then
             echo "✅ ملف النتائج موجود"
             # استخدام wc -c للتوافق عبر المنصات المختلفة
-            SARIF_SIZE=$(wc -c < results.sarif)
+            SARIF_SIZE=$(wc -c < results.sarif || echo "0")
             echo "📊 حجم الملف: $SARIF_SIZE بايت"
-            # الحد الأدنى لملف SARIF صالح هو 100 بايت (بنية JSON أساسية)
-            if [ "$SARIF_SIZE" -gt 100 ]; then
+            if [ "$SARIF_SIZE" -gt "$MIN_SARIF_SIZE" ]; then
               echo "has_results=true" >> $GITHUB_OUTPUT
               echo "✅ الملف يحتوي على نتائج"
             else
