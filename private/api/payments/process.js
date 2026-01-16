@@ -14,6 +14,8 @@
  */
 
 import { prisma } from "../../../../lib/db/prisma";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../../../../pages/api/auth/[...nextauth]";
 
 /**
  * Process Pi Network payment transactions
@@ -31,21 +33,25 @@ export default async function handler(req, res) {
     });
   }
 
-  // Authentication check - verify user session
-  // TODO: SECURITY - Implement proper JWT validation or NextAuth session verification
-  // Current implementation is for demonstration only and should NOT be used in production
-  // Consider using:
-  // - JWT validation with secret key verification
-  // - NextAuth getServerSession for session-based auth
-  // - Rate limiting to prevent abuse
-  const { userId, sessionToken } = req.headers;
+  // Authentication check - verify user session using NextAuth
+  const session = await getServerSession(req, res, authOptions);
 
-  if (!userId || !sessionToken) {
+  if (!session || !session.user) {
     return res.status(401).json({
       error: "Unauthorized",
-      message: "Authentication required",
+      message: "Authentication required. Please sign in to continue.",
     });
   }
+
+  // Validate user status
+  if (session.user.status !== "ACTIVE") {
+    return res.status(403).json({
+      error: "Forbidden",
+      message: "Your account is not active. Please contact support.",
+    });
+  }
+
+  const userId = session.user.id;
 
   try {
     const { paymentId, piPaymentId, amount, memo, domain, category, metadata } =
