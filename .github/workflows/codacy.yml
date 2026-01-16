@@ -37,12 +37,24 @@ jobs:
             SARIF_SIZE=$(stat -f%z results.sarif 2>/dev/null || \
               stat -c%s results.sarif 2>/dev/null)
             echo "📊 حجم الملف: $SARIF_SIZE بايت"
-            if [ "$SARIF_SIZE" -gt 100 ]; then
-              echo "has_results=true" >> $GITHUB_OUTPUT
-              echo "✅ الملف يحتوي على نتائج"
+            
+            # Check if SARIF has valid runs with results
+            RUNS_COUNT=$(jq -r '.runs | length' results.sarif 2>/dev/null || echo "0")
+            echo "📊 عدد الـ runs: $RUNS_COUNT"
+            
+            if [ "$RUNS_COUNT" -gt 0 ]; then
+              # Check if at least one run has results
+              HAS_RESULTS=$(jq -r '.runs[] | select(.results != null and (.results | length) > 0) | .results | length' results.sarif 2>/dev/null | head -1 || echo "0")
+              if [ "$HAS_RESULTS" -gt 0 ]; then
+                echo "has_results=true" >> $GITHUB_OUTPUT
+                echo "✅ الملف يحتوي على نتائج صالحة"
+              else
+                echo "has_results=false" >> $GITHUB_OUTPUT
+                echo "⚠️ الملف لا يحتوي على نتائج"
+              fi
             else
               echo "has_results=false" >> $GITHUB_OUTPUT
-              echo "⚠️ الملف فارغ أو لا يحتوي على نتائج كافية"
+              echo "⚠️ الملف لا يحتوي على runs صالحة"
             fi
           else
             echo "has_results=false" >> $GITHUB_OUTPUT
@@ -50,11 +62,11 @@ jobs:
           fi
 
       - name: "📊 رفع تقرير الأمان إلى جيت هاب"
-        # حدثنا الإصدار لـ v4 بناءً على تنبيه جيت هاب في الـ Logs
-        # نرفع فقط إذا كان الملف يحتوي على نتائج
+        # تم التحديث إلى v4 - v3 سيتم إيقافه في ديسمبر 2026
+        # نرفع فقط إذا كان الملف يحتوي على نتائج صالحة
         if: steps.check-sarif.outputs.has_results == 'true'
-        uses: github/codeql-action/upload-sarif@v3
-        # نتابع حتى لو كان الملف فارغاً
+        uses: github/codeql-action/upload-sarif@v4
+        # نتابع حتى لو فشل الرفع
         continue-on-error: true
         with:
           sarif_file: results.sarif
