@@ -1,36 +1,30 @@
 ---
 # Codacy Configuration for TEC Ecosystem
-# Version: 1.1.0
-# Last Updated: 2026-01-11
+# Version: 1.2.0
+# Last Updated: 2026-01-16
 # Purpose: Define code quality rules and analysis settings for the TEC ecosystem
 
+# Engine-specific exclusions (optional per-tool path exclusions)
 engines:
-  # Code complexity metrics
-  metrics:
-    enabled: true
-    config:
-      threshold: 30  # Maximum cyclomatic complexity per function
-  
-  # Code duplication detection
-  duplication:
-    enabled: true
-    config:
-      languages:
-        - javascript
-        - typescript
-      
-  # ESLint for JavaScript/TypeScript code quality
   eslint:
-    enabled: true
-  
-  # Markdown documentation linting
+    exclude_paths:
+      - "**/node_modules/**"
+      - "**/*.min.js"
   markdownlint:
-    enabled: true
+    exclude_paths:
+      - "**/node_modules/**"
 
-# Exclude paths from analysis
+# Duplication analysis exclusions
+duplication:
+  exclude_paths:
+    - "**/node_modules/**"
+    - "**/*.min.js"
+    - "**/*.min.css"
+
+# Exclude paths from all analysis
 exclude_paths:
   # Dependencies
-  - "node_modules/**"
+  - "**/node_modules/**"
   
   # Build artifacts
   - "dist/**"
@@ -42,8 +36,8 @@ exclude_paths:
   - "coverage/**"
   
   # Minified files
-  - "*.min.js"
-  - "*.min.css"
+  - "**/*.min.js"
+  - "**/*.min.css"
   
   # Lock files
   - "package-lock.json"
@@ -53,9 +47,9 @@ exclude_paths:
   - "prisma/migrations/**"
   
   # Configuration files (often require specific formats)
-  - "*.config.js"
-  - "*.config.cjs"
-  - "*.config.mjs"
+  - "**/*.config.js"
+  - "**/*.config.cjs"
+  - "**/*.config.mjs"
   
   # Locale files (translation data)
   - "public/locales/**"
