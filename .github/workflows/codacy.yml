@@ -4,21 +4,45 @@ on:
   push:
     branches: ["main", "develop"]
   pull_request:
-    branches: ["main"]
+    branches: ["main", "develop"]
+  # Scheduled weekly security scan
+  schedule:
+    - cron: "0 6 * * 0" # Every Sunday at 6:00 AM UTC
+  workflow_dispatch:
+
+# Prevent duplicate runs for the same PR/branch
+concurrency:
+  group: codacy-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
-  security-events: write  # دي الصلاحية اللي كانت ناقصة عشان يرفع النتائج
+  security-events: write # للحصول على صلاحية رفع النتائج الأمنية
   actions: read
+  pull-requests: read
 
 jobs:
   codacy-security-scan:
     name: "بدء عملية فحص الحوكمة والأمان"
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
       - name: "📥 جلب الكود المصدري"
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Full history for better analysis
+
+      # Cache for faster analysis
+      - name: "💾 تفعيل التخزين المؤقت"
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/codacy
+            /tmp/codacy
+          key: codacy-cache-${{ runner.os }}-${{ hashFiles('**/*.js', '**/*.ts', '**/*.jsx', '**/*.tsx') }}
+          restore-keys: |
+            codacy-cache-${{ runner.os }}-
 
       - name: "🛡️ تشغيل محرك فحص كوداسي"
         uses: codacy/codacy-analysis-cli-action@v4
@@ -28,34 +52,64 @@ jobs:
           output: results.sarif
           format: sarif
           directory: "/github/workspace"
+          # Upload results to Codacy
+          upload: true
 
       - name: "🔍 فحص نتائج الأمان"
         id: check-sarif
         run: |
-          MIN_SARIF_SIZE=100  # الحد الأدنى لملف SARIF صالح (بنية JSON أساسية)
+          MIN_SARIF_SIZE=100  # الحد الأدنى لملف SARIF صالح
+          echo "## 📊 تقرير فحص الأمان" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
           if [ -f results.sarif ]; then
-            echo "✅ ملف النتائج موجود"
-            # استخدام wc -c للتوافق عبر المنصات المختلفة
+            echo "✅ ملف النتائج موجود" >> $GITHUB_STEP_SUMMARY
             SARIF_SIZE=$(wc -c < results.sarif || echo "0")
-            echo "📊 حجم الملف: $SARIF_SIZE بايت"
+            echo "📊 حجم الملف: $SARIF_SIZE بايت" >> $GITHUB_STEP_SUMMARY
+            
             if [ "$SARIF_SIZE" -gt "$MIN_SARIF_SIZE" ]; then
               echo "has_results=true" >> $GITHUB_OUTPUT
-              echo "✅ الملف يحتوي على نتائج"
+              echo "✅ الملف يحتوي على نتائج للتحليل" >> $GITHUB_STEP_SUMMARY
+              
+              # Count issues if jq is available
+              if command -v jq &> /dev/null; then
+                ISSUE_COUNT=$(jq '.runs[0].results | length' results.sarif 2>/dev/null || echo "N/A")
+                echo "" >> $GITHUB_STEP_SUMMARY
+                echo "🔎 عدد المشاكل المكتشفة: $ISSUE_COUNT" >> $GITHUB_STEP_SUMMARY
+              fi
             else
               echo "has_results=false" >> $GITHUB_OUTPUT
-              echo "⚠️ الملف فارغ أو لا يحتوي على نتائج كافية"
+              echo "⚠️ الملف فارغ أو لا يحتوي على نتائج كافية" >> $GITHUB_STEP_SUMMARY
             fi
           else
             echo "has_results=false" >> $GITHUB_OUTPUT
-            echo "❌ ملف النتائج غير موجود"
+            echo "❌ ملف النتائج غير موجود" >> $GITHUB_STEP_SUMMARY
           fi
 
       - name: "📊 رفع تقرير الأمان إلى جيت هاب"
-        # نرفع فقط إذا كان الملف يحتوي على نتائج صالحة
         if: steps.check-sarif.outputs.has_results == 'true'
         uses: github/codeql-action/upload-sarif@v3
-        # نتابع حتى لو فشل الرفع لأسباب أخرى
         continue-on-error: true
         with:
           sarif_file: results.sarif
           token: ${{ github.token }}
+          category: codacy-security
+
+      - name: "💾 حفظ تقرير التحليل كمرفق"
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: codacy-security-report-${{ github.run_number }}
+          path: |
+            results.sarif
+          retention-days: 30
+          if-no-files-found: ignore
+
+      - name: "✅ ملخص نجاح الفحص"
+        if: success()
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "✅ **تم الانتهاء من فحص الأمان بنجاح**" >> $GITHUB_STEP_SUMMARY
+          echo "📅 التاريخ: $(date '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+          echo "🔗 الفرع: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY

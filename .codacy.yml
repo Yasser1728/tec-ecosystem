@@ -1,55 +1,141 @@
 ---
 # Codacy Configuration for TEC Ecosystem
-# Version: 1.2.0
+# Version: 2.0.0
 # Last Updated: 2026-01-16
 # Purpose: Define code quality rules and analysis settings for the TEC ecosystem
+# Enhanced for improved efficiency and comprehensive security analysis
 
-# Engine-specific exclusions (optional per-tool path exclusions)
+# Engine-specific configurations with optimized settings
 engines:
   eslint:
+    enabled: true
     exclude_paths:
       - "**/node_modules/**"
       - "**/*.min.js"
+      - "**/*.bundle.js"
+    options:
+      # Use project's ESLint configuration
+      configFile: ".eslintrc.json"
+
   markdownlint:
+    enabled: true
     exclude_paths:
       - "**/node_modules/**"
+      - "CHANGELOG.md"
 
-# Duplication analysis exclusions
+  # Security-focused engines
+  eslint-security:
+    enabled: true
+    exclude_paths:
+      - "**/node_modules/**"
+      - "**/tests/**"
+
+  # Pattern detection for secrets and sensitive data
+  secretsdetection:
+    enabled: true
+    exclude_paths:
+      - "**/node_modules/**"
+      - "**/*.example"
+      - ".env.example"
+
+  # JSON/YAML validation
+  jsonlint:
+    enabled: true
+    exclude_paths:
+      - "**/node_modules/**"
+      - "package-lock.json"
+
+# Duplication analysis with enhanced settings
 duplication:
+  enabled: true
+  # Minimum number of tokens for duplication detection
+  min_tokens: 50
   exclude_paths:
     - "**/node_modules/**"
     - "**/*.min.js"
     - "**/*.min.css"
+    - "**/*.bundle.js"
+    - "**/tests/**"
+    - "**/__tests__/**"
+    - "**/*.test.js"
+    - "**/*.spec.js"
+
+# Metrics and quality gates
+metrics:
+  # File complexity threshold
+  complexity:
+    threshold: 15
+  # Method length threshold
+  method_length:
+    threshold: 50
+  # File length threshold
+  file_length:
+    threshold: 500
 
 # Exclude paths from all analysis
 exclude_paths:
   # Dependencies
   - "**/node_modules/**"
-  
+
   # Build artifacts
   - "dist/**"
   - "build/**"
   - ".next/**"
   - ".vercel/**"
-  
+  - "out/**"
+
   # Test coverage reports
   - "coverage/**"
-  
-  # Minified files
+  - ".nyc_output/**"
+
+  # Minified and bundled files
   - "**/*.min.js"
   - "**/*.min.css"
-  
+  - "**/*.bundle.js"
+  - "**/*.chunk.js"
+
   # Lock files
   - "package-lock.json"
   - "yarn.lock"
-  
+  - "pnpm-lock.yaml"
+
   # Database migrations (auto-generated)
   - "prisma/migrations/**"
-  
+
   # Configuration files (often require specific formats)
   - "**/*.config.js"
   - "**/*.config.cjs"
   - "**/*.config.mjs"
-  
+  - "**/*.config.ts"
+
   # Locale files (translation data)
   - "public/locales/**"
+  - "locales/**"
+
+  # Generated files
+  - "**/*.generated.js"
+  - "**/*.generated.ts"
+
+  # Documentation build artifacts
+  - "docs/_build/**"
+  - ".docusaurus/**"
+
+  # IDE and editor files
+  - ".idea/**"
+  - ".vscode/**"
+
+  # Temporary files
+  - "**/tmp/**"
+  - "**/.tmp/**"
+
+# Languages to analyze
+languages:
+  - javascript
+  - typescript
+  - json
+  - yaml
+  - markdown
+  - css
+
+# Analysis timeout in seconds (for large files)
+timeout: 300
