@@ -89,7 +89,9 @@ export default async function handler(req, res) {
         txid: txid,
         completedAt: new Date().toISOString(),
         verified: true,
-        ...piCompleteData,
+        // Include only safe fields from Pi API response
+        ...(piCompleteData.identifier && { piIdentifier: piCompleteData.identifier }),
+        ...(piCompleteData.amount && { verifiedAmount: piCompleteData.amount }),
       },
       message: "Payment completed successfully",
     });

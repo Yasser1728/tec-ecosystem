@@ -140,7 +140,9 @@ export default async function handler(req, res) {
         piPaymentId: paymentId,
         status: "APPROVED",
         approvedAt: new Date().toISOString(),
-        ...piApproveData,
+        // Include only safe fields from Pi API response
+        ...(piApproveData.identifier && { piIdentifier: piApproveData.identifier }),
+        ...(piApproveData.amount && { verifiedAmount: piApproveData.amount }),
       },
       forensicAudit: {
         approved: true,
