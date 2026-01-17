@@ -49,6 +49,24 @@ export default function Home() {
       const mode = window.piSandboxMode ? "Sandbox" : "Pi Browser";
       console.log(`✅ ${mode} mode active`);
 
+      // Initialize Pi SDK
+      const sandbox = process.env.NEXT_PUBLIC_PI_SANDBOX === "true" || true;
+      console.log("🔧 Initializing Pi SDK...");
+      setPaymentStatus("🔧 Initializing SDK...");
+      
+      try {
+        if (window.Pi && window.Pi.init) {
+          await window.Pi.init({
+            version: "2.0",
+            sandbox,
+          });
+          console.log("✅ Pi SDK initialized successfully");
+        }
+      } catch (initError) {
+        console.warn("⚠️ Pi SDK init warning:", initError);
+        // Continue anyway - might already be initialized
+      }
+
       // Step 1: Authenticate
       console.log("🔐 Step 1: Authenticating...");
       setPaymentStatus("🔐 Authenticating...");

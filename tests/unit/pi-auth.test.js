@@ -12,6 +12,7 @@ describe("PiAuth", () => {
     // Mock window.Pi first - MUST be set before creating PiAuth
     mockWindow = {
       Pi: {
+        init: jest.fn().mockResolvedValue(undefined),
         authenticate: jest.fn().mockResolvedValue({
           user: { uid: "test-pi-id", username: "testuser" },
           accessToken: "test-token",
@@ -45,6 +46,42 @@ describe("PiAuth", () => {
   afterEach(() => {
     jest.useRealTimers();
     jest.clearAllMocks();
+  });
+
+  describe("init", () => {
+    it("should initialize Pi SDK successfully", async () => {
+      process.env.NEXT_PUBLIC_PI_SANDBOX = "true";
+      
+      await piAuth.init();
+
+      expect(mockWindow.Pi.init).toHaveBeenCalledWith({
+        version: "2.0",
+        sandbox: true,
+      });
+      expect(piAuth.initialized).toBe(true);
+    });
+
+    it("should not initialize twice", async () => {
+      process.env.NEXT_PUBLIC_PI_SANDBOX = "true";
+      
+      await piAuth.init();
+      await piAuth.init();
+
+      expect(mockWindow.Pi.init).toHaveBeenCalledTimes(1);
+    });
+
+    it("should throw error when Pi SDK not available", async () => {
+      global.window = {};
+
+      await expect(piAuth.init()).rejects.toThrow("Pi SDK not available");
+    });
+
+    it("should handle initialization errors", async () => {
+      mockWindow.Pi.init.mockRejectedValue(new Error("Init failed"));
+
+      await expect(piAuth.init()).rejects.toThrow("Init failed");
+      expect(piAuth.initialized).toBe(false);
+    });
   });
 
   describe.skip("authenticate", () => {

@@ -19,6 +19,7 @@ describe("PiPayments", () => {
     // Mock window and Pi SDK
     mockWindow = {
       Pi: {
+        init: jest.fn().mockResolvedValue(undefined),
         createPayment: jest.fn().mockResolvedValue({
           identifier: "payment-123",
           user_uid: "user-123",
@@ -39,6 +40,8 @@ describe("PiPayments", () => {
       piId: "pi-123",
       username: "testuser",
     });
+    piAuth.initialized = true;
+    piAuth.init = jest.fn().mockResolvedValue(true);
   });
 
   afterEach(() => {
