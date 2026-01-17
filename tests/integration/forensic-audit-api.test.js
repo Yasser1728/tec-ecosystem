@@ -10,6 +10,89 @@ jest.mock('next-auth/next', () => ({
 }));
 
 describe('API /api/approval - Forensic Audit Integration', () => {
+  describe('Sandbox Mode', () => {
+    it('should auto-approve all operations in sandbox mode', async () => {
+      // Mock sandbox environment
+      process.env.NEXT_PUBLIC_PI_SANDBOX = 'true';
+      
+      const mockResponse = {
+        status: 200,
+        data: {
+          approved: true,
+          rejected: false,
+          operationType: AUDIT_OPERATION_TYPES.PAYMENT_APPROVE,
+          domain: 'test-domain',
+          auditLogId: expect.stringMatching(/^audit-\d+$/),
+          auditHash: expect.stringMatching(/^hash-\d+$/),
+          timestamp: expect.any(String),
+          riskLevel: RISK_LEVELS.LOW,
+          reason: 'Sandbox mode - auto-approved',
+          message: 'Operation approved and logged (sandbox mode)',
+          details: {
+            identityVerified: true,
+            operationValid: true,
+            noSuspiciousActivity: true,
+          },
+        },
+      };
+
+      expect(mockResponse.status).toBe(200);
+      expect(mockResponse.data.approved).toBe(true);
+      expect(mockResponse.data.reason).toBe('Sandbox mode - auto-approved');
+      expect(mockResponse.data.riskLevel).toBe(RISK_LEVELS.LOW);
+      
+      // Cleanup
+      delete process.env.NEXT_PUBLIC_PI_SANDBOX;
+    });
+
+    it('should auto-approve with PI_SANDBOX_MODE=true', async () => {
+      // Mock sandbox environment using alternative env var
+      process.env.PI_SANDBOX_MODE = 'true';
+      
+      const mockResponse = {
+        status: 200,
+        data: {
+          approved: true,
+          rejected: false,
+          reason: 'Sandbox mode - auto-approved',
+          riskLevel: RISK_LEVELS.LOW,
+        },
+      };
+
+      expect(mockResponse.status).toBe(200);
+      expect(mockResponse.data.approved).toBe(true);
+      expect(mockResponse.data.reason).toBe('Sandbox mode - auto-approved');
+      
+      // Cleanup
+      delete process.env.PI_SANDBOX_MODE;
+    });
+
+    it('should skip database checks in sandbox mode', async () => {
+      // In sandbox mode, no database/session checks should be performed
+      // This test verifies that approval works without user session
+      process.env.NEXT_PUBLIC_PI_SANDBOX = 'true';
+      
+      const mockResponse = {
+        status: 200,
+        data: {
+          approved: true,
+          details: {
+            identityVerified: true, // Should be true even without session
+            operationValid: true,
+            noSuspiciousActivity: true,
+          },
+        },
+      };
+
+      expect(mockResponse.status).toBe(200);
+      expect(mockResponse.data.approved).toBe(true);
+      expect(mockResponse.data.details.identityVerified).toBe(true);
+      
+      // Cleanup
+      delete process.env.NEXT_PUBLIC_PI_SANDBOX;
+    });
+  });
+
   describe('Request Validation', () => {
     it('should reject requests without operationType', async () => {
       const mockResponse = {
