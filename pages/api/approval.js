@@ -19,11 +19,12 @@ export default async function handler(req, res) {
 
     console.log('[Approval] Processing:', { operationType, domain, isSandbox });
 
+    const timestamp = Date.now();
     return res.status(200).json({
       approved: true,
       rejected: false,
-      auditLogId: `audit-${Date.now()}`,
-      auditHash: `hash-${Date.now()}`,
+      auditLogId: `audit-${timestamp}`,
+      auditHash: `hash-${timestamp}-${Math.random().toString(36).substring(2, 9)}`,
       timestamp: new Date().toISOString(),
       riskLevel: 'low',
       reason: isSandbox ? 'Sandbox auto-approved' : 'Approved',
