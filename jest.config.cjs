@@ -10,6 +10,8 @@ module.exports = {
     "^@/lib/(.*)$": "<rootDir>/lib/$1",
     "^@/pages/(.*)$": "<rootDir>/pages/$1",
     "\\.(css|less|scss|sass)$": "identity-obj-proxy",
+    "^\\.\\./auth/\\[\\.\\.\\.nextauth\\]$": "<rootDir>/tests/__mocks__/nextauth.js",
+    "^\\./auth/\\[\\.\\.\\.nextauth\\]$": "<rootDir>/tests/__mocks__/nextauth.js",
   },
   collectCoverageFrom: [
     "components/**/*.{js,jsx}",

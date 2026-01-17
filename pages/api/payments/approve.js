@@ -6,8 +6,11 @@
  * See: https://github.com/pi-apps/pi-platform-docs
  * 
  * Now integrated with central forensic audit server for security validation.
+ * Uses direct function calls instead of HTTP fetch to avoid ECONNREFUSED errors.
  */
-import { AUDIT_OPERATION_TYPES } from "../../../lib/forensic-utils";
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from './auth/[...nextauth]';
+import { AUDIT_OPERATION_TYPES, createAuditEntry, RISK_LEVELS } from "../../../lib/forensic-utils";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -45,35 +48,42 @@ export default async function handler(req, res) {
       });
     }
 
-    // Production mode: Call forensic audit server for approval validation
-    // NOTE: Using HTTP call maintains service separation. For high-performance
-    // scenarios, consider directly importing forensic-utils functions.
-    const approvalResponse = await fetch(
-      `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/approval`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-forwarded-for": req.headers["x-forwarded-for"] || req.socket.remoteAddress,
-          "user-agent": req.headers["user-agent"],
-        },
-        body: JSON.stringify({
-          operationType: AUDIT_OPERATION_TYPES.PAYMENT_APPROVE,
-          operationData: {
-            paymentId,
-            internalId,
-            amount: amount || 0,
-          },
-          domain: domain || "unknown",
-          context: {
-            endpoint: "/api/payments/approve",
-            piPaymentId: paymentId,
-          },
-        }),
-      }
-    );
+    // Production mode: Call forensic audit directly for approval validation
+    // Direct function call avoids ECONNREFUSED errors when NEXTAUTH_URL is not set
+    const session = await getServerSession(req, res, authOptions);
+    const user = session?.user || null;
 
-    const approvalResult = await approvalResponse.json();
+    const requestMetadata = {
+      ip: req.headers["x-forwarded-for"] || req.socket.remoteAddress,
+      userAgent: req.headers["user-agent"],
+      origin: req.headers.origin || req.headers.referer,
+    };
+
+    const auditResult = await createAuditEntry({
+      user,
+      operationType: AUDIT_OPERATION_TYPES.PAYMENT_APPROVE,
+      operationData: {
+        paymentId,
+        internalId,
+        amount: amount || 0,
+        domain: domain || "unknown",
+      },
+      request: requestMetadata,
+      context: {
+        endpoint: "/api/payments/approve",
+        piPaymentId: paymentId,
+        requestedAt: new Date().toISOString(),
+      },
+      approved: true,
+    });
+
+    const approvalResult = {
+      approved: auditResult.approved,
+      auditLogId: auditResult.logEntry?.id,
+      auditHash: auditResult.logEntry?.hash,
+      riskLevel: auditResult.validationResult?.riskLevel || RISK_LEVELS.LOW,
+      reason: auditResult.approved ? null : generateRejectionReason(auditResult),
+    };
 
     // If forensic audit rejects the approval, don't approve the payment
     if (!approvalResult.approved) {
@@ -154,4 +164,27 @@ export default async function handler(req, res) {
         process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
+}
+
+/**
+ * Generate a human-readable rejection reason from audit result
+ * @param {Object} auditResult - The audit result
+ * @returns {string} - Rejection reason
+ */
+function generateRejectionReason(auditResult) {
+  const reasons = [];
+  
+  if (!auditResult.identityCheck?.verified) {
+    reasons.push(auditResult.identityCheck?.reason || 'Identity verification failed');
+  }
+  
+  if (!auditResult.validationResult?.valid) {
+    reasons.push(...(auditResult.validationResult?.errors || []));
+  }
+  
+  if (auditResult.suspicionResult?.suspicious) {
+    reasons.push(...(auditResult.suspicionResult?.indicators || []));
+  }
+  
+  return reasons.join('; ') || 'Operation rejected';
 }

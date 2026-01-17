@@ -4,8 +4,32 @@
  * @jest-environment node
  */
 
+// Mock next-auth first (must be before any requires that use it)
+jest.mock("next-auth/next", () => ({
+  getServerSession: jest.fn().mockResolvedValue({ user: { id: "user-123", email: "test@example.com" } }),
+}));
+
 // Mock fetch globally
 global.fetch = jest.fn();
+
+// Mock forensic-utils
+const mockCreateAuditEntry = jest.fn();
+jest.mock("../../lib/forensic-utils", () => ({
+  AUDIT_OPERATION_TYPES: {
+    PAYMENT_APPROVE: 'payment_approve',
+    PAYMENT_COMPLETE: 'payment_complete',
+  },
+  RISK_LEVELS: {
+    LOW: 'low',
+    MEDIUM: 'medium',
+    HIGH: 'high',
+    CRITICAL: 'critical',
+  },
+  createAuditEntry: mockCreateAuditEntry,
+}));
+
+// Mock auth options - use jest.config.cjs moduleNameMapper for path resolution
+// The mock is at tests/__mocks__/nextauth.js
 
 describe("Pi Payment API Endpoints", () => {
   let originalEnv;
@@ -81,15 +105,16 @@ describe("Pi Payment API Endpoints", () => {
     });
 
     it("should call Pi Platform API in production mode", async () => {
-      // Mock forensic audit approval
-      global.fetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
-          approved: true,
-          auditLogId: "audit-123",
-          auditHash: "hash-abc",
+      // Mock forensic audit approval (direct function call)
+      mockCreateAuditEntry.mockResolvedValueOnce({
+        approved: true,
+        logEntry: {
+          id: "audit-123",
+          hash: "hash-abc",
+        },
+        validationResult: {
           riskLevel: "low",
-        }),
+        },
       });
 
       // Mock Pi Platform API approval
@@ -122,8 +147,8 @@ describe("Pi Payment API Endpoints", () => {
 
       await handler(req, res);
 
-      // Should call both forensic audit AND Pi Platform API
-      expect(global.fetch).toHaveBeenCalledTimes(2);
+      // Should call only Pi Platform API (forensic audit is now direct function call)
+      expect(global.fetch).toHaveBeenCalledTimes(1);
 
       // Verify Pi Platform API was called correctly
       expect(global.fetch).toHaveBeenCalledWith(
@@ -153,13 +178,15 @@ describe("Pi Payment API Endpoints", () => {
       // Remove API key
       delete process.env.PI_API_KEY;
 
-      // Mock forensic audit approval
-      global.fetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
-          approved: true,
-          auditLogId: "audit-123",
-        }),
+      // Mock forensic audit approval (direct function call)
+      mockCreateAuditEntry.mockResolvedValueOnce({
+        approved: true,
+        logEntry: {
+          id: "audit-123",
+        },
+        validationResult: {
+          riskLevel: "low",
+        },
       });
 
       const handler = require("../../pages/api/payments/approve").default;
@@ -190,13 +217,15 @@ describe("Pi Payment API Endpoints", () => {
     });
 
     it("should handle Pi API approval failure", async () => {
-      // Mock forensic audit approval
-      global.fetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
-          approved: true,
-          auditLogId: "audit-123",
-        }),
+      // Mock forensic audit approval (direct function call)
+      mockCreateAuditEntry.mockResolvedValueOnce({
+        approved: true,
+        logEntry: {
+          id: "audit-123",
+        },
+        validationResult: {
+          riskLevel: "low",
+        },
       });
 
       // Mock Pi Platform API failure
@@ -231,6 +260,58 @@ describe("Pi Payment API Endpoints", () => {
         expect.objectContaining({
           success: false,
           error: "Failed to approve payment with Pi Network",
+        })
+      );
+    });
+
+    it("should reject payment when forensic audit rejects it", async () => {
+      // Mock forensic audit rejection (direct function call)
+      mockCreateAuditEntry.mockResolvedValueOnce({
+        approved: false,
+        logEntry: {
+          id: "audit-456",
+        },
+        identityCheck: {
+          verified: false,
+          reason: "Identity verification failed",
+        },
+        validationResult: {
+          valid: false,
+          errors: ["Invalid amount"],
+          riskLevel: "high",
+        },
+        suspicionResult: {
+          suspicious: true,
+          indicators: ["Suspicious activity detected"],
+        },
+      });
+
+      const handler = require("../../pages/api/payments/approve").default;
+      const req = {
+        method: "POST",
+        body: {
+          paymentId: "pi-payment-456",
+          internalId: "payment-456",
+        },
+        headers: {},
+        socket: { remoteAddress: "127.0.0.1" },
+      };
+
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
+
+      await handler(req, res);
+
+      // Should NOT call Pi Platform API if forensic audit rejects
+      expect(global.fetch).not.toHaveBeenCalled();
+
+      expect(res.status).toHaveBeenCalledWith(403);
+      expect(res.json).toHaveBeenCalledWith(
+        expect.objectContaining({
+          success: false,
+          error: "Payment approval rejected",
         })
       );
     });
