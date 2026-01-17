@@ -1,8 +1,8 @@
 /**
- * Pi Payment Approval API - Sandbox Implementation with Forensic Audit
+ * Pi Payment Approval API - Sandbox & Production Implementation
  *
  * For Sandbox/Testnet: No external fetch calls are made. Payment is approved locally.
- * For Mainnet (future): Use official Pi Node.js SDK for secure server-side verification.
+ * For Production/Mainnet: Calls Pi Platform API to approve payment.
  * See: https://github.com/pi-apps/pi-platform-docs
  * 
  * Now integrated with central forensic audit server for security validation.
@@ -67,13 +67,71 @@ export default async function handler(req, res) {
       });
     }
 
-    // Sandbox mode: Log payment and return success with forensic audit info
-    // No external API calls to avoid SSRF vulnerabilities
-    console.log("✅ [Sandbox] Approving payment:", { 
-      paymentId, 
-      internalId,
-      auditLogId: approvalResult.auditLogId,
-    });
+    // Check if running in sandbox mode
+    const isSandbox = process.env.NEXT_PUBLIC_PI_SANDBOX === "true" || 
+                      process.env.PI_SANDBOX_MODE === "true";
+    
+    if (isSandbox) {
+      // Sandbox mode: Log payment and return success with forensic audit info
+      // No external API calls to avoid SSRF vulnerabilities
+      console.log("✅ [Sandbox] Approving payment:", { 
+        paymentId, 
+        internalId,
+        auditLogId: approvalResult.auditLogId,
+      });
+
+      return res.status(200).json({
+        success: true,
+        payment: {
+          id: internalId || paymentId,
+          piPaymentId: paymentId,
+          status: "APPROVED",
+          approvedAt: new Date().toISOString(),
+        },
+        forensicAudit: {
+          approved: true,
+          auditLogId: approvalResult.auditLogId,
+          auditHash: approvalResult.auditHash,
+          riskLevel: approvalResult.riskLevel,
+        },
+        message: "Payment approved (sandbox mode with forensic audit)",
+      });
+    }
+
+    // Production mode - call Pi Platform API
+    const PI_API_KEY = process.env.PI_API_KEY;
+    
+    if (!PI_API_KEY) {
+      console.error("❌ PI_API_KEY not configured");
+      return res.status(500).json({
+        success: false,
+        error: "Server configuration error",
+      });
+    }
+
+    const piApproveResponse = await fetch(
+      `https://api.minepi.com/v2/payments/${paymentId}/approve`,
+      {
+        method: "POST",
+        headers: {
+          "Authorization": `Key ${PI_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!piApproveResponse.ok) {
+      const errorData = await piApproveResponse.json().catch(() => ({}));
+      console.error("❌ Pi API approve failed:", errorData);
+      return res.status(piApproveResponse.status).json({
+        success: false,
+        error: "Failed to approve payment with Pi Network",
+        details: errorData,
+      });
+    }
+
+    const piApproveData = await piApproveResponse.json();
+    console.log("✅ Payment approved via Pi API:", piApproveData);
 
     return res.status(200).json({
       success: true,
@@ -82,6 +140,7 @@ export default async function handler(req, res) {
         piPaymentId: paymentId,
         status: "APPROVED",
         approvedAt: new Date().toISOString(),
+        ...piApproveData,
       },
       forensicAudit: {
         approved: true,
@@ -89,7 +148,7 @@ export default async function handler(req, res) {
         auditHash: approvalResult.auditHash,
         riskLevel: approvalResult.riskLevel,
       },
-      message: "Payment approved (sandbox mode with forensic audit)",
+      message: "Payment approved successfully",
     });
   } catch (error) {
     console.error("Payment approval error:", error);
