@@ -28,8 +28,10 @@ jest.mock("../../lib/forensic-utils", () => ({
   createAuditEntry: mockCreateAuditEntry,
 }));
 
-// Mock auth options - use jest.config.cjs moduleNameMapper for path resolution
-// The mock is at tests/__mocks__/nextauth.js
+// Mock auth options - The [...nextauth] file path is problematic for Jest resolution
+// because Jest can't resolve relative imports like './auth/[...nextauth]' from approve.js.
+// We use jest.config.cjs moduleNameMapper to redirect these paths to a mock file at
+// tests/__mocks__/nextauth.js. This is the standard approach for mocking dynamic route files.
 
 describe("Pi Payment API Endpoints", () => {
   let originalEnv;

@@ -74,6 +74,8 @@ export default async function handler(req, res) {
         piPaymentId: paymentId,
         requestedAt: new Date().toISOString(),
       },
+      // Intent to approve - actual approval is determined by createAuditEntry's
+      // internal identity check, validation, and suspicion detection logic
       approved: true,
     });
 
