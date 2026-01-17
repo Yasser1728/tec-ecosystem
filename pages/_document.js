@@ -29,6 +29,13 @@ export default function Document() {
                   this.scopes = [];
                 };
                 
+                window.PiSandbox.prototype.init = function(config) {
+                  console.log('🧪 [Sandbox] Initializing with config:', config);
+                  this.config = config || { version: "2.0", sandbox: true };
+                  console.log('✅ [Sandbox] Pi SDK initialized (sandbox mode)');
+                  return Promise.resolve();
+                };
+                
                 window.PiSandbox.prototype.authenticate = function(scopes, onIncompletePaymentFound) {
                   console.log('🧪 [Sandbox] Authenticating with scopes:', scopes);
                   this.authenticated = true;
@@ -135,6 +142,10 @@ export default function Document() {
                       let isAuthenticated = false;
                       
                       window.Pi = {
+                        init: function(config) {
+                          console.log('🧪 Sandbox: Mock init with config:', config);
+                          return Promise.resolve();
+                        },
                         authenticate: function(scopes, onIncompletePaymentFound) {
                           console.log('🧪 Sandbox: Mock authentication with scopes:', scopes);
                           authenticatedScopes = scopes || [];
