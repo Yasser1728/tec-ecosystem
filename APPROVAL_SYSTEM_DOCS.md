@@ -119,6 +119,39 @@ When an operation is rejected, the user immediately receives a Toast notificatio
 
 Submit an operation for approval.
 
+#### Sandbox Mode | وضع الاختبار
+
+When running in sandbox mode (`NEXT_PUBLIC_PI_SANDBOX=true` or `PI_SANDBOX_MODE=true`), the approval endpoint automatically approves all operations without performing database or session checks. This is useful for:
+
+عند التشغيل في وضع الاختبار، نقطة نهاية الموافقة توافق تلقائيًا على جميع العمليات دون إجراء فحوصات قاعدة البيانات أو الجلسة. هذا مفيد لـ:
+
+- **Testing** - Quick testing without database setup | اختبار سريع بدون إعداد قاعدة البيانات
+- **Development** - Avoid connection errors | تجنب أخطاء الاتصال
+- **Demo** - Demonstration purposes | أغراض العرض التوضيحي
+
+**Sandbox Response:**
+```json
+{
+  "approved": true,
+  "rejected": false,
+  "operationType": "payment_approve",
+  "domain": "unknown",
+  "auditLogId": "audit-1704672000000",
+  "auditHash": "hash-1704672000000",
+  "timestamp": "2024-01-08T00:00:00.000Z",
+  "riskLevel": "low",
+  "reason": "Sandbox mode - auto-approved",
+  "message": "Operation approved and logged (sandbox mode)",
+  "details": {
+    "identityVerified": true,
+    "operationValid": true,
+    "noSuspiciousActivity": true
+  }
+}
+```
+
+#### Production Mode | وضع الإنتاج
+
 **Request Body:**
 ```json
 {
