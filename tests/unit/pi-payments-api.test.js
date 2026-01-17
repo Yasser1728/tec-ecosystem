@@ -32,18 +32,7 @@ describe("Pi Payment API Endpoints", () => {
       process.env.NEXTAUTH_URL = "http://localhost:3000";
     });
 
-    it("should approve payment in sandbox mode without calling Pi API", async () => {
-      // Mock forensic audit approval
-      global.fetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
-          approved: true,
-          auditLogId: "audit-123",
-          auditHash: "hash-abc",
-          riskLevel: "low",
-        }),
-      });
-
+    it("should approve payment in sandbox mode without calling forensic audit or Pi API", async () => {
       const handler = require("../../pages/api/payments/approve").default;
       const req = {
         method: "POST",
@@ -64,14 +53,8 @@ describe("Pi Payment API Endpoints", () => {
 
       await handler(req, res);
 
-      // Should call forensic audit
-      expect(global.fetch).toHaveBeenCalledWith(
-        "http://localhost:3000/api/approval",
-        expect.any(Object)
-      );
-
-      // Should NOT call Pi Platform API (only 1 fetch call for forensic audit)
-      expect(global.fetch).toHaveBeenCalledTimes(1);
+      // Should NOT call forensic audit in sandbox mode
+      expect(global.fetch).not.toHaveBeenCalled();
 
       // Should return success
       expect(res.status).toHaveBeenCalledWith(200);
@@ -82,7 +65,7 @@ describe("Pi Payment API Endpoints", () => {
             piPaymentId: "pi-payment-123",
             status: "APPROVED",
           }),
-          message: expect.stringContaining("sandbox mode"),
+          message: "Payment approved (sandbox mode)",
         })
       );
     });
