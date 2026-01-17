@@ -50,7 +50,7 @@ export default function Home() {
       console.log(`✅ ${mode} mode active`);
 
       // Initialize Pi SDK
-      const sandbox = process.env.NEXT_PUBLIC_PI_SANDBOX === "true" || true;
+      const sandbox = process.env.NEXT_PUBLIC_PI_SANDBOX !== "false";
       console.log("🔧 Initializing Pi SDK...");
       setPaymentStatus("🔧 Initializing SDK...");
       
