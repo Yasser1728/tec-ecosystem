@@ -21,7 +21,31 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Call forensic audit server for approval validation
+    // Check if running in sandbox mode
+    const isSandbox = process.env.NEXT_PUBLIC_PI_SANDBOX === "true" || 
+                      process.env.PI_SANDBOX_MODE === "true";
+    
+    if (isSandbox) {
+      // Sandbox mode: Skip forensic audit and approve payment directly
+      // No external API calls to avoid ECONNREFUSED errors on Vercel
+      console.log("✅ [Sandbox] Approving payment without forensic audit:", { 
+        paymentId, 
+        internalId,
+      });
+
+      return res.status(200).json({
+        success: true,
+        payment: {
+          id: internalId || paymentId,
+          piPaymentId: paymentId,
+          status: "APPROVED",
+          approvedAt: new Date().toISOString(),
+        },
+        message: "Payment approved (sandbox mode)",
+      });
+    }
+
+    // Production mode: Call forensic audit server for approval validation
     // NOTE: Using HTTP call maintains service separation. For high-performance
     // scenarios, consider directly importing forensic-utils functions.
     const approvalResponse = await fetch(
@@ -64,37 +88,6 @@ export default async function handler(req, res) {
           piPaymentId: paymentId,
           status: "REJECTED",
         },
-      });
-    }
-
-    // Check if running in sandbox mode
-    const isSandbox = process.env.NEXT_PUBLIC_PI_SANDBOX === "true" || 
-                      process.env.PI_SANDBOX_MODE === "true";
-    
-    if (isSandbox) {
-      // Sandbox mode: Log payment and return success with forensic audit info
-      // No external API calls to avoid SSRF vulnerabilities
-      console.log("✅ [Sandbox] Approving payment:", { 
-        paymentId, 
-        internalId,
-        auditLogId: approvalResult.auditLogId,
-      });
-
-      return res.status(200).json({
-        success: true,
-        payment: {
-          id: internalId || paymentId,
-          piPaymentId: paymentId,
-          status: "APPROVED",
-          approvedAt: new Date().toISOString(),
-        },
-        forensicAudit: {
-          approved: true,
-          auditLogId: approvalResult.auditLogId,
-          auditHash: approvalResult.auditHash,
-          riskLevel: approvalResult.riskLevel,
-        },
-        message: "Payment approved (sandbox mode with forensic audit)",
       });
     }
 
