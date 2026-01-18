@@ -83,6 +83,11 @@ export default function Home() {
         {
           onReadyForServerApproval: async (paymentId) => {
             console.log("✅ Payment ready for approval:", paymentId);
+            setPaymentStatus("⏳ Registering payment...");
+            
+            // Wait for Pi Network to register the payment
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            
             setPaymentStatus("⏳ Approving payment...");
             
             try {
