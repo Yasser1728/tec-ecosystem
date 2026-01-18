@@ -1,6 +1,5 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { prisma } from "../../../lib/db/prisma";
 
 export const authOptions = {
   providers: [
@@ -14,46 +13,29 @@ export const authOptions = {
       },
       async authorize(credentials) {
         try {
+          // Validate credentials exist
           if (!credentials?.piId || !credentials?.username) {
             console.error("Missing Pi Network credentials");
             return null;
           }
 
-          // Find or create user
-          let user = await prisma.user.findUnique({
-            where: { piId: credentials.piId },
-          });
-
-          if (!user) {
-            // Create new user
-            user = await prisma.user.create({
-              data: {
-                piId: credentials.piId,
-                username: credentials.username,
-                tier: "STANDARD",
-                status: "ACTIVE",
-                language: "en",
-                lastLoginAt: new Date(),
-              },
-            });
-          } else {
-            // Update last login
-            user = await prisma.user.update({
-              where: { piId: credentials.piId },
-              data: { lastLoginAt: new Date() },
-            });
-          }
-
-          return {
-            id: user.id,
-            piId: user.piId,
-            username: user.username,
-            email: user.email,
-            tier: user.tier,
-            status: user.status,
+          // For Pi Network auth, we trust the Pi SDK authentication
+          // The user is already authenticated via Pi Browser
+          // We just need to create a session
+          
+          const user = {
+            id: credentials.piId,
+            piId: credentials.piId,
+            username: credentials.username,
+            accessToken: credentials.accessToken,
+            tier: "STANDARD",
+            status: "ACTIVE",
           };
+
+          console.log("Pi Network user authenticated:", user.username);
+          return user;
         } catch (error) {
-          console.error("Auth Error:", error);
+          console.error("NextAuth authorize error:", error);
           return null;
         }
       },
@@ -74,11 +56,13 @@ export const authOptions = {
 
     async session({ session, token }) {
       if (token) {
-        session.user.id = token.id;
-        session.user.piId = token.piId;
-        session.user.username = token.username;
-        session.user.tier = token.tier;
-        session.user.status = token.status;
+        session.user = {
+          id: token.id,
+          piId: token.piId,
+          username: token.username,
+          tier: token.tier,
+          status: token.status,
+        };
       }
       return session;
     },
@@ -96,7 +80,7 @@ export const authOptions = {
 
   secret: process.env.NEXTAUTH_SECRET,
   
-  debug: process.env.NODE_ENV === 'development',
+  debug: process.env.NODE_ENV === "development",
 };
 
 export default NextAuth(authOptions);

@@ -1,56 +1,74 @@
 import crypto from "crypto";
-import { verifyPiPayment, generateAuditHash } from "../../../lib/payments/piVerify";
 
 export default async function handler(req, res) {
+  // Set CORS headers
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
   if (req.method !== "POST") {
-    return res.status(405).json({ approved: false, error: "Method not allowed" });
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
+  const { paymentId } = req.body;
+
+  if (!paymentId) {
+    return res.status(400).json({ error: "Payment ID is required" });
   }
 
   try {
-    const { paymentId } = req.body;
+    console.log("Approving payment:", paymentId);
 
-    if (!paymentId) {
-      return res.status(400).json({ approved: false, error: "paymentId is required" });
+    // Call Pi Network API to approve the payment
+    const piApiKey = process.env.PI_API_KEY;
+    
+    if (!piApiKey) {
+      console.error("PI_API_KEY not configured");
+      return res.status(500).json({ error: "Server configuration error" });
     }
 
-    // Direct verification - NO fetch
-    const verification = await verifyPiPayment(paymentId);
+    const approveResponse = await fetch(
+      `https://api.minepi.com/v2/payments/${paymentId}/approve`,
+      {
+        method: "POST",
+        headers: {
+          "Authorization": `Key ${piApiKey}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
-    if (!verification.valid) {
-      return res.status(403).json({
-        approved: false,
-        rejected: true,
-        reason: verification.reason,
+    if (!approveResponse.ok) {
+      const errorText = await approveResponse.text();
+      console.error("Pi API approve error:", approveResponse.status, errorText);
+      return res.status(approveResponse.status).json({
+        error: "Failed to approve payment with Pi Network",
+        details: errorText,
       });
     }
 
-    const auditPayload = {
-      paymentId,
-      amount: verification.amount,
-      memo: verification.memo,
-      timestamp: Date.now(),
-    };
+    const approveData = await approveResponse.json();
+    console.log("Payment approved successfully:", approveData);
 
-    const auditHash = generateAuditHash(auditPayload);
+    // Generate audit log
+    const auditLogId = `audit-${Date.now()}-${crypto.randomUUID()}`;
 
     return res.status(200).json({
+      success: true,
       approved: true,
-      rejected: false,
-      auditHash,
-      auditLogId: `audit-${Date.now()}-${crypto.randomUUID()}`,
-      riskLevel: "low",
-      timestamp: new Date().toISOString(),
-      details: {
-        identityVerified: true,
-        operationValid: true,
-        noSuspiciousActivity: true,
-      },
+      paymentId,
+      auditLogId,
+      message: "Payment approved successfully",
     });
   } catch (error) {
-    console.error("[Payment Approval Error]", error);
+    console.error("Payment approval error:", error);
     return res.status(500).json({
-      approved: false,
-      error: "Internal approval error",
+      error: "Failed to approve payment",
+      message: error.message,
     });
   }
 }
