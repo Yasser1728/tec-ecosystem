@@ -20,7 +20,7 @@ const nextConfig = {
       beforeFiles: [
         {
           source: "/validation-key.txt",
-          destination: "/validation-key.txt",
+          destination: "/api/validation-key",
         },
       ],
     };
