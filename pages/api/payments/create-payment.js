@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import { prisma } from "../../../lib/db/prisma";
 import { AUDIT_OPERATION_TYPES } from "../../../lib/forensic-utils";
 import { verifyPiPayment, generateAuditHash } from "../../../lib/payments/piVerify";
@@ -41,7 +42,7 @@ export default async function handler(req, res) {
     };
 
     const auditHash = generateAuditHash(auditPayload);
-    const auditLogId = `audit-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const auditLogId = `audit-${Date.now()}-${crypto.randomUUID()}`;
 
     console.log("Payment creation verified:", {
       auditLogId,

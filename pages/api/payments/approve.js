@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import { verifyPiPayment, generateAuditHash } from "../../../lib/payments/piVerify";
 
 export default async function handler(req, res) {
@@ -36,7 +37,7 @@ export default async function handler(req, res) {
       approved: true,
       rejected: false,
       auditHash,
-      auditLogId: `audit-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      auditLogId: `audit-${Date.now()}-${crypto.randomUUID()}`,
       riskLevel: "low",
       timestamp: new Date().toISOString(),
       details: {
