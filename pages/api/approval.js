@@ -14,6 +14,7 @@
  * before executing sensitive operations.
  */
 
+import crypto from 'crypto';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from './auth/[...nextauth]';
 import {
@@ -55,8 +56,8 @@ export default async function handler(req, res) {
         rejected: false,
         operationType: operationType || 'unknown',
         domain: req.body.domain || 'unknown',
-        auditLogId: `audit-${Date.now()}`,
-        auditHash: `hash-${Date.now()}`,
+        auditLogId: `audit-${Date.now()}-${crypto.randomUUID()}`,
+        auditHash: `hash-${Date.now()}-${crypto.randomUUID()}`,
         timestamp: new Date().toISOString(),
         riskLevel: RISK_LEVELS.LOW,
         reason: 'Sandbox mode - auto-approved',
