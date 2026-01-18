@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import ParticlesCanvas from "../components/ParticlesCanvas";
@@ -9,6 +9,11 @@ import PiAuthButton from "../components/PiAuthButton";
 export default function Home() {
   const [piUser, setPiUser] = useState(null);
   const [paymentStatus, setPaymentStatus] = useState("");
+
+  useEffect(() => {
+    const isSandbox = process.env.NEXT_PUBLIC_PI_SANDBOX === "true";
+    console.log(`🌐 TEC Ecosystem running in ${isSandbox ? 'SANDBOX' : 'MAINNET'} mode`);
+  }, []);
 
   const handlePiAuth = (user) => {
     setPiUser(user);
@@ -31,145 +36,121 @@ export default function Home() {
     console.log("💰 Payment button clicked");
     setPaymentStatus("⏳ Initializing...");
 
+    const isSandbox = process.env.NEXT_PUBLIC_PI_SANDBOX === "true";
+
     try {
-      // Wait for Pi SDK or Sandbox to load (max 10 seconds)
-      console.log("⏳ Waiting for Pi SDK/Sandbox...");
-      let attempts = 0;
-      while (!window.Pi && attempts < 100) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-        attempts++;
-      }
-
+      // Check if Pi SDK exists
       if (!window.Pi) {
-        console.error("❌ Pi SDK/Sandbox not loaded after 10 seconds");
-        setPaymentStatus("❌ Failed to load. Please refresh the page.");
-        return;
+        throw new Error("Pi SDK not available. Please open in Pi Browser.");
       }
-
-      const mode = window.piSandboxMode ? "Sandbox" : "Pi Browser";
-      console.log(`✅ ${mode} mode active`);
 
       // Initialize Pi SDK
-      const sandbox = process.env.NEXT_PUBLIC_PI_SANDBOX !== "false";
-      console.log("🔧 Initializing Pi SDK...");
-      setPaymentStatus("🔧 Initializing SDK...");
-      
-      try {
-        if (window.Pi && window.Pi.init) {
-          await window.Pi.init({
-            version: "2.0",
-            sandbox,
-          });
-          console.log("✅ Pi SDK initialized successfully");
-        }
-      } catch (initError) {
-        console.warn("⚠️ Pi SDK init warning:", initError);
-        // Continue anyway - might already be initialized
-      }
+      console.log(`🔧 Initializing Pi SDK (sandbox: ${isSandbox})...`);
+      await window.Pi.init({
+        version: "2.0",
+        sandbox: isSandbox,
+      });
 
-      // Step 1: Authenticate
-      console.log("🔐 Step 1: Authenticating...");
+      // Authenticate
+      console.log("🔐 Authenticating...");
       setPaymentStatus("🔐 Authenticating...");
 
       const authResult = await window.Pi.authenticate(
         ["username", "payments"],
-        (payment) => {
-          console.log("⚠️ Incomplete payment:", payment);
-        },
+        (incompletePayment) => {
+          console.log("⚠️ Found incomplete payment:", incompletePayment);
+        }
       );
 
-      console.log("✅ Step 2: Authenticated successfully!");
-      console.log("👤 User:", authResult.user);
+      console.log("✅ Authenticated:", authResult.user.username);
       setPiUser(authResult.user);
-      setPaymentStatus("✅ Authenticated as " + authResult.user.username);
+      setPaymentStatus(`✅ Authenticated as ${authResult.user.username}`);
 
-      // Wait a moment before creating payment
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      // Now create payment
-      console.log("🚀 Step 3: Creating payment...");
+      // Create payment
+      console.log("💰 Creating payment...");
       setPaymentStatus("💰 Creating payment...");
 
       const payment = await window.Pi.createPayment(
         {
           amount: 1,
           memo: "TEC Ecosystem - Demo Payment",
-          metadata: { productId: "tec-demo" },
+          metadata: {
+            app: "TEC Ecosystem",
+            type: "demo",
+            timestamp: new Date().toISOString(),
+          },
         },
         {
           onReadyForServerApproval: async (paymentId) => {
-            console.log("✅ Step 4: Payment ready for approval:", paymentId);
-            setPaymentStatus("⏳ Approving payment on server...");
-
+            console.log("✅ Payment ready for approval:", paymentId);
+            setPaymentStatus("⏳ Approving payment...");
+            
             try {
-              // Call backend to approve payment
-              const approveResponse = await fetch("/api/payments/approve", {
+              const response = await fetch("/api/payments/approve", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  paymentId,
-                  internalId: "demo_" + Date.now(), // In production, get from DB
-                }),
+                body: JSON.stringify({ paymentId }),
               });
-
-              if (approveResponse.ok) {
-                console.log("✅ Payment approved on server");
-                setPaymentStatus("✅ Payment approved! ID: " + paymentId);
-              } else {
-                console.error("❌ Server approval failed");
-                setPaymentStatus("⚠️ Payment approved but server sync failed");
+              
+              if (!response.ok) {
+                const errorData = await response.json();
+                console.error("❌ Approval failed:", errorData);
+                setPaymentStatus(`❌ Approval failed: ${errorData.error || 'Unknown error'}`);
+                return;
               }
+              
+              const data = await response.json();
+              console.log("✅ Payment approved:", data);
+              setPaymentStatus("✅ Payment approved! Waiting for completion...");
             } catch (error) {
-              console.error("❌ Approval API error:", error);
-              setPaymentStatus("⚠️ Payment approved (server sync failed)");
+              console.error("❌ Approval error:", error);
+              setPaymentStatus(`❌ Approval error: ${error.message}`);
             }
           },
+          
           onReadyForServerCompletion: async (paymentId, txid) => {
-            console.log("✅ Step 5: Payment completed!", { paymentId, txid });
-            setPaymentStatus("⏳ Completing payment on server...");
-
+            console.log("✅ Payment ready for completion:", paymentId, txid);
+            setPaymentStatus("⏳ Completing payment...");
+            
             try {
-              // Call backend to complete payment
-              const completeResponse = await fetch("/api/payments/complete", {
+              const response = await fetch("/api/payments/complete", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  paymentId,
-                  txid,
-                  internalId: "demo_" + Date.now(), // In production, get from DB
-                }),
+                body: JSON.stringify({ paymentId, txid }),
               });
-
-              if (completeResponse.ok) {
-                const data = await completeResponse.json();
-                console.log("✅ Payment completed on server:", data);
-                setPaymentStatus("✅ Payment completed! TX: " + txid);
-              } else {
-                console.error("❌ Server completion failed");
-                setPaymentStatus("⚠️ Payment completed but server sync failed");
+              
+              if (!response.ok) {
+                const errorData = await response.json();
+                console.error("❌ Completion failed:", errorData);
+                setPaymentStatus(`❌ Completion failed: ${errorData.error || 'Unknown error'}`);
+                return;
               }
+              
+              const data = await response.json();
+              console.log("✅ Payment completed:", data);
+              setPaymentStatus("✅ Payment successful! 🎉");
             } catch (error) {
-              console.error("❌ Completion API error:", error);
-              setPaymentStatus("⚠️ Payment completed (server sync failed)");
+              console.error("❌ Completion error:", error);
+              setPaymentStatus(`❌ Completion error: ${error.message}`);
             }
           },
+          
           onCancel: (paymentId) => {
             console.log("❌ Payment cancelled by user:", paymentId);
             setPaymentStatus("❌ Payment cancelled");
           },
+          
           onError: (error, payment) => {
             console.error("❌ Payment error:", error, payment);
-            setPaymentStatus("❌ Payment error: " + error.message);
+            setPaymentStatus(`❌ Payment error: ${error.message || 'Unknown error'}`);
           },
-        },
+        }
       );
 
-      console.log("📦 Payment object created:", payment);
+      console.log("Payment object:", payment);
     } catch (error) {
-      console.error("❌ Fatal error in payment flow:", error);
-      console.error("Error stack:", error.stack);
-      setPaymentStatus("❌ Error: " + error.message);
-      alert("Payment failed: " + error.message);
+      console.error("❌ Payment flow error:", error);
+      setPaymentStatus(`❌ Error: ${error.message}`);
     }
   };
 
@@ -283,7 +264,9 @@ export default function Home() {
               {/* Pi Payment Demo */}
               <div className="border-t border-gray-700 pt-6">
                 <p className="text-gray-400 text-sm mb-4 text-center">
-                  Try a demo payment with Pi (Sandbox Mode)
+                  {process.env.NEXT_PUBLIC_PI_SANDBOX === "true" 
+                    ? "💡 Sandbox Mode: Test payments without real Pi"
+                    : "🌐 Mainnet Mode: Real Pi payments"}
                 </p>
 
                 {/* Test Button */}
@@ -309,7 +292,9 @@ export default function Home() {
               </div>
 
               <div className="mt-4 text-xs text-gray-500 text-center">
-                💡 Sandbox Mode: Test payments without real Pi
+                {process.env.NEXT_PUBLIC_PI_SANDBOX === "true" 
+                  ? "💡 Sandbox Mode: Test payments without real Pi"
+                  : "🌐 Mainnet Mode: Real Pi payments"}
               </div>
             </div>
           </div>

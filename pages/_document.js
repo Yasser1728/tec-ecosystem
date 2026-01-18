@@ -12,8 +12,10 @@ export default function Document() {
                 // Pi SDK Configuration
                 window.piConfig = {
                   appId: '${process.env.NEXT_PUBLIC_PI_APP_ID || "tec-titan-elite-commerce-04d84accdca2487c"}',
-                  sandbox: ${process.env.NEXT_PUBLIC_PI_SANDBOX || "true"}
+                  sandbox: ${JSON.stringify(process.env.NEXT_PUBLIC_PI_SANDBOX === "true")}
                 };
+                
+                console.log('🌐 Pi SDK Config:', window.piConfig);
                 
                 // Secure random ID generator helper
                 function generateSecureId() {
