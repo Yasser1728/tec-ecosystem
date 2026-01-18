@@ -40,7 +40,7 @@ export default function Home() {
 
     try {
       // Check if Pi SDK exists
-      if (typeof window === "undefined" || !window.Pi) {
+      if (!window.Pi) {
         throw new Error("Pi SDK not available. Please open in Pi Browser.");
       }
 
@@ -73,7 +73,7 @@ export default function Home() {
       const payment = await window.Pi.createPayment(
         {
           amount: 1,
-          memo: "TEC Demo Payment",
+          memo: "TEC Ecosystem - Demo Payment",
           metadata: {
             app: "TEC Ecosystem",
             type: "demo",
