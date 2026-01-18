@@ -1,8 +1,6 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "../../../lib/db/prisma";
 
 export const authOptions = {
   providers: [
@@ -17,7 +15,8 @@ export const authOptions = {
       async authorize(credentials) {
         try {
           if (!credentials?.piId || !credentials?.username) {
-            throw new Error("Missing Pi Network credentials");
+            console.error("Missing Pi Network credentials");
+            return null;
           }
 
           // Find or create user
@@ -96,6 +95,8 @@ export const authOptions = {
   },
 
   secret: process.env.NEXTAUTH_SECRET,
+  
+  debug: process.env.NODE_ENV === 'development',
 };
 
 export default NextAuth(authOptions);
