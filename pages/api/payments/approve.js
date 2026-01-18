@@ -36,7 +36,7 @@ export default async function handler(req, res) {
       approved: true,
       rejected: false,
       auditHash,
-      auditLogId: `audit-${Date.now()}`,
+      auditLogId: `audit-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       riskLevel: "low",
       timestamp: new Date().toISOString(),
       details: {

@@ -41,7 +41,7 @@ export default async function handler(req, res) {
     };
 
     const auditHash = generateAuditHash(auditPayload);
-    const auditLogId = `audit-${Date.now()}`;
+    const auditLogId = `audit-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
     console.log("Payment creation verified:", {
       auditLogId,
