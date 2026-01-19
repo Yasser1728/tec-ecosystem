@@ -4,13 +4,14 @@
  */
 
 import { PrismaClient } from '@prisma/client';
-import { UserRepository } from '../../../../../src/infrastructure/database/repositories/UserRepository';
-import { PiNetworkService } from '../../../../../src/infrastructure/pi-network/PiNetworkService';
-import { AuthenticateWithPi } from '../../../../../src/domain/use-cases/auth/AuthenticateWithPi';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { UserRepository } from '@/src/infrastructure/database/repositories/UserRepository';
+import { PiNetworkService } from '@/src/infrastructure/pi-network/PiNetworkService';
+import { AuthenticateWithPi } from '@/src/domain/use-cases/auth/AuthenticateWithPi';
 
 const prisma = new PrismaClient();
 
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ success: false, error: { message: 'Method not allowed' } });
   }
@@ -53,11 +54,12 @@ export default async function handler(req, res) {
     });
   } catch (error) {
     console.error('Auth error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Authentication failed';
     return res.status(500).json({
       success: false,
       error: {
         code: 'AUTH_FAILED',
-        message: error.message || 'Authentication failed',
+        message: errorMessage,
       },
     });
   } finally {

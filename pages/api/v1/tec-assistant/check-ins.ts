@@ -3,15 +3,16 @@
  * POST /api/v1/tec-assistant/check-ins
  */
 
-import { PrismaClient } from '../../../../../src/infrastructure/database/repositories/UserRepository';
-import { CheckInRepository } from '../../../../../src/infrastructure/database/repositories/CheckInRepository';
-import { UserRepository } from '../../../../../src/infrastructure/database/repositories/UserRepository';
-import { SignalRepository } from '../../../../../src/infrastructure/database/repositories/SignalRepository';
-import { ConfirmDailyCheckIn } from '../../../../../src/domain/use-cases/check-ins/ConfirmDailyCheckIn';
+import { PrismaClient } from '@prisma/client';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { CheckInRepository } from '@/src/infrastructure/database/repositories/CheckInRepository';
+import { UserRepository } from '@/src/infrastructure/database/repositories/UserRepository';
+import { SignalRepository } from '@/src/infrastructure/database/repositories/SignalRepository';
+import { ConfirmDailyCheckIn } from '@/src/domain/use-cases/check-ins/ConfirmDailyCheckIn';
 
 const prisma = new PrismaClient();
 
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ success: false, error: { message: 'Method not allowed' } });
   }
@@ -57,7 +58,9 @@ export default async function handler(req, res) {
   } catch (error) {
     console.error('Check-in error:', error);
     
-    if (error.message === 'Already checked in today') {
+    const errorMessage = error instanceof Error ? error.message : 'Failed to confirm check-in';
+    
+    if (errorMessage === 'Already checked in today') {
       return res.status(409).json({
         success: false,
         error: {
@@ -71,7 +74,7 @@ export default async function handler(req, res) {
       success: false,
       error: {
         code: 'CHECKIN_ERROR',
-        message: error.message || 'Failed to confirm check-in',
+        message: errorMessage,
       },
     });
   } finally {
