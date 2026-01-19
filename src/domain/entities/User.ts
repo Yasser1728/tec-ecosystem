@@ -3,6 +3,8 @@
  * Pure domain model with no external dependencies
  */
 
+import { TEC_ASSISTANT_CONFIG } from '../../shared/config/features';
+
 export enum UserStatus {
   ACTIVE = 'ACTIVE',
   INACTIVE = 'INACTIVE',
@@ -108,8 +110,8 @@ export class User {
   addXp(xp: number): void {
     this.props.totalXp += xp;
     
-    // Level calculation: level = floor(sqrt(totalXp / 100))
-    const newLevel = Math.floor(Math.sqrt(this.props.totalXp / 100));
+    // Level calculation: level = floor(sqrt(totalXp / XP_PER_LEVEL))
+    const newLevel = Math.floor(Math.sqrt(this.props.totalXp / TEC_ASSISTANT_CONFIG.XP_PER_LEVEL));
     if (newLevel > this.props.level) {
       this.props.level = newLevel;
     }

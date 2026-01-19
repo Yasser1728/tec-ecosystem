@@ -7,6 +7,7 @@ import { CheckIn } from '../../entities/CheckIn';
 import { ICheckInRepository } from '../../interfaces/repositories/ICheckInRepository';
 import { IUserRepository } from '../../interfaces/repositories/IUserRepository';
 import { ISignalRepository } from '../../interfaces/repositories/ISignalRepository';
+import { TEC_ASSISTANT_CONFIG } from '../../../shared/config/features';
 
 export interface ConfirmDailyCheckInInput {
   userId: string;
@@ -115,11 +116,10 @@ export class ConfirmDailyCheckIn {
 
   /**
    * Calculate XP earned based on streak
-   * Formula: Base 10 XP + (streak * 2) bonus
    */
   private calculateXp(streak: number): number {
-    const baseXp = 10;
-    const streakBonus = streak * 2;
+    const baseXp = TEC_ASSISTANT_CONFIG.BASE_XP;
+    const streakBonus = streak * TEC_ASSISTANT_CONFIG.STREAK_MULTIPLIER;
     return baseXp + streakBonus;
   }
 

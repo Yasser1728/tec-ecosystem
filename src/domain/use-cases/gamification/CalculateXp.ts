@@ -3,6 +3,8 @@
  * Calculates XP based on streak and other factors
  */
 
+import { TEC_ASSISTANT_CONFIG } from '../../../shared/config/features';
+
 export interface CalculateXpInput {
   streakDay: number;
   additionalFactors?: {
@@ -20,15 +22,11 @@ export interface CalculateXpOutput {
 }
 
 export class CalculateXp {
-  private readonly BASE_XP = 10;
-  private readonly STREAK_MULTIPLIER = 2;
-  private readonly PREMIUM_MULTIPLIER = 1.5;
-
   execute(input: CalculateXpInput): CalculateXpOutput {
-    const baseXp = this.BASE_XP;
-    const streakBonus = input.streakDay * this.STREAK_MULTIPLIER;
+    const baseXp = TEC_ASSISTANT_CONFIG.BASE_XP;
+    const streakBonus = input.streakDay * TEC_ASSISTANT_CONFIG.STREAK_MULTIPLIER;
     const premiumBonus = input.additionalFactors?.premiumBonus
-      ? Math.floor((baseXp + streakBonus) * (this.PREMIUM_MULTIPLIER - 1))
+      ? Math.floor((baseXp + streakBonus) * (TEC_ASSISTANT_CONFIG.PREMIUM_MULTIPLIER - 1))
       : 0;
     const eventBonus = input.additionalFactors?.eventBonus || 0;
 
