@@ -21,6 +21,9 @@ env:
   AI_SECURITY_API: ${{ secrets.AI_SECURITY_API || '' }}
 
 jobs:
+  # ------------------------------
+  # 🔐 SECRET SCANNING
+  # ------------------------------
   secret-scanning:
     name: "🔐 Secret Scanning (TruffleHog)"
     runs-on: ubuntu-latest
@@ -30,6 +33,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - name: Run TruffleHog
         id: trufflehog
         uses: trufflesecurity/trufflehog@main
@@ -37,6 +41,7 @@ jobs:
           path: ./
           extra_args: --only-verified --fail
         continue-on-error: true
+
       - name: Report secrets detected
         if: steps.trufflehog.outcome == 'failure'
         run: |
@@ -45,6 +50,9 @@ jobs:
           echo "**Action Required:** Follow [Secret Rotation Runbook](./docs/security/SECRET_ROTATION.md)" >> $GITHUB_STEP_SUMMARY
           echo "Rotate credentials immediately." >> $GITHUB_STEP_SUMMARY
 
+  # ------------------------------
+  # 🔬 CODEQL ANALYSIS
+  # ------------------------------
   codeql-analysis:
     name: "🔬 CodeQL Analysis"
     runs-on: ubuntu-latest
@@ -59,6 +67,9 @@ jobs:
         with:
           category: "/language:javascript"
 
+  # ------------------------------
+  # 📦 DEPENDENCY REVIEW (PR Only)
+  # ------------------------------
   dependency-review:
     name: "📦 Dependency Review"
     if: github.event_name == 'pull_request'
@@ -80,6 +91,9 @@ jobs:
           echo "### ⚠️ Dependency Issues" >> $GITHUB_STEP_SUMMARY
           echo "Review the dependency-review output for details." >> $GITHUB_STEP_SUMMARY
 
+  # ------------------------------
+  # 🛡️ SAST – SEMGREP
+  # ------------------------------
   sast-semgrep:
     name: "🛡️ SAST (Semgrep)"
     runs-on: ubuntu-latest
@@ -97,14 +111,13 @@ jobs:
           sarif_file: semgrep.sarif
           category: semgrep
 
+  # ------------------------------
+  # 📋 SECURITY SUMMARY
+  # ------------------------------
   security-summary:
     name: "📋 Security Summary"
     runs-on: ubuntu-latest
-    needs:
-      - secret-scanning
-      - codeql-analysis
-      - dependency-review
-      - sast-semgrep
+    needs: [secret-scanning, codeql-analysis, dependency-review, sast-semgrep]
     if: always()
     steps:
       - name: Generate summary
@@ -116,6 +129,7 @@ jobs:
           echo "| 🔬 CodeQL | ${{ needs.codeql-analysis.result }} | Static analysis |" >> $GITHUB_STEP_SUMMARY
           echo "| 📦 Dependency Review | ${{ needs.dependency-review.result || 'skipped' }} | PR dependency check |" >> $GITHUB_STEP_SUMMARY
           echo "| 🛡️ Semgrep | ${{ needs.sast-semgrep.result }} | Pattern scan |" >> $GITHUB_STEP_SUMMARY
+
       - name: Send results to AI Security Agent
         if: env.AI_SECURITY_API != ''
         continue-on-error: true
@@ -152,27 +166,28 @@ jobs:
             -H "Content-Type: application/json" \
             -d "$PAYLOAD"
 
+  # ------------------------------
+  # 🚫 MERGE BLOCKER
+  # ------------------------------
   block-merge:
     name: "🚫 Block Merge on Critical Issues"
     runs-on: ubuntu-latest
-    needs:
-      - secret-scanning
-      - dependency-review
+    needs: [secret-scanning, dependency-review]
     if: |
       github.event_name == 'pull_request' &&
-      (needs.secret-scanning.outputs.has_secrets == 'true' ||
-       needs.dependency-review.outputs.has_critical == 'true')
+      (needs.secret-scanning.outputs.has_secrets == 'true' || needs.dependency-review.outputs.has_critical == 'true')
     steps:
       - run: |
           echo "::error::🚫 MERGE BLOCKED – Critical security findings"
           exit 1
 
+  # ------------------------------
+  # 📧 NOTIFY (Scheduled Only)
+  # ------------------------------
   notify-scheduled-failures:
     name: "📧 Notify Security Team"
     runs-on: ubuntu-latest
-    needs:
-      - secret-scanning
-      - codeql-analysis
+    needs: [secret-scanning, codeql-analysis]
     if: |
       github.event_name == 'schedule' &&
       (needs.secret-scanning.result == 'failure' || needs.codeql-analysis.result == 'failure')
@@ -185,15 +200,13 @@ jobs:
             ## Security Alert - Scheduled Scan
             **Scan Time:** ${new Date().toISOString()}
             **Version:** v1.0.0
-
             ### Results
             - **TruffleHog:** ${{ needs.secret-scanning.result }}
             - **CodeQL:** ${{ needs.codeql-analysis.result }}
-
             ### Action Required
             Review findings in [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
-
             **Follow:** [Incident Response Playbook](./docs/security/INCIDENT_RESPONSE.md)
+            cc: @security-team
             `;
             await github.rest.issues.create({
               owner: context.repo.owner,
