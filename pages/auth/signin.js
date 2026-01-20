@@ -11,11 +11,26 @@ export default function SignIn() {
   const [error, setError] = useState("");
   const { callbackUrl } = router.query;
 
+  const getSafeCallbackUrl = (url) => {
+    if (typeof url !== "string") {
+      return "/dashboard";
+    }
+
+    // Only allow same-origin relative paths starting with a single "/"
+    if (url.startsWith("/") && !url.startsWith("//")) {
+      return url;
+    }
+
+    return "/dashboard";
+  };
+
+  const safeCallbackUrl = getSafeCallbackUrl(callbackUrl);
+
   useEffect(() => {
     if (status === "authenticated") {
-      router.push(callbackUrl || "/dashboard");
+      router.push(safeCallbackUrl);
     }
-  }, [status, router, callbackUrl]);
+  }, [status, router, safeCallbackUrl]);
 
   const handlePiSignIn = async () => {
     setIsLoading(true);
@@ -47,7 +62,7 @@ export default function SignIn() {
       if (result?.error) {
         setError(result.error);
       } else if (result?.ok) {
-        router.push(callbackUrl || "/dashboard");
+        router.push(safeCallbackUrl);
       }
     } catch (err) {
       console.error("Sign in error:", err);
