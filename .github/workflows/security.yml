@@ -1,171 +1,297 @@
-name: Security
+name: "Security Analysis v1.0.0"
 
 on:
-  push:
-    branches: [main, develop]
-  pull_request:
-    branches: [main, develop]
-  schedule:
-    # Run security checks daily at 2 AM UTC
-    - cron: '0 2 * * *'
+push:
+branches: ["main", "develop"]
+pull_request:
+branches: ["main", "develop"]
+schedule:
+- cron: "0 2 * * *"
+workflow_dispatch:
 
 permissions:
-  contents: read
-  security-events: write
-  checks: write
+contents: read
+security-events: write
+actions: read
+pull-requests: write
+issues: write
+
+env:
+SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN || '' }}
+AI_SECURITY_API: ${{ secrets.AI_SECURITY_API || '' }}
 
 jobs:
-  dependency-audit:
-    name: 🔒 Dependency Audit
-    runs-on: ubuntu-latest
 
-    steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v4
+------------------------------
 
-      - name: 📦 Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
+🔐 SECRET SCANNING
 
-      - name: 📚 Install dependencies
-        run: npm ci
+------------------------------
 
-      - name: 🔍 Run npm audit
-        run: npm audit --audit-level=moderate
-        continue-on-error: true
+secret-scanning:
+name: "🔐 Secret Scanning (TruffleHog)"
+runs-on: ubuntu-latest
+outputs:
+has_secrets: ${{ steps.trufflehog.outcome == 'failure' }}
 
-      - name: 📊 Generate audit report
-        run: npm audit --json > audit-report.json
-        continue-on-error: true
+steps:  
+  - uses: actions/checkout@v4  
+    with:  
+      fetch-depth: 0  
 
-      - name: 📤 Upload audit report
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: npm-audit-report
-          path: audit-report.json
-          retention-days: 30
+  - name: Run TruffleHog  
+    id: trufflehog  
+    uses: trufflesecurity/trufflehog@main  
+    with:  
+      path: ./  
+      extra_args: --only-verified --fail  
+    continue-on-error: true  
 
-  snyk-scan:
-    name: 🛡️ Snyk Security Scan
-    runs-on: ubuntu-latest
+  - name: Report secrets detected  
+    if: steps.trufflehog.outcome == 'failure'  
+    run: |  
+      echo "::error::🚨 Verified secrets detected!"  
+      echo "### 🚨 Secrets Found" >> $GITHUB_STEP_SUMMARY  
+      echo "**Action Required:** Follow [Secret Rotation Runbook](./docs/security/SECRET_ROTATION.md)" >> $GITHUB_STEP_SUMMARY  
+      echo "Rotate credentials immediately." >> $GITHUB_STEP_SUMMARY
 
-    env:
-      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+------------------------------
 
-    steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v4
+🔬 CODEQL
 
-      - name: 🛡️ Run Snyk to check for vulnerabilities
-        if: env.SNYK_TOKEN != ''
-        uses: snyk/actions/node@master
-        continue-on-error: true
-        env:
-          SNYK_TOKEN: ${{ env.SNYK_TOKEN }}
-        with:
-          args: --severity-threshold=high
+------------------------------
 
-      - name: ℹ️ Skip Snyk (Token Missing)
-        if: env.SNYK_TOKEN == ''
-        run: echo "SNYK_TOKEN not set, skipping Snyk scan"
+codeql-analysis:
+name: "🔬 CodeQL Analysis"
+runs-on: ubuntu-latest
 
-  codeql-analysis:
-    name: 🔬 CodeQL Analysis
-    runs-on: ubuntu-latest
+steps:  
+  - uses: actions/checkout@v4  
 
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
+  - uses: github/codeql-action/init@v3  
+    with:  
+      languages: javascript  
+      queries: security-extended  
 
-    strategy:
-      fail-fast: false
-      matrix:
-        language: ['javascript']
+  - uses: github/codeql-action/autobuild@v3  
 
-    steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v4
+  - uses: github/codeql-action/analyze@v3  
+    with:  
+      category: "/language:javascript"
 
-      - name: 🔬 Initialize CodeQL
-        uses: github/codeql-action/init@v3
-        with:
-          languages: ${{ matrix.language }}
-          queries: security-and-quality
+------------------------------
 
-      - name: 🔨 Autobuild
-        uses: github/codeql-action/autobuild@v3
+📦 DEPENDENCY REVIEW (PR Only)
 
-      - name: 🔍 Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
-        with:
-          category: "/language:${{ matrix.language }}"
+------------------------------
 
-  secret-scan:
-    name: 🔐 Secret Scanning
-    runs-on: ubuntu-latest
+dependency-review:
+name: "📦 Dependency Review"
+if: github.event_name == 'pull_request'
+runs-on: ubuntu-latest
+outputs:
+has_critical: ${{ steps.review.outcome == 'failure' }}
 
-    steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+steps:  
+  - uses: actions/checkout@v4  
 
-      - name: 🔐 TruffleHog Secret Scan
-        uses: trufflesecurity/trufflehog@main
-        with:
-          path: ./
-          base: ${{ github.event.repository.default_branch }}
-          head: HEAD
-          extra_args: --only-verified
+  - id: review  
+    uses: actions/dependency-review-action@v4  
+    with:  
+      fail-on-severity: critical  
+      deny-licenses: GPL-3.0, AGPL-3.0  
+    continue-on-error: true  
 
-  license-check:
-    name: 📜 License Compliance
-    runs-on: ubuntu-latest
+  - name: Report critical dependencies  
+    if: steps.review.outcome == 'failure'  
+    run: |  
+      echo "::error::📦 Critical vulnerabilities or license violations detected"  
+      echo "### ⚠️ Dependency Issues" >> $GITHUB_STEP_SUMMARY  
+      echo "Review the dependency-review output for details." >> $GITHUB_STEP_SUMMARY
 
-    steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v4
+------------------------------
 
-      - name: 📦 Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
+🛡️ SAST – SEMGREP (Soft Signal)
 
-      - name: 📚 Install dependencies
-        run: npm ci
+------------------------------
 
-      - name: 📜 Check licenses
-        run: npx license-checker --summary
-        continue-on-error: true
+sast-semgrep:
+name: "🛡️ SAST (Semgrep)"
+runs-on: ubuntu-latest
 
-      - name: 📜 Generate license report
-        run: npx license-checker --json > license-report.json
-        continue-on-error: true
+steps:  
+  - uses: actions/checkout@v4  
 
-      - name: 📤 Upload license report
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: license-report
-          path: license-report.json
-          retention-days: 30
+  - name: Run Semgrep  
+    uses: returntocorp/semgrep-action@v1  
+    with:  
+      config: "p/security-audit p/secrets p/owasp-top-ten p/javascript"  
+      generateSarif: true  
+    continue-on-error: true  
 
-  security-summary:
-    name: ✅ Security Summary
-    runs-on: ubuntu-latest
-    needs:
-      - dependency-audit
-      - snyk-scan
-      - codeql-analysis
-      - secret-scan
-      - license-check
-    if: always()
+  - uses: github/codeql-action/upload-sarif@v3  
+    if: always()  
+    with:  
+      sarif_file: semgrep.sarif  
+      category: semgrep
 
-    steps:
-      - name: ✅ Security Checks Complete
-        run: echo "✅ Security scan completed!"
+------------------------------
+
+📋 SECURITY SUMMARY
+
+------------------------------
+
+security-summary:
+name: "📋 Security Summary"
+runs-on: ubuntu-latest
+needs:
+- secret-scanning
+- codeql-analysis
+- dependency-review
+- sast-semgrep
+if: always()
+
+steps:  
+  - name: Generate summary  
+    run: |  
+      echo "## 🔒 Security Scan Results" >> $GITHUB_STEP_SUMMARY  
+      echo "" >> $GITHUB_STEP_SUMMARY  
+      echo "| Tool | Status | Notes |" >> $GITHUB_STEP_SUMMARY  
+      echo "|------|--------|-------|" >> $GITHUB_STEP_SUMMARY  
+      echo "| 🔐 TruffleHog | ${{ needs.secret-scanning.result }} | Secrets check |" >> $GITHUB_STEP_SUMMARY  
+      echo "| 🔬 CodeQL | ${{ needs.codeql-analysis.result }} | Static analysis |" >> $GITHUB_STEP_SUMMARY  
+      echo "| 📦 Dependency Review | ${{ needs.dependency-review.result || 'skipped' }} | PR dependency check |" >> $GITHUB_STEP_SUMMARY  
+      echo "| 🛡️ Semgrep | ${{ needs.sast-semgrep.result }} | Pattern scan |" >> $GITHUB_STEP_SUMMARY  
+      echo "" >> $GITHUB_STEP_SUMMARY  
+      echo "📅 **Scan completed:** $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY  
+
+  - name: Send results to AI Security Agent  
+    if: env.AI_SECURITY_API != ''  
+    continue-on-error: true  
+    run: |  
+      PAYLOAD=$(cat <<EOF  
+      {  
+        "workflow": "security-analysis",  
+        "version": "1.0.0",  
+        "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",  
+        "event": "${{ github.event_name }}",  
+        "ref": "${{ github.ref }}",  
+        "sha": "${{ github.sha }}",  
+        "results": {  
+          "trufflehog": {  
+            "status": "${{ needs.secret-scanning.result }}",  
+            "has_findings": ${{ needs.secret-scanning.outputs.has_secrets }}  
+          },  
+          "codeql": {  
+            "status": "${{ needs.codeql-analysis.result }}"  
+          },  
+          "dependency_review": {  
+            "status": "${{ needs.dependency-review.result || 'skipped' }}",  
+            "has_critical": ${{ needs.dependency-review.outputs.has_critical || false }}  
+          },  
+          "semgrep": {  
+            "status": "${{ needs.sast-semgrep.result }}"  
+          }  
+        },  
+        "workflow_url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"  
+      }  
+      EOF  
+      )  
+        
+      HTTP_CODE=$(curl -s -o /tmp/ai_response.json -w "%{http_code}" \  
+        -X POST "$AI_SECURITY_API" \  
+        -H "Content-Type: application/json" \  
+        -H "X-GitHub-Event: ${{ github.event_name }}" \  
+        -H "X-GitHub-Repository: ${{ github.repository }}" \  
+        --retry 3 \  
+        --retry-delay 2 \  
+        --max-time 10 \  
+        -d "$PAYLOAD")  
+        
+      if [ "$HTTP_CODE" -eq 200 ]; then  
+        echo "✅ AI Security Agent notified successfully"  
+        cat /tmp/ai_response.json  
+      else  
+        echo "⚠️ AI Security Agent returned HTTP $HTTP_CODE"  
+        cat /tmp/ai_response.json || true  
+      fi
+
+------------------------------
+
+🚫 MERGE BLOCKER
+
+------------------------------
+
+block-merge:
+name: "🚫 Block Merge on Critical Issues"
+runs-on: ubuntu-latest
+needs:
+- secret-scanning
+- dependency-review
+if: |
+github.event_name == 'pull_request' &&
+(needs.secret-scanning.outputs.has_secrets == 'true' ||
+needs.dependency-review.outputs.has_critical == 'true')
+
+steps:  
+  - name: Block merge  
+    run: |  
+      echo "::error::🚫 MERGE BLOCKED – Critical security findings"  
+      echo ""  
+      echo "Blocking reasons:"  
+      if [ "${{ needs.secret-scanning.outputs.has_secrets }}" == "true" ]; then  
+        echo "  ❌ Verified secrets detected in repository"  
+      fi  
+      if [ "${{ needs.dependency-review.outputs.has_critical }}" == "true" ]; then  
+        echo "  ❌ Critical dependency vulnerabilities or license violations"  
+      fi  
+      echo ""  
+      echo "📖 See: docs/security/INCIDENT_RESPONSE.md"  
+      exit 1
+
+------------------------------
+
+📧 NOTIFY (Scheduled Only)
+
+------------------------------
+
+notify-scheduled-failures:
+name: "📧 Notify Security Team"
+runs-on: ubuntu-latest
+needs:
+- secret-scanning
+- codeql-analysis
+if: |
+github.event_name == 'schedule' &&
+(needs.secret-scanning.result == 'failure' || needs.codeql-analysis.result == 'failure')
+
+steps:  
+  - uses: actions/github-script@v7  
+    with:  
+      script: |  
+        const title = '🚨 Scheduled Security Scan Failed';  
+        const body = `  
+        ## Security Alert - Scheduled Scan  
+          
+        **Scan Time:** ${new Date().toISOString()}  
+        **Version:** v1.0.0  
+          
+        ### Results  
+        - **TruffleHog:** ${{ needs.secret-scanning.result }}  
+        - **CodeQL:** ${{ needs.codeql-analysis.result }}  
+          
+        ### Action Required  
+        Review findings in [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})  
+          
+        **Follow:** [Incident Response Playbook](./docs/security/INCIDENT_RESPONSE.md)  
+          
+        cc: @security-team  
+        `;  
+          
+        await github.rest.issues.create({  
+          owner: context.repo.owner,  
+          repo: context.repo.repo,  
+          title: title,  
+          body: body,  
+          labels: ['security', 'urgent', 'automated']  
+        });
