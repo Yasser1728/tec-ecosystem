@@ -79,7 +79,7 @@ async function handler(req, res) {
       return res.status(piCompleteResponse.status).json({
         success: false,
         error: "Failed to complete payment with Pi Network",
-        details: errorData,
+        message: "Unable to complete payment. Please contact support.",
       });
     }
 

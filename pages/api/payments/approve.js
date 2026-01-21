@@ -100,11 +100,11 @@ async function handler(req, res) {
             continue;
           }
 
-          // Last attempt with 404 - return the error
+          // Last attempt with 404 - return sanitized error
+          console.error("Payment not found after retries:", errorData);
           return res.status(404).json({
             error: "Failed to approve payment",
-            status: 404,
-            details: errorData,
+            message: "Payment not found. Please try again later.",
           });
         }
 
@@ -114,8 +114,7 @@ async function handler(req, res) {
 
         return res.status(approveResponse.status).json({
           error: "Failed to approve payment",
-          status: approveResponse.status,
-          details: errorText,
+          message: "Payment approval failed. Please contact support.",
         });
       } catch (error) {
         console.error(`❌ Attempt ${attempt} failed:`, error.message);
@@ -127,7 +126,7 @@ async function handler(req, res) {
 
         return res.status(500).json({
           error: "Failed to approve payment",
-          message: error.message,
+          message: "An error occurred while processing your request.",
         });
       }
     }
@@ -135,12 +134,13 @@ async function handler(req, res) {
     // Should not reach here, but just in case
     return res.status(500).json({
       error: "Failed to approve payment after all retries",
+      message: "Unable to process payment approval. Please try again later.",
     });
   } catch (error) {
     console.error("Payment approval error:", error);
     return res.status(500).json({
       error: "Failed to approve payment",
-      message: error.message,
+      message: "An unexpected error occurred. Please contact support.",
     });
   }
 }

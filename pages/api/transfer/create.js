@@ -132,7 +132,7 @@ async function handler(req, res) {
     console.error("[TRANSFER CREATE ERROR]", error);
     return res.status(500).json({
       error: "Failed to create transfer",
-      message: error.message,
+      message: "An error occurred while creating the transfer. Please contact support.",
     });
   }
 }
