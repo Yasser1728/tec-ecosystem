@@ -5,24 +5,24 @@ import {
   verifyPiPayment,
   generateAuditHash,
 } from "../../../lib/payments/piVerify";
+import { withCORS } from "../../../middleware/cors";
+import { withBodyValidation } from "../../../lib/validations";
+import { CreatePaymentSchema } from "../../../lib/validations/payment";
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
+  // Use validated body from middleware
   const {
     amount,
     memo,
     domain,
     userId,
-    category = "general",
+    category,
     metadata,
-  } = req.body;
-
-  if (!amount || !domain || !userId) {
-    return res.status(400).json({ error: "Invalid payment data" });
-  }
+  } = req.validatedBody;
 
   try {
     // Direct verification - NO fetch to avoid ECONNREFUSED on serverless
@@ -110,3 +110,6 @@ export default async function handler(req, res) {
     });
   }
 }
+
+// Apply CORS and validation middleware
+export default withCORS(withBodyValidation(handler, CreatePaymentSchema));

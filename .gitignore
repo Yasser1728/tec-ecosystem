@@ -17,13 +17,39 @@ out
 /build
 dist
 
-# Environment Variables
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-env.local
+# ============================================
+# Security: NEVER COMMIT SECRETS
+# ============================================
+# Environment files
+.env*
+!.env.example
+
+# Backup files
+*.backup
+*.bak
+*.old
+
+# Keys and certificates
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt
+*.cer
+
+# Database dumps
+*.sql
+*.dump
+*.sqlite
+*.db
+
+# Credentials
+credentials.json
+secrets.yaml
+secrets.json
+config.json
+!package.json
+!tsconfig.json
 
 # Debug
 npm-debug.log*
@@ -35,9 +61,6 @@ yarn-error.log*
 
 # Misc
 .DS_Store
-*.pem
-.vscode/
-.idea/
 *.swp
 *.swo
 *~
