@@ -37,9 +37,6 @@ updates:
         update-types: ["version-update:semver-major"]
       - dependency-name: "react-dom"
         update-types: ["version-update:semver-major"]
-    # Security updates for vulnerabilities
-    vulnerability-alerts:
-      enabled: true
 
   # Enable version updates for GitHub Actions
   - package-ecosystem: "github-actions"

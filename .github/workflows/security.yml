@@ -79,7 +79,7 @@ jobs:
         uses: github/codeql-action/init@v4
         with:
           languages: javascript
-          queries: security-extended,security-and-quality
+          queries: security-extended
 
       - name: Autobuild
         uses: github/codeql-action/autobuild@v4
@@ -220,7 +220,7 @@ jobs:
         run: npm ci
 
       - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/node@master
+        uses: snyk/actions/node@0.4.0
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
@@ -312,14 +312,14 @@ jobs:
             "results": {
               "trufflehog": {
                 "status": "${{ needs.secret-scanning.result }}",
-                "has_findings": ${{ needs.secret-scanning.outputs.has_secrets || false }}
+                "has_findings": "${{ needs.secret-scanning.outputs.has_secrets }}"
               },
               "codeql": {
                 "status": "${{ needs.codeql-analysis.result }}"
               },
               "dependency_review": {
                 "status": "${{ needs.dependency-review.result || 'skipped' }}",
-                "has_critical": ${{ needs.dependency-review.outputs.has_critical || false }}
+                "has_critical": "${{ needs.dependency-review.outputs.has_critical }}"
               },
               "semgrep": {
                 "status": "${{ needs.sast-semgrep.result }}"
