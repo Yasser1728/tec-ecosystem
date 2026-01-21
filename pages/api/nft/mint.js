@@ -1,17 +1,26 @@
+/**
+ * NFT Minting API
+ * W3SA Security Enhancements Applied
+ */
+
 import crypto from "crypto";
 import { prisma } from "../../../lib/db/prisma";
 import { piAuth } from "../../../lib/pi-auth";
+import { withCORS } from "../../../middleware/cors";
+import { withBodyValidation } from "../../../lib/validations";
+import { MintNFTSchema } from "../../../lib/validations/nft";
+import { withErrorHandler } from "../../../lib/utils/errorHandler";
+import { requirePermission } from "../../../lib/auth/permissions";
+import { PERMISSIONS } from "../../../lib/roles/definitions";
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { domainName, certificateType, metadata, paymentId } = req.body;
-
-  if (!domainName || !certificateType || !metadata) {
-    return res.status(400).json({ error: "Missing required fields" });
-  }
+  // Use validated body from middleware
+  const { domainName, certificateType, userId, metadata } = req.validatedBody;
+  const paymentId = req.body.paymentId; // Optional field
 
   try {
     // Verify payment is completed
@@ -33,9 +42,7 @@ export default async function handler(req, res) {
     const nft = await prisma.nFT.create({
       data: {
         tokenId,
-        userId:
-          metadata.attributes.find((a) => a.trait_type === "Owner")?.value ||
-          "unknown",
+        userId: userId || metadata?.userId || "unknown",
         domainName,
         certificateType,
         metadata,
@@ -64,3 +71,12 @@ export default async function handler(req, res) {
     });
   }
 }
+
+// Apply security middleware layers
+export default withCORS(
+  withErrorHandler(
+    requirePermission(PERMISSIONS.NFT_MINT)(
+      withBodyValidation(handler, MintNFTSchema)
+    )
+  )
+);

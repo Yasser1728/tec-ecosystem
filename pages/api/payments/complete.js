@@ -1,20 +1,25 @@
 /**
  * Pi Payment Completion API - Sandbox & Production Implementation
+ * W3SA Security Enhancements Applied
  *
  * For Sandbox/Testnet: No external fetch calls are made. Payment is completed locally.
  * For Production/Mainnet: Calls Pi Platform API to complete payment.
  * See: https://github.com/pi-apps/pi-platform-docs
  */
-export default async function handler(req, res) {
+
+import { withCORS } from "../../../middleware/cors";
+import { withBodyValidation } from "../../../lib/validations";
+import { CompletePaymentSchema } from "../../../lib/validations/payment";
+import { withErrorHandler } from "../../../lib/utils/errorHandler";
+
+async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { paymentId, txid, internalId } = req.body;
-
-  if (!paymentId || !txid) {
-    return res.status(400).json({ error: "Missing paymentId or txid" });
-  }
+  // Use validated body from middleware
+  const { paymentId, txid } = req.validatedBody;
+  const internalId = req.body.internalId; // Optional field
 
   try {
     // Check if running in sandbox mode
@@ -74,7 +79,7 @@ export default async function handler(req, res) {
       return res.status(piCompleteResponse.status).json({
         success: false,
         error: "Failed to complete payment with Pi Network",
-        details: errorData,
+        message: "Unable to complete payment. Please contact support.",
       });
     }
 
@@ -108,3 +113,10 @@ export default async function handler(req, res) {
     });
   }
 }
+
+// Apply security middleware layers
+export default withCORS(
+  withErrorHandler(
+    withBodyValidation(handler, CompletePaymentSchema)
+  )
+);

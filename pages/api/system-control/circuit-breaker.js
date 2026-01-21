@@ -1,14 +1,18 @@
 /**
  * System Control API - Circuit Breaker Toggle
  * Admin endpoint to manually control the emergency circuit breaker
+ * 
+ * W3SA-ACCESS-001: Enhanced with RBAC permissions
  */
 
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
 import { USER_TIERS } from "../../../lib/roles";
 import { toggleCircuitBreaker } from "../../../lib/forensic-utils";
+import { requirePermission } from "../../../lib/auth/permissions";
+import { PERMISSIONS } from "../../../lib/roles/definitions";
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
@@ -76,3 +80,6 @@ export default async function handler(req, res) {
     });
   }
 }
+
+// Apply permission-based access control
+export default requirePermission(PERMISSIONS.CIRCUIT_BREAKER_TOGGLE)(handler);

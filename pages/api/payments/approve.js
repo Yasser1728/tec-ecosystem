@@ -1,24 +1,23 @@
+/**
+ * Payment Approval API
+ * W3SA Security Enhancements Applied
+ */
+
 import crypto from "crypto";
+import { withCORS } from "../../../middleware/cors";
+import { withBodyValidation } from "../../../lib/validations";
+import { ApprovePaymentSchema } from "../../../lib/validations/payment";
+import { withErrorHandler } from "../../../lib/utils/errorHandler";
+import { requirePermission } from "../../../lib/auth/permissions";
+import { PERMISSIONS } from "../../../lib/roles/definitions";
 
-export default async function handler(req, res) {
-  // Set CORS headers
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
-  }
-
+async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { paymentId } = req.body;
-
-  if (!paymentId) {
-    return res.status(400).json({ error: "Payment ID is required" });
-  }
+  // Use validated body from middleware
+  const { paymentId } = req.validatedBody;
 
   try {
     console.log("Approving payment:", paymentId);
@@ -101,11 +100,11 @@ export default async function handler(req, res) {
             continue;
           }
 
-          // Last attempt with 404 - return the error
+          // Last attempt with 404 - return sanitized error
+          console.error("Payment not found after retries:", errorData);
           return res.status(404).json({
             error: "Failed to approve payment",
-            status: 404,
-            details: errorData,
+            message: "Payment not found. Please try again later.",
           });
         }
 
@@ -115,8 +114,7 @@ export default async function handler(req, res) {
 
         return res.status(approveResponse.status).json({
           error: "Failed to approve payment",
-          status: approveResponse.status,
-          details: errorText,
+          message: "Payment approval failed. Please contact support.",
         });
       } catch (error) {
         console.error(`❌ Attempt ${attempt} failed:`, error.message);
@@ -128,7 +126,7 @@ export default async function handler(req, res) {
 
         return res.status(500).json({
           error: "Failed to approve payment",
-          message: error.message,
+          message: "An error occurred while processing your request.",
         });
       }
     }
@@ -136,12 +134,22 @@ export default async function handler(req, res) {
     // Should not reach here, but just in case
     return res.status(500).json({
       error: "Failed to approve payment after all retries",
+      message: "Unable to process payment approval. Please try again later.",
     });
   } catch (error) {
     console.error("Payment approval error:", error);
     return res.status(500).json({
       error: "Failed to approve payment",
-      message: error.message,
+      message: "An unexpected error occurred. Please contact support.",
     });
   }
 }
+
+// Apply security middleware layers
+export default withCORS(
+  withErrorHandler(
+    requirePermission(PERMISSIONS.PAYMENT_APPROVE)(
+      withBodyValidation(handler, ApprovePaymentSchema)
+    )
+  )
+);

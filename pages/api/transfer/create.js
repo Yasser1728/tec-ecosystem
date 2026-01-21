@@ -1,5 +1,6 @@
 /**
  * Transfer API - Create Transfer
+ * W3SA Security Enhancements Applied
  * Handles inter-domain transfers with dual forensic check and circuit breaker protection
  */
 
@@ -9,46 +10,32 @@ import {
   dualForensicCheck,
   SYSTEM_INTEGRITY_LEVEL,
 } from "../../../lib/forensic-utils";
+import { withCORS } from "../../../middleware/cors";
+import { withBodyValidation } from "../../../lib/validations";
+import { TransferSchema } from "../../../lib/validations/payment";
+import { withErrorHandler } from "../../../lib/utils/errorHandler";
+import { requirePermission } from "../../../lib/auth/permissions";
+import { PERMISSIONS } from "../../../lib/roles/definitions";
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
+    // Use validated body from middleware
     const {
-      sourceUserId,
-      targetUserId,
-      sourceDomain,
-      targetDomain,
+      fromUserId: sourceUserId,
+      toUserId: targetUserId,
       amount,
-      currency = "PI",
-    } = req.body;
-
-    // Validate required fields
-    if (
-      !sourceUserId ||
-      !targetUserId ||
-      !sourceDomain ||
-      !targetDomain ||
-      !amount
-    ) {
-      return res.status(400).json({
-        error: "Missing required fields",
-        required: [
-          "sourceUserId",
-          "targetUserId",
-          "sourceDomain",
-          "targetDomain",
-          "amount",
-        ],
-      });
-    }
-
-    // Validate amount
-    if (amount <= 0) {
-      return res.status(400).json({ error: "Amount must be greater than 0" });
-    }
+      memo,
+      type,
+    } = req.validatedBody;
+    
+    // Map internal field names (validatedBody uses fromUserId/toUserId)
+    const sourceDomain = req.body.sourceDomain || 'system';
+    const targetDomain = req.body.targetDomain || 'system';
+    const currency = req.body.currency || "PI";
 
     // Check emergency circuit breaker
     const circuitBreakerStatus = await emergencyCircuitBreaker();
@@ -145,7 +132,16 @@ export default async function handler(req, res) {
     console.error("[TRANSFER CREATE ERROR]", error);
     return res.status(500).json({
       error: "Failed to create transfer",
-      message: error.message,
+      message: "An error occurred while creating the transfer. Please contact support.",
     });
   }
 }
+
+// Apply security middleware layers
+export default withCORS(
+  withErrorHandler(
+    requirePermission(PERMISSIONS.PAYMENT_CREATE)(
+      withBodyValidation(handler, TransferSchema)
+    )
+  )
+);
