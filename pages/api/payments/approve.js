@@ -1,24 +1,23 @@
+/**
+ * Payment Approval API
+ * W3SA Security Enhancements Applied
+ */
+
 import crypto from "crypto";
+import { withCORS } from "../../../middleware/cors";
+import { withBodyValidation } from "../../../lib/validations";
+import { ApprovePaymentSchema } from "../../../lib/validations/payment";
+import { withErrorHandler } from "../../../lib/utils/errorHandler";
+import { requirePermission } from "../../../lib/auth/permissions";
+import { PERMISSIONS } from "../../../lib/roles/definitions";
 
-export default async function handler(req, res) {
-  // Set CORS headers
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
-  }
-
+async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { paymentId } = req.body;
-
-  if (!paymentId) {
-    return res.status(400).json({ error: "Payment ID is required" });
-  }
+  // Use validated body from middleware
+  const { paymentId } = req.validatedBody;
 
   try {
     console.log("Approving payment:", paymentId);
@@ -145,3 +144,12 @@ export default async function handler(req, res) {
     });
   }
 }
+
+// Apply security middleware layers
+export default withCORS(
+  withErrorHandler(
+    requirePermission(PERMISSIONS.PAYMENT_APPROVE)(
+      withBodyValidation(handler, ApprovePaymentSchema)
+    )
+  )
+);

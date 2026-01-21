@@ -1,5 +1,6 @@
 /**
  * Audit Logs API Endpoint
+ * W3SA Security Enhancements Applied
  *
  * Provides access to audit logs for authorized users
  */
@@ -7,8 +8,12 @@
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "./auth/[...nextauth]";
 import { fetchAuditLogs, getAuditLogCount } from "../../lib/forensic-utils";
+import { withCORS } from "../../middleware/cors";
+import { withErrorHandler } from "../../lib/utils/errorHandler";
+import { requirePermission } from "../../lib/auth/permissions";
+import { PERMISSIONS } from "../../lib/roles/definitions";
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   // Only accept GET requests
   if (req.method !== "GET") {
     return res.status(405).json({
@@ -92,3 +97,10 @@ export default async function handler(req, res) {
     });
   }
 }
+
+// Apply security middleware layers
+export default withCORS(
+  withErrorHandler(
+    requirePermission(PERMISSIONS.AUDIT_LOGS_VIEW)(handler)
+  )
+);
