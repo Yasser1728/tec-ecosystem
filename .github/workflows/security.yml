@@ -1,4 +1,4 @@
-name: "Security Analysis v1.0.0"
+name: "Security Analysis v2.0.0"
 
 on:
   push:
@@ -6,19 +6,24 @@ on:
   pull_request:
     branches: ["main", "develop"]
   schedule:
+    # Run daily at 2 AM UTC
     - cron: "0 2 * * *"
   workflow_dispatch:
 
+# Global permissions - minimal by default, escalated per job
 permissions:
   contents: read
-  security-events: write
-  actions: read
-  pull-requests: write
-  issues: write
+
+# Concurrency control - cancel in-progress runs for the same PR/branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN || '' }}
   AI_SECURITY_API: ${{ secrets.AI_SECURITY_API || '' }}
+  # Snyk token - optional for Snyk integration
+  SNYK_TOKEN: ${{ secrets.SNYK_TOKEN || '' }}
 
 jobs:
   # ------------------------------
@@ -27,16 +32,21 @@ jobs:
   secret-scanning:
     name: "🔐 Secret Scanning (TruffleHog)"
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      security-events: write
     outputs:
       has_secrets: ${{ steps.trufflehog.outcome == 'failure' }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Run TruffleHog
         id: trufflehog
-        uses: trufflesecurity/trufflehog@main
+        uses: trufflesecurity/trufflehog@v3.84.4
         with:
           path: ./
           extra_args: --only-verified --fail
@@ -56,16 +66,29 @@ jobs:
   codeql-analysis:
     name: "🔬 CodeQL Analysis"
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
     steps:
-      - uses: actions/checkout@v4
-      - uses: github/codeql-action/init@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
         with:
           languages: javascript
-          queries: security-extended
-      - uses: github/codeql-action/autobuild@v3
-      - uses: github/codeql-action/analyze@v3
+          queries: security-extended,security-and-quality
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v4
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
         with:
           category: "/language:javascript"
+          upload: true
 
   # ------------------------------
   # 📦 DEPENDENCY REVIEW (PR Only)
@@ -74,16 +97,28 @@ jobs:
     name: "📦 Dependency Review"
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: write
     outputs:
       has_critical: ${{ steps.review.outcome == 'failure' }}
     steps:
-      - uses: actions/checkout@v4
-      - id: review
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Dependency Review
+        id: review
         uses: actions/dependency-review-action@v4
         with:
           fail-on-severity: critical
-          deny-licenses: GPL-3.0, AGPL-3.0
+          fail-on-scopes: runtime
+          deny-licenses: GPL-3.0, AGPL-3.0, SSPL-1.0
+          comment-summary-in-pr: on-failure
+          vulnerability-check: true
+          license-check: true
         continue-on-error: true
+
       - name: Report critical dependencies
         if: steps.review.outcome == 'failure'
         run: |
@@ -97,19 +132,137 @@ jobs:
   sast-semgrep:
     name: "🛡️ SAST (Semgrep)"
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      security-events: write
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Run Semgrep
         uses: returntocorp/semgrep-action@v1
         with:
-          config: "p/security-audit p/secrets p/owasp-top-ten p/javascript"
+          config: "p/security-audit p/secrets p/owasp-top-ten p/javascript p/typescript p/react"
           generateSarif: true
         continue-on-error: true
-      - uses: github/codeql-action/upload-sarif@v3
+
+      - name: Upload SARIF to GitHub Security
+        uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
           sarif_file: semgrep.sarif
           category: semgrep
+
+  # ------------------------------
+  # 🔍 TRIVY FILESYSTEM SCAN
+  # ------------------------------
+  trivy-scan:
+    name: "🔍 Trivy Filesystem Scan"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.30.0
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH,MEDIUM'
+          ignore-unfixed: true
+        continue-on-error: true
+
+      - name: Upload Trivy results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+          category: trivy
+
+      - name: Generate Trivy report
+        uses: aquasecurity/trivy-action@0.30.0
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'table'
+          severity: 'CRITICAL,HIGH'
+        continue-on-error: true
+
+  # ------------------------------
+  # 🐍 SNYK VULNERABILITY SCAN (Optional)
+  # ------------------------------
+  snyk-scan:
+    name: "🐍 Snyk Vulnerability Scan"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: env.SNYK_TOKEN != ''
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --sarif-file-output=snyk.sarif --severity-threshold=high
+        continue-on-error: true
+
+      - name: Upload Snyk results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: snyk.sarif
+          category: snyk
+
+  # ------------------------------
+  # 📦 SBOM GENERATION
+  # ------------------------------
+  sbom-generation:
+    name: "📦 SBOM Generation"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Generate SBOM with Syft
+        uses: anchore/sbom-action@v0.18.3
+        with:
+          format: spdx-json
+          output-file: sbom.spdx.json
+          upload-artifact: true
+          upload-release-assets: false
+
+      - name: Generate CycloneDX SBOM
+        uses: anchore/sbom-action@v0.18.3
+        with:
+          format: cyclonedx-json
+          output-file: sbom.cyclonedx.json
+          upload-artifact: true
+          upload-release-assets: false
 
   # ------------------------------
   # 📋 SECURITY SUMMARY
@@ -117,18 +270,32 @@ jobs:
   security-summary:
     name: "📋 Security Summary"
     runs-on: ubuntu-latest
-    needs: [secret-scanning, codeql-analysis, dependency-review, sast-semgrep]
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    needs: [secret-scanning, codeql-analysis, dependency-review, sast-semgrep, trivy-scan, snyk-scan, sbom-generation]
     if: always()
     steps:
       - name: Generate summary
         run: |
           echo "## 🔒 Security Scan Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Workflow Version:** v2.0.0" >> $GITHUB_STEP_SUMMARY
+          echo "**Scan Time:** $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_STEP_SUMMARY
+          echo "**Event:** ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Tool | Status | Notes |" >> $GITHUB_STEP_SUMMARY
           echo "|------|--------|-------|" >> $GITHUB_STEP_SUMMARY
-          echo "| 🔐 TruffleHog | ${{ needs.secret-scanning.result }} | Secrets check |" >> $GITHUB_STEP_SUMMARY
-          echo "| 🔬 CodeQL | ${{ needs.codeql-analysis.result }} | Static analysis |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔐 TruffleHog | ${{ needs.secret-scanning.result }} | Secret scanning |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔬 CodeQL | ${{ needs.codeql-analysis.result }} | Static analysis (JavaScript) |" >> $GITHUB_STEP_SUMMARY
           echo "| 📦 Dependency Review | ${{ needs.dependency-review.result || 'skipped' }} | PR dependency check |" >> $GITHUB_STEP_SUMMARY
-          echo "| 🛡️ Semgrep | ${{ needs.sast-semgrep.result }} | Pattern scan |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🛡️ Semgrep | ${{ needs.sast-semgrep.result }} | SAST pattern scanning |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔍 Trivy | ${{ needs.trivy-scan.result }} | Filesystem vulnerability scan |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🐍 Snyk | ${{ needs.snyk-scan.result || 'skipped' }} | Advanced vulnerability scan |" >> $GITHUB_STEP_SUMMARY
+          echo "| 📦 SBOM | ${{ needs.sbom-generation.result }} | Software Bill of Materials |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "**View detailed results:** [Workflow Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
 
       - name: Send results to AI Security Agent
         if: env.AI_SECURITY_API != ''
@@ -137,7 +304,7 @@ jobs:
           PAYLOAD=$(cat <<EOF
           {
             "workflow": "security-analysis",
-            "version": "1.0.0",
+            "version": "2.0.0",
             "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
             "event": "${{ github.event_name }}",
             "ref": "${{ github.ref }}",
@@ -145,7 +312,7 @@ jobs:
             "results": {
               "trufflehog": {
                 "status": "${{ needs.secret-scanning.result }}",
-                "has_findings": ${{ needs.secret-scanning.outputs.has_secrets }}
+                "has_findings": ${{ needs.secret-scanning.outputs.has_secrets || false }}
               },
               "codeql": {
                 "status": "${{ needs.codeql-analysis.result }}"
@@ -156,6 +323,15 @@ jobs:
               },
               "semgrep": {
                 "status": "${{ needs.sast-semgrep.result }}"
+              },
+              "trivy": {
+                "status": "${{ needs.trivy-scan.result }}"
+              },
+              "snyk": {
+                "status": "${{ needs.snyk-scan.result || 'skipped' }}"
+              },
+              "sbom": {
+                "status": "${{ needs.sbom-generation.result }}"
               }
             },
             "workflow_url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
@@ -164,7 +340,7 @@ jobs:
           )
           curl -s -X POST "$AI_SECURITY_API" \
             -H "Content-Type: application/json" \
-            -d "$PAYLOAD"
+            -d "$PAYLOAD" || true
 
   # ------------------------------
   # 🚫 MERGE BLOCKER
@@ -172,13 +348,27 @@ jobs:
   block-merge:
     name: "🚫 Block Merge on Critical Issues"
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
     needs: [secret-scanning, dependency-review]
     if: |
       github.event_name == 'pull_request' &&
       (needs.secret-scanning.outputs.has_secrets == 'true' || needs.dependency-review.outputs.has_critical == 'true')
     steps:
-      - run: |
+      - name: Block merge
+        run: |
           echo "::error::🚫 MERGE BLOCKED – Critical security findings"
+          echo "## 🚫 Merge Blocked" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ needs.secret-scanning.outputs.has_secrets }}" == "true" ]; then
+            echo "- ❌ **Secrets detected** - Rotate credentials immediately" >> $GITHUB_STEP_SUMMARY
+          fi
+          if [ "${{ needs.dependency-review.outputs.has_critical }}" == "true" ]; then
+            echo "- ❌ **Critical dependency vulnerabilities** - Update or remove vulnerable dependencies" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Action Required:** Fix all critical issues before merging." >> $GITHUB_STEP_SUMMARY
           exit 1
 
   # ------------------------------
@@ -187,31 +377,54 @@ jobs:
   notify-scheduled-failures:
     name: "📧 Notify Security Team"
     runs-on: ubuntu-latest
-    needs: [secret-scanning, codeql-analysis]
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+    needs: [secret-scanning, codeql-analysis, trivy-scan]
     if: |
       github.event_name == 'schedule' &&
-      (needs.secret-scanning.result == 'failure' || needs.codeql-analysis.result == 'failure')
+      (needs.secret-scanning.result == 'failure' || needs.codeql-analysis.result == 'failure' || needs.trivy-scan.result == 'failure')
     steps:
-      - uses: actions/github-script@v7
+      - name: Create security alert issue
+        uses: actions/github-script@v7
         with:
           script: |
             const title = '🚨 Scheduled Security Scan Failed';
             const body = `
             ## Security Alert - Scheduled Scan
+            
             **Scan Time:** ${new Date().toISOString()}
-            **Version:** v1.0.0
+            **Workflow Version:** v2.0.0
+            **Branch:** ${{ github.ref }}
+            **Commit:** ${{ github.sha }}
+            
             ### Results
             - **TruffleHog:** ${{ needs.secret-scanning.result }}
             - **CodeQL:** ${{ needs.codeql-analysis.result }}
+            - **Trivy:** ${{ needs.trivy-scan.result }}
+            
             ### Action Required
-            Review findings in [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
-            **Follow:** [Incident Response Playbook](./docs/security/INCIDENT_RESPONSE.md)
-            cc: @security-team
+            1. Review findings in [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            2. **Follow:** [Incident Response Playbook](./docs/security/INCIDENT_RESPONSE.md)
+            3. Address all critical and high severity issues
+            4. Document remediation steps
+            
+            ### Resources
+            - [Security Policy](./SECURITY.md)
+            - [Secret Rotation Runbook](./docs/security/SECRET_ROTATION.md)
+            - [Vulnerability Management](./docs/security/VULNERABILITY_MANAGEMENT.md)
+            
+            cc: @tec-ecosystem/security-team
+            
+            ---
+            *This issue was automatically created by the Security Analysis workflow*
             `;
+            
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
               title,
               body,
-              labels: ['security', 'urgent', 'automated']
+              labels: ['security', 'urgent', 'automated', 'scheduled-scan']
             });
