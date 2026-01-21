@@ -6,9 +6,9 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
-  checks: write
-  actions: read
+  contents: read   # Changed from write to read (principle of least privilege)
+  checks: write    # Required for test results
+  actions: read    # Required for artifacts
 
 jobs:
   sovereign-pipeline:
