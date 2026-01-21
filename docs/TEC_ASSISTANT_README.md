@@ -33,23 +33,27 @@ src/
 ## 🎯 Features Implemented
 
 ### 1. Pi Network Authentication ✅
+
 - JWT token verification
 - User creation/update on auth
 - Pi SDK integration
 
 ### 2. Daily Signal System ✅
+
 - Deterministic signal generation: `hash(date) % 3`
 - Signal types: POSITIVE, NEUTRAL, CAUTION
 - AI-ready placeholder for future personalization
 - Signal caching (one per day)
 
 ### 3. Check-in & Gamification ✅
+
 - Daily check-in confirmation
 - Streak tracking (current + longest)
-- XP calculation: Base 10 XP + (streak * 2) bonus
+- XP calculation: Base 10 XP + (streak \* 2) bonus
 - Level progression: `level = floor(sqrt(totalXP / 100))`
 
 ### 4. Unlock System ✅
+
 - Feature unlock with Pi payment
 - Transaction tracking
 - Unlock status verification
@@ -67,11 +71,11 @@ The TEC Assistant uses the following Prisma models:
 
 ## 🔌 API Endpoints
 
-| Method | Endpoint | Description | Status |
-|--------|----------|-------------|--------|
-| POST | `/api/v1/tec-assistant/auth` | Authenticate with Pi Network | ✅ |
-| GET | `/api/v1/tec-assistant/signals/today` | Get today's signal | ✅ |
-| POST | `/api/v1/tec-assistant/check-ins` | Confirm daily check-in | ✅ |
+| Method | Endpoint                              | Description                  | Status |
+| ------ | ------------------------------------- | ---------------------------- | ------ |
+| POST   | `/api/v1/tec-assistant/auth`          | Authenticate with Pi Network | ✅     |
+| GET    | `/api/v1/tec-assistant/signals/today` | Get today's signal           | ✅     |
+| POST   | `/api/v1/tec-assistant/check-ins`     | Confirm daily check-in       | ✅     |
 
 ### Example: Get Today's Signal
 
@@ -80,6 +84,7 @@ GET /api/v1/tec-assistant/signals/today
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -109,6 +114,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -138,6 +144,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -207,11 +214,13 @@ Visit `http://localhost:3000/assistant` to see the TEC Assistant landing page.
 ## 🧪 Testing
 
 ### Run Linting
+
 ```bash
 npm run lint
 ```
 
 ### Build Project
+
 ```bash
 npm run build
 ```
@@ -219,22 +228,26 @@ npm run build
 ## 📈 Gamification System
 
 ### XP Calculation
+
 - **Base XP**: 10 XP per check-in
 - **Streak Bonus**: streak_day × 2 XP
 - **Premium Bonus**: 1.5× multiplier for premium users
 
 ### Level Progression
+
 ```
 Level = floor(sqrt(totalXP / 100))
 ```
 
 Examples:
+
 - 100 XP = Level 1
 - 400 XP = Level 2
 - 900 XP = Level 3
 - 2,500 XP = Level 5
 
 ### Streak System
+
 - Check in daily to maintain your streak
 - Miss a day? Streak resets to 0
 - Longest streak is always tracked
@@ -242,12 +255,14 @@ Examples:
 ## 🎨 UI Components
 
 ### Landing Page ✅
+
 - Hero section with branding
 - Today's signal display
 - Feature highlights
 - Pi Network login CTA
 
 ### Planned Pages
+
 - Dashboard (user stats, quick actions)
 - Daily Signal Page (detailed signal view, history)
 - Unlock Page (feature marketplace, payment flow)

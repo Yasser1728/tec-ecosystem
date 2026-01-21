@@ -3,40 +3,41 @@
  */
 
 export const domainConfig = {
-  name: 'Life',
-  displayName: 'Life.pi',
-  domainKey: 'life',
-  icon: '🌟',
-  tagline: 'Long-term Growth',
-  description: 'Lifetime financial planning and wealth management',
-  sector: 'Financial Services',
-  function: 'Long-term wealth building, financial planning, and educational resources',
-  color: 'from-cyan-900 to-blue-900',
-  category: 'finance',
-  
+  name: "Life",
+  displayName: "Life.pi",
+  domainKey: "life",
+  icon: "🌟",
+  tagline: "Long-term Growth",
+  description: "Lifetime financial planning and wealth management",
+  sector: "Financial Services",
+  function:
+    "Long-term wealth building, financial planning, and educational resources",
+  color: "from-cyan-900 to-blue-900",
+  category: "finance",
+
   // Database
-  database: 'life_db',
-  
+  database: "life_db",
+
   // Security
   forensicEnabled: true,
   approvalRequired: true,
-  sovereignEmail: process.env.SOVEREIGN_EMAIL || 'yasserrr.fox17@gmail.com',
-  
+  sovereignEmail: process.env.SOVEREIGN_EMAIL || "yasserrr.fox17@gmail.com",
+
   // Features
   features: {
     payments: true,
     nftMinting: true,
     subscriptions: true,
     marketplace: true,
-    analytics: true
+    analytics: true,
   },
-  
+
   // Thresholds
   thresholds: {
     autoApproveAmount: 1000, // PI
     manualReviewAmount: 10000, // PI
-    criticalAmount: 50000 // PI
-  }
+    criticalAmount: 50000, // PI
+  },
 };
 
 export default domainConfig;

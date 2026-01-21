@@ -2,15 +2,21 @@
  * Transaction Repository Implementation - TEC Assistant Domain
  */
 
-import { PrismaClient } from '@prisma/client';
-import { Transaction, TransactionType, TransactionStatus } from '../../../domain/entities/Transaction';
-import { ITransactionRepository } from '../../../domain/interfaces/repositories/ITransactionRepository';
+import { PrismaClient } from "@prisma/client";
+import {
+  Transaction,
+  TransactionType,
+  TransactionStatus,
+} from "../../../domain/entities/Transaction";
+import { ITransactionRepository } from "../../../domain/interfaces/repositories/ITransactionRepository";
 
 export class TransactionRepository implements ITransactionRepository {
   constructor(private prisma: PrismaClient) {}
 
   async findById(id: string): Promise<Transaction | null> {
-    const transaction = await this.prisma.tecTransaction.findUnique({ where: { id } });
+    const transaction = await this.prisma.tecTransaction.findUnique({
+      where: { id },
+    });
     return transaction ? this.toDomain(transaction) : null;
   }
 
@@ -39,14 +45,14 @@ export class TransactionRepository implements ITransactionRepository {
   async findByUserId(
     userId: string,
     page: number,
-    limit: number
+    limit: number,
   ): Promise<{ transactions: Transaction[]; total: number }> {
     const [transactions, total] = await Promise.all([
       this.prisma.tecTransaction.findMany({
         where: { userId },
         skip: (page - 1) * limit,
         take: limit,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
       }),
       this.prisma.tecTransaction.count({ where: { userId } }),
     ]);

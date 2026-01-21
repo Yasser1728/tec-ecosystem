@@ -4,9 +4,9 @@
  */
 
 export enum SignalType {
-  POSITIVE = 'POSITIVE',
-  NEUTRAL = 'NEUTRAL',
-  CAUTION = 'CAUTION',
+  POSITIVE = "POSITIVE",
+  NEUTRAL = "NEUTRAL",
+  CAUTION = "CAUTION",
 }
 
 export interface SignalProps {
@@ -63,21 +63,21 @@ export class Signal {
     switch (this.props.type) {
       case SignalType.POSITIVE:
         return {
-          color: 'green',
-          emoji: '🟢',
-          message: 'Great day ahead! Opportunities are favorable.',
+          color: "green",
+          emoji: "🟢",
+          message: "Great day ahead! Opportunities are favorable.",
         };
       case SignalType.NEUTRAL:
         return {
-          color: 'blue',
-          emoji: '🔵',
-          message: 'Balanced day. Proceed with normal activities.',
+          color: "blue",
+          emoji: "🔵",
+          message: "Balanced day. Proceed with normal activities.",
         };
       case SignalType.CAUTION:
         return {
-          color: 'yellow',
-          emoji: '🟡',
-          message: 'Exercise caution. Review decisions carefully.',
+          color: "yellow",
+          emoji: "🟡",
+          message: "Exercise caution. Review decisions carefully.",
         };
     }
   }

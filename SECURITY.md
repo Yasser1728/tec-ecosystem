@@ -71,7 +71,7 @@ We use multiple security tools to continuously monitor our codebase:
 
 1. **Never commit secrets**: Use environment variables and `.env.example` templates
 2. **Keep dependencies updated**: Regularly update to latest stable versions
-3. **Follow secure coding practices**: 
+3. **Follow secure coding practices**:
    - Input validation and sanitization
    - Output encoding
    - Proper error handling
@@ -118,6 +118,7 @@ We use multiple security tools to continuously monitor our codebase:
 ### Allowed Licenses
 
 ✅ Approved:
+
 - MIT
 - Apache-2.0
 - BSD-2-Clause
@@ -125,6 +126,7 @@ We use multiple security tools to continuously monitor our codebase:
 - ISC
 
 ❌ Restricted:
+
 - GPL-3.0
 - AGPL-3.0
 - SSPL-1.0

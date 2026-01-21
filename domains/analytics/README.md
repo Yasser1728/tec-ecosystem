@@ -7,6 +7,7 @@ Analytics (analytics.pi) delivers comprehensive data analytics, business intelli
 ## 📋 Core Features
 
 ### 1. Dashboard Builder
+
 - **Custom Dashboards**: Drag-and-drop dashboard creation
 - **Widget Library**: Pre-built visualization widgets
 - **Real-time Updates**: Live data streaming
@@ -14,6 +15,7 @@ Analytics (analytics.pi) delivers comprehensive data analytics, business intelli
 - **Sharing & Collaboration**: Share dashboards with teams
 
 ### 2. Data Visualization
+
 - **Chart Types**: Line, bar, pie, scatter, heatmap, and more
 - **Interactive Visualizations**: Drill-down and filtering
 - **Custom Themes**: Branded visualization themes
@@ -21,6 +23,7 @@ Analytics (analytics.pi) delivers comprehensive data analytics, business intelli
 - **Embeddable Widgets**: Embed charts anywhere
 
 ### 3. Reporting Engine
+
 - **Scheduled Reports**: Automated report generation
 - **Custom Reports**: Build reports from scratch
 - **Report Templates**: Pre-built report templates
@@ -28,6 +31,7 @@ Analytics (analytics.pi) delivers comprehensive data analytics, business intelli
 - **Email Delivery**: Schedule email reports
 
 ### 4. Predictive Analytics
+
 - **Forecasting**: Time series forecasting
 - **Trend Analysis**: Identify trends and patterns
 - **Anomaly Detection**: Detect unusual patterns
@@ -35,6 +39,7 @@ Analytics (analytics.pi) delivers comprehensive data analytics, business intelli
 - **ML Models**: Custom machine learning models
 
 ### 5. Business Intelligence
+
 - **Cross-Domain Analytics**: Insights across all domains
 - **KPI Tracking**: Monitor key performance indicators
 - **Cohort Analysis**: User segmentation and behavior
@@ -42,6 +47,7 @@ Analytics (analytics.pi) delivers comprehensive data analytics, business intelli
 - **A/B Testing**: Experiment analysis
 
 ### 6. Data Management
+
 - **Data Pipelines**: ETL from all domains
 - **Data Warehouse**: Centralized data storage
 - **Data Quality**: Validation and cleansing
@@ -70,9 +76,11 @@ Report (1) ──────< Schedule
 ### Core Entities
 
 #### 1. Dashboard
+
 User-created analytics dashboard.
 
 **Attributes:**
+
 - `id`: Unique identifier (UUID)
 - `userId`: Owner user ID
 - `name`: Dashboard name
@@ -86,9 +94,11 @@ User-created analytics dashboard.
 - `updatedAt`: Last update timestamp
 
 #### 2. Widget
+
 Individual visualization on dashboard.
 
 **Attributes:**
+
 - `id`: Unique identifier
 - `dashboardId`: Parent dashboard
 - `type`: Widget type (CHART, TABLE, METRIC, MAP, etc.)
@@ -100,9 +110,11 @@ Individual visualization on dashboard.
 - `refreshInterval`: Refresh interval (seconds)
 
 #### 3. Dataset
+
 Aggregated data from domains.
 
 **Attributes:**
+
 - `id`: Unique identifier
 - `name`: Dataset name
 - `description`: Dataset description
@@ -115,9 +127,11 @@ Aggregated data from domains.
 - `isPublic`: Public availability
 
 #### 4. Report
+
 Scheduled or on-demand report.
 
 **Attributes:**
+
 - `id`: Unique identifier
 - `name`: Report name
 - `description`: Report description
@@ -132,9 +146,11 @@ Scheduled or on-demand report.
 - `createdAt`: Creation date
 
 #### 5. Insight
+
 AI-generated insight.
 
 **Attributes:**
+
 - `id`: Unique identifier
 - `type`: Insight type (TREND, ANOMALY, OPPORTUNITY, RISK)
 - `title`: Insight title
@@ -148,9 +164,11 @@ AI-generated insight.
 - `createdAt`: Generation timestamp
 
 #### 6. Metric
+
 Tracked KPI or metric.
 
 **Attributes:**
+
 - `id`: Unique identifier
 - `name`: Metric name
 - `description`: Metric description
@@ -165,6 +183,7 @@ Tracked KPI or metric.
 ## 🔌 API Endpoints
 
 ### Dashboards
+
 - `GET /api/analytics/dashboards` - List dashboards
 - `POST /api/analytics/dashboards` - Create dashboard
 - `GET /api/analytics/dashboards/:id` - Get dashboard
@@ -173,12 +192,14 @@ Tracked KPI or metric.
 - `POST /api/analytics/dashboards/:id/duplicate` - Duplicate dashboard
 
 ### Widgets
+
 - `POST /api/analytics/widgets` - Create widget
 - `PUT /api/analytics/widgets/:id` - Update widget
 - `DELETE /api/analytics/widgets/:id` - Delete widget
 - `GET /api/analytics/widgets/:id/data` - Get widget data
 
 ### Datasets
+
 - `GET /api/analytics/datasets` - List datasets
 - `GET /api/analytics/datasets/:id` - Get dataset
 - `POST /api/analytics/datasets/:id/query` - Query dataset
@@ -186,6 +207,7 @@ Tracked KPI or metric.
 - `POST /api/analytics/datasets/:id/refresh` - Refresh dataset
 
 ### Reports
+
 - `GET /api/analytics/reports` - List reports
 - `POST /api/analytics/reports` - Create report
 - `GET /api/analytics/reports/:id` - Get report
@@ -195,18 +217,21 @@ Tracked KPI or metric.
 - `GET /api/analytics/reports/:id/runs` - Report execution history
 
 ### Insights
+
 - `GET /api/analytics/insights` - Get insights
 - `GET /api/analytics/insights/:id` - Get insight details
 - `PUT /api/analytics/insights/:id/status` - Update status
 - `POST /api/analytics/insights/generate` - Generate insights
 
 ### Metrics
+
 - `GET /api/analytics/metrics` - List metrics
 - `POST /api/analytics/metrics` - Create metric
 - `GET /api/analytics/metrics/:id` - Get metric
 - `GET /api/analytics/metrics/:id/history` - Metric history
 
 ### Queries
+
 - `POST /api/analytics/query` - Execute custom query
 - `POST /api/analytics/query/validate` - Validate query
 - `POST /api/analytics/query/explain` - Explain query plan
@@ -216,22 +241,26 @@ Tracked KPI or metric.
 ### Incoming: Data Sources
 
 #### All Domains → Analytics
+
 - **Transaction Data**: Orders, payments, investments
 - **User Behavior**: Actions, events, sessions
 - **Performance Metrics**: Response times, error rates
 - **Business Metrics**: Revenue, conversions, growth
 
 #### Assets → Analytics
+
 - **Portfolio Data**: Holdings, valuations, performance
 - **Transaction History**: Buy/sell activity
 - **Asset Performance**: ROI, gains/losses
 
 #### Commerce → Analytics
+
 - **Sales Data**: Orders, revenue, products
 - **Seller Metrics**: Performance, ratings
 - **Inventory Data**: Stock levels, turnover
 
 #### FundX → Analytics
+
 - **Investment Performance**: Strategy returns, risk metrics
 - **User Investments**: Allocations, distributions
 - **Market Data**: Prices, trends, indices
@@ -239,16 +268,19 @@ Tracked KPI or metric.
 ### Outgoing: Analytics Services
 
 #### Analytics → Alert
+
 - **Anomaly Alerts**: Detect unusual patterns
 - **Threshold Alerts**: Notify when metrics exceed limits
 - **Insight Notifications**: Share important insights
 
 #### Analytics → System
+
 - **Performance Reports**: System health metrics
 - **Usage Reports**: Resource utilization
 - **Cost Analytics**: Infrastructure costs
 
 #### Analytics → All Domains
+
 - **Insights API**: Provide insights to domains
 - **Reporting Service**: Generate domain-specific reports
 - **Data Export**: Provide aggregated data
@@ -256,6 +288,7 @@ Tracked KPI or metric.
 ## 💼 Business Logic
 
 ### Dashboard Real-time Update Flow
+
 ```javascript
 1. User opens dashboard
 2. Subscribe to real-time data stream
@@ -269,38 +302,40 @@ Tracked KPI or metric.
 ```
 
 ### Insight Generation Process
+
 ```javascript
 // AI-powered insight generation
 async function generateInsights(datasetId) {
   // 1. Fetch historical data
   const data = await fetchDataset(datasetId);
-  
+
   // 2. Detect trends
   const trends = await detectTrends(data);
-  
+
   // 3. Find anomalies
   const anomalies = await detectAnomalies(data);
-  
+
   // 4. Identify opportunities
   const opportunities = await findOpportunities(data);
-  
+
   // 5. Assess risks
   const risks = await assessRisks(data);
-  
+
   // 6. Generate recommendations
   const recommendations = await generateRecommendations({
     trends,
     anomalies,
     opportunities,
-    risks
+    risks,
   });
-  
+
   // 7. Save insights
   return await saveInsights(recommendations);
 }
 ```
 
 ### Query Optimization
+
 ```javascript
 // Optimize query for performance
 function optimizeQuery(query) {
@@ -309,12 +344,12 @@ function optimizeQuery(query) {
   // 3. Limit result set
   // 4. Use appropriate aggregations
   // 5. Cache frequently accessed data
-  
+
   return {
     ...query,
     useCache: shouldCache(query),
     indices: suggestIndices(query),
-    limit: Math.min(query.limit || 1000, 10000)
+    limit: Math.min(query.limit || 1000, 10000),
   };
 }
 ```
@@ -322,12 +357,14 @@ function optimizeQuery(query) {
 ## 🛠️ Engineering Recommendations
 
 ### Data Pipeline Architecture
+
 1. **ETL Process**: Extract, Transform, Load from all domains
 2. **Real-time Streaming**: Kafka for real-time data ingestion
 3. **Batch Processing**: Scheduled batch jobs for aggregations
 4. **Data Warehouse**: Optimized for OLAP queries
 
 ### Performance Optimization
+
 1. **Query Caching**: Redis for frequently accessed queries
 2. **Pre-aggregation**: Materialized views for common aggregations
 3. **Columnar Storage**: Use columnar database for analytics
@@ -335,12 +372,14 @@ function optimizeQuery(query) {
 5. **Data Partitioning**: Partition by date or domain
 
 ### Scalability
+
 1. **Horizontal Scaling**: Scale query engines independently
 2. **Database Sharding**: Shard by time period or domain
 3. **Read Replicas**: Use read replicas for queries
 4. **CDN Caching**: Cache static dashboard assets
 
 ### Data Quality
+
 1. **Validation**: Validate data at ingestion
 2. **Deduplication**: Remove duplicate records
 3. **Normalization**: Normalize data formats
@@ -349,6 +388,7 @@ function optimizeQuery(query) {
 ## 📊 Sample Data Models
 
 ### Dashboard Example
+
 ```json
 {
   "id": "dash_revenue_overview",
@@ -379,6 +419,7 @@ function optimizeQuery(query) {
 ```
 
 ### Insight Example
+
 ```json
 {
   "id": "insight_revenue_spike",
@@ -405,6 +446,7 @@ function optimizeQuery(query) {
 ## 🚀 Implementation Roadmap
 
 ### Phase 1: Foundation (Current)
+
 - ✅ Data pipeline from core domains
 - ✅ Basic dashboard builder
 - ⏳ Standard visualizations
@@ -412,6 +454,7 @@ function optimizeQuery(query) {
 - ⏳ Data warehouse setup
 
 ### Phase 2: Advanced Analytics
+
 - ⏳ Predictive analytics
 - ⏳ AI-powered insights
 - ⏳ Advanced visualizations
@@ -419,6 +462,7 @@ function optimizeQuery(query) {
 - ⏳ Custom metrics
 
 ### Phase 3: Intelligence
+
 - 📋 ML model training
 - 📋 Automated insights
 - 📋 Anomaly detection
@@ -426,6 +470,7 @@ function optimizeQuery(query) {
 - 📋 Natural language queries
 
 ### Phase 4: Enterprise
+
 - 📋 Multi-tenant support
 - 📋 Advanced security
 - 📋 Data governance
@@ -435,18 +480,21 @@ function optimizeQuery(query) {
 ## 📝 Collaboration Notes
 
 ### For Data Engineers
+
 - Build robust ETL pipelines
 - Optimize data warehouse queries
 - Implement data quality checks
 - Monitor data freshness
 
 ### For Data Scientists
+
 - Develop ML models for insights
 - Create forecasting algorithms
 - Analyze user behavior patterns
 - Build recommendation engines
 
 ### For Frontend Developers
+
 - Build interactive dashboards
 - Implement real-time updates
 - Create responsive visualizations
@@ -460,6 +508,7 @@ function optimizeQuery(query) {
 **Last Updated**: January 2026
 
 **Next Steps:**
+
 1. Complete data pipeline from all 24 domains
 2. Implement AI-powered insight generation
 3. Build advanced visualization library

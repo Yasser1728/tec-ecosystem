@@ -12,7 +12,9 @@ export default function Home() {
 
   useEffect(() => {
     const isSandbox = process.env.NEXT_PUBLIC_PI_SANDBOX === "true";
-    console.log(`🌐 TEC Ecosystem running in ${isSandbox ? 'SANDBOX' : 'MAINNET'} mode`);
+    console.log(
+      `🌐 TEC Ecosystem running in ${isSandbox ? "SANDBOX" : "MAINNET"} mode`,
+    );
   }, []);
 
   const handlePiAuth = (user) => {
@@ -59,7 +61,7 @@ export default function Home() {
         ["username", "payments"],
         (incompletePayment) => {
           console.log("⚠️ Found incomplete payment:", incompletePayment);
-        }
+        },
       );
 
       console.log("✅ Authenticated:", authResult.user.username);
@@ -84,53 +86,59 @@ export default function Home() {
           onReadyForServerApproval: async (paymentId) => {
             console.log("✅ Payment ready for approval:", paymentId);
             setPaymentStatus("⏳ Registering payment...");
-            
+
             // Wait for Pi Network to register the payment
-            await new Promise(resolve => setTimeout(resolve, 3000));
-            
+            await new Promise((resolve) => setTimeout(resolve, 3000));
+
             setPaymentStatus("⏳ Approving payment...");
-            
+
             try {
               const response = await fetch("/api/payments/approve", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ paymentId }),
               });
-              
+
               if (!response.ok) {
                 const errorData = await response.json();
                 console.error("❌ Approval failed:", errorData);
-                setPaymentStatus(`❌ Approval failed: ${errorData.error || 'Unknown error'}`);
+                setPaymentStatus(
+                  `❌ Approval failed: ${errorData.error || "Unknown error"}`,
+                );
                 return;
               }
-              
+
               const data = await response.json();
               console.log("✅ Payment approved:", data);
-              setPaymentStatus("✅ Payment approved! Waiting for completion...");
+              setPaymentStatus(
+                "✅ Payment approved! Waiting for completion...",
+              );
             } catch (error) {
               console.error("❌ Approval error:", error);
               setPaymentStatus(`❌ Approval error: ${error.message}`);
             }
           },
-          
+
           onReadyForServerCompletion: async (paymentId, txid) => {
             console.log("✅ Payment ready for completion:", paymentId, txid);
             setPaymentStatus("⏳ Completing payment...");
-            
+
             try {
               const response = await fetch("/api/payments/complete", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ paymentId, txid }),
               });
-              
+
               if (!response.ok) {
                 const errorData = await response.json();
                 console.error("❌ Completion failed:", errorData);
-                setPaymentStatus(`❌ Completion failed: ${errorData.error || 'Unknown error'}`);
+                setPaymentStatus(
+                  `❌ Completion failed: ${errorData.error || "Unknown error"}`,
+                );
                 return;
               }
-              
+
               const data = await response.json();
               console.log("✅ Payment completed:", data);
               setPaymentStatus("✅ Payment successful! 🎉");
@@ -139,17 +147,19 @@ export default function Home() {
               setPaymentStatus(`❌ Completion error: ${error.message}`);
             }
           },
-          
+
           onCancel: (paymentId) => {
             console.log("❌ Payment cancelled by user:", paymentId);
             setPaymentStatus("❌ Payment cancelled");
           },
-          
+
           onError: (error, payment) => {
             console.error("❌ Payment error:", error, payment);
-            setPaymentStatus(`❌ Payment error: ${error.message || 'Unknown error'}`);
+            setPaymentStatus(
+              `❌ Payment error: ${error.message || "Unknown error"}`,
+            );
           },
-        }
+        },
       );
 
       console.log("Payment object:", payment);
@@ -269,7 +279,7 @@ export default function Home() {
               {/* Pi Payment Demo */}
               <div className="border-t border-gray-700 pt-6">
                 <p className="text-gray-400 text-sm mb-4 text-center">
-                  {process.env.NEXT_PUBLIC_PI_SANDBOX === "true" 
+                  {process.env.NEXT_PUBLIC_PI_SANDBOX === "true"
                     ? "💡 Sandbox Mode: Test payments without real Pi"
                     : "🌐 Mainnet Mode: Real Pi payments"}
                 </p>
@@ -297,7 +307,7 @@ export default function Home() {
               </div>
 
               <div className="mt-4 text-xs text-gray-500 text-center">
-                {process.env.NEXT_PUBLIC_PI_SANDBOX === "true" 
+                {process.env.NEXT_PUBLIC_PI_SANDBOX === "true"
                   ? "💡 Sandbox Mode: Test payments without real Pi"
                   : "🌐 Mainnet Mode: Real Pi payments"}
               </div>

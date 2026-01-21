@@ -52,25 +52,25 @@ Go to **Vercel Dashboard → Your Project → Settings → Environment Variables
 
 #### For Production (Mainnet):
 
-| Variable | Value | Environment |
-|----------|-------|-------------|
-| `NEXT_PUBLIC_PI_NETWORK` | `mainnet` | Production |
-| `NEXT_PUBLIC_PI_APP_ID` | Your mainnet app ID | Production |
-| `NEXT_PUBLIC_PI_SANDBOX` | `false` | Production |
-| `PI_SANDBOX_MODE` | `false` | Production |
-| `PI_API_KEY` | Your mainnet API key | Production |
-| `PI_WALLET_ADDRESS` | Your mainnet wallet | Production |
+| Variable                 | Value                | Environment |
+| ------------------------ | -------------------- | ----------- |
+| `NEXT_PUBLIC_PI_NETWORK` | `mainnet`            | Production  |
+| `NEXT_PUBLIC_PI_APP_ID`  | Your mainnet app ID  | Production  |
+| `NEXT_PUBLIC_PI_SANDBOX` | `false`              | Production  |
+| `PI_SANDBOX_MODE`        | `false`              | Production  |
+| `PI_API_KEY`             | Your mainnet API key | Production  |
+| `PI_WALLET_ADDRESS`      | Your mainnet wallet  | Production  |
 
 #### For Preview (Testnet):
 
-| Variable | Value | Environment |
-|----------|-------|-------------|
-| `NEXT_PUBLIC_PI_NETWORK` | `testnet` | Preview |
-| `NEXT_PUBLIC_PI_APP_ID` | Your testnet app ID | Preview |
-| `NEXT_PUBLIC_PI_SANDBOX` | `true` | Preview |
-| `PI_SANDBOX_MODE` | `true` | Preview |
-| `PI_API_KEY` | Your testnet API key | Preview |
-| `PI_SANDBOX_ID` | Your sandbox ID | Preview |
+| Variable                 | Value                | Environment |
+| ------------------------ | -------------------- | ----------- |
+| `NEXT_PUBLIC_PI_NETWORK` | `testnet`            | Preview     |
+| `NEXT_PUBLIC_PI_APP_ID`  | Your testnet app ID  | Preview     |
+| `NEXT_PUBLIC_PI_SANDBOX` | `true`               | Preview     |
+| `PI_SANDBOX_MODE`        | `true`               | Preview     |
+| `PI_API_KEY`             | Your testnet API key | Preview     |
+| `PI_SANDBOX_ID`          | Your sandbox ID      | Preview     |
 
 ---
 
@@ -130,11 +130,13 @@ await window.Pi.init({
 Each environment needs its own validation key:
 
 ### Testnet:
+
 ```
 public/validation-key-testnet.txt
 ```
 
 ### Mainnet:
+
 ```
 public/validation-key.txt
 ```
@@ -171,20 +173,21 @@ Configure in `next.config.js` to serve the correct file based on environment.
 
 ## Quick Reference
 
-| Aspect | Testnet | Mainnet |
-|--------|---------|---------|
-| Branch | staging/dev | main |
-| URL | preview URL | production URL |
-| Sandbox | true | false |
-| Pi Network | Testnet | Mainnet |
-| Testing | Safe to test | Real transactions |
-| Users | Test users | Real users |
+| Aspect     | Testnet      | Mainnet           |
+| ---------- | ------------ | ----------------- |
+| Branch     | staging/dev  | main              |
+| URL        | preview URL  | production URL    |
+| Sandbox    | true         | false             |
+| Pi Network | Testnet      | Mainnet           |
+| Testing    | Safe to test | Real transactions |
+| Users      | Test users   | Real users        |
 
 ---
 
 ## Support
 
 For issues:
+
 1. Check Vercel deployment logs
 2. Verify environment variables
 3. Test in Pi Browser developer mode

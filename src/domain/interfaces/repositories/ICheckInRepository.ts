@@ -3,7 +3,7 @@
  * Contract for check-in data persistence
  */
 
-import { CheckIn } from '../../entities/CheckIn';
+import { CheckIn } from "../../entities/CheckIn";
 
 export interface ICheckInRepository {
   /**
@@ -22,7 +22,7 @@ export interface ICheckInRepository {
   findByUserId(
     userId: string,
     page: number,
-    limit: number
+    limit: number,
   ): Promise<{ checkIns: CheckIn[]; total: number }>;
 
   /**

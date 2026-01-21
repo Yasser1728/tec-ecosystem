@@ -76,7 +76,7 @@ async function checkDomainAuth(request, domainConfig, pathname) {
       req: request,
       secret: process.env.NEXTAUTH_SECRET,
     });
-    
+
     if (!token) {
       const signInUrl = new URL("/auth/signin", request.url);
       signInUrl.searchParams.set("callbackUrl", pathname);
@@ -92,13 +92,16 @@ async function checkDomainAuth(request, domainConfig, pathname) {
  */
 function addDomainHeaders(response, domainConfig) {
   if (domainConfig) {
-    response.headers.set('X-Domain-Name', domainConfig.name);
-    response.headers.set('X-Domain-Name-Ar', domainConfig.nameAr);
-    response.headers.set('X-Domain-Tier', domainConfig.tier);
-    response.headers.set('X-Domain-Theme', domainConfig.theme);
-    response.headers.set('X-Domain-Analytics', domainConfig.analytics);
-    response.headers.set('X-Domain-Independent', String(domainConfig.independent));
-    response.headers.set('X-Domain-Value', domainConfig.value);
+    response.headers.set("X-Domain-Name", domainConfig.name);
+    response.headers.set("X-Domain-Name-Ar", domainConfig.nameAr);
+    response.headers.set("X-Domain-Tier", domainConfig.tier);
+    response.headers.set("X-Domain-Theme", domainConfig.theme);
+    response.headers.set("X-Domain-Analytics", domainConfig.analytics);
+    response.headers.set(
+      "X-Domain-Independent",
+      String(domainConfig.independent),
+    );
+    response.headers.set("X-Domain-Value", domainConfig.value);
   }
   return response;
 }
@@ -126,15 +129,19 @@ export async function middleware(request) {
     if (pathname === "/" && targetRoute !== "/") {
       const url = request.nextUrl.clone();
       url.pathname = targetRoute;
-      
+
       // Check authentication first
-      const authRedirect = await checkDomainAuth(request, domainConfig, pathname);
+      const authRedirect = await checkDomainAuth(
+        request,
+        domainConfig,
+        pathname,
+      );
       if (authRedirect) return authRedirect;
-      
+
       // Create response with domain headers
       let response = NextResponse.rewrite(url);
       response = addDomainHeaders(response, domainConfig);
-      
+
       return response;
     }
 
@@ -143,12 +150,16 @@ export async function middleware(request) {
     // But still add domain headers
     if (domainConfig && pathname.startsWith("/api") === false) {
       // Check authentication
-      const authRedirect = await checkDomainAuth(request, domainConfig, pathname);
+      const authRedirect = await checkDomainAuth(
+        request,
+        domainConfig,
+        pathname,
+      );
       if (authRedirect) return authRedirect;
-      
+
       let response = NextResponse.next();
       response = addDomainHeaders(response, domainConfig);
-      
+
       return response;
     }
   }

@@ -1,50 +1,50 @@
 /**
  * VIP.pi - Exclusive Opportunities
- * 
+ *
  * VIP access to elite investment opportunities
- * 
+ *
  * Sector: VIP Services
  * Category: premium
  */
 
-import { DomainBootstrap } from '../../core/bootstrap';
-import { getDomainDatabaseConfig } from '../../core/database';
-import domainConfig from './config';
+import { DomainBootstrap } from "../../core/bootstrap";
+import { getDomainDatabaseConfig } from "../../core/database";
+import domainConfig from "./config";
 
 /**
  * VIP Domain Class
- * 
+ *
  * Extends DomainBootstrap with vip-specific functionality
  */
 export class VIPDomain extends DomainBootstrap {
   constructor(options = {}) {
     // Get database configuration
-    const dbConfig = getDomainDatabaseConfig('vip');
-    
+    const dbConfig = getDomainDatabaseConfig("vip");
+
     super({
       ...domainConfig,
       ...options,
-      name: 'vip',
+      name: "vip",
       database: dbConfig.database,
       forensicEnabled: true,
-      approvalRequired: true
+      approvalRequired: true,
     });
-    
+
     console.log(`[VIP] Domain initialized with sovereign controls`);
   }
-  
+
   /**
    * Get domain-specific information
    */
   getDomainInfo() {
     return {
       ...this.getMetadata(),
-      sector: 'VIP Services',
-      category: 'premium',
-      function: 'Exclusive opportunities, VIP events, and membership benefits'
+      sector: "VIP Services",
+      category: "premium",
+      function: "Exclusive opportunities, VIP events, and membership benefits",
     };
   }
-  
+
   /**
    * Example: Execute a domain-specific operation with full controls
    */
@@ -57,15 +57,15 @@ export class VIPDomain extends DomainBootstrap {
       async () => {
         // Domain-specific operation logic goes here
         console.log(`[VIP] Executing ${operationType}`);
-        
+
         // TODO: Implement domain-specific operations
-        
+
         return {
           success: true,
-          domain: 'vip',
-          operation: operationType
+          domain: "vip",
+          operation: operationType,
         };
-      }
+      },
     );
   }
 }

@@ -171,11 +171,11 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.30.0
         with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          severity: 'CRITICAL,HIGH,MEDIUM'
+          scan-type: "fs"
+          scan-ref: "."
+          format: "sarif"
+          output: "trivy-results.sarif"
+          severity: "CRITICAL,HIGH,MEDIUM"
           ignore-unfixed: true
         continue-on-error: true
 
@@ -183,16 +183,16 @@ jobs:
         uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
-          sarif_file: 'trivy-results.sarif'
+          sarif_file: "trivy-results.sarif"
           category: trivy
 
       - name: Generate Trivy report
         uses: aquasecurity/trivy-action@0.30.0
         with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          format: 'table'
-          severity: 'CRITICAL,HIGH'
+          scan-type: "fs"
+          scan-ref: "."
+          format: "table"
+          severity: "CRITICAL,HIGH"
         continue-on-error: true
 
   # ------------------------------
@@ -213,8 +213,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -273,7 +273,16 @@ jobs:
     timeout-minutes: 5
     permissions:
       contents: read
-    needs: [secret-scanning, codeql-analysis, dependency-review, sast-semgrep, trivy-scan, snyk-scan, sbom-generation]
+    needs:
+      [
+        secret-scanning,
+        codeql-analysis,
+        dependency-review,
+        sast-semgrep,
+        trivy-scan,
+        snyk-scan,
+        sbom-generation,
+      ]
     if: always()
     steps:
       - name: Generate summary
@@ -393,34 +402,34 @@ jobs:
             const title = '🚨 Scheduled Security Scan Failed';
             const body = `
             ## Security Alert - Scheduled Scan
-            
+
             **Scan Time:** ${new Date().toISOString()}
             **Workflow Version:** v2.0.0
             **Branch:** ${{ github.ref }}
             **Commit:** ${{ github.sha }}
-            
+
             ### Results
             - **TruffleHog:** ${{ needs.secret-scanning.result }}
             - **CodeQL:** ${{ needs.codeql-analysis.result }}
             - **Trivy:** ${{ needs.trivy-scan.result }}
-            
+
             ### Action Required
             1. Review findings in [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
             2. **Follow:** [Incident Response Playbook](./docs/security/INCIDENT_RESPONSE.md)
             3. Address all critical and high severity issues
             4. Document remediation steps
-            
+
             ### Resources
             - [Security Policy](./SECURITY.md)
             - [Secret Rotation Runbook](./docs/security/SECRET_ROTATION.md)
             - [Vulnerability Management](./docs/security/VULNERABILITY_MANAGEMENT.md)
-            
+
             cc: @tec-ecosystem/security-team
-            
+
             ---
             *This issue was automatically created by the Security Analysis workflow*
             `;
-            
+
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,

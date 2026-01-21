@@ -1,9 +1,9 @@
 /**
  * TypeScript Type Definitions for Assets Domain
- * 
+ *
  * This file provides comprehensive type definitions for all entities
  * and operations within the Assets domain.
- * 
+ *
  * @module domains/assets/types
  */
 
@@ -21,7 +21,7 @@ export interface Portfolio {
   totalValue: number;
   createdAt: Date;
   updatedAt: Date;
-  
+
   // Relations
   assets?: Asset[];
   valuations?: Valuation[];
@@ -32,12 +32,12 @@ export interface Asset {
   portfolioId: string;
   assetTypeId: string;
   categoryId?: string;
-  
+
   // Basic Info
   name: string;
   symbol?: string;
   description?: string;
-  
+
   // Quantity & Pricing
   quantity: number;
   purchasePrice: number;
@@ -46,17 +46,17 @@ export interface Asset {
   currentValue: number;
   costBasis: number;
   unrealizedGainLoss: number;
-  
+
   // Status
   status: AssetStatus;
-  
+
   // Metadata
   metadata?: Record<string, any>;
-  
+
   // Timestamps
   createdAt: Date;
   updatedAt: Date;
-  
+
   // Relations
   portfolio?: Portfolio;
   assetType?: AssetType;
@@ -75,7 +75,7 @@ export interface AssetType {
   description?: string;
   createdAt: Date;
   updatedAt: Date;
-  
+
   // Relations
   assets?: Asset[];
 }
@@ -89,7 +89,7 @@ export interface Category {
   icon?: string;
   createdAt: Date;
   updatedAt: Date;
-  
+
   // Relations
   assets?: Asset[];
 }
@@ -97,7 +97,7 @@ export interface Category {
 export interface Transaction {
   id: string;
   assetId: string;
-  
+
   // Transaction Details
   type: TransactionType;
   quantity: number;
@@ -106,17 +106,17 @@ export interface Transaction {
   fee: number;
   date: Date;
   description?: string;
-  
+
   // Integration
   relatedDomain?: string;
   relatedTransactionId?: string;
-  
+
   // Metadata
   metadata?: Record<string, any>;
-  
+
   // Timestamps
   createdAt: Date;
-  
+
   // Relations
   asset?: Asset;
 }
@@ -125,19 +125,19 @@ export interface Valuation {
   id: string;
   assetId?: string;
   portfolioId?: string;
-  
+
   // Valuation Details
   price: number;
   totalValue: number;
   source: ValuationSource;
   valuationDate: Date;
-  
+
   // Metadata
   metadata?: Record<string, any>;
-  
+
   // Timestamps
   createdAt: Date;
-  
+
   // Relations
   asset?: Asset;
   portfolio?: Portfolio;
@@ -146,20 +146,20 @@ export interface Valuation {
 export interface Document {
   id: string;
   assetId: string;
-  
+
   // Document Details
   type: DocumentType;
   name: string;
   url: string;
   fileSize?: number;
   mimeType?: string;
-  
+
   // Metadata
   metadata?: Record<string, any>;
-  
+
   // Timestamps
   uploadedAt: Date;
-  
+
   // Relations
   asset?: Asset;
 }
@@ -171,14 +171,14 @@ export interface PriceFeed {
   source: string;
   lastPrice: number;
   lastUpdate: Date;
-  
+
   // API Details
   apiEndpoint?: string;
   apiConfig?: Record<string, any>;
-  
+
   // Status
   isActive: boolean;
-  
+
   // Timestamps
   createdAt: Date;
   updatedAt: Date;
@@ -189,16 +189,16 @@ export interface AssetAlert {
   userId: string;
   assetId?: string;
   portfolioId?: string;
-  
+
   // Alert Configuration
   type: AlertType;
   condition: Record<string, any>;
   isActive: boolean;
-  
+
   // Notification
   lastTriggered?: Date;
   triggerCount: number;
-  
+
   // Timestamps
   createdAt: Date;
   updatedAt: Date;
@@ -209,41 +209,41 @@ export interface AssetAlert {
 // =====================================================
 
 export enum AssetStatus {
-  ACTIVE = 'ACTIVE',
-  SOLD = 'SOLD',
-  TRANSFERRED = 'TRANSFERRED',
-  ARCHIVED = 'ARCHIVED',
+  ACTIVE = "ACTIVE",
+  SOLD = "SOLD",
+  TRANSFERRED = "TRANSFERRED",
+  ARCHIVED = "ARCHIVED",
 }
 
 export enum TransactionType {
-  BUY = 'BUY',
-  SELL = 'SELL',
-  TRANSFER = 'TRANSFER',
-  DIVIDEND = 'DIVIDEND',
-  SPLIT = 'SPLIT',
-  ADJUSTMENT = 'ADJUSTMENT',
+  BUY = "BUY",
+  SELL = "SELL",
+  TRANSFER = "TRANSFER",
+  DIVIDEND = "DIVIDEND",
+  SPLIT = "SPLIT",
+  ADJUSTMENT = "ADJUSTMENT",
 }
 
 export enum ValuationSource {
-  API = 'API',
-  MANUAL = 'MANUAL',
-  CALCULATED = 'CALCULATED',
+  API = "API",
+  MANUAL = "MANUAL",
+  CALCULATED = "CALCULATED",
 }
 
 export enum DocumentType {
-  RECEIPT = 'RECEIPT',
-  CERTIFICATE = 'CERTIFICATE',
-  LEGAL = 'LEGAL',
-  TAX = 'TAX',
-  CONTRACT = 'CONTRACT',
-  APPRAISAL = 'APPRAISAL',
+  RECEIPT = "RECEIPT",
+  CERTIFICATE = "CERTIFICATE",
+  LEGAL = "LEGAL",
+  TAX = "TAX",
+  CONTRACT = "CONTRACT",
+  APPRAISAL = "APPRAISAL",
 }
 
 export enum AlertType {
-  PRICE_ABOVE = 'PRICE_ABOVE',
-  PRICE_BELOW = 'PRICE_BELOW',
-  VALUE_CHANGE = 'VALUE_CHANGE',
-  REBALANCE_NEEDED = 'REBALANCE_NEEDED',
+  PRICE_ABOVE = "PRICE_ABOVE",
+  PRICE_BELOW = "PRICE_BELOW",
+  VALUE_CHANGE = "VALUE_CHANGE",
+  REBALANCE_NEEDED = "REBALANCE_NEEDED",
 }
 
 // =====================================================
@@ -285,7 +285,7 @@ export interface AssetFilters {
   status?: AssetStatus;
   orderBy?: {
     field: string;
-    direction: 'asc' | 'desc';
+    direction: "asc" | "desc";
   };
 }
 

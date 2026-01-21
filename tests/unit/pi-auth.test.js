@@ -66,13 +66,13 @@ describe("PiAuth", () => {
       // Set env variable
       const originalEnv = process.env.NEXT_PUBLIC_PI_SANDBOX;
       process.env.NEXT_PUBLIC_PI_SANDBOX = "true";
-      
+
       // Use the piAuth instance created in beforeEach
       piAuth.initialized = false;
-      
+
       // Clear any previous calls
       window.Pi.init.mockClear();
-      
+
       await piAuth.init();
 
       expect(window.Pi.init).toHaveBeenCalledWith({
@@ -80,7 +80,7 @@ describe("PiAuth", () => {
         sandbox: true,
       });
       expect(piAuth.initialized).toBe(true);
-      
+
       // Restore env
       process.env.NEXT_PUBLIC_PI_SANDBOX = originalEnv;
     });
@@ -88,18 +88,18 @@ describe("PiAuth", () => {
     it("should not initialize twice", async () => {
       const originalEnv = process.env.NEXT_PUBLIC_PI_SANDBOX;
       process.env.NEXT_PUBLIC_PI_SANDBOX = "true";
-      
+
       // Use the piAuth instance created in beforeEach
       piAuth.initialized = false;
-      
+
       // Clear any previous calls
       window.Pi.init.mockClear();
-      
+
       await piAuth.init();
       await piAuth.init();
 
       expect(window.Pi.init).toHaveBeenCalledTimes(1);
-      
+
       // Restore env
       process.env.NEXT_PUBLIC_PI_SANDBOX = originalEnv;
     });
@@ -107,20 +107,20 @@ describe("PiAuth", () => {
     it("should initialize with sandbox=false when env is 'false'", async () => {
       const originalEnv = process.env.NEXT_PUBLIC_PI_SANDBOX;
       process.env.NEXT_PUBLIC_PI_SANDBOX = "false";
-      
+
       // Use the piAuth instance created in beforeEach
       piAuth.initialized = false;
-      
+
       // Clear any previous calls
       window.Pi.init.mockClear();
-      
+
       await piAuth.init();
 
       expect(window.Pi.init).toHaveBeenCalledWith({
         version: "2.0",
         sandbox: false,
       });
-      
+
       // Restore env
       process.env.NEXT_PUBLIC_PI_SANDBOX = originalEnv;
     });
@@ -128,20 +128,20 @@ describe("PiAuth", () => {
     it("should initialize with sandbox=true when env is undefined", async () => {
       const originalEnv = process.env.NEXT_PUBLIC_PI_SANDBOX;
       delete process.env.NEXT_PUBLIC_PI_SANDBOX;
-      
+
       // Use the piAuth instance created in beforeEach
       piAuth.initialized = false;
-      
+
       // Clear any previous calls
       window.Pi.init.mockClear();
-      
+
       await piAuth.init();
 
       expect(window.Pi.init).toHaveBeenCalledWith({
         version: "2.0",
         sandbox: true,
       });
-      
+
       // Restore env
       process.env.NEXT_PUBLIC_PI_SANDBOX = originalEnv;
     });
@@ -149,17 +149,17 @@ describe("PiAuth", () => {
     it("should handle initialization errors", async () => {
       const originalEnv = process.env.NEXT_PUBLIC_PI_SANDBOX;
       process.env.NEXT_PUBLIC_PI_SANDBOX = "true";
-      
+
       // Use the piAuth instance created in beforeEach
       piAuth.initialized = false;
-      
+
       // Clear previous mock calls and set up error
       window.Pi.init.mockClear();
       window.Pi.init.mockRejectedValueOnce(new Error("Init failed"));
 
       await expect(piAuth.init()).rejects.toThrow("Init failed");
       expect(piAuth.initialized).toBe(false);
-      
+
       // Restore env
       process.env.NEXT_PUBLIC_PI_SANDBOX = originalEnv;
     });

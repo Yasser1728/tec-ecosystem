@@ -13,7 +13,7 @@ describe("Pi Payment API Endpoints", () => {
   beforeEach(() => {
     // Store original env
     originalEnv = { ...process.env };
-    
+
     // Clear all mocks
     jest.clearAllMocks();
     global.fetch.mockClear();
@@ -62,7 +62,7 @@ describe("Pi Payment API Endpoints", () => {
           approved: true,
           paymentId: "pi-payment-123",
           message: "Payment approved successfully",
-        })
+        }),
       );
     });
   });
@@ -117,7 +117,7 @@ describe("Pi Payment API Endpoints", () => {
             Authorization: "Key test-api-key-123",
             "Content-Type": "application/json",
           }),
-        })
+        }),
       );
 
       // Should return success
@@ -128,7 +128,7 @@ describe("Pi Payment API Endpoints", () => {
           approved: true,
           paymentId: "pi-payment-123",
           message: "Payment approved successfully",
-        })
+        }),
       );
     });
 
@@ -158,7 +158,7 @@ describe("Pi Payment API Endpoints", () => {
       expect(res.json).toHaveBeenCalledWith(
         expect.objectContaining({
           error: "Server configuration error",
-        })
+        }),
       );
     });
 
@@ -192,7 +192,7 @@ describe("Pi Payment API Endpoints", () => {
       expect(res.json).toHaveBeenCalledWith(
         expect.objectContaining({
           error: "Failed to approve payment",
-        })
+        }),
       );
     });
 
@@ -245,7 +245,7 @@ describe("Pi Payment API Endpoints", () => {
           approved: true,
           paymentId: "pi-payment-123",
           message: "Payment approved successfully",
-        })
+        }),
       );
     });
 
@@ -304,7 +304,7 @@ describe("Pi Payment API Endpoints", () => {
         expect.objectContaining({
           error: "Failed to approve payment",
           status: 404,
-        })
+        }),
       );
     });
 
@@ -341,7 +341,7 @@ describe("Pi Payment API Endpoints", () => {
       expect(res.json).toHaveBeenCalledWith(
         expect.objectContaining({
           error: "Failed to approve payment",
-        })
+        }),
       );
     });
 
@@ -366,7 +366,7 @@ describe("Pi Payment API Endpoints", () => {
       expect(res.json).toHaveBeenCalledWith(
         expect.objectContaining({
           error: "Payment ID is required",
-        })
+        }),
       );
     });
   });
@@ -410,7 +410,7 @@ describe("Pi Payment API Endpoints", () => {
             txid: "txid-abc-123",
           }),
           message: expect.stringContaining("sandbox mode"),
-        })
+        }),
       );
     });
   });
@@ -461,7 +461,7 @@ describe("Pi Payment API Endpoints", () => {
             "Content-Type": "application/json",
           }),
           body: JSON.stringify({ txid: "txid-abc-123" }),
-        })
+        }),
       );
 
       // Should return success
@@ -473,7 +473,7 @@ describe("Pi Payment API Endpoints", () => {
             piPaymentId: "pi-payment-123",
             txid: "txid-abc-123",
           }),
-        })
+        }),
       );
     });
 
@@ -502,7 +502,7 @@ describe("Pi Payment API Endpoints", () => {
         expect.objectContaining({
           success: false,
           error: "Server configuration error",
-        })
+        }),
       );
     });
 
@@ -537,7 +537,7 @@ describe("Pi Payment API Endpoints", () => {
         expect.objectContaining({
           success: false,
           error: "Failed to complete payment with Pi Network",
-        })
+        }),
       );
     });
 
@@ -562,7 +562,7 @@ describe("Pi Payment API Endpoints", () => {
       expect(res.json).toHaveBeenCalledWith(
         expect.objectContaining({
           error: "Missing paymentId or txid",
-        })
+        }),
       );
     });
   });

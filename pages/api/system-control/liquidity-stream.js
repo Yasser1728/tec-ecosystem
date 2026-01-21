@@ -3,14 +3,14 @@
  * Endpoint to get system liquidity overview and pending transfers
  */
 
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../auth/[...nextauth]';
-import { USER_TIERS } from '../../../lib/roles';
-import { getSystemLiquidityStream } from '../../../lib/forensic-utils';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../auth/[...nextauth]";
+import { USER_TIERS } from "../../../lib/roles";
+import { getSystemLiquidityStream } from "../../../lib/forensic-utils";
 
 export default async function handler(req, res) {
-  if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'Method not allowed' });
+  if (req.method !== "GET") {
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
@@ -19,8 +19,8 @@ export default async function handler(req, res) {
 
     if (!session || session.user.tier !== USER_TIERS.ADMIN) {
       return res.status(403).json({
-        error: 'Forbidden',
-        message: 'Admin access required',
+        error: "Forbidden",
+        message: "Admin access required",
       });
     }
 
@@ -32,9 +32,9 @@ export default async function handler(req, res) {
       data: liquidityData,
     });
   } catch (error) {
-    console.error('[LIQUIDITY STREAM ERROR]', error);
+    console.error("[LIQUIDITY STREAM ERROR]", error);
     return res.status(500).json({
-      error: 'Internal server error',
+      error: "Internal server error",
       message: error.message,
     });
   }

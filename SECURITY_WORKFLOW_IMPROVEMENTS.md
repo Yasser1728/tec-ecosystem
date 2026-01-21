@@ -7,6 +7,7 @@ This document outlines the comprehensive improvements made to the TEC Ecosystem 
 ## 🎯 Problem Statement
 
 The original security workflow required improvements in:
+
 1. Outdated action versions (using `@main` and older versions)
 2. Missing Dependabot configuration
 3. Overly broad permissions
@@ -18,19 +19,20 @@ The original security workflow required improvements in:
 
 ### 1. **Action Version Updates**
 
-| Action | Before | After | Improvement |
-|--------|--------|-------|-------------|
-| TruffleHog | `@main` | `@v3.84.4` | Stable release instead of unstable main branch |
-| CodeQL | `@v3` | `@v4` | Latest major version with improved detection |
-| Semgrep | `@v1` | `@v1` (enhanced config) | Added TypeScript & React rulesets |
-| GitHub Script | `@v7` | `@v7` (verified) | Already on latest version |
-| Dependency Review | `@v4` | `@v4` (enhanced) | Added scope and license checks |
+| Action            | Before  | After                   | Improvement                                    |
+| ----------------- | ------- | ----------------------- | ---------------------------------------------- |
+| TruffleHog        | `@main` | `@v3.84.4`              | Stable release instead of unstable main branch |
+| CodeQL            | `@v3`   | `@v4`                   | Latest major version with improved detection   |
+| Semgrep           | `@v1`   | `@v1` (enhanced config) | Added TypeScript & React rulesets              |
+| GitHub Script     | `@v7`   | `@v7` (verified)        | Already on latest version                      |
+| Dependency Review | `@v4`   | `@v4` (enhanced)        | Added scope and license checks                 |
 
 **Impact**: More reliable scans with latest security patterns and reduced breaking changes.
 
 ### 2. **Dependabot Configuration** ✨
 
 Created `.github/dependabot.yml` with:
+
 - **NPM dependencies**: Weekly updates with auto-grouping
 - **GitHub Actions**: Weekly updates for all workflow actions
 - **Docker**: Weekly updates for container dependencies
@@ -45,6 +47,7 @@ Created `.github/dependabot.yml` with:
 ### 3. **Granular Permissions** 🔒
 
 **Before**: Global broad permissions
+
 ```yaml
 permissions:
   contents: read
@@ -55,6 +58,7 @@ permissions:
 ```
 
 **After**: Minimal global, escalated per-job
+
 ```yaml
 # Global - read-only by default
 permissions:
@@ -72,18 +76,21 @@ secret-scanning:
 ### 4. **New Security Scanning Tools** 🛡️
 
 #### Trivy Filesystem Scanning
+
 - Scans entire filesystem for vulnerabilities
 - Supports CRITICAL, HIGH, MEDIUM severity levels
 - Generates SARIF reports for GitHub Security
 - Ignores unfixed vulnerabilities to reduce noise
 
 #### Snyk Vulnerability Scanning (Optional)
+
 - Advanced vulnerability detection
 - Requires `SNYK_TOKEN` secret (optional)
 - Integrates with npm dependencies
 - Provides detailed remediation advice
 
 #### SBOM Generation
+
 - Creates Software Bill of Materials
 - Generates both SPDX and CycloneDX formats
 - Stores as workflow artifacts
@@ -94,16 +101,19 @@ secret-scanning:
 ### 5. **Best Practices Implementation** 🌟
 
 #### Concurrency Control
+
 ```yaml
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 ```
+
 - Cancels outdated workflow runs
 - Saves compute resources
 - Prevents duplicate scans
 
 #### Job Timeouts
+
 - Secret Scanning: 15 minutes
 - CodeQL: 30 minutes
 - Dependency Review: 10 minutes
@@ -115,6 +125,7 @@ concurrency:
 **Impact**: Prevents hung jobs and saves resources.
 
 #### Enhanced Reporting
+
 - Comprehensive summary tables
 - Workflow version tracking
 - Timestamp information
@@ -126,6 +137,7 @@ concurrency:
 ### 6. **Security Policy (SECURITY.md)** 📄
 
 Created comprehensive security policy including:
+
 - Vulnerability disclosure process
 - Response timelines (48 hours initial, 30 days for critical)
 - Supported versions
@@ -165,6 +177,7 @@ Security Analysis v2.0.0
 ### Workflow Triggers
 
 All scans run on:
+
 - **Push** to main/develop branches
 - **Pull Requests** to main/develop branches
 - **Scheduled** daily at 2 AM UTC
@@ -172,27 +185,27 @@ All scans run on:
 
 ### Scan Coverage
 
-| Category | Tools | Coverage |
-|----------|-------|----------|
-| Secret Scanning | TruffleHog | Verified secrets in code history |
-| SAST | CodeQL, Semgrep | JavaScript/TypeScript vulnerabilities |
-| Dependency Scanning | Dependency Review, Snyk | NPM package vulnerabilities |
-| Filesystem Scanning | Trivy | File-level vulnerabilities |
-| License Compliance | Dependency Review | GPL-3.0, AGPL-3.0, SSPL-1.0 blocked |
-| Supply Chain | SBOM | Full dependency transparency |
+| Category            | Tools                   | Coverage                              |
+| ------------------- | ----------------------- | ------------------------------------- |
+| Secret Scanning     | TruffleHog              | Verified secrets in code history      |
+| SAST                | CodeQL, Semgrep         | JavaScript/TypeScript vulnerabilities |
+| Dependency Scanning | Dependency Review, Snyk | NPM package vulnerabilities           |
+| Filesystem Scanning | Trivy                   | File-level vulnerabilities            |
+| License Compliance  | Dependency Review       | GPL-3.0, AGPL-3.0, SSPL-1.0 blocked   |
+| Supply Chain        | SBOM                    | Full dependency transparency          |
 
 ## 📊 Comparison: Before vs After
 
-| Metric | v1.0.0 | v2.0.0 | Improvement |
-|--------|--------|--------|-------------|
-| Security Tools | 4 | 7 | +75% |
-| Action Versions | Mixed | Latest Stable | +100% |
-| Permissions Model | Broad | Granular | +Least Privilege |
-| Timeout Protection | None | All Jobs | +100% |
-| Concurrency Control | None | Enabled | +Resource Efficiency |
-| SBOM Generation | None | Dual Format | +Transparency |
-| Dependabot | None | Full Config | +Automation |
-| Documentation | None | Complete | +Knowledge Base |
+| Metric              | v1.0.0 | v2.0.0        | Improvement          |
+| ------------------- | ------ | ------------- | -------------------- |
+| Security Tools      | 4      | 7             | +75%                 |
+| Action Versions     | Mixed  | Latest Stable | +100%                |
+| Permissions Model   | Broad  | Granular      | +Least Privilege     |
+| Timeout Protection  | None   | All Jobs      | +100%                |
+| Concurrency Control | None   | Enabled       | +Resource Efficiency |
+| SBOM Generation     | None   | Dual Format   | +Transparency        |
+| Dependabot          | None   | Full Config   | +Automation          |
+| Documentation       | None   | Complete      | +Knowledge Base      |
 
 ## 🚀 Usage Guide
 
@@ -213,6 +226,7 @@ All scans run on:
 ### Optional: Snyk Integration
 
 To enable Snyk scanning:
+
 1. Sign up for Snyk account
 2. Generate API token
 3. Add as `SNYK_TOKEN` repository secret
@@ -221,14 +235,17 @@ To enable Snyk scanning:
 ## 🔧 Configuration
 
 ### Required Secrets
+
 - None (basic scans work without secrets)
 
 ### Optional Secrets
+
 - `SEMGREP_APP_TOKEN`: For Semgrep cloud features
 - `SNYK_TOKEN`: For advanced Snyk scanning
 - `AI_SECURITY_API`: For AI security agent integration
 
 ### Environment Requirements
+
 - Node.js 20+ (for npm dependencies)
 - GitHub Actions runner: ubuntu-latest
 - GitHub Advanced Security (for SARIF upload)
@@ -236,12 +253,14 @@ To enable Snyk scanning:
 ## 📈 Expected Outcomes
 
 ### Immediate Benefits
+
 - ✅ Automated vulnerability detection across 7 tools
 - ✅ Blocked PRs with critical security issues
 - ✅ Automated dependency updates via Dependabot
 - ✅ Complete supply chain transparency via SBOM
 
 ### Long-term Benefits
+
 - ✅ Reduced security debt through automation
 - ✅ Faster vulnerability remediation
 - ✅ Improved security posture visibility
@@ -260,16 +279,19 @@ To enable Snyk scanning:
 ## 📚 Additional Resources
 
 ### GitHub Documentation
+
 - [GitHub Actions Security](https://docs.github.com/en/actions/security-guides)
 - [CodeQL Documentation](https://codeql.github.com/docs/)
 - [Dependabot Configuration](https://docs.github.com/en/code-security/dependabot)
 
 ### Security Standards
+
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
 - [CWE Top 25](https://cwe.mitre.org/top25/)
 - [NIST Cybersecurity Framework](https://www.nist.gov/cyberframework)
 
 ### Tools Documentation
+
 - [TruffleHog](https://github.com/trufflesecurity/trufflehog)
 - [Semgrep](https://semgrep.dev/docs/)
 - [Trivy](https://aquasecurity.github.io/trivy/)
@@ -278,16 +300,19 @@ To enable Snyk scanning:
 ## 🔄 Maintenance
 
 ### Monthly Tasks
+
 - [ ] Review security scan results
 - [ ] Update blocked licenses if needed
 - [ ] Review and merge Dependabot PRs
 
 ### Quarterly Tasks
+
 - [ ] Review and update security policy
 - [ ] Audit action versions for updates
 - [ ] Review timeout values for efficiency
 
 ### Annual Tasks
+
 - [ ] Comprehensive security audit
 - [ ] Update incident response procedures
 - [ ] Review and update documentation
@@ -295,6 +320,7 @@ To enable Snyk scanning:
 ## 🎯 Success Metrics
 
 Track these metrics to measure security improvement:
+
 1. **Mean Time to Remediation (MTTR)**: Time from vulnerability detection to fix
 2. **Vulnerability Coverage**: % of codebase scanned
 3. **False Positive Rate**: % of findings that are false positives
@@ -304,6 +330,7 @@ Track these metrics to measure security improvement:
 ## 🙏 Credits
 
 This security workflow implementation follows industry best practices from:
+
 - GitHub Security Lab
 - OWASP Foundation
 - NIST Cybersecurity Framework

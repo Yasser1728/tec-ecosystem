@@ -1,50 +1,51 @@
 /**
  * Brookfield.pi - Property Investment
- * 
+ *
  * Landmark property investment and development
- * 
+ *
  * Sector: Property Development
  * Category: realestate
  */
 
-import { DomainBootstrap } from '../../core/bootstrap';
-import { getDomainDatabaseConfig } from '../../core/database';
-import domainConfig from './config';
+import { DomainBootstrap } from "../../core/bootstrap";
+import { getDomainDatabaseConfig } from "../../core/database";
+import domainConfig from "./config";
 
 /**
  * Brookfield Domain Class
- * 
+ *
  * Extends DomainBootstrap with brookfield-specific functionality
  */
 export class BrookfieldDomain extends DomainBootstrap {
   constructor(options = {}) {
     // Get database configuration
-    const dbConfig = getDomainDatabaseConfig('brookfield');
-    
+    const dbConfig = getDomainDatabaseConfig("brookfield");
+
     super({
       ...domainConfig,
       ...options,
-      name: 'brookfield',
+      name: "brookfield",
       database: dbConfig.database,
       forensicEnabled: true,
-      approvalRequired: true
+      approvalRequired: true,
     });
-    
+
     console.log(`[Brookfield] Domain initialized with sovereign controls`);
   }
-  
+
   /**
    * Get domain-specific information
    */
   getDomainInfo() {
     return {
       ...this.getMetadata(),
-      sector: 'Property Development',
-      category: 'realestate',
-      function: 'Landmark projects, property valuation, and investment strategy'
+      sector: "Property Development",
+      category: "realestate",
+      function:
+        "Landmark projects, property valuation, and investment strategy",
     };
   }
-  
+
   /**
    * Example: Execute a domain-specific operation with full controls
    */
@@ -57,15 +58,15 @@ export class BrookfieldDomain extends DomainBootstrap {
       async () => {
         // Domain-specific operation logic goes here
         console.log(`[Brookfield] Executing ${operationType}`);
-        
+
         // TODO: Implement domain-specific operations
-        
+
         return {
           success: true,
-          domain: 'brookfield',
-          operation: operationType
+          domain: "brookfield",
+          operation: operationType,
         };
-      }
+      },
     );
   }
 }

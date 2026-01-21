@@ -3,7 +3,7 @@
  * Daily check-in record for users
  */
 
-import { SignalType } from './Signal';
+import { SignalType } from "./Signal";
 
 export interface CheckInProps {
   id: string;

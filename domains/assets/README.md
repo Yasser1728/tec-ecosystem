@@ -1,9 +1,11 @@
 # Assets Domain - Portfolio Management & Asset Tracking
+
 # دومين الأصول - إدارة المحفظة وتتبع الأصول
 
 ---
 
 ## 🌐 Language / اللغة
+
 - [English Version](#english-version)
 - [النسخة العربية](#النسخة-العربية)
 
@@ -18,6 +20,7 @@ The Assets domain (assets.pi) serves as the central portfolio management and ass
 **Vision**: To provide users with complete financial sovereignty by offering professional-grade portfolio management tools accessible through Pi Network's decentralized infrastructure.
 
 **Core Values**:
+
 - **Transparency**: Complete visibility into asset holdings and performance
 - **Security**: Bank-grade security for asset data and documents
 - **Independence**: User owns and controls all asset data
@@ -26,24 +29,28 @@ The Assets domain (assets.pi) serves as the central portfolio management and ass
 ## 📋 Core Features
 
 ### 1. Asset Portfolio Management
+
 - **Multi-Asset Support**: Track diverse asset types (crypto, real estate, stocks, digital assets)
 - **Real-Time Valuation**: Live price feeds and automatic portfolio valuation
 - **Performance Analytics**: Track ROI, gains/losses, and historical performance
 - **Asset Allocation**: Visualize and optimize asset distribution
 
 ### 2. Asset Tracking
+
 - **Acquisition Recording**: Document purchase details, dates, and costs
 - **Lifecycle Management**: Track asset status from acquisition to disposal
 - **Document Storage**: Store receipts, certificates, and legal documents
 - **Tags & Categories**: Organize assets with custom taxonomies
 
 ### 3. Reporting & Analytics
+
 - **Portfolio Dashboard**: Comprehensive overview of all holdings
 - **Performance Reports**: Detailed analysis of investment returns
 - **Tax Documents**: Generate tax-ready reports
 - **Audit Trails**: Complete history of all transactions
 
 ### 4. Integration Features
+
 - **Cross-Domain Sync**: Automatic updates from FundX, Commerce, Estate domains
 - **Price Feeds**: Integration with external pricing APIs
 - **Alerts & Notifications**: Price alerts, rebalancing suggestions
@@ -67,9 +74,11 @@ AssetType (1) ──────< (M) Asset
 ### Core Entities
 
 #### 1. Portfolio
+
 A portfolio represents a collection of assets owned by a user.
 
 **Attributes:**
+
 - `id`: Unique identifier (UUID)
 - `userId`: Owner reference
 - `name`: Portfolio name (e.g., "Main Portfolio", "Retirement Fund")
@@ -81,9 +90,11 @@ A portfolio represents a collection of assets owned by a user.
 - `updatedAt`: Last update timestamp
 
 #### 2. Asset
+
 Represents an individual asset within a portfolio.
 
 **Attributes:**
+
 - `id`: Unique identifier (UUID)
 - `portfolioId`: Parent portfolio reference
 - `assetTypeId`: Type classification reference
@@ -104,9 +115,11 @@ Represents an individual asset within a portfolio.
 - `updatedAt`: Last update timestamp
 
 #### 3. AssetType
+
 Classification of asset types.
 
 **Attributes:**
+
 - `id`: Unique identifier
 - `name`: Type name (CRYPTOCURRENCY, REAL_ESTATE, STOCK, DIGITAL_ASSET, etc.)
 - `icon`: Display icon
@@ -114,9 +127,11 @@ Classification of asset types.
 - `description`: Type description
 
 #### 4. Category
+
 User-defined or system categories for organizing assets.
 
 **Attributes:**
+
 - `id`: Unique identifier
 - `userId`: Owner reference (null for system categories)
 - `name`: Category name
@@ -125,9 +140,11 @@ User-defined or system categories for organizing assets.
 - `icon`: Display icon
 
 #### 5. Transaction
+
 Records all transactions related to an asset.
 
 **Attributes:**
+
 - `id`: Unique identifier
 - `assetId`: Parent asset reference
 - `type`: Transaction type (BUY, SELL, TRANSFER, DIVIDEND, SPLIT)
@@ -143,9 +160,11 @@ Records all transactions related to an asset.
 - `createdAt`: Creation timestamp
 
 #### 6. Valuation
+
 Historical valuation snapshots for tracking performance.
 
 **Attributes:**
+
 - `id`: Unique identifier
 - `assetId`: Parent asset reference
 - `portfolioId`: Parent portfolio reference
@@ -157,9 +176,11 @@ Historical valuation snapshots for tracking performance.
 - `createdAt`: Creation timestamp
 
 #### 7. Document
+
 Stores references to asset-related documents.
 
 **Attributes:**
+
 - `id`: Unique identifier
 - `assetId`: Parent asset reference
 - `type`: Document type (RECEIPT, CERTIFICATE, LEGAL, TAX)
@@ -181,28 +202,33 @@ See [data-model/schema.prisma](./data-model/schema.prisma) for the complete Pris
 #### Portfolio Management
 
 **GET /api/assets/portfolios**
+
 - Description: List all user portfolios
 - Authentication: Required
 - Response: Array of portfolio objects with summary statistics
 
 **POST /api/assets/portfolios**
+
 - Description: Create new portfolio
 - Authentication: Required
 - Request Body: `{ name, description, currency, isDefault }`
 - Response: Created portfolio object
 
 **GET /api/assets/portfolios/:id**
+
 - Description: Get portfolio details with assets
 - Authentication: Required
 - Response: Portfolio object with nested assets
 
 **PUT /api/assets/portfolios/:id**
+
 - Description: Update portfolio
 - Authentication: Required
 - Request Body: Portfolio fields to update
 - Response: Updated portfolio object
 
 **DELETE /api/assets/portfolios/:id**
+
 - Description: Delete portfolio (soft delete)
 - Authentication: Required
 - Response: Success confirmation
@@ -210,29 +236,34 @@ See [data-model/schema.prisma](./data-model/schema.prisma) for the complete Pris
 #### Asset Management
 
 **GET /api/assets**
+
 - Description: List all user assets across portfolios
 - Authentication: Required
 - Query Params: `portfolioId`, `categoryId`, `assetTypeId`, `status`
 - Response: Array of asset objects
 
 **POST /api/assets**
+
 - Description: Add new asset to portfolio
 - Authentication: Required
 - Request Body: Asset details
 - Response: Created asset object
 
 **GET /api/assets/:id**
+
 - Description: Get asset details with transactions and valuations
 - Authentication: Required
 - Response: Complete asset object with history
 
 **PUT /api/assets/:id**
+
 - Description: Update asset details
 - Authentication: Required
 - Request Body: Asset fields to update
 - Response: Updated asset object
 
 **DELETE /api/assets/:id**
+
 - Description: Delete/archive asset
 - Authentication: Required
 - Response: Success confirmation
@@ -240,12 +271,14 @@ See [data-model/schema.prisma](./data-model/schema.prisma) for the complete Pris
 #### Transactions
 
 **POST /api/assets/:assetId/transactions**
+
 - Description: Record new transaction
 - Authentication: Required
 - Request Body: Transaction details
 - Response: Created transaction object
 
 **GET /api/assets/:assetId/transactions**
+
 - Description: Get asset transaction history
 - Authentication: Required
 - Response: Array of transaction objects
@@ -253,11 +286,13 @@ See [data-model/schema.prisma](./data-model/schema.prisma) for the complete Pris
 #### Analytics
 
 **GET /api/assets/analytics/portfolio/:portfolioId**
+
 - Description: Get portfolio analytics and performance
 - Authentication: Required
 - Response: Analytics object with metrics
 
 **GET /api/assets/analytics/performance**
+
 - Description: Get overall performance across all portfolios
 - Authentication: Required
 - Query Params: `startDate`, `endDate`, `groupBy`
@@ -272,6 +307,7 @@ For detailed API examples, see [api/examples.md](./api/examples.md)
 **Scenario**: User makes an investment through FundX domain
 
 **Flow**:
+
 1. User completes investment transaction in FundX
 2. FundX emits `investment.created` event
 3. Assets service listens to event
@@ -280,30 +316,31 @@ For detailed API examples, see [api/examples.md](./api/examples.md)
 6. Portfolio value is recalculated
 
 **Implementation**:
+
 ```javascript
 // Event handler in Assets service
-eventBus.on('fundx.investment.created', async (data) => {
+eventBus.on("fundx.investment.created", async (data) => {
   const asset = await assetService.createAsset({
     portfolioId: data.portfolioId,
-    assetTypeId: 'INVESTMENT',
+    assetTypeId: "INVESTMENT",
     name: data.strategyName,
     quantity: data.amount,
     purchasePrice: data.pricePerUnit,
     purchaseDate: data.date,
     metadata: {
       sourceId: data.investmentId,
-      sourceDomain: 'fundx',
-      strategy: data.strategy
-    }
+      sourceDomain: "fundx",
+      strategy: data.strategy,
+    },
   });
-  
+
   await transactionService.createTransaction({
     assetId: asset.id,
-    type: 'BUY',
+    type: "BUY",
     quantity: data.amount,
     price: data.pricePerUnit,
-    relatedDomain: 'fundx',
-    relatedTransactionId: data.investmentId
+    relatedDomain: "fundx",
+    relatedTransactionId: data.investmentId,
   });
 });
 ```
@@ -313,6 +350,7 @@ eventBus.on('fundx.investment.created', async (data) => {
 **Scenario**: User purchases property through Estate domain
 
 **Flow**:
+
 1. User completes property purchase in Estate
 2. Estate emits `property.purchased` event
 3. Assets service creates real estate asset
@@ -325,6 +363,7 @@ eventBus.on('fundx.investment.created', async (data) => {
 **Scenario**: User purchases valuable items through Commerce
 
 **Flow**:
+
 1. User buys high-value product (e.g., luxury goods, collectibles)
 2. Commerce emits `product.purchased` event with trackAsset flag
 3. Assets service creates digital/physical asset record
@@ -336,6 +375,7 @@ eventBus.on('fundx.investment.created', async (data) => {
 **Scenario**: Periodic price updates from external APIs
 
 **Flow**:
+
 1. Scheduled job fetches latest prices
 2. Assets service updates current prices for all tracked assets
 3. Valuations are recorded for historical tracking
@@ -349,6 +389,7 @@ eventBus.on('fundx.investment.created', async (data) => {
 Core business logic for asset management. See [services/assetService.js](./services/assetService.js) for implementation.
 
 **Key Methods:**
+
 - `createAsset(data)`: Create new asset with validation
 - `updateAsset(id, data)`: Update asset details
 - `deleteAsset(id)`: Soft delete asset
@@ -362,6 +403,7 @@ Core business logic for asset management. See [services/assetService.js](./servi
 Portfolio management and aggregation logic.
 
 **Key Methods:**
+
 - `createPortfolio(userId, data)`: Create new portfolio
 - `updatePortfolio(id, data)`: Update portfolio details
 - `deletePortfolio(id)`: Delete portfolio (with asset handling)
@@ -374,6 +416,7 @@ Portfolio management and aggregation logic.
 Transaction recording and history management.
 
 **Key Methods:**
+
 - `recordTransaction(assetId, data)`: Record new transaction
 - `getTransactionHistory(assetId)`: Get asset transaction history
 - `updateAssetFromTransaction(transaction)`: Update asset based on transaction
@@ -384,6 +427,7 @@ Transaction recording and history management.
 Price tracking and valuation management.
 
 **Key Methods:**
+
 - `recordValuation(assetId, price, source)`: Record price snapshot
 - `getHistoricalPrices(assetId, period)`: Get price history
 - `updatePricesFromAPI(assetType)`: Fetch and update prices from external APIs
@@ -392,34 +436,37 @@ Price tracking and valuation management.
 ## 🧪 Testing Strategy
 
 ### Unit Tests
+
 - Test business logic in services
 - Test data validation
 - Test calculations (valuations, gains/losses)
 - Mock external dependencies
 
 ### Integration Tests
+
 - Test API endpoints
 - Test database operations
 - Test event handling
 - Test cross-domain integrations
 
 ### Example Test:
+
 ```javascript
-describe('AssetService', () => {
-  describe('calculateAssetValue', () => {
-    test('should calculate value correctly for stocks', async () => {
+describe("AssetService", () => {
+  describe("calculateAssetValue", () => {
+    test("should calculate value correctly for stocks", async () => {
       const asset = {
         quantity: 100,
-        currentPrice: 50.25
+        currentPrice: 50.25,
       };
       const value = await assetService.calculateAssetValue(asset);
       expect(value).toBe(5025);
     });
-    
-    test('should handle cryptocurrency decimals', async () => {
+
+    test("should handle cryptocurrency decimals", async () => {
       const asset = {
         quantity: 1.5,
-        currentPrice: 45000.50
+        currentPrice: 45000.5,
       };
       const value = await assetService.calculateAssetValue(asset);
       expect(value).toBe(67500.75);
@@ -431,18 +478,21 @@ describe('AssetService', () => {
 ## 🚀 Deployment Considerations
 
 ### Performance Optimization
+
 - Index frequently queried fields (userId, portfolioId, assetId)
 - Cache portfolio valuations (invalidate on asset updates)
 - Batch price updates to reduce API calls
 - Use read replicas for analytics queries
 
 ### Scalability
+
 - Partition data by user/portfolio for large-scale deployment
 - Implement pagination for asset listings
 - Use background jobs for price updates
 - Consider NoSQL for flexible metadata storage
 
 ### Monitoring
+
 - Track API response times
 - Monitor price update job success rates
 - Alert on failed integrations
@@ -485,6 +535,7 @@ describe('AssetService', () => {
 ## 📚 Additional Documentation
 
 ### For Developers
+
 - **[TypeScript Types](./types/index.ts)** - Complete type definitions for all entities and operations
 - **[Integration Service](./services/integrationService.js)** - Event bus integration and cross-domain communication
 - **[Integration Example](./integration-example.md)** - Real-world example: FundX → Assets → Analytics
@@ -492,11 +543,13 @@ describe('AssetService', () => {
 - **[Integration Tests](./tests/integration/eventBus.test.js)** - Event bus integration tests
 
 ### For Users
+
 - **[User Journey](./user-journey.md)** - Complete journey from registration to financial sovereignty
 - **[API Examples](./api/examples.md)** - Request/response examples for all endpoints
 - **[ERD Documentation](./data-model/erd.md)** - Detailed entity relationship diagrams
 
 ### For New Team Members
+
 - **[Collaboration Guide](/COLLABORATION_GUIDE.md)** - How to develop and expand domains (uses Assets as reference)
 - **[Event Bus Documentation](/lib/eventBus.js)** - Central event management system
 
@@ -507,30 +560,35 @@ describe('AssetService', () => {
 The Assets domain serves as the **reference implementation** for all TEC domains, demonstrating:
 
 ✅ **Complete Service Layer**
+
 - Full CRUD operations with validation
 - Advanced analytics (price trends, risk metrics, investment insights)
 - Cross-domain integration via Event Bus
 - Comprehensive error handling
 
 ✅ **Event-Driven Architecture**
+
 - Publishes events for downstream consumers
 - Listens to events from FundX, Estate, Commerce, Insure domains
 - Correlation ID tracking for distributed tracing
 - Error handling and retry logic
 
 ✅ **Type Safety**
+
 - Complete TypeScript type definitions
 - Enums for constants and status values
 - Input/output types for all operations
 - Event type definitions
 
 ✅ **Testing Excellence**
+
 - Unit tests for all service methods (80%+ coverage)
 - Integration tests for event flows
 - Mock strategies and fixtures
 - Testing best practices documented
 
 ✅ **Documentation Quality**
+
 - Comprehensive README with examples
 - API documentation with request/response samples
 - User journey documentation
@@ -556,6 +614,7 @@ Use this domain as a template when creating new domains in the TEC Ecosystem.
 **الرؤية**: توفير السيادة المالية الكاملة للمستخدمين من خلال تقديم أدوات إدارة محفظة احترافية يمكن الوصول إليها عبر البنية التحتية اللامركزية لشبكة Pi.
 
 **القيم الأساسية**:
+
 - **الشفافية**: رؤية كاملة لحيازات الأصول والأداء
 - **الأمان**: أمان بمستوى البنوك لبيانات الأصول والمستندات
 - **الاستقلالية**: المستخدم يمتلك ويتحكم في جميع بيانات أصوله
@@ -564,24 +623,28 @@ Use this domain as a template when creating new domains in the TEC Ecosystem.
 ## 📋 الميزات الأساسية
 
 ### 1. إدارة محفظة الأصول
+
 - **دعم متعدد للأصول**: تتبع أنواع متنوعة من الأصول (العملات المشفرة، العقارات، الأسهم، الأصول الرقمية)
 - **التقييم الفوري**: تدفقات الأسعار المباشرة والتقييم التلقائي للمحفظة
 - **تحليلات الأداء**: تتبع العائد على الاستثمار والأرباح/الخسائر والأداء التاريخي
 - **توزيع الأصول**: تصور وتحسين توزيع الأصول
 
 ### 2. تتبع الأصول
+
 - **تسجيل الاستحواذ**: توثيق تفاصيل الشراء والتواريخ والتكاليف
 - **إدارة دورة الحياة**: تتبع حالة الأصل من الاستحواذ إلى التصرف
 - **تخزين المستندات**: تخزين الإيصالات والشهادات والمستندات القانونية
 - **العلامات والفئات**: تنظيم الأصول بتصنيفات مخصصة
 
 ### 3. التقارير والتحليلات
+
 - **لوحة المحفظة**: نظرة عامة شاملة على جميع الحيازات
 - **تقارير الأداء**: تحليل تفصيلي لعوائد الاستثمار
 - **مستندات الضرائب**: إنشاء تقارير جاهزة للضرائب
 - **مسارات التدقيق**: تاريخ كامل لجميع المعاملات
 
 ### 4. ميزات التكامل
+
 - **المزامنة عبر الدومينات**: تحديثات تلقائية من دومينات FundX و Commerce و Estate
 - **تدفقات الأسعار**: التكامل مع واجهات برمجة تطبيقات التسعير الخارجية
 - **التنبيهات والإشعارات**: تنبيهات الأسعار واقتراحات إعادة التوازن
@@ -605,9 +668,11 @@ Use this domain as a template when creating new domains in the TEC Ecosystem.
 ### الكيانات الأساسية
 
 #### 1. المحفظة (Portfolio)
+
 المحفظة تمثل مجموعة من الأصول المملوكة للمستخدم.
 
 **السمات**:
+
 - `id`: معرف فريد (UUID)
 - `userId`: مرجع المالك
 - `name`: اسم المحفظة (مثل "المحفظة الرئيسية"، "صندوق التقاعد")
@@ -619,9 +684,11 @@ Use this domain as a template when creating new domains in the TEC Ecosystem.
 - `updatedAt`: طابع زمني لآخر تحديث
 
 #### 2. الأصل (Asset)
+
 يمثل أصلًا فرديًا ضمن المحفظة.
 
 **السمات**:
+
 - `id`: معرف فريد (UUID)
 - `portfolioId`: مرجع المحفظة الأم
 - `assetTypeId`: مرجع تصنيف النوع
@@ -642,9 +709,11 @@ Use this domain as a template when creating new domains in the TEC Ecosystem.
 - `updatedAt`: طابع زمني لآخر تحديث
 
 #### 3. نوع الأصل (AssetType)
+
 تصنيف أنواع الأصول.
 
 **السمات**:
+
 - `id`: معرف فريد
 - `name`: اسم النوع (عملة مشفرة، عقار، سهم، أصل رقمي، إلخ)
 - `icon`: أيقونة العرض
@@ -652,9 +721,11 @@ Use this domain as a template when creating new domains in the TEC Ecosystem.
 - `description`: وصف النوع
 
 #### 4. الفئة (Category)
+
 فئات محددة من قبل المستخدم أو النظام لتنظيم الأصول.
 
 **السمات**:
+
 - `id`: معرف فريد
 - `userId`: مرجع المالك (فارغ للفئات النظامية)
 - `name`: اسم الفئة
@@ -663,9 +734,11 @@ Use this domain as a template when creating new domains in the TEC Ecosystem.
 - `icon`: أيقونة العرض
 
 #### 5. المعاملة (Transaction)
+
 تسجل جميع المعاملات المتعلقة بأصل.
 
 **السمات**:
+
 - `id`: معرف فريد
 - `assetId`: مرجع الأصل الأم
 - `type`: نوع المعاملة (شراء، بيع، تحويل، توزيع أرباح، تقسيم)
@@ -681,9 +754,11 @@ Use this domain as a template when creating new domains in the TEC Ecosystem.
 - `createdAt`: طابع زمني للإنشاء
 
 #### 6. التقييم (Valuation)
+
 لقطات تقييم تاريخية لتتبع الأداء.
 
 **السمات**:
+
 - `id`: معرف فريد
 - `assetId`: مرجع الأصل الأم
 - `portfolioId`: مرجع المحفظة الأم
@@ -695,9 +770,11 @@ Use this domain as a template when creating new domains in the TEC Ecosystem.
 - `createdAt`: طابع زمني للإنشاء
 
 #### 7. المستند (Document)
+
 يخزن مراجع المستندات المتعلقة بالأصل.
 
 **السمات**:
+
 - `id`: معرف فريد
 - `assetId`: مرجع الأصل الأم
 - `type`: نوع المستند (إيصال، شهادة، قانوني، ضريبي)
@@ -715,28 +792,33 @@ Use this domain as a template when creating new domains in the TEC Ecosystem.
 #### إدارة المحفظة
 
 **GET /api/assets/portfolios**
+
 - الوصف: عرض جميع محافظ المستخدم
 - المصادقة: مطلوبة
 - الاستجابة: مصفوفة من كائنات المحفظة مع إحصائيات موجزة
 
 **POST /api/assets/portfolios**
+
 - الوصف: إنشاء محفظة جديدة
 - المصادقة: مطلوبة
 - نص الطلب: `{ name, description, currency, isDefault }`
 - الاستجابة: كائن المحفظة المُنشأة
 
 **GET /api/assets/portfolios/:id**
+
 - الوصف: الحصول على تفاصيل المحفظة مع الأصول
 - المصادقة: مطلوبة
 - الاستجابة: كائن المحفظة مع الأصول المدمجة
 
 **PUT /api/assets/portfolios/:id**
+
 - الوصف: تحديث المحفظة
 - المصادقة: مطلوبة
 - نص الطلب: حقول المحفظة المراد تحديثها
 - الاستجابة: كائن المحفظة المحدثة
 
 **DELETE /api/assets/portfolios/:id**
+
 - الوصف: حذف المحفظة (حذف ناعم)
 - المصادقة: مطلوبة
 - الاستجابة: تأكيد النجاح
@@ -744,29 +826,34 @@ Use this domain as a template when creating new domains in the TEC Ecosystem.
 #### إدارة الأصول
 
 **GET /api/assets**
+
 - الوصف: عرض جميع أصول المستخدم عبر المحافظ
 - المصادقة: مطلوبة
 - معاملات الاستعلام: `portfolioId`, `categoryId`, `assetTypeId`, `status`
 - الاستجابة: مصفوفة من كائنات الأصول
 
 **POST /api/assets**
+
 - الوصف: إضافة أصل جديد إلى المحفظة
 - المصادقة: مطلوبة
 - نص الطلب: تفاصيل الأصل
 - الاستجابة: كائن الأصل المُنشأ
 
 **GET /api/assets/:id**
+
 - الوصف: الحصول على تفاصيل الأصل مع المعاملات والتقييمات
 - المصادقة: مطلوبة
 - الاستجابة: كائن أصل كامل مع السجل
 
 **PUT /api/assets/:id**
+
 - الوصف: تحديث تفاصيل الأصل
 - المصادقة: مطلوبة
 - نص الطلب: حقول الأصل المراد تحديثها
 - الاستجابة: كائن الأصل المحدث
 
 **DELETE /api/assets/:id**
+
 - الوصف: حذف/أرشفة الأصل
 - المصادقة: مطلوبة
 - الاستجابة: تأكيد النجاح
@@ -774,12 +861,14 @@ Use this domain as a template when creating new domains in the TEC Ecosystem.
 #### المعاملات
 
 **POST /api/assets/:assetId/transactions**
+
 - الوصف: تسجيل معاملة جديدة
 - المصادقة: مطلوبة
 - نص الطلب: تفاصيل المعاملة
 - الاستجابة: كائن المعاملة المُنشأة
 
 **GET /api/assets/:assetId/transactions**
+
 - الوصف: الحصول على سجل معاملات الأصل
 - المصادقة: مطلوبة
 - الاستجابة: مصفوفة من كائنات المعاملات
@@ -787,11 +876,13 @@ Use this domain as a template when creating new domains in the TEC Ecosystem.
 #### التحليلات
 
 **GET /api/assets/analytics/portfolio/:portfolioId**
+
 - الوصف: الحصول على تحليلات المحفظة والأداء
 - المصادقة: مطلوبة
 - الاستجابة: كائن التحليلات مع المقاييس
 
 **GET /api/assets/analytics/performance**
+
 - الوصف: الحصول على الأداء العام عبر جميع المحافظ
 - المصادقة: مطلوبة
 - معاملات الاستعلام: `startDate`, `endDate`, `groupBy`
@@ -804,6 +895,7 @@ Use this domain as a template when creating new domains in the TEC Ecosystem.
 **السيناريو**: يقوم المستخدم باستثمار عبر دومين FundX
 
 **التدفق**:
+
 1. يكمل المستخدم معاملة الاستثمار في FundX
 2. ينشر FundX حدث `investment.created`
 3. خدمة الأصول تستمع للحدث
@@ -816,6 +908,7 @@ Use this domain as a template when creating new domains in the TEC Ecosystem.
 **السيناريو**: يقوم المستخدم بشراء عقار عبر دومين Estate
 
 **التدفق**:
+
 1. يكمل المستخدم شراء العقار في Estate
 2. ينشر Estate حدث `property.purchased`
 3. خدمة الأصول تُنشئ أصل عقاري
@@ -828,6 +921,7 @@ Use this domain as a template when creating new domains in the TEC Ecosystem.
 **السيناريو**: يقوم المستخدم بشراء عناصر قيمة عبر Commerce
 
 **التدفق**:
+
 1. يشتري المستخدم منتجًا عالي القيمة (مثل السلع الفاخرة، المقتنيات)
 2. ينشر Commerce حدث `product.purchased` مع علامة trackAsset
 3. خدمة الأصول تُنشئ سجل أصل رقمي/مادي
@@ -839,6 +933,7 @@ Use this domain as a template when creating new domains in the TEC Ecosystem.
 **السيناريو**: تحديثات دورية للأسعار من واجهات برمجة التطبيقات الخارجية
 
 **التدفق**:
+
 1. تجلب المهمة المجدولة آخر الأسعار
 2. تقوم خدمة الأصول بتحديث الأسعار الحالية لجميع الأصول المتتبعة
 3. يتم تسجيل التقييمات للتتبع التاريخي
@@ -852,6 +947,7 @@ Use this domain as a template when creating new domains in the TEC Ecosystem.
 منطق الأعمال الأساسي لإدارة الأصول.
 
 **الطرق الرئيسية**:
+
 - `createAsset(data)`: إنشاء أصل جديد مع التحقق
 - `updateAsset(id, data)`: تحديث تفاصيل الأصل
 - `deleteAsset(id)`: حذف ناعم للأصل
@@ -865,6 +961,7 @@ Use this domain as a template when creating new domains in the TEC Ecosystem.
 منطق إدارة المحفظة والتجميع.
 
 **الطرق الرئيسية**:
+
 - `createPortfolio(userId, data)`: إنشاء محفظة جديدة
 - `updatePortfolio(id, data)`: تحديث تفاصيل المحفظة
 - `deletePortfolio(id)`: حذف المحفظة (مع معالجة الأصول)
@@ -877,6 +974,7 @@ Use this domain as a template when creating new domains in the TEC Ecosystem.
 تسجيل المعاملات وإدارة السجل.
 
 **الطرق الرئيسية**:
+
 - `recordTransaction(assetId, data)`: تسجيل معاملة جديدة
 - `getTransactionHistory(assetId)`: الحصول على سجل معاملات الأصل
 - `updateAssetFromTransaction(transaction)`: تحديث الأصل بناءً على المعاملة
@@ -887,6 +985,7 @@ Use this domain as a template when creating new domains in the TEC Ecosystem.
 تتبع الأسعار وإدارة التقييم.
 
 **الطرق الرئيسية**:
+
 - `recordValuation(assetId, price, source)`: تسجيل لقطة السعر
 - `getHistoricalPrices(assetId, period)`: الحصول على سجل الأسعار
 - `updatePricesFromAPI(assetType)`: جلب وتحديث الأسعار من واجهات برمجة التطبيقات الخارجية
@@ -895,18 +994,21 @@ Use this domain as a template when creating new domains in the TEC Ecosystem.
 ## 🚀 اعتبارات النشر
 
 ### تحسين الأداء
+
 - فهرسة الحقول المستعلم عنها بشكل متكرر (userId، portfolioId، assetId)
 - تخزين مؤقت لتقييمات المحفظة (إبطال عند تحديثات الأصول)
 - دفعات تحديثات الأسعار لتقليل استدعاءات API
 - استخدام نسخ القراءة للاستعلامات التحليلية
 
 ### قابلية التوسع
+
 - تقسيم البيانات حسب المستخدم/المحفظة للنشر واسع النطاق
 - تنفيذ ترقيم الصفحات لقوائم الأصول
 - استخدام وظائف خلفية لتحديثات الأسعار
 - النظر في NoSQL لتخزين البيانات الوصفية المرنة
 
 ### المراقبة
+
 - تتبع أوقات استجابة API
 - مراقبة معدلات نجاح وظائف تحديث الأسعار
 - التنبيه عند فشل التكاملات
@@ -949,6 +1051,7 @@ Use this domain as a template when creating new domains in the TEC Ecosystem.
 ## 📚 توثيق إضافي
 
 ### للمطورين
+
 - **[أنواع TypeScript](./types/index.ts)** - تعريفات أنواع كاملة لجميع الكيانات والعمليات
 - **[خدمة التكامل](./services/integrationService.js)** - تكامل ناقل الأحداث والاتصال عبر الدومينات
 - **[مثال التكامل](./integration-example.md)** - مثال من العالم الحقيقي: FundX → Assets → Analytics
@@ -956,11 +1059,13 @@ Use this domain as a template when creating new domains in the TEC Ecosystem.
 - **[اختبارات التكامل](./tests/integration/eventBus.test.js)** - اختبارات تكامل ناقل الأحداث
 
 ### للمستخدمين
+
 - **[رحلة المستخدم](./user-journey.md)** - رحلة كاملة من التسجيل إلى السيادة المالية
 - **[أمثلة API](./api/examples.md)** - أمثلة الطلب/الاستجابة لجميع نقاط النهاية
 - **[توثيق ERD](./data-model/erd.md)** - رسوم بيانية تفصيلية لعلاقات الكيانات
 
 ### لأعضاء الفريق الجدد
+
 - **[دليل التعاون](/COLLABORATION_GUIDE.md)** - كيفية تطوير وتوسيع الدومينات (يستخدم الأصول كمرجع)
 - **[توثيق ناقل الأحداث](/lib/eventBus.js)** - نظام إدارة الأحداث المركزي
 
@@ -971,30 +1076,35 @@ Use this domain as a template when creating new domains in the TEC Ecosystem.
 يُعد دومين الأصول **التطبيق المرجعي** لجميع دومينات TEC، مما يُظهر:
 
 ✅ **طبقة خدمة كاملة**
+
 - عمليات CRUD كاملة مع التحقق
 - تحليلات متقدمة (اتجاهات الأسعار، مقاييس المخاطر، رؤى الاستثمار)
 - التكامل عبر الدومينات عبر ناقل الأحداث
 - معالجة شاملة للأخطاء
 
 ✅ **بنية موجهة بالأحداث**
+
 - ينشر أحداثًا للمستهلكين اللاحقين
 - يستمع للأحداث من دومينات FundX و Estate و Commerce و Insure
 - تتبع معرف الارتباط للتتبع الموزع
 - معالجة الأخطاء ومنطق إعادة المحاولة
 
 ✅ **أمان النوع**
+
 - تعريفات أنواع TypeScript كاملة
 - تعدادات للثوابت وقيم الحالة
 - أنواع الإدخال/الإخراج لجميع العمليات
 - تعريفات أنواع الأحداث
 
 ✅ **تميز الاختبار**
+
 - اختبارات وحدة لجميع طرق الخدمة (تغطية أكثر من 80%)
 - اختبارات تكامل لتدفقات الأحداث
 - استراتيجيات الوهم والتركيبات
 - أفضل ممارسات الاختبار الموثقة
 
 ✅ **جودة التوثيق**
+
 - README شامل مع أمثلة
 - توثيق API مع عينات الطلب/الاستجابة
 - توثيق رحلة المستخدم
