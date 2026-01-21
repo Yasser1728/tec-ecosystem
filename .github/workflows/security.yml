@@ -44,6 +44,8 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Note: continue-on-error is intentional to allow reporting secrets
+      # without blocking the build. The outcome is checked in the next step.
       - name: Run TruffleHog
         id: trufflehog
         uses: trufflesecurity/trufflehog@v3.84.4
@@ -117,6 +119,8 @@ jobs:
           comment-summary-in-pr: on-failure
           vulnerability-check: true
           license-check: true
+        # Note: continue-on-error allows collecting all dependency issues
+        # before deciding whether to fail. The outcome is checked below.
         continue-on-error: true
 
       - name: Report critical dependencies
@@ -145,6 +149,7 @@ jobs:
         with:
           config: "p/security-audit p/secrets p/owasp-top-ten p/javascript p/typescript p/react"
           generateSarif: true
+        # Note: continue-on-error allows SARIF upload even if findings exist
         continue-on-error: true
 
       - name: Upload SARIF to GitHub Security
@@ -177,6 +182,7 @@ jobs:
           output: "trivy-results.sarif"
           severity: "CRITICAL,HIGH,MEDIUM"
           ignore-unfixed: true
+        # Note: continue-on-error allows vulnerability reporting without blocking
         continue-on-error: true
 
       - name: Upload Trivy results to GitHub Security
@@ -193,6 +199,7 @@ jobs:
           scan-ref: "."
           format: "table"
           severity: "CRITICAL,HIGH"
+        # Note: continue-on-error allows report generation even with findings
         continue-on-error: true
 
   # ------------------------------
@@ -225,6 +232,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           args: --sarif-file-output=snyk.sarif --severity-threshold=high
+        # Note: continue-on-error allows SARIF upload even with vulnerabilities
         continue-on-error: true
 
       - name: Upload Snyk results to GitHub Security
@@ -308,6 +316,7 @@ jobs:
 
       - name: Send results to AI Security Agent
         if: env.AI_SECURITY_API != ''
+        # Note: continue-on-error makes AI agent reporting optional
         continue-on-error: true
         run: |
           PAYLOAD=$(cat <<EOF
