@@ -48,6 +48,9 @@ describe("PiPayments", () => {
     jest.clearAllMocks();
   });
 
+  // FIXME: These tests are skipped pending mock setup improvements
+  // The Pi SDK createPayment method requires specific mock configuration
+  // to handle async callbacks (onReadyForServerApproval, onReadyForServerCompletion)
   describe.skip("createDomainPurchase", () => {
     it("should create domain purchase payment", async () => {
       const mockPaymentRecord = {

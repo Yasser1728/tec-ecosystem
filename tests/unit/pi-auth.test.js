@@ -165,6 +165,8 @@ describe("PiAuth", () => {
     });
   });
 
+  // FIXME: This test is skipped pending waitForPiSDK timing mock improvements
+  // The test needs proper timer mocking for the Pi SDK loading wait
   describe.skip("authenticate", () => {
     it("should authenticate user successfully", async () => {
       const mockAuthResult = {
