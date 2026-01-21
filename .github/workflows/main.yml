@@ -80,6 +80,8 @@ jobs:
         run: npm run build
 
       # 7️⃣ Run AI Sovereign Factory (Self-Healing & Agents)
+      # Note: continue-on-error is intentional to allow failure reporting
+      # without blocking the pipeline. The next step will handle failure.
       - name: 🤖 Run AI Self-Healing System (Sovereign Factory)
         if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
         id: ai_process
