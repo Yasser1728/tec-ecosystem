@@ -53,7 +53,10 @@ jobs:
           cache: "npm"
 
       # 3️⃣ Install dependencies
+      # Note: We need devDependencies (TypeScript, @types/*) for the build step
       - name: 📚 Install Dependencies
+        env:
+          NPM_CONFIG_PRODUCTION: "false"
         run: npm ci
 
       # 4️⃣ Generate Prisma Client (DB & Sandbox)
