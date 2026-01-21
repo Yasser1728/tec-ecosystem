@@ -381,6 +381,7 @@ export function withEnhancedRateLimit(handler, tier = 'STANDARD') {
     if (now > record.resetTime) {
       record.count = 0;
       record.resetTime = now + config.windowMs;
+      record.violations = 0; // Reset violations after successful window
     }
     
     // Check rate limit
@@ -433,7 +434,7 @@ export const publicRateLimit = (handler) =>
 
 ```javascript
 // pages/api/approval.js
-import { criticalRateLimit } from '@/middleware/ratelimit';
+import { criticalRateLimit } from '../../middleware/ratelimit';
 
 async function approvalHandler(req, res) {
   // ... existing code
@@ -444,7 +445,7 @@ export default criticalRateLimit(approvalHandler);
 
 ```javascript
 // pages/api/payments/create-payment.js
-import { financialRateLimit } from '@/middleware/ratelimit';
+import { financialRateLimit } from '../../../middleware/ratelimit';
 
 async function createPaymentHandler(req, res) {
   // ... existing code
@@ -553,9 +554,11 @@ export async function createAuditEntry({ user, operationType, operationData }) {
 
 import crypto from 'crypto';
 
-// Get encryption key from environment
-const ENCRYPTION_KEY = process.env.FORENSIC_AUDIT_SECRET || 
-  crypto.randomBytes(32).toString('hex');
+// Get encryption key from environment (must be explicitly configured)
+if (!process.env.FORENSIC_AUDIT_SECRET) {
+  throw new Error('FORENSIC_AUDIT_SECRET environment variable must be set for forensic audit encryption');
+}
+const ENCRYPTION_KEY = process.env.FORENSIC_AUDIT_SECRET;
 
 // Encryption utilities
 function encrypt(text) {
@@ -671,6 +674,8 @@ const envSchema = z.object({
   
   // Security
   SOVEREIGN_EMAIL: z.string().email('SOVEREIGN_EMAIL must be a valid email'),
+  // FORENSIC_AUDIT_SECRET is required when application-level forensic log encryption is enabled
+  // (see W3SA-LOG-003). Marked optional to support deployments without this feature.
   FORENSIC_AUDIT_SECRET: z.string().min(32).optional(),
   
   // Optional
