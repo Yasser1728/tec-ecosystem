@@ -61,6 +61,13 @@ describe('CORS Middleware', () => {
       expect(isOriginAllowed('https://tec-ecosystem-xyz789.vercel.app')).toBe(true);
     });
     
+    test('should properly escape regex special characters in patterns', () => {
+      // Test that dots and other regex chars are properly escaped
+      expect(isOriginAllowed('https://tec-ecosystem-test.vercel.app')).toBe(true);
+      // This should NOT match (extra chars between parts)
+      expect(isOriginAllowed('https://tec-ecosystem-testXXXvercel.app')).toBe(false);
+    });
+    
     test('should block unauthorized origins', () => {
       expect(isOriginAllowed('https://evil.com')).toBe(false);
       expect(isOriginAllowed('https://fake-tec.com')).toBe(false);

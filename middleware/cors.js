@@ -64,7 +64,12 @@ function isOriginAllowed(origin) {
   if (origin.includes('.vercel.app')) {
     const wildcardPatterns = ALLOWED_ORIGINS.filter(o => o.includes('*'));
     return wildcardPatterns.some(pattern => {
-      const regex = new RegExp('^' + pattern.replace('*', '.*') + '$');
+      // Escape all regex special characters except *, then replace * with .*
+      // Use replaceAll or global regex to replace ALL occurrences of *
+      const escapedPattern = pattern
+        .replace(/[.+?^${}()|[\]\\]/g, '\\$&') // Escape regex special chars
+        .replace(/\*/g, '.*');                  // Replace all * with .*
+      const regex = new RegExp('^' + escapedPattern + '$');
       return regex.test(origin);
     });
   }
