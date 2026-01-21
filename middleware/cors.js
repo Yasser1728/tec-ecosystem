@@ -67,8 +67,8 @@ function isOriginAllowed(origin) {
       // Escape all regex special characters except *, then replace * with .*
       // Use replaceAll or global regex to replace ALL occurrences of *
       const escapedPattern = pattern
-        .replace(/[.+?^${}()|[\]\\]/g, '\\$&') // Escape regex special chars
-        .replace(/\*/g, '.*');                  // Replace all * with .*
+        .replace(/[.+?^${}()|[\]\\]/g, '\\$&')
+        .replace(/\*/g, '.*');
       const regex = new RegExp('^' + escapedPattern + '$');
       return regex.test(origin);
     });
