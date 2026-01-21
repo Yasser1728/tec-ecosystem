@@ -3,13 +3,16 @@
  * Contract for unlock data persistence
  */
 
-import { Unlock } from '../../entities/Unlock';
+import { Unlock } from "../../entities/Unlock";
 
 export interface IUnlockRepository {
   /**
    * Find unlock by user and feature key
    */
-  findByUserAndFeature(userId: string, featureKey: string): Promise<Unlock | null>;
+  findByUserAndFeature(
+    userId: string,
+    featureKey: string,
+  ): Promise<Unlock | null>;
 
   /**
    * Create a new unlock

@@ -26,7 +26,7 @@ export default async function handler(req, res) {
     }
 
     // Generate unique token ID using crypto for security
-    const randomHex = crypto.randomBytes(8).toString('hex');
+    const randomHex = crypto.randomBytes(8).toString("hex");
     const tokenId = `TEC-${domainName.toUpperCase()}-${randomHex}`;
 
     // Create NFT record

@@ -3,16 +3,16 @@
  * Handles inter-domain transfers with dual forensic check and circuit breaker protection
  */
 
-import { prisma } from '../../../lib/db/prisma';
+import { prisma } from "../../../lib/db/prisma";
 import {
   emergencyCircuitBreaker,
   dualForensicCheck,
   SYSTEM_INTEGRITY_LEVEL,
-} from '../../../lib/forensic-utils';
+} from "../../../lib/forensic-utils";
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
@@ -22,20 +22,32 @@ export default async function handler(req, res) {
       sourceDomain,
       targetDomain,
       amount,
-      currency = 'PI',
+      currency = "PI",
     } = req.body;
 
     // Validate required fields
-    if (!sourceUserId || !targetUserId || !sourceDomain || !targetDomain || !amount) {
+    if (
+      !sourceUserId ||
+      !targetUserId ||
+      !sourceDomain ||
+      !targetDomain ||
+      !amount
+    ) {
       return res.status(400).json({
-        error: 'Missing required fields',
-        required: ['sourceUserId', 'targetUserId', 'sourceDomain', 'targetDomain', 'amount'],
+        error: "Missing required fields",
+        required: [
+          "sourceUserId",
+          "targetUserId",
+          "sourceDomain",
+          "targetDomain",
+          "amount",
+        ],
       });
     }
 
     // Validate amount
     if (amount <= 0) {
-      return res.status(400).json({ error: 'Amount must be greater than 0' });
+      return res.status(400).json({ error: "Amount must be greater than 0" });
     }
 
     // Check emergency circuit breaker
@@ -59,7 +71,7 @@ export default async function handler(req, res) {
     });
 
     if (!sourceUser || !targetUser) {
-      return res.status(404).json({ error: 'Source or target user not found' });
+      return res.status(404).json({ error: "Source or target user not found" });
     }
 
     // Perform dual forensic check
@@ -73,8 +85,8 @@ export default async function handler(req, res) {
         targetDomain,
       },
       request: {
-        ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
-        userAgent: req.headers['user-agent'],
+        ip: req.headers["x-forwarded-for"] || req.socket.remoteAddress,
+        userAgent: req.headers["user-agent"],
         origin: req.headers.origin,
       },
     });
@@ -82,7 +94,7 @@ export default async function handler(req, res) {
     // If blocked or not approved, reject transfer
     if (forensicResult.blocked || !forensicResult.approved) {
       return res.status(403).json({
-        error: 'Transfer rejected by forensic check',
+        error: "Transfer rejected by forensic check",
         reason: forensicResult.reason,
         details: forensicResult.details,
         sourceAudit: forensicResult.sourceAudit?.persistResult,
@@ -99,13 +111,14 @@ export default async function handler(req, res) {
         targetDomain,
         amount,
         currency,
-        status: 'APPROVED',
+        status: "APPROVED",
         sourceAuditId: forensicResult.sourceAuditId,
         targetAuditId: forensicResult.targetAuditId,
         sourceApproved: true,
         targetApproved: true,
         riskLevel: forensicResult.sourceAudit?.validationResult?.riskLevel,
-        suspicious: forensicResult.sourceAudit?.suspicionResult?.suspicious || false,
+        suspicious:
+          forensicResult.sourceAudit?.suspicionResult?.suspicious || false,
         approvedAt: new Date(),
       },
     });
@@ -129,9 +142,9 @@ export default async function handler(req, res) {
       },
     });
   } catch (error) {
-    console.error('[TRANSFER CREATE ERROR]', error);
+    console.error("[TRANSFER CREATE ERROR]", error);
     return res.status(500).json({
-      error: 'Failed to create transfer',
+      error: "Failed to create transfer",
       message: error.message,
     });
   }

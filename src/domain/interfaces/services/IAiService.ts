@@ -14,7 +14,7 @@ export interface AiSignalInput {
 }
 
 export interface AiSignalResult {
-  signalType: 'POSITIVE' | 'NEUTRAL' | 'CAUTION';
+  signalType: "POSITIVE" | "NEUTRAL" | "CAUTION";
   confidence: number;
   reasoning: string;
   metadata: Record<string, unknown>;

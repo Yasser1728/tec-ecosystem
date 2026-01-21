@@ -1,6 +1,7 @@
 # Comprehensive Scan Report - 2026-01-11
 
 ## Commands Executed
+
 - `npm ci`
 - `npm run lint`
 - `npm test`
@@ -8,6 +9,7 @@
 - `npm audit --json`
 
 ## Results Summary
+
 - **Lint**: Passed (`next lint` reported no warnings or errors).
 - **Tests**: Failed.
   - `tests/e2e/quickstart-workflow.test.js`: `ReferenceError: TextEncoder is not defined` (triggered via `supertest`/`formidable` stack).
@@ -17,6 +19,7 @@
   - `preact` (transitive) — GHSA-36hm-qxxp-pg3m, range `10.28.0 - 10.28.1`; fix available by upgrading to `>=10.28.2`.
 
 ## Recommended Follow-ups
+
 1. Provide a `TextEncoder` polyfill in Jest for E2E tests using `supertest`:
    - Verify Jest runs on Node 18+ where `TextEncoder` is available globally (Node 16-17 may still need a polyfill depending on runtime flags).
    - If the runtime still lacks `TextEncoder`, add in `setupFilesAfterEnv`: `const { TextEncoder } = require('util'); global.TextEncoder = TextEncoder;` (or the ESM equivalent).

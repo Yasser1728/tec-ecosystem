@@ -18,7 +18,7 @@ jest.mock("../lib/db/prisma", () => ({
         Promise.resolve({
           id: "test-audit-id",
           hash: "test-hash",
-        })
+        }),
       ),
       findMany: jest.fn(() => Promise.resolve([])),
       count: jest.fn(() => Promise.resolve(0)),

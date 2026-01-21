@@ -3,14 +3,14 @@
  * Central interface for monitoring and controlling the TEC Ecosystem
  */
 
-import { withAuth } from '../../lib/withAuth';
-import { USER_TIERS } from '../../lib/roles';
-import Head from 'next/head';
-import Link from 'next/link';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
-import SystemIntegrityMonitor from '../../components/SystemIntegrityMonitor';
-import LiquidityStreamDisplay from '../../components/LiquidityStreamDisplay';
+import { withAuth } from "../../lib/withAuth";
+import { USER_TIERS } from "../../lib/roles";
+import Head from "next/head";
+import Link from "next/link";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
+import SystemIntegrityMonitor from "../../components/SystemIntegrityMonitor";
+import LiquidityStreamDisplay from "../../components/LiquidityStreamDisplay";
 
 function CommandCenter({ session }) {
   return (
@@ -53,12 +53,12 @@ function CommandCenter({ session }) {
               <div className="text-5xl">🛡️</div>
               <div>
                 <h2 className="text-2xl font-bold mb-2">
-                  Welcome, {session?.user?.username || 'Admin'}
+                  Welcome, {session?.user?.username || "Admin"}
                 </h2>
                 <p className="text-gray-300">
-                  You have sovereign control over the TEC Ecosystem. Monitor system
-                  integrity, manage liquidity flow, and control the emergency circuit
-                  breaker from this interface.
+                  You have sovereign control over the TEC Ecosystem. Monitor
+                  system integrity, manage liquidity flow, and control the
+                  emergency circuit breaker from this interface.
                 </p>
               </div>
             </div>
@@ -79,12 +79,14 @@ function CommandCenter({ session }) {
             <h2 className="text-2xl font-bold mb-4">Quick Actions</h2>
             <div className="grid md:grid-cols-3 gap-4">
               <div
-                onClick={() => window.location.href = '/admin/audit-logs'}
+                onClick={() => (window.location.href = "/admin/audit-logs")}
                 className="bg-gray-900 hover:bg-gray-700 border border-gray-700 rounded-lg p-4 cursor-pointer transition-all"
               >
                 <div className="text-3xl mb-2">📋</div>
                 <h3 className="font-bold mb-1">Audit Logs</h3>
-                <p className="text-sm text-gray-400">View forensic audit trail</p>
+                <p className="text-sm text-gray-400">
+                  View forensic audit trail
+                </p>
               </div>
 
               <Link href="/admin/users">
@@ -99,7 +101,9 @@ function CommandCenter({ session }) {
                 <div className="bg-gray-900 hover:bg-gray-700 border border-gray-700 rounded-lg p-4 cursor-pointer transition-all">
                   <div className="text-3xl mb-2">📊</div>
                   <h3 className="font-bold mb-1">Analytics</h3>
-                  <p className="text-sm text-gray-400">System analytics & reports</p>
+                  <p className="text-sm text-gray-400">
+                    System analytics & reports
+                  </p>
                 </div>
               </Link>
             </div>

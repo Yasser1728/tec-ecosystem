@@ -2,14 +2,17 @@
  * Unlock Repository Implementation - TEC Assistant Domain
  */
 
-import { PrismaClient } from '@prisma/client';
-import { Unlock } from '../../../domain/entities/Unlock';
-import { IUnlockRepository } from '../../../domain/interfaces/repositories/IUnlockRepository';
+import { PrismaClient } from "@prisma/client";
+import { Unlock } from "../../../domain/entities/Unlock";
+import { IUnlockRepository } from "../../../domain/interfaces/repositories/IUnlockRepository";
 
 export class UnlockRepository implements IUnlockRepository {
   constructor(private prisma: PrismaClient) {}
 
-  async findByUserAndFeature(userId: string, featureKey: string): Promise<Unlock | null> {
+  async findByUserAndFeature(
+    userId: string,
+    featureKey: string,
+  ): Promise<Unlock | null> {
     const unlock = await this.prisma.tecUnlock.findUnique({
       where: { userId_featureKey: { userId, featureKey } },
     });
@@ -25,7 +28,7 @@ export class UnlockRepository implements IUnlockRepository {
   async findByUserId(userId: string): Promise<Unlock[]> {
     const unlocks = await this.prisma.tecUnlock.findMany({
       where: { userId },
-      orderBy: { unlockedAt: 'desc' },
+      orderBy: { unlockedAt: "desc" },
     });
     return unlocks.map((u) => this.toDomain(u));
   }

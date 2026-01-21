@@ -1,50 +1,50 @@
 /**
  * NBF.pi - Sovereign Banking
- * 
+ *
  * Next-generation banking with Pi Network settlements
- * 
+ *
  * Sector: Banking
  * Category: finance
  */
 
-import { DomainBootstrap } from '../../core/bootstrap';
-import { getDomainDatabaseConfig } from '../../core/database';
-import domainConfig from './config';
+import { DomainBootstrap } from "../../core/bootstrap";
+import { getDomainDatabaseConfig } from "../../core/database";
+import domainConfig from "./config";
 
 /**
  * NBF Domain Class
- * 
+ *
  * Extends DomainBootstrap with nbf-specific functionality
  */
 export class NBFDomain extends DomainBootstrap {
   constructor(options = {}) {
     // Get database configuration
-    const dbConfig = getDomainDatabaseConfig('nbf');
-    
+    const dbConfig = getDomainDatabaseConfig("nbf");
+
     super({
       ...domainConfig,
       ...options,
-      name: 'nbf',
+      name: "nbf",
       database: dbConfig.database,
       forensicEnabled: true,
-      approvalRequired: true
+      approvalRequired: true,
     });
-    
+
     console.log(`[NBF] Domain initialized with sovereign controls`);
   }
-  
+
   /**
    * Get domain-specific information
    */
   getDomainInfo() {
     return {
       ...this.getMetadata(),
-      sector: 'Banking',
-      category: 'finance',
-      function: 'Financial planning, Pi settlements, and banking insights'
+      sector: "Banking",
+      category: "finance",
+      function: "Financial planning, Pi settlements, and banking insights",
     };
   }
-  
+
   /**
    * Example: Execute a domain-specific operation with full controls
    */
@@ -57,15 +57,15 @@ export class NBFDomain extends DomainBootstrap {
       async () => {
         // Domain-specific operation logic goes here
         console.log(`[NBF] Executing ${operationType}`);
-        
+
         // TODO: Implement domain-specific operations
-        
+
         return {
           success: true,
-          domain: 'nbf',
-          operation: operationType
+          domain: "nbf",
+          operation: operationType,
         };
-      }
+      },
     );
   }
 }

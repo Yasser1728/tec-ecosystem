@@ -1,15 +1,16 @@
 /**
  * Core ApprovalCenter
- * 
+ *
  * Centralized approval system for all domains
  * Manages sovereign email notifications and approval workflows
  */
 
-import { AUDIT_OPERATION_TYPES, RISK_LEVELS } from '../lib/forensic-utils.js';
-import emailService from '../lib/services/emailService.js';
+import { AUDIT_OPERATION_TYPES, RISK_LEVELS } from "../lib/forensic-utils.js";
+import emailService from "../lib/services/emailService.js";
 
 // Sovereign email for major transaction approvals
-const SOVEREIGN_EMAIL = process.env.SOVEREIGN_EMAIL || 'yasserrr.fox17@gmail.com';
+const SOVEREIGN_EMAIL =
+  process.env.SOVEREIGN_EMAIL || "yasserrr.fox17@gmail.com";
 
 // Thresholds for automatic vs manual approval
 const APPROVAL_THRESHOLDS = {
@@ -24,58 +25,70 @@ export class ApprovalCenter {
     this.sovereignEmail = config.sovereignEmail || SOVEREIGN_EMAIL;
     this.enabled = config.enabled !== false;
   }
-  
+
   /**
    * Request approval for an operation
    */
-  async requestApproval({ operationType, operationData, user, request, domain }) {
+  async requestApproval({
+    operationType,
+    operationData,
+    user,
+    request,
+    domain,
+  }) {
     if (!this.enabled) {
-      return { 
-        approved: true, 
-        reason: 'Approval center disabled',
-        autoApproved: true 
+      return {
+        approved: true,
+        reason: "Approval center disabled",
+        autoApproved: true,
       };
     }
-    
+
     try {
       // Call central approval API
-      const apiEndpoint = process.env.APPROVAL_API_ENDPOINT || '/api/approval';
-      
+      const apiEndpoint = process.env.APPROVAL_API_ENDPOINT || "/api/approval";
+
       let response;
       try {
         response = await fetch(apiEndpoint, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             operationType,
             operationData: {
               ...operationData,
-              domain: domain || this.domain
+              domain: domain || this.domain,
             },
             domain: domain || this.domain,
             context: {
               requestedAt: new Date().toISOString(),
-              requestedBy: user?.id || 'unknown'
-            }
-          })
+              requestedBy: user?.id || "unknown",
+            },
+          }),
         });
       } catch (networkError) {
         // Network error - fail securely for critical operations
-        const isCritical = this.isCriticalOperation(operationType, operationData);
-        console.error('[ApprovalCenter] Network error during approval request:', networkError);
-        
+        const isCritical = this.isCriticalOperation(
+          operationType,
+          operationData,
+        );
+        console.error(
+          "[ApprovalCenter] Network error during approval request:",
+          networkError,
+        );
+
         return {
           approved: !isCritical,
-          reason: isCritical 
-            ? 'Network error during approval - denied for security'
-            : 'Network error during approval - allowed with audit trail',
+          reason: isCritical
+            ? "Network error during approval - denied for security"
+            : "Network error during approval - allowed with audit trail",
           error: networkError.message,
-          networkError: true
+          networkError: true,
         };
       }
-      
+
       if (!response.ok) {
         const errorText = await response.text();
         let error;
@@ -84,17 +97,19 @@ export class ApprovalCenter {
         } catch {
           error = { message: errorText };
         }
-        
+
         return {
           approved: false,
-          reason: error.message || `Approval request failed with status ${response.status}`,
+          reason:
+            error.message ||
+            `Approval request failed with status ${response.status}`,
           error: error,
-          httpStatus: response.status
+          httpStatus: response.status,
         };
       }
-      
+
       const result = await response.json();
-      
+
       // Send email notification for high-value operations
       if (this.requiresEmailNotification(operationType, operationData)) {
         await this.sendSovereignNotification({
@@ -102,34 +117,37 @@ export class ApprovalCenter {
           operationData,
           user,
           domain: domain || this.domain,
-          approvalResult: result
+          approvalResult: result,
         });
       }
-      
+
       return {
         approved: result.approved,
-        reason: result.message || 'Processed by approval center',
+        reason: result.message || "Processed by approval center",
         auditLogId: result.auditLogId,
         riskLevel: result.riskLevel,
-        requiresManualReview: this.requiresManualReview(operationType, operationData)
+        requiresManualReview: this.requiresManualReview(
+          operationType,
+          operationData,
+        ),
       };
     } catch (error) {
-      console.error('[ApprovalCenter Error]', error);
-      
+      console.error("[ApprovalCenter Error]", error);
+
       // Fail-safe: For security-critical operations, deny on error
       const isCritical = this.isCriticalOperation(operationType, operationData);
-      
+
       return {
         approved: !isCritical,
-        reason: isCritical 
-          ? 'Approval failed for critical operation - denied for security'
-          : 'Approval system error - allowed with audit trail',
+        reason: isCritical
+          ? "Approval failed for critical operation - denied for security"
+          : "Approval system error - allowed with audit trail",
         error: error.message,
-        failSafe: true
+        failSafe: true,
       };
     }
   }
-  
+
   /**
    * Check if operation requires email notification
    */
@@ -138,39 +156,45 @@ export class ApprovalCenter {
     if (operationData.amount >= APPROVAL_THRESHOLDS.MANUAL_REVIEW_AMOUNT) {
       return true;
     }
-    
+
     // Critical operations
     const criticalOps = [
       AUDIT_OPERATION_TYPES.WITHDRAWAL,
       AUDIT_OPERATION_TYPES.TRANSFER,
-      AUDIT_OPERATION_TYPES.DOMAIN_PURCHASE
+      AUDIT_OPERATION_TYPES.DOMAIN_PURCHASE,
     ];
-    
+
     if (criticalOps.includes(operationType)) {
       return true;
     }
-    
+
     return false;
   }
-  
+
   /**
    * Check if operation requires manual review
    */
   requiresManualReview(operationType, operationData) {
     return operationData.amount >= APPROVAL_THRESHOLDS.MANUAL_REVIEW_AMOUNT;
   }
-  
+
   /**
    * Check if operation is critical
    */
   isCriticalOperation(operationType, operationData) {
     return operationData.amount >= APPROVAL_THRESHOLDS.CRITICAL_AMOUNT;
   }
-  
+
   /**
    * Send sovereign email notification
    */
-  async sendSovereignNotification({ operationType, operationData, user, domain, approvalResult }) {
+  async sendSovereignNotification({
+    operationType,
+    operationData,
+    user,
+    domain,
+    approvalResult,
+  }) {
     // Use the centralized email service
     const result = await emailService.sendSovereignNotification({
       to: this.sovereignEmail,
@@ -182,7 +206,7 @@ export class ApprovalCenter {
     });
 
     // Log for audit trail regardless of send status
-    console.log('[SOVEREIGN NOTIFICATION]', {
+    console.log("[SOVEREIGN NOTIFICATION]", {
       to: this.sovereignEmail,
       operationType,
       domain: domain || this.domain,
@@ -198,34 +222,35 @@ export class ApprovalCenter {
       messageId: result.messageId,
     };
   }
-  
+
   /**
    * Get approval statistics for domain
    */
   async getApprovalStats() {
     try {
-      const { fetchAuditLogs } = await import('../lib/forensic-utils');
-      
+      const { fetchAuditLogs } = await import("../lib/forensic-utils");
+
       const allLogs = await fetchAuditLogs({ domain: this.domain });
-      const approvedCount = allLogs.filter(log => log.approved).length;
-      const rejectedCount = allLogs.filter(log => !log.approved).length;
-      
+      const approvedCount = allLogs.filter((log) => log.approved).length;
+      const rejectedCount = allLogs.filter((log) => !log.approved).length;
+
       return {
         domain: this.domain,
         total: allLogs.length,
         approved: approvedCount,
         rejected: rejectedCount,
-        approvalRate: allLogs.length > 0 ? (approvedCount / allLogs.length) * 100 : 0
+        approvalRate:
+          allLogs.length > 0 ? (approvedCount / allLogs.length) * 100 : 0,
       };
     } catch (error) {
-      console.error('[ApprovalCenter Stats Error]', error);
+      console.error("[ApprovalCenter Stats Error]", error);
       return {
         domain: this.domain,
         total: 0,
         approved: 0,
         rejected: 0,
         approvalRate: 0,
-        error: error.message
+        error: error.message,
       };
     }
   }

@@ -1,50 +1,51 @@
 /**
  * Estate.pi - Real Estate Marketplace
- * 
+ *
  * Luxury real estate and property investment opportunities
- * 
+ *
  * Sector: Real Estate
  * Category: realestate
  */
 
-import { DomainBootstrap } from '../../core/bootstrap';
-import { getDomainDatabaseConfig } from '../../core/database';
-import domainConfig from './config';
+import { DomainBootstrap } from "../../core/bootstrap";
+import { getDomainDatabaseConfig } from "../../core/database";
+import domainConfig from "./config";
 
 /**
  * Estate Domain Class
- * 
+ *
  * Extends DomainBootstrap with estate-specific functionality
  */
 export class EstateDomain extends DomainBootstrap {
   constructor(options = {}) {
     // Get database configuration
-    const dbConfig = getDomainDatabaseConfig('estate');
-    
+    const dbConfig = getDomainDatabaseConfig("estate");
+
     super({
       ...domainConfig,
       ...options,
-      name: 'estate',
+      name: "estate",
       database: dbConfig.database,
       forensicEnabled: true,
-      approvalRequired: true
+      approvalRequired: true,
     });
-    
+
     console.log(`[Estate] Domain initialized with sovereign controls`);
   }
-  
+
   /**
    * Get domain-specific information
    */
   getDomainInfo() {
     return {
       ...this.getMetadata(),
-      sector: 'Real Estate',
-      category: 'realestate',
-      function: 'Property marketplace, investment guidance, and valuation services'
+      sector: "Real Estate",
+      category: "realestate",
+      function:
+        "Property marketplace, investment guidance, and valuation services",
     };
   }
-  
+
   /**
    * Example: Execute a domain-specific operation with full controls
    */
@@ -57,15 +58,15 @@ export class EstateDomain extends DomainBootstrap {
       async () => {
         // Domain-specific operation logic goes here
         console.log(`[Estate] Executing ${operationType}`);
-        
+
         // TODO: Implement domain-specific operations
-        
+
         return {
           success: true,
-          domain: 'estate',
-          operation: operationType
+          domain: "estate",
+          operation: operationType,
         };
-      }
+      },
     );
   }
 }

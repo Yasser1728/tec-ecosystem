@@ -103,7 +103,7 @@ export const PROMO_VIP50_DISCOUNT = 0.5;
  * Used for calculating tax on subtotals
  * @constant {number}
  */
-export const VAT_RATE = 0.10;
+export const VAT_RATE = 0.1;
 
 /**
  * Additional decimal constants for future use
@@ -148,7 +148,7 @@ export const COMMERCE_CONSTANTS = {
 
   // Utility constants
   PRECISION_THRESHOLD,
-  BASE_MULTIPLIER
+  BASE_MULTIPLIER,
 };
 
 /**

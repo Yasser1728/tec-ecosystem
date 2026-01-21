@@ -1,50 +1,50 @@
 /**
  * Alert.pi - Smart Notifications
- * 
+ *
  * Real-time alerts and monitoring systems
- * 
+ *
  * Sector: Monitoring
  * Category: technology
  */
 
-import { DomainBootstrap } from '../../core/bootstrap';
-import { getDomainDatabaseConfig } from '../../core/database';
-import domainConfig from './config';
+import { DomainBootstrap } from "../../core/bootstrap";
+import { getDomainDatabaseConfig } from "../../core/database";
+import domainConfig from "./config";
 
 /**
  * Alert Domain Class
- * 
+ *
  * Extends DomainBootstrap with alert-specific functionality
  */
 export class AlertDomain extends DomainBootstrap {
   constructor(options = {}) {
     // Get database configuration
-    const dbConfig = getDomainDatabaseConfig('alert');
-    
+    const dbConfig = getDomainDatabaseConfig("alert");
+
     super({
       ...domainConfig,
       ...options,
-      name: 'alert',
+      name: "alert",
       database: dbConfig.database,
       forensicEnabled: true,
-      approvalRequired: true
+      approvalRequired: true,
     });
-    
+
     console.log(`[Alert] Domain initialized with sovereign controls`);
   }
-  
+
   /**
    * Get domain-specific information
    */
   getDomainInfo() {
     return {
       ...this.getMetadata(),
-      sector: 'Monitoring',
-      category: 'technology',
-      function: 'Critical alerts, market updates, and event tracking'
+      sector: "Monitoring",
+      category: "technology",
+      function: "Critical alerts, market updates, and event tracking",
     };
   }
-  
+
   /**
    * Example: Execute a domain-specific operation with full controls
    */
@@ -57,15 +57,15 @@ export class AlertDomain extends DomainBootstrap {
       async () => {
         // Domain-specific operation logic goes here
         console.log(`[Alert] Executing ${operationType}`);
-        
+
         // TODO: Implement domain-specific operations
-        
+
         return {
           success: true,
-          domain: 'alert',
-          operation: operationType
+          domain: "alert",
+          operation: operationType,
         };
-      }
+      },
     );
   }
 }

@@ -3,7 +3,7 @@
  * Contract for transaction data persistence
  */
 
-import { Transaction } from '../../entities/Transaction';
+import { Transaction } from "../../entities/Transaction";
 
 export interface ITransactionRepository {
   /**
@@ -32,6 +32,6 @@ export interface ITransactionRepository {
   findByUserId(
     userId: string,
     page: number,
-    limit: number
+    limit: number,
   ): Promise<{ transactions: Transaction[]; total: number }>;
 }

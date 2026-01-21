@@ -17,6 +17,7 @@ Authorization: Bearer <your-jwt-token>
 ### 1. Create Portfolio
 
 **Request:**
+
 ```http
 POST /api/assets/portfolios
 Content-Type: application/json
@@ -30,6 +31,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -50,11 +52,13 @@ Content-Type: application/json
 ### 2. List User Portfolios
 
 **Request:**
+
 ```http
 GET /api/assets/portfolios
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -90,11 +94,13 @@ GET /api/assets/portfolios
 ### 3. Get Portfolio Details
 
 **Request:**
+
 ```http
 GET /api/assets/portfolios/port_clx123abc?include=assets
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -133,6 +139,7 @@ GET /api/assets/portfolios/port_clx123abc?include=assets
 ### 4. Create Asset (Manual Entry)
 
 **Request:**
+
 ```http
 POST /api/assets
 Content-Type: application/json
@@ -156,6 +163,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -195,11 +203,13 @@ Content-Type: application/json
 ### 5. List User Assets
 
 **Request:**
+
 ```http
 GET /api/assets?portfolioId=port_clx123abc&status=ACTIVE
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -224,7 +234,7 @@ GET /api/assets?portfolioId=port_clx123abc&status=ACTIVE
       "currentPrice": "250000.00",
       "currentValue": "250000.00",
       "unrealizedGainLoss": "50000.00",
-      "percentageGain": 25.00,
+      "percentageGain": 25.0,
       "status": "ACTIVE"
     }
   ],
@@ -239,11 +249,13 @@ GET /api/assets?portfolioId=port_clx123abc&status=ACTIVE
 ### 6. Get Asset Details with History
 
 **Request:**
+
 ```http
 GET /api/assets/asset_xyz789?include=transactions,valuations
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -299,6 +311,7 @@ GET /api/assets/asset_xyz789?include=transactions,valuations
 ### 7. Update Asset
 
 **Request:**
+
 ```http
 PUT /api/assets/asset_xyz789
 Content-Type: application/json
@@ -310,6 +323,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -328,11 +342,13 @@ Content-Type: application/json
 ### 8. Delete/Archive Asset
 
 **Request:**
+
 ```http
 DELETE /api/assets/asset_xyz789
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -350,6 +366,7 @@ DELETE /api/assets/asset_xyz789
 ### 9. Record New Transaction
 
 **Request:**
+
 ```http
 POST /api/assets/asset_xyz789/transactions
 Content-Type: application/json
@@ -365,6 +382,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -392,11 +410,13 @@ Content-Type: application/json
 ### 10. Get Transaction History
 
 **Request:**
+
 ```http
 GET /api/assets/asset_xyz789/transactions?limit=10
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -435,11 +455,13 @@ GET /api/assets/asset_xyz789/transactions?limit=10
 ### 11. Get Portfolio Analytics
 
 **Request:**
+
 ```http
 GET /api/assets/analytics/portfolio/port_clx123abc
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -457,7 +479,7 @@ GET /api/assets/analytics/portfolio/port_clx123abc
       {
         "assetType": "CRYPTOCURRENCY",
         "value": "125750.00",
-        "percentage": 100.00,
+        "percentage": 100.0,
         "count": 1
       }
     ],
@@ -491,11 +513,13 @@ GET /api/assets/analytics/portfolio/port_clx123abc
 ### 12. Get Overall Performance
 
 **Request:**
+
 ```http
 GET /api/assets/analytics/performance?startDate=2025-01-01&endDate=2026-01-04
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -530,7 +554,7 @@ GET /api/assets/analytics/performance?startDate=2025-01-01&endDate=2026-01-04
     ],
     "performanceChart": {
       "labels": ["Jan 2025", "Apr 2025", "Jul 2025", "Oct 2025", "Jan 2026"],
-      "values": [158000, 170000, 185000, 195000, 204000.50]
+      "values": [158000, 170000, 185000, 195000, 204000.5]
     }
   }
 }
@@ -541,6 +565,7 @@ GET /api/assets/analytics/performance?startDate=2025-01-01&endDate=2026-01-04
 ### 13. Create Asset from FundX Investment
 
 **Event:**
+
 ```json
 {
   "event": "fundx.investment.created",
@@ -560,6 +585,7 @@ GET /api/assets/analytics/performance?startDate=2025-01-01&endDate=2026-01-04
 ```
 
 **Automatic Asset Creation:**
+
 ```json
 {
   "success": true,
@@ -587,6 +613,7 @@ GET /api/assets/analytics/performance?startDate=2025-01-01&endDate=2026-01-04
 ### 14. Batch Update Prices
 
 **Request:**
+
 ```http
 POST /api/assets/prices/batch-update
 Content-Type: application/json
@@ -603,6 +630,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -634,6 +662,7 @@ Content-Type: application/json
 ## 🚨 Error Responses
 
 ### Validation Error
+
 ```json
 {
   "success": false,
@@ -651,6 +680,7 @@ Content-Type: application/json
 ```
 
 ### Not Found Error
+
 ```json
 {
   "success": false,
@@ -662,6 +692,7 @@ Content-Type: application/json
 ```
 
 ### Authentication Error
+
 ```json
 {
   "success": false,
@@ -673,6 +704,7 @@ Content-Type: application/json
 ```
 
 ### Server Error
+
 ```json
 {
   "success": false,
@@ -688,7 +720,8 @@ Content-Type: application/json
 
 **Note**: All monetary values are returned as strings to preserve precision. Parse as needed in your application.
 
-**Rate Limits**: 
+**Rate Limits**:
+
 - General endpoints: 100 requests per minute
 - Price update endpoints: 10 requests per minute
 - Analytics endpoints: 20 requests per minute

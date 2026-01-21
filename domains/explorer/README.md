@@ -7,6 +7,7 @@ Explorer (explorer.pi) is the comprehensive discovery and travel platform within
 ## 📋 Core Features
 
 ### 1. Travel Search & Discovery
+
 - **Flight Search**: Multi-city, round-trip, and one-way flights
 - **Hotel Booking**: Accommodations worldwide
 - **Tour Packages**: Curated travel experiences
@@ -14,6 +15,7 @@ Explorer (explorer.pi) is the comprehensive discovery and travel platform within
 - **Car Rentals**: Vehicle booking and rental services
 
 ### 2. Trip Planning
+
 - **Itinerary Builder**: Day-by-day trip planning
 - **Budget Calculator**: Trip cost estimation
 - **Collaborative Planning**: Multi-user trip planning
@@ -21,6 +23,7 @@ Explorer (explorer.pi) is the comprehensive discovery and travel platform within
 - **Weather Forecasts**: Destination weather information
 
 ### 3. Booking Management
+
 - **Multi-Provider**: Aggregate bookings from multiple sources
 - **Instant Confirmation**: Real-time booking confirmation
 - **Modification**: Easy booking changes and cancellations
@@ -28,6 +31,7 @@ Explorer (explorer.pi) is the comprehensive discovery and travel platform within
 - **Digital Tickets**: E-tickets and vouchers
 
 ### 4. Travel Analytics
+
 - **Price Tracking**: Historical and predictive pricing
 - **Best Time to Visit**: Seasonal recommendations
 - **Travel Insights**: Destination guides and tips
@@ -36,16 +40,19 @@ Explorer (explorer.pi) is the comprehensive discovery and travel platform within
 ## 🔗 Key Entities
 
 ### Destination
+
 - **Attributes**: name, country, description, attractions, bestTimeToVisit
 - **Content**: Images, videos, guides, weather data
 - **Categories**: Beach, Mountain, City, Adventure, Cultural
 
 ### Booking
+
 - **Types**: FLIGHT, HOTEL, PACKAGE, ACTIVITY, TRANSPORT
 - **Attributes**: bookingNumber, travelerInfo, dates, price, status
 - **Status**: PENDING, CONFIRMED, COMPLETED, CANCELLED
 
 ### Itinerary
+
 - **Attributes**: tripName, destinations, activities, budget, dates
 - **Sharing**: Private, shared with travelers, public
 - **Collaboration**: Multiple users can contribute
@@ -53,12 +60,14 @@ Explorer (explorer.pi) is the comprehensive discovery and travel platform within
 ## 🔌 API Endpoints
 
 ### Search
+
 - `GET /api/explorer/search/flights` - Search flights
 - `GET /api/explorer/search/hotels` - Search hotels
 - `GET /api/explorer/search/packages` - Search tour packages
 - `GET /api/explorer/search/activities` - Search activities
 
 ### Bookings
+
 - `POST /api/explorer/bookings` - Create booking
 - `GET /api/explorer/bookings` - List user bookings
 - `GET /api/explorer/bookings/:id` - Get booking details
@@ -66,6 +75,7 @@ Explorer (explorer.pi) is the comprehensive discovery and travel platform within
 - `DELETE /api/explorer/bookings/:id` - Cancel booking
 
 ### Itineraries
+
 - `POST /api/explorer/itineraries` - Create itinerary
 - `GET /api/explorer/itineraries` - List user itineraries
 - `GET /api/explorer/itineraries/:id` - Get itinerary details
@@ -73,6 +83,7 @@ Explorer (explorer.pi) is the comprehensive discovery and travel platform within
 - `POST /api/explorer/itineraries/:id/share` - Share itinerary
 
 ### Destinations
+
 - `GET /api/explorer/destinations` - List destinations
 - `GET /api/explorer/destinations/:id` - Get destination details
 - `GET /api/explorer/destinations/:id/attractions` - List attractions
@@ -81,19 +92,25 @@ Explorer (explorer.pi) is the comprehensive discovery and travel platform within
 ## 🔗 Integration with Other Domains
 
 ### NBF Domain
+
 **Flow**: Booking → Payment Processing
+
 - Integrated payment for all bookings
 - Travel budget accounts
 - Currency exchange for international travel
 
 ### Insure Domain
+
 **Flow**: Booking → Travel Insurance
+
 - Automatic travel insurance offers
 - Trip cancellation protection
 - Medical coverage for international trips
 
 ### Assets Domain
+
 **Flow**: Booking → Travel Expenses Tracking
+
 - Track travel as investment in experiences
 - Business travel expense documentation
 - ROI on travel investments (business trips)
@@ -101,6 +118,7 @@ Explorer (explorer.pi) is the comprehensive discovery and travel platform within
 ## 💼 Business Logic
 
 ### Flight Search Flow
+
 ```javascript
 1. User enters search criteria (origin, destination, dates, passengers)
 2. Query multiple flight providers APIs
@@ -112,6 +130,7 @@ Explorer (explorer.pi) is the comprehensive discovery and travel platform within
 ```
 
 ### Booking Creation Flow
+
 ```javascript
 1. User selects desired option
 2. Collect traveler information
@@ -128,6 +147,7 @@ Explorer (explorer.pi) is the comprehensive discovery and travel platform within
 ## 📊 Sample Data Models
 
 ### Flight Booking Example
+
 ```json
 {
   "id": "booking_explorer_flight_001",
@@ -168,6 +188,7 @@ Explorer (explorer.pi) is the comprehensive discovery and travel platform within
 ```
 
 ### Itinerary Example
+
 ```json
 {
   "id": "itin_explorer_001",

@@ -1,50 +1,51 @@
 /**
  * FundX.pi - Investment Strategies
- * 
+ *
  * Sovereign investment strategies powered by Pi Network
- * 
+ *
  * Sector: Investment
  * Category: finance
  */
 
-import { DomainBootstrap } from '../../core/bootstrap';
-import { getDomainDatabaseConfig } from '../../core/database';
-import domainConfig from './config';
+import { DomainBootstrap } from "../../core/bootstrap";
+import { getDomainDatabaseConfig } from "../../core/database";
+import domainConfig from "./config";
 
 /**
  * FundX Domain Class
- * 
+ *
  * Extends DomainBootstrap with fundx-specific functionality
  */
 export class FundXDomain extends DomainBootstrap {
   constructor(options = {}) {
     // Get database configuration
-    const dbConfig = getDomainDatabaseConfig('fundx');
-    
+    const dbConfig = getDomainDatabaseConfig("fundx");
+
     super({
       ...domainConfig,
       ...options,
-      name: 'fundx',
+      name: "fundx",
       database: dbConfig.database,
       forensicEnabled: true,
-      approvalRequired: true
+      approvalRequired: true,
     });
-    
+
     console.log(`[FundX] Domain initialized with sovereign controls`);
   }
-  
+
   /**
    * Get domain-specific information
    */
   getDomainInfo() {
     return {
       ...this.getMetadata(),
-      sector: 'Investment',
-      category: 'finance',
-      function: 'Investment strategies, ROI calculation, and portfolio optimization'
+      sector: "Investment",
+      category: "finance",
+      function:
+        "Investment strategies, ROI calculation, and portfolio optimization",
     };
   }
-  
+
   /**
    * Example: Execute a domain-specific operation with full controls
    */
@@ -57,15 +58,15 @@ export class FundXDomain extends DomainBootstrap {
       async () => {
         // Domain-specific operation logic goes here
         console.log(`[FundX] Executing ${operationType}`);
-        
+
         // TODO: Implement domain-specific operations
-        
+
         return {
           success: true,
-          domain: 'fundx',
-          operation: operationType
+          domain: "fundx",
+          operation: operationType,
         };
-      }
+      },
     );
   }
 }

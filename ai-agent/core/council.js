@@ -9,18 +9,18 @@
  * - Cross-model auditing
  */
 
-import { MODEL_REGISTRY } from './config.js';
+import { MODEL_REGISTRY } from "./config.js";
 
 /**
  * 🧠 Task Types (Canonical)
  */
 const TASK_TYPES = {
-  STRATEGY: 'STRATEGY',
-  ARCHITECTURE: 'ARCHITECTURE',
-  DEVELOPMENT: 'DEVELOPMENT',
-  OPERATION: 'OPERATION',
-  AUDIT: 'AUDIT',
-  FAST: 'FAST'
+  STRATEGY: "STRATEGY",
+  ARCHITECTURE: "ARCHITECTURE",
+  DEVELOPMENT: "DEVELOPMENT",
+  OPERATION: "OPERATION",
+  AUDIT: "AUDIT",
+  FAST: "FAST",
 };
 
 /**
@@ -28,7 +28,7 @@ const TASK_TYPES = {
  */
 let RUNTIME_STATE = {
   balance: 100, // virtual credits (placeholder)
-  lowBalanceThreshold: 20
+  lowBalanceThreshold: 20,
 };
 
 /**
@@ -116,8 +116,8 @@ export function councilDecision({ taskType, domain, requiresAudit = false }) {
     auditor: auditModel,
     meta: {
       lowBalance: isLowBalance(),
-      tier: primaryModel.tier
-    }
+      tier: primaryModel.tier,
+    },
   };
 }
 

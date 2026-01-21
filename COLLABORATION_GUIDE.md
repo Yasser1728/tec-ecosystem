@@ -11,6 +11,7 @@ This guide provides comprehensive guidelines for collaborative development of th
 ### Domain Teams
 
 Each domain has a dedicated team responsible for:
+
 - Domain design and architecture
 - Implementation and testing
 - Documentation and API specifications
@@ -18,6 +19,7 @@ Each domain has a dedicated team responsible for:
 - Maintenance and support
 
 **Team Roles:**
+
 - **Domain Owner**: Overall responsibility and decision-making
 - **Tech Lead**: Technical architecture and code quality
 - **Backend Developers**: API and business logic implementation
@@ -29,16 +31,19 @@ Each domain has a dedicated team responsible for:
 ### Cross-Domain Teams
 
 **Integration Team:**
+
 - Manages cross-domain integrations
 - Maintains Nexus (API gateway)
 - Ensures consistent patterns
 
 **Platform Team:**
+
 - Core infrastructure (System domain)
 - Monitoring and alerting (Alert domain)
 - Analytics platform (Analytics domain)
 
 **Product Team:**
+
 - Product strategy and roadmap
 - User experience across ecosystem
 - Feature prioritization
@@ -50,6 +55,7 @@ Each domain has a dedicated team responsible for:
 ### 1. Planning Phase
 
 **Domain Planning:**
+
 ```
 1. Define domain mission and vision
 2. Identify core features and use cases
@@ -61,6 +67,7 @@ Each domain has a dedicated team responsible for:
 ```
 
 **Documentation First:**
+
 - Create comprehensive README before implementation
 - Define API endpoints and data schemas
 - Document integration points
@@ -69,6 +76,7 @@ Each domain has a dedicated team responsible for:
 ### 2. Implementation Phase
 
 **Development Process:**
+
 ```
 1. Set up domain folder structure
 2. Implement data models (Prisma schema)
@@ -81,6 +89,7 @@ Each domain has a dedicated team responsible for:
 ```
 
 **Code Standards:**
+
 - Follow existing code patterns from reference domains
 - Use TypeScript or JSDoc for type safety
 - Write clean, self-documenting code
@@ -90,6 +99,7 @@ Each domain has a dedicated team responsible for:
 ### 3. Testing Phase
 
 **Testing Requirements:**
+
 - **Unit Tests**: 80%+ code coverage
 - **Integration Tests**: All API endpoints
 - **E2E Tests**: Critical user journeys
@@ -99,6 +109,7 @@ Each domain has a dedicated team responsible for:
 ### 4. Review Phase
 
 **Code Review Checklist:**
+
 - [ ] Code follows style guide
 - [ ] Tests pass with good coverage
 - [ ] Documentation is complete
@@ -111,6 +122,7 @@ Each domain has a dedicated team responsible for:
 ### 5. Deployment Phase
 
 **Deployment Steps:**
+
 ```
 1. Merge to main branch
 2. Run full test suite
@@ -215,7 +227,8 @@ Every domain README must include:
 ### API Documentation Standards
 
 **Endpoint Format:**
-```markdown
+
+````markdown
 ### GET /api/[domain]/[resource]
 
 **Description:** Brief description of endpoint purpose
@@ -223,18 +236,22 @@ Every domain README must include:
 **Authentication:** Required/Optional
 
 **Parameters:**
+
 - `param1` (required): Description and type
 - `param2` (optional): Description and type
 
 **Request Example:**
+
 ```json
 {
   "param1": "value1",
   "param2": "value2"
 }
 ```
+````
 
 **Response Example:**
+
 ```json
 {
   "id": "123",
@@ -243,9 +260,11 @@ Every domain README must include:
 ```
 
 **Error Responses:**
+
 - `400`: Bad request
 - `401`: Unauthorized
 - `404`: Not found
+
 ```
 
 ---
@@ -268,12 +287,15 @@ Every domain README must include:
 
 **Event Naming Convention:**
 ```
+
 [domain].[resource].[action]
 
 Examples:
+
 - fundx.investment.created
 - assets.portfolio.updated
 - commerce.order.completed
+
 ```
 
 ### Data Sharing
@@ -310,15 +332,19 @@ Examples:
 
 **RBAC (Role-Based Access Control):**
 ```
+
 Roles: GUEST, STANDARD, PREMIUM, ADMIN
 
 Permissions:
+
 - [domain]:[resource]:[action]
 
 Examples:
+
 - assets:portfolio:read
 - fundx:investment:write
 - commerce:order:create
+
 ```
 
 ### Data Security
@@ -350,10 +376,12 @@ Examples:
 
 **Caching Strategy:**
 ```
+
 Level 1: Browser cache (static assets)
 Level 2: CDN cache (public data)
 Level 3: Application cache (Redis)
 Level 4: Database query cache
+
 ```
 
 **Database Optimization:**
@@ -384,13 +412,16 @@ Level 4: Database query cache
 ### Testing Pyramid
 
 ```
+
         /\
        /  \  E2E Tests (10%)
-      /    \ 
+      /    \
      /------\ Integration Tests (20%)
     /        \
-   /----------\ Unit Tests (70%)
-```
+
+/----------\ Unit Tests (70%)
+
+````
 
 ### Test Naming Convention
 
@@ -407,7 +438,7 @@ Examples:
 - "should create asset when valid data provided"
 - "should return 400 when required field missing"
 - "should handle concurrent requests correctly"
-```
+````
 
 ---
 
@@ -416,12 +447,14 @@ Examples:
 ### Logging Standards
 
 **Log Levels:**
+
 - **ERROR**: Application errors
 - **WARN**: Warning conditions
 - **INFO**: Informational messages
 - **DEBUG**: Debug information
 
 **Log Format (JSON):**
+
 ```json
 {
   "timestamp": "2026-01-04T12:00:00Z",
@@ -441,12 +474,14 @@ Examples:
 ### Metrics to Track
 
 **Performance Metrics:**
+
 - Request rate (requests/second)
 - Response time (p50, p95, p99)
 - Error rate (percentage)
 - Throughput (MB/second)
 
 **Business Metrics:**
+
 - User signups
 - Active users
 - Transactions completed
@@ -459,6 +494,7 @@ Examples:
 ### Environment Strategy
 
 **Environments:**
+
 1. **Development**: Local development
 2. **Staging**: Pre-production testing
 3. **Production**: Live environment
@@ -488,12 +524,14 @@ Examples:
 ### Rollback Strategy
 
 **Automated Rollback Triggers:**
+
 - Error rate > 5%
 - Response time > 3 seconds (p95)
 - Health check failures
 - Critical bug detected
 
 **Manual Rollback:**
+
 - Product team decision
 - Security incident
 - Data corruption
@@ -505,6 +543,7 @@ Examples:
 ### Channels
 
 **Slack Channels:**
+
 - `#tec-general`: General announcements
 - `#tec-dev`: Development discussions
 - `#tec-[domain]`: Domain-specific channels
@@ -512,6 +551,7 @@ Examples:
 - `#tec-incidents`: Production incidents
 
 **Meetings:**
+
 - **Daily Standup**: 15 minutes, domain teams
 - **Weekly Sync**: 1 hour, cross-domain alignment
 - **Sprint Planning**: 2 hours, every 2 weeks
@@ -520,6 +560,7 @@ Examples:
 ### Documentation
 
 **Where to Document:**
+
 - **Technical specs**: GitHub Wiki
 - **API docs**: OpenAPI/Swagger
 - **User guides**: Notion/Confluence
@@ -551,18 +592,21 @@ Examples:
 ### Required Knowledge
 
 **Backend Development:**
+
 - Node.js and JavaScript/TypeScript
 - RESTful API design
 - Database design (PostgreSQL)
 - Prisma ORM
 
 **Frontend Development:**
+
 - React and Next.js
 - Tailwind CSS
 - State management
 - API integration
 
 **DevOps:**
+
 - Docker and containers
 - CI/CD pipelines
 - Monitoring tools
@@ -582,16 +626,19 @@ Examples:
 ### Support Channels
 
 **Technical Questions:**
+
 - Post in relevant Slack channel
 - Tag domain owners or tech leads
 - Check documentation first
 
 **Bugs and Issues:**
+
 - Create GitHub issue with template
 - Include reproduction steps
 - Add relevant logs and screenshots
 
 **Architecture Discussions:**
+
 - Schedule meeting with Integration Team
 - Create ADR (Architecture Decision Record)
 - Get feedback from multiple domains
@@ -601,6 +648,7 @@ Examples:
 ## ✅ Onboarding Checklist
 
 **New Team Member:**
+
 - [ ] Access to GitHub repository
 - [ ] Slack workspace access
 - [ ] Development environment set up
@@ -619,6 +667,7 @@ Examples:
 Keep this guide updated as processes evolve.
 
 **Version History:**
+
 - **v1.0.0** (January 2026): Initial release
   - Basic collaboration guidelines
   - Domain structure template
@@ -635,17 +684,20 @@ This comprehensive guide walks you through creating a new domain in the TEC Ecos
 #### 1.1 Define Domain Mission
 
 **Questions to Answer:**
+
 - What is the primary purpose of this domain?
 - Who are the target users?
 - What problems does it solve?
 - How does it fit into the ecosystem?
 
 **Example (Assets Domain):**
+
 > "The Assets domain serves as the central portfolio management and asset tracking system, enabling users to track, manage, and optimize their diverse asset holdings across all domains."
 
 #### 1.2 Identify Core Features
 
 List 5-10 core features organized into logical subsections:
+
 - Portfolio Management (create, update, track)
 - Asset Tracking (lifecycle management)
 - Analytics & Reporting (performance metrics)
@@ -654,12 +706,14 @@ List 5-10 core features organized into logical subsections:
 #### 1.3 Design Data Architecture
 
 Create Entity Relationship Diagram showing:
+
 - Core entities with all attributes
 - Relationships and cardinality
 - Data types and constraints
 - Indexes for performance
 
 **Required Entities:**
+
 - Main business entities
 - Supporting reference data
 - Transaction/audit tables
@@ -674,6 +728,7 @@ mkdir -p domains/[domain-name]/{data-model,services,api,tests/{unit,integration}
 ```
 
 **Required Files:**
+
 ```
 /domains/[domain-name]/
 ├── README.md                    # Comprehensive documentation
@@ -716,10 +771,10 @@ model DomainEntity {
   description String?
   status      String   @default("ACTIVE")
   metadata    Json?    // For flexible data storage
-  
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  
+
   @@index([userId])
   @@index([status])
   @@map("domain_entities")
@@ -727,6 +782,7 @@ model DomainEntity {
 ```
 
 **Best Practices:**
+
 - Use `@default(uuid())` for IDs
 - Add `userId` to enable multi-tenancy
 - Use `Json` type for flexible metadata
@@ -741,11 +797,11 @@ model DomainEntity {
 ```javascript
 /**
  * [Domain] Service - Core Business Logic
- * 
+ *
  * @module domains/[domain]/services/[domain]Service
  */
 
-const { PrismaClient } = require('@prisma/client');
+const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 class DomainService {
@@ -756,10 +812,10 @@ class DomainService {
     try {
       // 1. Validate input
       this.validateEntityData(data);
-      
+
       // 2. Calculate derived fields
       const calculatedFields = this.calculateFields(data);
-      
+
       // 3. Create in database
       const entity = await prisma.domainEntity.create({
         data: {
@@ -770,26 +826,26 @@ class DomainService {
           // Include related data
         },
       });
-      
+
       // 4. Publish event
       this.publishEntityCreated(entity);
-      
+
       return entity;
     } catch (error) {
-      console.error('Error creating entity:', error);
+      console.error("Error creating entity:", error);
       throw new Error(`Failed to create entity: ${error.message}`);
     }
   }
-  
+
   /**
    * Validate entity data
    */
   validateEntityData(data) {
-    if (!data.userId) throw new Error('User ID is required');
-    if (!data.name) throw new Error('Name is required');
+    if (!data.userId) throw new Error("User ID is required");
+    if (!data.name) throw new Error("Name is required");
     // Add more validations
   }
-  
+
   /**
    * Calculate derived fields
    */
@@ -798,19 +854,23 @@ class DomainService {
       // Calculated fields
     };
   }
-  
+
   /**
    * Publish domain events
    */
   publishEntityCreated(entity) {
-    const eventBus = require('../../../lib/eventBus');
-    eventBus.publish('[domain].entity.created', {
-      entityId: entity.id,
-      userId: entity.userId,
-      // ... event data
-    }, {
-      userId: entity.userId,
-    });
+    const eventBus = require("../../../lib/eventBus");
+    eventBus.publish(
+      "[domain].entity.created",
+      {
+        entityId: entity.id,
+        userId: entity.userId,
+        // ... event data
+      },
+      {
+        userId: entity.userId,
+      },
+    );
   }
 }
 
@@ -820,6 +880,7 @@ module.exports.default = new DomainService();
 ```
 
 **Key Methods to Implement:**
+
 1. `createEntity(data)` - Create with validation
 2. `getEntityById(id, options)` - Retrieve with relations
 3. `getUserEntities(userId, filters)` - List with filtering
@@ -835,85 +896,93 @@ module.exports.default = new DomainService();
 ```javascript
 /**
  * [Domain] Integration Service
- * 
+ *
  * Handles cross-domain communication via Event Bus
- * 
+ *
  * @module domains/[domain]/services/integrationService
  */
 
-const eventBus = require('../../../lib/eventBus');
-const DomainService = require('./domainService');
+const eventBus = require("../../../lib/eventBus");
+const DomainService = require("./domainService");
 
 class DomainIntegrationService {
   constructor() {
     this.domainService = new DomainService();
     this.subscribers = [];
   }
-  
+
   /**
    * Initialize event subscriptions
    */
   initialize() {
-    console.log('[DomainIntegration] Initializing subscriptions...');
-    
+    console.log("[DomainIntegration] Initializing subscriptions...");
+
     // Subscribe to relevant events from other domains
     this.subscribeToRelatedDomains();
-    
-    console.log('[DomainIntegration] Subscriptions initialized');
+
+    console.log("[DomainIntegration] Subscriptions initialized");
   }
-  
+
   /**
    * Subscribe to events from other domains
    */
   subscribeToRelatedDomains() {
     // Example: Listen to Assets domain
     const unsubAssets = eventBus.subscribe(
-      'assets.asset.created',
+      "assets.asset.created",
       async (eventData, metadata) => {
-        console.log('[DomainIntegration] Asset created:', eventData);
+        console.log("[DomainIntegration] Asset created:", eventData);
         // Handle event
         await this.handleAssetCreated(eventData);
       },
-      { domain: '[domain]', description: 'Handle asset creation' }
+      { domain: "[domain]", description: "Handle asset creation" },
     );
-    
+
     this.subscribers.push(unsubAssets);
   }
-  
+
   /**
    * Handle asset created event
    */
   async handleAssetCreated(eventData) {
     // Process event and create/update entities
   }
-  
+
   /**
    * Publish events for other domains
    */
   publishEntityCreated(entity, userId) {
-    eventBus.publish('[domain].entity.created', {
-      entityId: entity.id,
-      userId: userId,
-      // ... event data
-    }, { userId });
-    
-    // Also publish to Analytics
-    eventBus.publish('analytics.data.updated', {
-      domain: '[domain]',
-      type: 'entity_created',
-      userId: userId,
-      data: {
+    eventBus.publish(
+      "[domain].entity.created",
+      {
         entityId: entity.id,
-        // ... analytics data
+        userId: userId,
+        // ... event data
       },
-    }, { userId });
+      { userId },
+    );
+
+    // Also publish to Analytics
+    eventBus.publish(
+      "analytics.data.updated",
+      {
+        domain: "[domain]",
+        type: "entity_created",
+        userId: userId,
+        data: {
+          entityId: entity.id,
+          // ... analytics data
+        },
+      },
+      { userId },
+    );
   }
-  
+
   /**
    * Cleanup subscriptions
    */
   cleanup() {
-    this.subscribers.forEach(unsubscribe => unsubscribe());
+    this.subscribers.forEach((unsubscribe) => unsubscribe());
     this.subscribers = [];
   }
 }
@@ -923,6 +992,7 @@ module.exports = integrationService;
 ```
 
 **Event Naming Convention:**
+
 ```
 [source-domain].[resource].[action]
 
@@ -933,20 +1003,21 @@ Examples:
 ```
 
 **Event Data Structure:**
+
 ```javascript
 {
   // Resource identifiers
   entityId: 'entity_123',
   userId: 'user_123',
-  
+
   // Business data
   entityType: 'TYPE',
   value: 1000,
-  
+
   // Integration metadata
   sourceDomain: 'domain-name',
   sourceId: 'source_entity_123',
-  
+
   // Optional fields
   metadata: {}
 }
@@ -975,9 +1046,9 @@ export interface DomainEntity {
 
 // Enums
 export enum EntityStatus {
-  ACTIVE = 'ACTIVE',
-  INACTIVE = 'INACTIVE',
-  ARCHIVED = 'ARCHIVED',
+  ACTIVE = "ACTIVE",
+  INACTIVE = "INACTIVE",
+  ARCHIVED = "ARCHIVED",
 }
 
 // Service input types
@@ -1016,35 +1087,35 @@ export interface ApiResponse<T> {
  * Unit Tests for [Domain] Service
  */
 
-const DomainService = require('../../services/domainService');
+const DomainService = require("../../services/domainService");
 
-describe('DomainService', () => {
+describe("DomainService", () => {
   let service;
-  
+
   beforeEach(() => {
     service = new DomainService();
     jest.clearAllMocks();
   });
-  
-  describe('validateEntityData', () => {
-    it('should pass validation for valid data', () => {
+
+  describe("validateEntityData", () => {
+    it("should pass validation for valid data", () => {
       const validData = {
-        userId: 'user_123',
-        name: 'Test Entity',
+        userId: "user_123",
+        name: "Test Entity",
       };
-      
-      expect(() => service.validateEntityData(validData))
-        .not.toThrow();
+
+      expect(() => service.validateEntityData(validData)).not.toThrow();
     });
-    
-    it('should throw error for missing userId', () => {
-      const invalidData = { name: 'Test' };
-      
-      expect(() => service.validateEntityData(invalidData))
-        .toThrow('User ID is required');
+
+    it("should throw error for missing userId", () => {
+      const invalidData = { name: "Test" };
+
+      expect(() => service.validateEntityData(invalidData)).toThrow(
+        "User ID is required",
+      );
     });
   });
-  
+
   // Add more test cases
 });
 ```
@@ -1056,30 +1127,30 @@ describe('DomainService', () => {
  * Integration Tests for Event Bus
  */
 
-const eventBus = require('../../../../lib/eventBus');
-const integrationService = require('../../services/integrationService');
+const eventBus = require("../../../../lib/eventBus");
+const integrationService = require("../../services/integrationService");
 
-describe('[Domain] Event Bus Integration', () => {
+describe("[Domain] Event Bus Integration", () => {
   beforeAll(() => {
     integrationService.initialize();
   });
-  
+
   afterAll(() => {
     integrationService.cleanup();
   });
-  
-  it('should handle event from other domain', (done) => {
+
+  it("should handle event from other domain", (done) => {
     const unsubscribe = eventBus.subscribe(
-      '[domain].entity.created',
+      "[domain].entity.created",
       (eventData) => {
         expect(eventData.entityId).toBeDefined();
         unsubscribe();
         done();
-      }
+      },
     );
-    
+
     // Publish test event
-    eventBus.publish('otherdomain.resource.created', {
+    eventBus.publish("otherdomain.resource.created", {
       // ... event data
     });
   });
@@ -1096,30 +1167,39 @@ Follow this template:
 # [Domain] Domain - [One-line Description]
 
 ## 🎯 Domain Mission
+
 [2-3 paragraphs describing purpose and value]
 
 ## 📋 Core Features
+
 [List 5-10 key features with descriptions]
 
 ## 🏗️ Data Architecture
+
 [Text-based ERD and entity descriptions]
 
 ## 🔌 API Reference
+
 [List all endpoints with examples]
 
 ## 🔗 Integration Scenarios
+
 [Document cross-domain flows]
 
 ## 💼 Business Logic
+
 [Explain key workflows and algorithms]
 
 ## 🧪 Testing Strategy
+
 [Describe test approach and coverage]
 
 ## 🚀 Deployment Considerations
+
 [Performance, scalability, monitoring]
 
 ## 📈 Future Enhancements
+
 [Planned features and improvements]
 ```
 
@@ -1129,29 +1209,31 @@ Follow this template:
 # [Domain] API Examples
 
 ## Authentication
+
 All endpoints require JWT token
 
 ## Endpoints
 
 ### POST /api/[domain]/entities
+
 Create new entity
 
 **Request:**
 \`\`\`json
 {
-  "name": "Example",
-  "description": "Description"
+"name": "Example",
+"description": "Description"
 }
 \`\`\`
 
 **Response:**
 \`\`\`json
 {
-  "success": true,
-  "data": {
-    "id": "entity_123",
-    "name": "Example"
-  }
+"success": true,
+"data": {
+"id": "entity_123",
+"name": "Example"
+}
 }
 \`\`\`
 ```
@@ -1192,12 +1274,12 @@ Update domain configuration:
 // lib/domain-config.js
 const domains = {
   // ...
-  '[domain]': {
-    name: '[Domain Name]',
-    description: '[Brief description]',
-    status: 'ACTIVE',
-    category: 'CATEGORY',
-    tier: 'STANDARD',
+  "[domain]": {
+    name: "[Domain Name]",
+    description: "[Brief description]",
+    status: "ACTIVE",
+    category: "CATEGORY",
+    tier: "STANDARD",
     // ...
   },
 };
@@ -1209,8 +1291,8 @@ In application startup:
 
 ```javascript
 // Initialize all domain integrations
-const assetsIntegration = require('./domains/assets/services/integrationService');
-const newDomainIntegration = require('./domains/[domain]/services/integrationService');
+const assetsIntegration = require("./domains/assets/services/integrationService");
+const newDomainIntegration = require("./domains/[domain]/services/integrationService");
 
 assetsIntegration.initialize();
 newDomainIntegration.initialize();
@@ -1293,6 +1375,7 @@ The **Assets Domain** serves as the gold standard for domain development:
 ## 🔑 Key Success Factors
 
 ### Do's:
+
 ✅ Follow existing patterns from Assets domain  
 ✅ Use Event Bus for all cross-domain communication  
 ✅ Write comprehensive tests before deployment  
@@ -1301,9 +1384,10 @@ The **Assets Domain** serves as the gold standard for domain development:
 ✅ Handle errors gracefully  
 ✅ Use TypeScript types for clarity  
 ✅ Publish events for downstream consumers  
-✅ Keep services focused and cohesive  
+✅ Keep services focused and cohesive
 
 ### Don'ts:
+
 ❌ Direct database access between domains  
 ❌ Synchronous HTTP calls between domains  
 ❌ Missing error handling  
@@ -1311,7 +1395,7 @@ The **Assets Domain** serves as the gold standard for domain development:
 ❌ Skipping tests  
 ❌ Hard-coding values  
 ❌ Ignoring existing patterns  
-❌ Forgetting to publish events  
+❌ Forgetting to publish events
 
 ---
 

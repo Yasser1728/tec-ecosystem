@@ -3,7 +3,7 @@
  * Contract for user data persistence
  */
 
-import { User } from '../../entities/User';
+import { User } from "../../entities/User";
 
 export interface IUserRepository {
   /**

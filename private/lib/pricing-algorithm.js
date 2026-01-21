@@ -26,7 +26,7 @@ import {
   PROMO_SAVE20_DISCOUNT,
   PROMO_VIP50_DISCOUNT,
   BASE_MULTIPLIER,
-} from './constants.js';
+} from "./constants.js";
 
 /**
  * Membership tier configuration
@@ -100,10 +100,10 @@ const SERVICE_CATEGORIES = {
  * Used for bulk purchase discounts
  */
 const VOLUME_DISCOUNTS = {
-  BULK_QUANTITY_THRESHOLD: 10,      // 10+ items for bulk discount
-  MEDIUM_QUANTITY_THRESHOLD: 5,     // 5+ items for medium discount
-  BULK_DISCOUNT_RATE: BULK_DISCOUNT_MULTIPLIER,          // 10% bulk discount (multiply by 0.9 = 10% off)
-  MEDIUM_DISCOUNT_RATE: MEDIUM_DISCOUNT_MULTIPLIER,       // 5% medium discount (multiply by 0.95 = 5% off)
+  BULK_QUANTITY_THRESHOLD: 10, // 10+ items for bulk discount
+  MEDIUM_QUANTITY_THRESHOLD: 5, // 5+ items for medium discount
+  BULK_DISCOUNT_RATE: BULK_DISCOUNT_MULTIPLIER, // 10% bulk discount (multiply by 0.9 = 10% off)
+  MEDIUM_DISCOUNT_RATE: MEDIUM_DISCOUNT_MULTIPLIER, // 5% medium discount (multiply by 0.95 = 5% off)
 };
 
 /**
@@ -111,10 +111,10 @@ const VOLUME_DISCOUNTS = {
  * Used to determine when users should upgrade their membership tier
  */
 const TIER_RECOMMENDATION_THRESHOLDS = {
-  VIP_SAVINGS_THRESHOLD: 1000,      // Recommend VIP if savings exceed $1000/month
-  VIP_SERVICES_THRESHOLD: 10,       // Recommend VIP if using 10+ services
-  PREMIUM_SAVINGS_THRESHOLD: 500,   // Recommend Premium if savings exceed $500/month
-  PREMIUM_SERVICES_THRESHOLD: 5,    // Recommend Premium if using 5+ services
+  VIP_SAVINGS_THRESHOLD: 1000, // Recommend VIP if savings exceed $1000/month
+  VIP_SERVICES_THRESHOLD: 10, // Recommend VIP if using 10+ services
+  PREMIUM_SAVINGS_THRESHOLD: 500, // Recommend Premium if savings exceed $500/month
+  PREMIUM_SERVICES_THRESHOLD: 5, // Recommend Premium if using 5+ services
 };
 
 /**
@@ -295,12 +295,16 @@ export function recommendTier(usageData) {
   let recommendedTier = "FREE";
   let reasoning = "Your current usage does not justify a paid tier.";
 
-  if (vipSavings > TIER_RECOMMENDATION_THRESHOLDS.VIP_SAVINGS_THRESHOLD || 
-      servicesUsed >= TIER_RECOMMENDATION_THRESHOLDS.VIP_SERVICES_THRESHOLD) {
+  if (
+    vipSavings > TIER_RECOMMENDATION_THRESHOLDS.VIP_SAVINGS_THRESHOLD ||
+    servicesUsed >= TIER_RECOMMENDATION_THRESHOLDS.VIP_SERVICES_THRESHOLD
+  ) {
     recommendedTier = "VIP";
     reasoning = `You could save $${roundPrice(vipSavings)} per month with VIP membership.`;
-  } else if (premiumSavings > TIER_RECOMMENDATION_THRESHOLDS.PREMIUM_SAVINGS_THRESHOLD || 
-             servicesUsed >= TIER_RECOMMENDATION_THRESHOLDS.PREMIUM_SERVICES_THRESHOLD) {
+  } else if (
+    premiumSavings > TIER_RECOMMENDATION_THRESHOLDS.PREMIUM_SAVINGS_THRESHOLD ||
+    servicesUsed >= TIER_RECOMMENDATION_THRESHOLDS.PREMIUM_SERVICES_THRESHOLD
+  ) {
     recommendedTier = "PREMIUM";
     reasoning = `You could save $${roundPrice(premiumSavings)} per month with Premium membership.`;
   }

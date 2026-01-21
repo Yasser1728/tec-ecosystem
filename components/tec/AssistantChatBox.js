@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from "react";
 
 /**
  * AssistantChatBox Component
@@ -6,7 +6,7 @@ import { useState, useRef, useEffect } from 'react';
  */
 export default function AssistantChatBox({ onSendMessage, suggestions = [] }) {
   const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
   const messagesEndRef = useRef(null);
@@ -16,15 +16,16 @@ export default function AssistantChatBox({ onSendMessage, suggestions = [] }) {
     setMounted(true);
     setMessages([
       {
-        role: 'assistant',
-        content: 'Hello! I\'m the TEC Assistant. How can I help you navigate the ecosystem today?',
+        role: "assistant",
+        content:
+          "Hello! I'm the TEC Assistant. How can I help you navigate the ecosystem today?",
         timestamp: new Date().toISOString(),
       },
     ]);
   }, []);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
@@ -35,24 +36,24 @@ export default function AssistantChatBox({ onSendMessage, suggestions = [] }) {
     if (!input.trim() || isLoading) return;
 
     const userMessage = {
-      role: 'user',
+      role: "user",
       content: input,
       timestamp: new Date().toISOString(),
     };
 
-    setMessages(prev => [...prev, userMessage]);
-    setInput('');
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
     setIsLoading(true);
 
     try {
       // Call the onSendMessage prop or default API
-      const response = onSendMessage 
+      const response = onSendMessage
         ? await onSendMessage(input)
-        : await fetch('/api/tec/assistant', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+        : await fetch("/api/tec/assistant", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ message: input }),
-          }).then(async res => {
+          }).then(async (res) => {
             if (!res.ok) {
               throw new Error(`HTTP error! status: ${res.status}`);
             }
@@ -60,29 +61,29 @@ export default function AssistantChatBox({ onSendMessage, suggestions = [] }) {
           });
 
       const assistantMessage = {
-        role: 'assistant',
+        role: "assistant",
         content: response.content || response.message,
         suggestions: response.suggestions,
         links: response.links,
         timestamp: new Date().toISOString(),
       };
 
-      setMessages(prev => [...prev, assistantMessage]);
+      setMessages((prev) => [...prev, assistantMessage]);
     } catch (error) {
-      console.error('Error sending message:', error);
+      console.error("Error sending message:", error);
       const errorMessage = {
-        role: 'assistant',
-        content: 'I apologize, but I encountered an error. Please try again.',
+        role: "assistant",
+        content: "I apologize, but I encountered an error. Please try again.",
         timestamp: new Date().toISOString(),
       };
-      setMessages(prev => [...prev, errorMessage]);
+      setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
@@ -99,17 +100,17 @@ export default function AssistantChatBox({ onSendMessage, suggestions = [] }) {
         {messages.map((msg, index) => (
           <div
             key={index}
-            className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+            className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
           >
             <div
               className={`max-w-[80%] p-4 rounded-lg ${
-                msg.role === 'user'
-                  ? 'bg-gradient-to-r from-[#00ff9d] to-[#00c6ff] text-gray-900'
-                  : 'bg-gray-800 text-gray-100 border border-gray-700'
+                msg.role === "user"
+                  ? "bg-gradient-to-r from-[#00ff9d] to-[#00c6ff] text-gray-900"
+                  : "bg-gray-800 text-gray-100 border border-gray-700"
               }`}
             >
               <p className="whitespace-pre-wrap">{msg.content}</p>
-              
+
               {/* Links */}
               {msg.links && msg.links.length > 0 && (
                 <div className="mt-3 space-y-1">
@@ -124,7 +125,7 @@ export default function AssistantChatBox({ onSendMessage, suggestions = [] }) {
                   ))}
                 </div>
               )}
-              
+
               {/* Suggestions */}
               {msg.suggestions && msg.suggestions.length > 0 && (
                 <div className="mt-3 flex flex-wrap gap-2">
@@ -139,7 +140,7 @@ export default function AssistantChatBox({ onSendMessage, suggestions = [] }) {
                   ))}
                 </div>
               )}
-              
+
               {mounted && (
                 <p className="text-xs opacity-50 mt-2">
                   {new Date(msg.timestamp).toLocaleTimeString()}
@@ -148,7 +149,7 @@ export default function AssistantChatBox({ onSendMessage, suggestions = [] }) {
             </div>
           </div>
         ))}
-        
+
         {isLoading && (
           <div className="flex justify-start">
             <div className="bg-gray-800 text-gray-100 p-4 rounded-lg border border-gray-700">
@@ -160,7 +161,7 @@ export default function AssistantChatBox({ onSendMessage, suggestions = [] }) {
             </div>
           </div>
         )}
-        
+
         <div ref={messagesEndRef} />
       </div>
 

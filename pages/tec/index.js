@@ -26,22 +26,23 @@ export default function TEC() {
               TEC Dashboard / لوحة تحكم تي إي سي
             </h1>
             <p className="text-xl text-gray-300 mb-6">
-              Welcome to your TEC Command Center - Your gateway to 24 sovereign business domains
+              Welcome to your TEC Command Center - Your gateway to 24 sovereign
+              business domains
             </p>
             <div className="flex flex-wrap gap-4">
-              <Link 
+              <Link
                 href="/tec/ai-assistant"
                 className="bg-gradient-to-r from-[#00ff9d] to-[#00c6ff] text-gray-900 px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity"
               >
                 🤖 Launch AI Assistant
               </Link>
-              <Link 
+              <Link
                 href="/domains"
                 className="bg-gray-800 border border-[#00ff9d]/20 text-[#00ff9d] px-6 py-3 rounded-lg font-semibold hover:border-[#00ff9d]/50 transition-all"
               >
                 🌐 Explore Domains
               </Link>
-              <Link 
+              <Link
                 href="/tec/login"
                 className="bg-gray-800 border border-[#00c6ff]/20 text-[#00c6ff] px-6 py-3 rounded-lg font-semibold hover:border-[#00c6ff]/50 transition-all"
               >
@@ -94,9 +95,13 @@ export default function TEC() {
                 Unified Access / الوصول الموحد
               </h3>
               <p className="text-gray-400 mb-4">
-                Access all 24 sovereign business domains from one portal with seamless single sign-on
+                Access all 24 sovereign business domains from one portal with
+                seamless single sign-on
               </p>
-              <Link href="/domains" className="text-[#00c6ff] hover:text-[#00ff9d] font-semibold">
+              <Link
+                href="/domains"
+                className="text-[#00c6ff] hover:text-[#00ff9d] font-semibold"
+              >
                 View All Domains →
               </Link>
             </div>
@@ -106,9 +111,13 @@ export default function TEC() {
                 AI Assistant / المساعد الذكي
               </h3>
               <p className="text-gray-400 mb-4">
-                Your intelligent guide to navigate the ecosystem and discover opportunities
+                Your intelligent guide to navigate the ecosystem and discover
+                opportunities
               </p>
-              <Link href="/tec/ai-assistant" className="text-[#00c6ff] hover:text-[#00ff9d] font-semibold">
+              <Link
+                href="/tec/ai-assistant"
+                className="text-[#00c6ff] hover:text-[#00ff9d] font-semibold"
+              >
                 Chat with Assistant →
               </Link>
             </div>
@@ -118,9 +127,13 @@ export default function TEC() {
                 Strategic Insights / رؤى استراتيجية
               </h3>
               <p className="text-gray-400 mb-4">
-                Navigate the TEC ecosystem with expert guidance and data-driven recommendations
+                Navigate the TEC ecosystem with expert guidance and data-driven
+                recommendations
               </p>
-              <Link href="/tec/strategy" className="text-[#00c6ff] hover:text-[#00ff9d] font-semibold">
+              <Link
+                href="/tec/strategy"
+                className="text-[#00c6ff] hover:text-[#00ff9d] font-semibold"
+              >
                 View Strategy →
               </Link>
             </div>

@@ -10,7 +10,7 @@ import { useApprovalOperation } from "../../lib/useApprovalOperation";
 function ApprovalDemo({ session }) {
   const user = session?.user;
   const { submitForApproval, isProcessing, error } = useApprovalOperation();
-  
+
   const [operationType, setOperationType] = useState("payment_create");
   const [amount, setAmount] = useState(100);
   const [domain, setDomain] = useState("commerce");
@@ -210,9 +210,7 @@ function ApprovalDemo({ session }) {
               </div>
 
               <div className="mt-6 p-4 bg-blue-500/20 border border-blue-500/50 rounded-lg">
-                <h3 className="font-semibold mb-2 text-blue-400">
-                  💡 ملاحظة
-                </h3>
+                <h3 className="font-semibold mb-2 text-blue-400">💡 ملاحظة</h3>
                 <p className="text-sm text-gray-300">
                   عند رفض العملية، سترى إشعار Toast في الزاوية العلوية اليمنى
                   يوضح سبب الرفض. يمكنك اختبار السيناريوهات المختلفة بالنقر

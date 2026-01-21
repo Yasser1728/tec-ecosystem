@@ -8,19 +8,19 @@ export default function Fundx() {
 
   useEffect(() => {
     // Fetch domain information
-    fetch('/api/domain/info')
-      .then(res => res.json())
-      .then(data => setDomainInfo(data))
-      .catch(err => {
-        console.error('Failed to fetch domain info:', err);
+    fetch("/api/domain/info")
+      .then((res) => res.json())
+      .then((data) => setDomainInfo(data))
+      .catch((err) => {
+        console.error("Failed to fetch domain info:", err);
         // Set default domain info on error
         setDomainInfo({
-          name: 'FundX',
-          nameAr: 'فَنْد إكس',
-          tier: 'Finance & Investment',
-          theme: 'tec-gradient',
+          name: "FundX",
+          nameAr: "فَنْد إكس",
+          tier: "Finance & Investment",
+          theme: "tec-gradient",
           independent: true,
-          value: 'sovereign-unit'
+          value: "sovereign-unit",
         });
       });
   }, []);
@@ -29,16 +29,22 @@ export default function Fundx() {
     <div>
       <Head>
         <title>FundX - High-Yield Investment Strategies | TEC Ecosystem</title>
-        <meta name="description" content="FundX - Sovereign investment unit offering high-yield strategies on Pi Network" />
+        <meta
+          name="description"
+          content="FundX - Sovereign investment unit offering high-yield strategies on Pi Network"
+        />
         <meta property="og:title" content="FundX - Sovereign Investment Unit" />
-        <meta property="og:description" content="Independent business unit with full autonomy on fundx.pi" />
+        <meta
+          property="og:description"
+          content="Independent business unit with full autonomy on fundx.pi"
+        />
         <meta property="og:type" content="website" />
         <meta name="domain:sovereign" content="true" />
         <meta name="domain:independent" content="true" />
       </Head>
-      
+
       <Header />
-      
+
       <main className="max-w-7xl mx-auto p-4">
         {/* Sovereignty Badge */}
         <div className="my-6 p-4 bg-gradient-to-r from-[#00ff9d] to-[#00c6ff] rounded-lg border-2 border-[#00ff9d]">
@@ -64,7 +70,8 @@ export default function Fundx() {
             <div className="text-4xl mb-4">💎</div>
             <h3 className="text-xl font-bold mb-2">Independent Value</h3>
             <p className="text-gray-600">
-              Sovereign business unit with full autonomy and independent operations
+              Sovereign business unit with full autonomy and independent
+              operations
             </p>
           </div>
 
@@ -94,7 +101,8 @@ export default function Fundx() {
                 <span className="font-semibold">Name:</span> {domainInfo.name}
               </div>
               <div>
-                <span className="font-semibold">Arabic Name:</span> {domainInfo.nameAr}
+                <span className="font-semibold">Arabic Name:</span>{" "}
+                {domainInfo.nameAr}
               </div>
               <div>
                 <span className="font-semibold">Tier:</span> {domainInfo.tier}
@@ -103,7 +111,8 @@ export default function Fundx() {
                 <span className="font-semibold">Theme:</span> {domainInfo.theme}
               </div>
               <div>
-                <span className="font-semibold">Independent:</span> {domainInfo.independent ? 'Yes' : 'No'}
+                <span className="font-semibold">Independent:</span>{" "}
+                {domainInfo.independent ? "Yes" : "No"}
               </div>
               <div>
                 <span className="font-semibold">Value:</span> {domainInfo.value}
@@ -112,7 +121,7 @@ export default function Fundx() {
           </div>
         )}
       </main>
-      
+
       <Footer />
     </div>
   );

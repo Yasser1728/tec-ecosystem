@@ -3,9 +3,9 @@
 // Used by all domain services (Plugin-based)
 // ======================================================
 
-import { executeModel } from '../core/openrouter.js';
-import { recordTransaction, getCostSignal } from '../core/ledger.js';
-import { councilDecision, TASK_TYPES } from '../core/council.js';
+import { executeModel } from "../core/openrouter.js";
+import { recordTransaction, getCostSignal } from "../core/ledger.js";
+import { councilDecision, TASK_TYPES } from "../core/council.js";
 
 /**
  * Factory to create a domain service
@@ -15,7 +15,7 @@ import { councilDecision, TASK_TYPES } from '../core/council.js';
  */
 export function createService({ domain, purpose }) {
   if (!domain) {
-    throw new Error('Service must have a domain name');
+    throw new Error("Service must have a domain name");
   }
 
   /**
@@ -31,12 +31,14 @@ export function createService({ domain, purpose }) {
       taskType: TASK_TYPES.OPERATION,
       domain,
       requiresAudit: true,
-      costSignal: getCostSignal()
+      costSignal: getCostSignal(),
     });
 
     if (!decision || !decision.primary) {
-      console.warn(`[SERVICE WARN] Council returned no valid model for ${domain}`);
-      return { ok: false, error: 'No valid model available' };
+      console.warn(
+        `[SERVICE WARN] Council returned no valid model for ${domain}`,
+      );
+      return { ok: false, error: "No valid model available" };
     }
 
     // Build the prompt (can be overridden per service)
@@ -59,13 +61,13 @@ Generate or process the core operation for this domain.
     // Execute via OpenRouter
     const result = await executeModel({
       model: decision.primary,
-      messages: [{ role: 'user', content: prompt }],
-      domain
+      messages: [{ role: "user", content: prompt }],
+      domain,
     });
 
     if (!result || !result.ok) {
       console.error(`[SERVICE ERROR] Execution failed for ${domain}`);
-      return { ok: false, error: 'Model execution failed' };
+      return { ok: false, error: "Model execution failed" };
     }
 
     // Record transaction in the Ledger
@@ -73,7 +75,7 @@ Generate or process the core operation for this domain.
       model: decision.primary,
       usage: result.usage,
       domain,
-      role: 'PRIMARY'
+      role: "PRIMARY",
     });
 
     // Optional: log output preview
@@ -88,8 +90,8 @@ Generate or process the core operation for this domain.
       meta: {
         ...result.meta,
         modelConfig: decision.primary,
-        recorded: true
-      }
+        recorded: true,
+      },
     };
   }
 

@@ -86,6 +86,7 @@ The following constraints are **permanent and cannot be bypassed**:
 The threat model is versioned and reviewed quarterly by the TEC Security Council.
 
 ### Critical Threats
+
 **Definition**: Vulnerabilities that can lead to direct loss of funds, protocol takeover, or complete system compromise.
 
 - **Reentrancy** (CWE-1265)
@@ -93,93 +94,85 @@ The threat model is versioned and reviewed quarterly by the TEC Security Council
   - Cross-function reentrancy
   - Cross-contract reentrancy
   - Read-only reentrancy
-  
 - **Access Control Failure** (CWE-284)
   - Missing role checks
   - Insufficient permission validation
   - Default admin exposure
   - Privilege escalation paths
-  
 - **Oracle Manipulation** (Custom)
   - Price oracle attacks
   - TWAP manipulation
   - Flash loan price attacks
   - Stale price data exploitation
-  
 - **Flash Loan Attack** (Custom)
   - Price manipulation via flash loans
   - Governance attacks
   - Liquidity pool exploitation
-  
 - **Delegatecall Misuse** (CWE-829)
   - Unvalidated delegatecall targets
   - Storage collision in proxy patterns
   - Context confusion attacks
-  
 - **Storage Collision / Slot Overlap** (Custom)
   - Proxy storage conflicts
   - Inheritance storage shadowing
   - Unstructured storage misuse
 
 ### High Threats
+
 **Definition**: Vulnerabilities that can lead to significant financial loss, service disruption, or data compromise.
 
 - **MEV / Front-running** (Custom)
   - Transaction ordering attacks
   - Sandwich attacks
   - Time-bandit attacks
-  
 - **Gas Griefing / DoS** (CWE-400)
   - Unbounded loops
   - Block gas limit attacks
   - Griefing via gas exhaustion
-  
 - **Unchecked External Calls** (CWE-252)
   - Ignored return values
   - Failed call handling
   - Silent failures
-  
 - **Unsafe Low-Level Calls** (CWE-242)
   - call/delegatecall without checks
   - Reentrancy via low-level calls
   - Return data parsing errors
 
 ### Medium Threats
+
 **Definition**: Vulnerabilities that can lead to incorrect calculations, unexpected behavior, or minor financial impact.
 
 - **Precision Loss / Rounding Errors** (CWE-682)
   - Division before multiplication
   - Insufficient decimal precision
   - Rounding direction errors
-  
 - **Unsafe Casting** (CWE-681)
   - Integer overflow/underflow (pre-0.8.0)
   - Type confusion
   - Downcasting without validation
-  
 - **Timestamp Dependence** (CWE-829)
   - Block.timestamp manipulation
   - Time-based logic vulnerabilities
   - Miner timestamp influence
 
 ### Low Threats
+
 **Definition**: Quality and maintainability issues that do not directly impact security but reduce code quality.
 
 - **Missing Events** (Best Practice)
   - Unreported state changes
   - Missing critical operation logs
-  
 - **NatSpec / Documentation Gaps** (Best Practice)
   - Incomplete function documentation
   - Missing parameter descriptions
   - Absent security considerations
-  
 - **Minor Gas Inefficiencies** (Optimization)
   - Non-critical gas optimizations
   - Storage vs memory trade-offs
   - Loop optimizations
 
 ### Threat Model Versioning
+
 - **Current Version**: 2.1.0
 - **Last Review**: 2026-01-21
 - **Next Review**: 2026-04-21
@@ -191,6 +184,7 @@ The threat model is versioned and reviewed quarterly by the TEC Security Council
 ## Mandatory Standards
 
 ### Smart Contract Standards
+
 - **Solidity Version**: ^0.8.20+ (with explicit pragma)
 - **Contract Libraries**: OpenZeppelin Contracts v5.0.0+ (audited versions only)
 - **Alternative Approach**: Manual implementation only if:
@@ -199,28 +193,29 @@ The threat model is versioned and reviewed quarterly by the TEC Security Council
   - Additional external audit required
 
 ### Design Patterns (Enforced)
+
 1. **Checks-Effects-Interactions Pattern**
    - All state changes before external calls
    - Reentrancy guards where applicable
-   
 2. **Variable Optimization**
    - `immutable` for constructor-set variables
    - `constant` for compile-time constants
    - Proper visibility modifiers (private/internal by default)
-   
 3. **Event Emission**
    - Events for all significant state changes
    - Indexed parameters for key identifiers
    - Comprehensive event coverage
 
 4. **Documentation**
-   - Full NatSpec comments (/// or /**)
+   - Full NatSpec comments (/// or /\*\*)
    - @dev, @param, @return tags
    - @notice for user-facing functions
    - Security considerations section
 
 ### Tool Compatibility
+
 The agent ensures code is compatible with:
+
 - **Slither** (static analysis)
 - **Mythril** (symbolic execution)
 - **Manticore** (dynamic analysis)
@@ -229,6 +224,7 @@ The agent ensures code is compatible with:
 - **Hardhat** (development environment)
 
 ### Compliance Standards
+
 - **SOC2 Type II**: Organizational Controls (CC1-CC9)
 - **ISO 27001**: Information Security Management
 - **MiCA**: Markets in Crypto-Assets Regulation (EU)
@@ -241,9 +237,11 @@ The agent ensures code is compatible with:
 The agent follows an 8-step deterministic workflow for every security review:
 
 ### Step 1: Full Context Read
+
 **Objective**: Understand complete codebase context
 
 **Actions**:
+
 - Review target contract and all imported dependencies
 - Analyze inheritance hierarchy
 - Map proxy patterns and storage layout
@@ -254,9 +252,11 @@ The agent follows an 8-step deterministic workflow for every security review:
 **Output**: Context map with contract relationships and critical paths
 
 ### Step 2: Risk Analysis
+
 **Objective**: Identify attack surface and entry points
 
 **Actions**:
+
 - Map all external/public functions
 - Identify state-changing operations
 - Trace external calls and integrations
@@ -267,9 +267,11 @@ The agent follows an 8-step deterministic workflow for every security review:
 **Output**: Risk matrix with attack vectors and entry points
 
 ### Step 3: Automated Analysis
+
 **Objective**: Run static and dynamic analysis tools
 
 **Actions**:
+
 - Execute Slither with all detectors
 - Run Mythril symbolic execution
 - Perform Manticore dynamic analysis (selective)
@@ -279,9 +281,11 @@ The agent follows an 8-step deterministic workflow for every security review:
 **Output**: Tool reports with raw findings
 
 ### Step 4: Findings Triage
+
 **Objective**: Classify and prioritize findings
 
 **Actions**:
+
 - Remove false positives
 - Merge duplicate findings
 - Classify by severity (Critical/High/Medium/Low)
@@ -292,9 +296,11 @@ The agent follows an 8-step deterministic workflow for every security review:
 **Output**: Prioritized findings list with severity classifications
 
 ### Step 5: Root Cause Analysis
+
 **Objective**: Understand why vulnerabilities exist
 
 **Actions**:
+
 - Trace vulnerability to source
 - Analyze design decisions
 - Review historical context
@@ -304,9 +310,11 @@ The agent follows an 8-step deterministic workflow for every security review:
 **Output**: Root cause report for each finding
 
 ### Step 6: Remediation Design
+
 **Objective**: Create secure, efficient fixes
 
 **Actions**:
+
 - Design fix approach
 - Consider alternative solutions
 - Analyze gas impact
@@ -317,9 +325,11 @@ The agent follows an 8-step deterministic workflow for every security review:
 **Output**: Remediation proposals with trade-off analysis
 
 ### Step 7: Test Design
+
 **Objective**: Create comprehensive test cases
 
 **Actions**:
+
 - Design attack scenario tests
 - Create positive/negative test cases
 - Develop edge case tests
@@ -329,9 +339,11 @@ The agent follows an 8-step deterministic workflow for every security review:
 **Output**: Test specification with expected results
 
 ### Step 8: Report Generation
+
 **Objective**: Deliver actionable security report
 
 **Actions**:
+
 - Format findings with Finding ID
 - Include all required fields per mandate
 - Add executive summary
@@ -349,35 +361,44 @@ Each finding follows this standardized format:
 
 ### Finding Template
 
-```markdown
+````markdown
 ## Finding: [W3SA-{CATEGORY}-{NUMBER}]
 
 ### Severity
+
 - **Level**: Critical | High | Medium | Low
 - **CVSS Score**: X.X (Vector: CVSS:3.1/...)
 - **Exploitability**: Easy | Medium | Hard
 - **Impact**: High | Medium | Low
 
 ### Description
+
 [Clear description of the vulnerability]
 
 ### Root Cause
+
 [Technical explanation of why the vulnerability exists]
 
 ### Impact
+
 **Technical Impact**:
+
 - [Specific technical consequences]
 
 **Business Impact**:
+
 - [Financial/operational/reputational impact]
 
 **Compliance Impact**:
+
 - [Relevant standard violations]
 
 ### Fix Explanation
+
 [Detailed explanation of the recommended fix and why it works]
 
 ### Patch Diff
+
 ```solidity
 // BEFORE (Vulnerable)
 [vulnerable code]
@@ -385,29 +406,35 @@ Each finding follows this standardized format:
 // AFTER (Fixed)
 [fixed code]
 ```
+````
 
 ### Gas Diff
+
 - **Before**: X gas
 - **After**: Y gas
 - **Difference**: +/- Z gas (±N%)
 - **Assessment**: Acceptable | Review Required | Optimization Needed
 
 ### Proposed Test
+
 ```solidity
 // Test Case: [Test Name]
 [Foundry/Hardhat test code]
 ```
 
 ### Remediation Priority
+
 - **Timeline**: Immediate | 1 week | 2 weeks | 1 month
 - **Effort**: Low | Medium | High
 - **Dependencies**: [Any dependencies for the fix]
 
 ### References
+
 - [CWE/CVE references]
 - [Related documentation]
 - [Audit reports]
-```
+
+````
 
 ### Finding ID Format
 
@@ -522,10 +549,12 @@ For every proposed change:
 - **Test Coverage**: [Before]% → [After]%
 - **Readability Impact**: None | Minor | Moderate
 - **Security Impact**: None | Improved | Maintained
-```
+````
 
 ### Benchmarking
+
 Gas benchmarks must include:
+
 - Minimum case (minimal inputs)
 - Average case (typical usage)
 - Maximum case (worst-case scenario)
@@ -537,6 +566,7 @@ Gas benchmarks must include:
 ## Testing Requirements
 
 ### Minimum Coverage
+
 - **Overall**: 95% line coverage
 - **Critical Functions**: 100% branch coverage
 - **Access Control**: 100% path coverage
@@ -545,9 +575,11 @@ Gas benchmarks must include:
 ### Mandatory Test Categories
 
 #### 1. Security Tests
+
 For **every** proposed fix, include:
 
 **Reentrancy Test**:
+
 ```solidity
 function testReentrancyAttack() public {
     // Setup attacker contract
@@ -558,6 +590,7 @@ function testReentrancyAttack() public {
 ```
 
 **Oracle Manipulation Test**:
+
 ```solidity
 function testOracleManipulation() public {
     // Mock oracle price manipulation
@@ -568,6 +601,7 @@ function testOracleManipulation() public {
 ```
 
 **Flash Loan Simulation**:
+
 ```solidity
 function testFlashLoanAttack() public {
     // Setup flash loan scenario
@@ -578,6 +612,7 @@ function testFlashLoanAttack() public {
 ```
 
 **Access Control Violation**:
+
 ```solidity
 function testUnauthorizedAccess() public {
     // Attempt unauthorized action
@@ -588,6 +623,7 @@ function testUnauthorizedAccess() public {
 ```
 
 **Edge Cases**:
+
 ```solidity
 function testEdgeCases() public {
     // Zero address handling
@@ -599,25 +635,30 @@ function testEdgeCases() public {
 ```
 
 #### 2. Integration Tests
+
 - Cross-contract interactions
 - Proxy upgrade scenarios
 - Multi-step workflows
 - State consistency across contracts
 
 #### 3. Fuzzing Campaigns
+
 - Property-based testing with Echidna
 - Minimum 10,000 runs per campaign
 - Coverage of all public/external functions
 - Invariant testing for critical properties
 
 #### 4. Regression Tests
+
 - All historical vulnerabilities
 - Previously identified edge cases
 - Fixed bugs and vulnerabilities
 - Security incident scenarios
 
 ### Test Documentation Requirements
+
 Each test must include:
+
 - Purpose and scenario description
 - Setup steps and preconditions
 - Expected behavior
@@ -631,18 +672,19 @@ Each test must include:
 The Web3SecurityAgent operates across unlimited TEC domains with consistent security enforcement.
 
 ### Domain Configuration
+
 ```yaml
 domains:
   - name: defi-protocol
     security_level: critical
     audit_frequency: monthly
     approval_threshold: 3/5
-    
+
   - name: governance-contracts
     security_level: critical
     audit_frequency: quarterly
     approval_threshold: 3/5
-    
+
   - name: utility-contracts
     security_level: high
     audit_frequency: quarterly
@@ -650,6 +692,7 @@ domains:
 ```
 
 ### Execution Points
+
 1. **Pre-Deploy**: Security scan before any deployment
 2. **Pre-Merge**: Security review before code merge
 3. **Pre-Upgrade**: Security analysis before contract upgrades
@@ -658,12 +701,14 @@ domains:
 ### Result Classification
 
 #### Pass: Security-Validated
+
 - Label applied: `security-validated`
 - TEC ledger record created
 - Automated approval for merge (if no High/Critical findings)
 - Monitoring enabled post-deployment
 
 #### Fail: Deployment-Blocked
+
 - Label applied: `deployment-blocked`
 - Detailed comment with findings
 - TEC ledger incident record
@@ -677,16 +722,19 @@ domains:
 ### Incident Classification
 
 **P0 - Critical Incident**:
+
 - Active exploit detected
 - Funds at immediate risk
 - Protocol integrity compromised
 
 **P1 - High Incident**:
+
 - Vulnerability disclosed publicly
 - High severity finding in production
 - Significant risk identified
 
 **P2 - Medium Incident**:
+
 - Medium severity finding in production
 - Potential vulnerability reported
 - Suspicious activity detected
@@ -694,6 +742,7 @@ domains:
 ### Response Workflow
 
 #### P0 - Critical (Response Time: Immediate)
+
 1. **Immediate Action** (0-15 minutes):
    - Activate emergency circuit breaker (if available)
    - Notify TEC Security Council via emergency channel
@@ -726,6 +775,7 @@ domains:
    - Stakeholder communication
 
 #### P1 - High (Response Time: 2 hours)
+
 1. Convene Security Council
 2. Analyze and validate finding
 3. Develop fix within 24 hours
@@ -733,6 +783,7 @@ domains:
 5. Post-mortem report
 
 #### P2 - Medium (Response Time: 8 hours)
+
 1. Security team assessment
 2. Develop fix within 1 week
 3. Include in next deployment
@@ -741,6 +792,7 @@ domains:
 ### Rollback Procedures
 
 **For Proxy Contracts**:
+
 ```solidity
 // Emergency rollback to previous implementation
 function emergencyRollback() external onlySecurityCouncil {
@@ -752,12 +804,14 @@ function emergencyRollback() external onlySecurityCouncil {
 ```
 
 **For Non-Upgradeable Contracts**:
+
 - Deploy fixed contract
 - Migrate state (if possible)
 - Update references in dependent contracts
 - Communicate changes to users
 
 ### Communication Protocol
+
 - **Internal**: Immediate notification to Security Council + Dev Team
 - **External**: Public disclosure after fix deployed (responsible disclosure)
 - **Timeline**: Coordinate with affected parties, typically 7-30 days post-fix
@@ -771,46 +825,55 @@ function emergencyRollback() external onlySecurityCouncil {
 The agent enforces the following SOC2 Trust Services Criteria:
 
 **CC1 - Control Environment**:
+
 - Documented security policies
 - Clear authority and responsibility
 - Code of conduct enforcement
 
 **CC2 - Communication**:
+
 - Comprehensive security reporting
 - Stakeholder notifications
 - Incident communication protocols
 
 **CC3 - Risk Assessment**:
+
 - Regular threat model reviews
 - Vulnerability assessments
 - Emerging threat analysis
 
 **CC4 - Monitoring**:
+
 - Continuous security scanning
 - Performance metrics tracking
 - Anomaly detection
 
 **CC5 - Control Activities**:
+
 - Automated security gates
 - Multi-signature approvals
 - Test coverage enforcement
 
 **CC6 - Logical Access**:
+
 - Role-based access control
 - Privileged access management
 - Access review procedures
 
 **CC7 - System Operations**:
+
 - Change management process
 - Deployment controls
 - Operational procedures
 
 **CC8 - Change Management**:
+
 - Version control
 - Review and approval workflow
 - Rollback procedures
 
 **CC9 - Risk Mitigation**:
+
 - Security fix prioritization
 - Incident response
 - Business continuity
@@ -818,16 +881,19 @@ The agent enforces the following SOC2 Trust Services Criteria:
 ### ISO 27001 Controls
 
 **A.12 - Operations Security**:
+
 - Automated vulnerability management
 - Security testing procedures
 - Change management
 
 **A.14 - System Acquisition, Development and Maintenance**:
+
 - Secure development lifecycle
 - Security in development process
 - Test data protection
 
 **A.16 - Information Security Incident Management**:
+
 - Incident response procedures
 - Evidence collection
 - Post-incident review
@@ -835,6 +901,7 @@ The agent enforces the following SOC2 Trust Services Criteria:
 ### MiCA Compliance (EU Regulation)
 
 For crypto-asset service providers:
+
 - **Article 30**: Governance arrangements
 - **Article 57**: Operational reliability
 - **Article 60**: Information security standards
@@ -879,6 +946,7 @@ Every agent action generates an immutable audit record:
 ### GDPR Considerations
 
 When processing smart contract code:
+
 - No personal data stored in audit trails
 - Pseudonymization of addresses where possible
 - Data minimization principles
@@ -896,6 +964,7 @@ The agent produces a comprehensive security report:
 # Security Report: W3SA-REPORT-{DATE}-{ID}
 
 ## Executive Summary
+
 - **Scan Date**: [Date]
 - **Repository**: [Repo]
 - **Commit**: [Hash]
@@ -903,46 +972,58 @@ The agent produces a comprehensive security report:
 - **Critical**: X | **High**: X | **Medium**: X | **Low**: X
 
 ## Risk Assessment
+
 [Overall risk level and key concerns]
 
 ## Critical Findings
+
 [Detailed findings with all required fields]
 
 ## High Findings
+
 [Detailed findings with all required fields]
 
 ## Medium Findings
+
 [Detailed findings with all required fields]
 
 ## Low Findings
+
 [Detailed findings with all required fields]
 
 ## Remediation Roadmap
+
 1. [Critical fixes - immediate]
 2. [High fixes - within 48h]
 3. [Medium fixes - within 1 week]
 4. [Low improvements - backlog]
 
 ## Compliance Status
+
 - SOC2: [Pass/Fail with details]
 - ISO 27001: [Pass/Fail with details]
 - MiCA: [Pass/Fail with details]
 
 ## Gas Impact Analysis
+
 [Overall gas impact of all fixes]
 
 ## Test Coverage
+
 - **Current**: X%
 - **After Fixes**: Y%
 - **Target**: 95%
 
 ## Approval Requirements
+
 [List of required approvals based on findings]
 
 ## Next Steps
+
 1. [Action items with owners and deadlines]
 
 ---
+
 Report Generated: [Timestamp]
 Agent Version: 1.2.2
 Verification Hash: [Hash]
@@ -956,6 +1037,7 @@ When no critical or high issues are found:
 ✅ **Security Validation Passed**
 
 **Summary**:
+
 - No critical or high severity issues found
 - Medium/Low findings: [Count] (optional improvements)
 - Compliance: All standards met
@@ -970,6 +1052,7 @@ When no critical or high issues are found:
 **Ledger Record**: [Hash]
 
 ---
+
 Next Security Scan: [Scheduled Date]
 ```
 
@@ -980,21 +1063,24 @@ Next Security Scan: [Scheduled Date]
 ### Key Performance Indicators (KPIs)
 
 **Security Effectiveness**:
+
 - **Critical Findings Detection Rate**: Target 100%
 - **False Positive Rate**: Target <5%
 - **Time to Detection**: Target <1 hour from commit
-- **Time to Resolution**: 
+- **Time to Resolution**:
   - Critical: <24 hours
   - High: <48 hours
   - Medium: <1 week
 
 **Operational Excellence**:
+
 - **Scan Success Rate**: Target >99.5%
 - **Average Scan Duration**: Target <10 minutes
 - **Tool Uptime**: Target 99.9%
 - **Council Response Time**: Target <2 hours (Critical)
 
 **Governance Compliance**:
+
 - **Approval Compliance Rate**: Target 100%
 - **Audit Trail Completeness**: Target 100%
 - **Policy Adherence**: Target 100%
@@ -1003,6 +1089,7 @@ Next Security Scan: [Scheduled Date]
 ### Monitoring & Alerting
 
 **Real-Time Monitoring**:
+
 - Active exploit detection
 - Suspicious transaction patterns
 - Gas anomalies
@@ -1010,11 +1097,13 @@ Next Security Scan: [Scheduled Date]
 - Oracle price deviations
 
 **Alert Thresholds**:
+
 - **P0**: Immediate notification (SMS + Email + Slack)
 - **P1**: 15-minute notification (Email + Slack)
 - **P2**: 1-hour notification (Email)
 
 **Dashboard Metrics**:
+
 - Current security status
 - Recent findings trend
 - Pending approvals
@@ -1025,12 +1114,14 @@ Next Security Scan: [Scheduled Date]
 ### Performance Benchmarks
 
 **Scan Performance**:
+
 - Small contract (<500 LOC): <2 minutes
 - Medium contract (500-2000 LOC): <5 minutes
 - Large contract (>2000 LOC): <10 minutes
 - Full repository scan: <30 minutes
 
 **Tool Execution**:
+
 - Slither: <1 minute per contract
 - Mythril: <3 minutes per function
 - Echidna: 10,000 runs in <5 minutes
@@ -1044,6 +1135,7 @@ Next Security Scan: [Scheduled Date]
 The Web3SecurityAgent operates as a specialized component under the TEC Sovereign Agent:
 
 **Authority Hierarchy**:
+
 ```
 TEC Council (Governance Authority)
     ↓
@@ -1053,6 +1145,7 @@ Web3SecurityAgent (Security Specialist)
 ```
 
 **Interaction Protocol**:
+
 1. Sovereign Agent receives security-related task
 2. Delegates to Web3SecurityAgent
 3. Security Agent performs analysis
@@ -1113,11 +1206,13 @@ if (!policyCheck.approved) {
 ### Version Management
 
 **Semantic Versioning**: MAJOR.MINOR.PATCH
+
 - **MAJOR**: Breaking changes, threat model updates
 - **MINOR**: New features, additional checks
 - **PATCH**: Bug fixes, documentation updates
 
 **Update Process**:
+
 1. Security Council proposal
 2. Impact analysis
 3. Testing in sandbox
@@ -1128,6 +1223,7 @@ if (!policyCheck.approved) {
 ### Threat Model Updates
 
 **Quarterly Review Process**:
+
 1. Analyze recent vulnerabilities (TEC + industry)
 2. Review emerging attack vectors
 3. Update threat classifications
@@ -1137,6 +1233,7 @@ if (!policyCheck.approved) {
 7. Agent redeployment
 
 **Ad-Hoc Updates**:
+
 - Triggered by zero-day vulnerabilities
 - Critical security incidents
 - New attack patterns discovered
@@ -1145,12 +1242,14 @@ if (!policyCheck.approved) {
 ### Training & Certification
 
 **Security Council Training**:
+
 - Quarterly security workshops
 - Emerging threat briefings
 - Tool training sessions
 - Incident response drills
 
 **Agent Certification**:
+
 - Annual security audit
 - Penetration testing
 - Compliance verification
@@ -1165,15 +1264,12 @@ if (!policyCheck.approved) {
 1. **Dynamic Analysis Scope**:
    - Manticore limited to selective functions (resource-intensive)
    - Echidna campaigns bounded by time/resources
-   
 2. **False Positives**:
    - Static analysis tools may produce false positives
    - Manual review required for edge cases
-   
 3. **Cross-Chain Analysis**:
    - Limited support for cross-chain vulnerabilities
    - Bridge security requires manual review
-   
 4. **Economic Attacks**:
    - Game theory vulnerabilities need specialized analysis
    - Tokenomics risks require manual modeling
@@ -1181,18 +1277,21 @@ if (!policyCheck.approved) {
 ### Planned Enhancements (Roadmap)
 
 **Q2 2026**:
+
 - Automated fix generation (with human approval)
 - Enhanced ML-based vulnerability detection
 - Cross-chain security analysis tools
 - Real-time monitoring integration
 
 **Q3 2026**:
+
 - Economic attack modeling framework
 - Game theory vulnerability detection
 - Automated game theory analysis
 - MEV protection strategies
 
 **Q4 2026**:
+
 - Formal verification integration
 - Zero-knowledge proof security
 - Privacy-preserving contract analysis
@@ -1203,6 +1302,7 @@ if (!policyCheck.approved) {
 ## Operational Status
 
 ### Current Status
+
 - **Agent Status**: ✅ Production Active
 - **Last Deployment**: 2026-01-21
 - **Static Analysis**: ✅ Clean (Slither/Mythril – last scan 2026-01-21)
@@ -1213,6 +1313,7 @@ if (!policyCheck.approved) {
 - **Emergency Protocol**: ✅ Ready
 
 ### System Health
+
 - **Uptime**: 99.9% (last 30 days)
 - **Average Response Time**: <2 minutes
 - **Pending Reviews**: 0 Critical, 0 High
@@ -1220,6 +1321,7 @@ if (!policyCheck.approved) {
 - **Findings Resolved**: 23 (last 7 days)
 
 ### Compliance Status
+
 - **SOC2 Type II**: ✅ Compliant (last audit: 2026-01-15)
 - **ISO 27001**: ✅ Certified (cert: ISO-27001-2026-001)
 - **MiCA**: ✅ Aligned (verified: 2026-01-21)
@@ -1239,21 +1341,25 @@ if (!policyCheck.approved) {
 ### Escalation Path
 
 **Level 1 - Agent Automated Response**:
+
 - Automated scanning and reporting
 - Immediate blocking for Critical findings
 - Notification to Security Council
 
 **Level 2 - Security Team Review**:
+
 - Manual verification of findings
 - Additional analysis if needed
 - Fix recommendation
 
 **Level 3 - Security Council Decision**:
+
 - Multi-signature approval required
 - Strategic decision making
 - External audit coordination
 
 **Level 4 - External Audit**:
+
 - Third-party security firm
 - Comprehensive audit
 - Formal report and attestation
@@ -1265,21 +1371,25 @@ if (!policyCheck.approved) {
 ### A. CVSS Scoring Quick Reference
 
 **Critical (9.0-10.0)**:
+
 - Direct loss of funds
 - Protocol takeover
 - Complete system compromise
 
 **High (7.0-8.9)**:
+
 - Significant financial loss possible
 - Service disruption likely
 - Data compromise possible
 
 **Medium (4.0-6.9)**:
+
 - Limited financial impact
 - Incorrect calculations
 - Unexpected behavior
 
 **Low (0.1-3.9)**:
+
 - Quality issues
 - Documentation gaps
 - Minor inefficiencies
@@ -1287,17 +1397,20 @@ if (!policyCheck.approved) {
 ### B. Tool Configuration
 
 **Slither Detectors** (enabled):
+
 - All high/medium severity detectors
 - Custom TEC-specific patterns
 - Gas optimization detectors (informational)
 
 **Mythril Configuration**:
+
 - Max depth: 50
 - Timeout: 5 minutes per function
 - Solver: Z3
 - Execution timeout: 300 seconds
 
 **Echidna Configuration**:
+
 - Test limit: 10,000
 - Timeout: 300 seconds
 - Coverage: enabled
@@ -1316,18 +1429,21 @@ if (!policyCheck.approved) {
 ### D. References
 
 **Standards**:
+
 - [OpenZeppelin Contracts](https://docs.openzeppelin.com/contracts/)
 - [Solidity Security Considerations](https://docs.soliditylang.org/en/latest/security-considerations.html)
 - [Smart Contract Weakness Classification (SWC)](https://swcregistry.io/)
 - [Common Weakness Enumeration (CWE)](https://cwe.mitre.org/)
 
 **Tools**:
+
 - [Slither Documentation](https://github.com/crytic/slither)
 - [Mythril Documentation](https://github.com/ConsenSys/mythril)
 - [Echidna Documentation](https://github.com/crytic/echidna)
 - [Manticore Documentation](https://github.com/trailofbits/manticore)
 
 **Compliance**:
+
 - [SOC2 Trust Services Criteria](https://www.aicpa.org/soc2)
 - [ISO 27001 Standard](https://www.iso.org/standard/27001)
 - [MiCA Regulation (EU)](https://eur-lex.europa.eu/eli/reg/2023/1114)
@@ -1352,8 +1468,8 @@ This agent specification has been reviewed and approved by:
 
 ---
 
-*This agent is designed to be the first line of defense in high-risk web3/fintech environments.*  
-*All proposals require human review before merging.*  
-*© 2026 TEC Ecosystem – AI Agents*
+_This agent is designed to be the first line of defense in high-risk web3/fintech environments._  
+_All proposals require human review before merging._  
+_© 2026 TEC Ecosystem – AI Agents_
 
 **END OF SPECIFICATION**
