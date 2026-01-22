@@ -152,7 +152,7 @@ This repository contains **zero** files in these languages. Running PMD on JavaS
 1. **Add Bounds Checking**
    ```go
    // In edit_commands.go:245
-   func (r Replace) Apply(content string) string {
+   func (r Replace) Apply(content string) (string, error) {
        // ADD THIS CHECK:
        if r.End > len(content) {
            return "", fmt.Errorf("edit position %d exceeds content length %d", r.End, len(content))

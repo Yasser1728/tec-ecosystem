@@ -81,7 +81,7 @@ find . -name "*.java"
 # Result: No Java files found
 
 # Check file encodings
-file -i **/*.js | grep -v "utf-8"
+find . -name "*.js" -exec file -i {} \; | grep -v "utf-8"
 # Result: All files are UTF-8 encoded correctly
 
 # Verify code quality

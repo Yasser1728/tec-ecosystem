@@ -103,7 +103,7 @@ npm audit --audit-level=moderate
 ## When to Use Each Option
 
 | Situation | Recommended Option | Why |
-|-----------|-------------------|-----|
+|-----------|--------------------|--------------------|
 | First occurrence | Option 1 (Retry) | Quick, often works |
 | Urgent fix needed | Option 2 (Manual merge) | Unblocks deployment |
 | Recurring issue | Option 3 (Disable) | Prevents wasted time |
