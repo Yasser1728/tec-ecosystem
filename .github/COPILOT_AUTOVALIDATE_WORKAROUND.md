@@ -2,14 +2,20 @@
 
 ## Quick Summary
 
-If you encounter a panic in the GitHub Copilot Pull Request Reviewer's autovalidate step, this is likely due to a known bug in GitHub's infrastructure. This guide provides practical workarounds.
+If you encounter errors in the GitHub Copilot Pull Request Reviewer's autovalidate step, this is likely due to known bugs in GitHub's infrastructure. This guide provides practical workarounds.
 
-## Symptoms
+## Common Error Patterns
 
-- ❌ PR check fails on "Autovalidate" job
-- Error message: `panic: runtime error: slice bounds out of range`
+### Pattern 1: Slice Bounds Panic (PR #310)
+- ❌ Error message: `panic: runtime error: slice bounds out of range`
 - Other checks (ESLint, CodeQL) pass successfully
 - The failing job is "Run PMD on example"
+
+### Pattern 2: Path/File Not Found (PR #313+)
+- ❌ Error message: `failed to delete file .github/workflows/test.yml: no such file or directory`
+- Error path includes: `/repo/.github/workflows/...`
+- Root cause: Wrong `--source-root ./repo` configuration
+- See detailed fix: [AUTOVALIDATE_PATH_ERROR_FIX.md](../AUTOVALIDATE_PATH_ERROR_FIX.md)
 
 ## Immediate Workarounds
 

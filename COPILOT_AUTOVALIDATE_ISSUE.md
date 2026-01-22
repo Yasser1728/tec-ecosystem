@@ -1,10 +1,10 @@
-# GitHub Copilot Autovalidate Tool Issue
+# GitHub Copilot Autovalidate Tool Issues
 
 ## Problem Description
 
-The GitHub Copilot Pull Request Reviewer workflow is failing with a panic in the `autovalidate` tool when processing PR #310.
+The GitHub Copilot Pull Request Reviewer workflow is experiencing multiple types of failures in the `autovalidate` tool.
 
-### Error Details
+### Error Pattern 1: Slice Bounds Panic (PR #310)
 
 ```
 panic: runtime error: slice bounds out of range [:502] with capacity 195
@@ -16,15 +16,42 @@ github.com/github/codeml-autofix/go/v2/pkg/autofix/editcommands.Replace.Apply(..
 
 **Reference**: https://github.com/tec-ecosystem/tec-ecosystem/actions/runs/21239167698/job/61113179794
 
-## Root Cause
+### Error Pattern 2: Path/File Not Found (PR #313+)
 
-This is a **bug in GitHub's autovalidate tool**, not in the tec-ecosystem repository code. The issue occurs when:
+```
+Error: error validating fix: failed to delete file .github/workflows/test.yml: 
+remove /home/runner/work/tec-ecosystem/tec-ecosystem/repo/.github/workflows/test.yml: 
+no such file or directory
+```
+
+**Cause**: Autovalidate configured with `--source-root ./repo` but repository files are at root  
+**Documentation**: See [AUTOVALIDATE_PATH_ERROR_FIX.md](./AUTOVALIDATE_PATH_ERROR_FIX.md) for detailed analysis
+
+## Root Causes
+
+### Pattern 1: UTF-8 Character Handling Bug
+
+This is a **bug in GitHub's autovalidate tool** for the slice bounds panic:
 
 1. GitHub Copilot generates fix suggestions for a PR
 2. The autovalidate tool attempts to apply these fixes to validate them
 3. One of the fix instructions contains an edit command with character position 502
 4. The target file only has 195 characters
 5. The Go code panics with a slice out-of-bounds error
+
+**Why**: The tool doesn't validate that edit positions are within the file's bounds, and it panics instead of handling errors gracefully.
+
+### Pattern 2: Path Configuration Bug
+
+This is a **path configuration bug in GitHub's autovalidate infrastructure**:
+
+1. The autovalidate tool is configured with `--source-root ./repo`
+2. The actual repository files are in the root directory (not in a `repo/` subdirectory)
+3. GitHub Copilot has cached an autofix suggestion to modify/delete files
+4. When applying the fix, it looks for files in the wrong location (`./repo/*`)
+5. The file operation fails with "no such file or directory"
+
+**Why**: Hardcoded path configuration doesn't match actual repository structure.
 
 ## Why This is an External Tool Bug
 

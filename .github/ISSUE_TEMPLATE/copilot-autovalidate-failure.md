@@ -21,6 +21,11 @@ assignees: []
 [Paste the error message here]
 ```
 
+**Error Type**:
+- [ ] Slice bounds panic (e.g., `panic: runtime error: slice bounds out of range`)
+- [ ] Path/File not found (e.g., `failed to delete file .github/workflows/test.yml: no such file or directory`)
+- [ ] Other (specify): _____________
+
 **Failed Step**:
 - [ ] ESLint validation
 - [ ] PMD validation
@@ -78,6 +83,8 @@ Add any other context, screenshots, or relevant information:
 ## For Maintainers
 
 This appears to be a known issue with GitHub's Copilot autovalidate tool. See:
+- **Path Error (NEW)**: [Arabic](../AUTOVALIDATE_PATH_ERROR_FIX_AR.md) | [English](../AUTOVALIDATE_PATH_ERROR_FIX.md)
+- [Previous Issue (PR #310)](../AUTOVALIDATE_ISSUE_RESOLUTION.md) - Slice bounds panic
 - [Full Bug Report](../GITHUB_COPILOT_AUTOVALIDATE_BUG_REPORT.md)
 - [Workaround Guide](../.github/COPILOT_AUTOVALIDATE_WORKAROUND.md)
 - [Quick Reference](../COPILOT_AUTOVALIDATE_ISSUE.md)
