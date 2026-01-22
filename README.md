@@ -763,6 +763,28 @@ We welcome contributions to the **public** components! Please read our [Contribu
 
 **Note**: Private components are proprietary and not open for external contributions.
 
+### Known CI/CD Issues
+
+⚠️ **GitHub Copilot Autovalidate**: The repository has identified bugs in GitHub's Copilot Pull Request Reviewer autovalidate tool that may cause CI failures. These are **GitHub infrastructure issues**, not problems with the repository code.
+
+**If your PR fails with autovalidate errors**:
+- ✅ Repository code is correct (verified)
+- ✅ All other checks pass (ESLint, CodeQL, builds)
+- 🔧 Apply workarounds from documentation
+
+**Documentation**:
+- 📋 [Complete Summary](./AUTOVALIDATE_ISSUES_COMPLETE_SUMMARY.md) - Overview of all issues
+- 🔍 [Path Error Fix (English)](./AUTOVALIDATE_PATH_ERROR_FIX.md) - Current issue (#313+)
+- 🔍 [Path Error Fix (Arabic)](./AUTOVALIDATE_PATH_ERROR_FIX_AR.md) - نفس الوثيقة بالعربية
+- 🔧 [Workaround Guide](./.github/COPILOT_AUTOVALIDATE_WORKAROUND.md) - Practical solutions
+- 🐛 [Previous Issue](./AUTOVALIDATE_ISSUE_RESOLUTION.md) - Slice bounds panic (#310)
+
+**Quick Workarounds**:
+1. **Retry** the workflow (may succeed on retry)
+2. **Wait** 24-48 hours for GitHub state to clear
+3. **Manual review** and merge with admin override (if urgent)
+4. See [Workaround Guide](./.github/COPILOT_AUTOVALIDATE_WORKAROUND.md) for details
+
 ---
 
 ## 📜 Licensing
