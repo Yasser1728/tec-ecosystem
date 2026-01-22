@@ -10,7 +10,7 @@
     "template": "default",
     "encoding": "utf8"
   },
-  "plugins": ["plugins/markdown"],
+  "plugins": [],
   "templates": {
     "cleverLinks": true,
     "monospaceLinks": true,
