@@ -1,0 +1,26 @@
+{
+  "source": {
+    "include": ["apps", "lib", "components", "pages/api"],
+    "exclude": ["node_modules", ".next", "out", "build", "dist", "coverage"]
+  },
+  "opts": {
+    "destination": "./docs/jsdoc",
+    "recurse": true,
+    "readme": "./README.md",
+    "template": "default",
+    "encoding": "utf8"
+  },
+  "plugins": ["plugins/markdown"],
+  "templates": {
+    "cleverLinks": true,
+    "monospaceLinks": true,
+    "default": {
+      "outputSourceFiles": true,
+      "includeDate": true
+    }
+  },
+  "tags": {
+    "allowUnknownTags": true,
+    "dictionaries": ["jsdoc", "closure"]
+  }
+}

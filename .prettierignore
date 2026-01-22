@@ -1,0 +1,19 @@
+# Prettier ignore file
+node_modules/
+.next/
+out/
+build/
+dist/
+coverage/
+.vercel/
+.env
+.env.*
+!.env.example
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+*.log
+*.min.js
+*.min.css
+public/
+prisma/migrations/
