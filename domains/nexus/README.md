@@ -1,535 +1,385 @@
-# Nexus Domain - API Gateway & Integration Hub
+# 🌐 Nexus.pi - Integration Hub & Domain Orchestrator
+# مركز التكامل وتنسيق النطاقات
 
-## 🎯 Domain Mission
+---
 
-Nexus (nexus.pi) serves as the central API gateway and integration hub for the TEC Ecosystem, enabling seamless communication between all 24 domains, intelligent orchestration, and facilitating third-party integrations through unified APIs.
+## 🌐 Language / اللغة
 
-## 📋 Core Features
+- [English Version](#english-version)
+- [النسخة العربية](#النسخة-العربية)
 
-### 1. Unified API Gateway
+---
 
-- **Single Entry Point**: Single gateway for all domain APIs
-- **Request Routing**: Intelligent routing to appropriate domain services
-- **Load Balancing**: Distribute requests across service instances
-- **Rate Limiting**: Prevent abuse and ensure fair usage
-- **API Versioning**: Support multiple API versions concurrently
+# English Version
 
-### 2. Smart Orchestration
+## 🎯 Overview
 
-- **AI-Driven Workflows**: Intelligent workflow automation
-- **Multi-Domain Processes**: Orchestrate across multiple domains
-- **Dynamic Routing**: AI-powered request routing
-- **Adaptive Scaling**: Intelligent resource allocation
-- **Predictive Caching**: ML-based cache optimization
+**Nexus.pi** is the integration hub and orchestration center that connects all 24 domains of the TEC Ecosystem. It ensures seamless communication, data synchronization, and workflow automation while preserving each domain's independence and unique value.
 
-### 3. Cross-Domain Integration
+### 🌟 Identity
 
-- **Service Discovery**: Automatic service registration and discovery
-- **Data Synchronization**: Keep data consistent across domains
-- **Event Bus**: Publish-subscribe pattern for domain events
-- **Message Queue**: Async communication between domains
-- **Protocol Translation**: REST, GraphQL, WebSocket support
+- **Name:** Nexus.pi (Integration Hub)
+- **Sector:** System Integration & Orchestration
+- **Icon:** 🌐
+- **Tagline:** Connecting Excellence, Preserving Independence
 
-### 4. GraphQL Interface
+## 💡 Value Proposition
 
-- **Unified Schema**: Single GraphQL schema across all domains
-- **Flexible Querying**: Query multiple domains in one request
-- **Real-time Subscriptions**: WebSocket-based subscriptions
-- **Schema Stitching**: Combine domain schemas intelligently
-- **Query Optimization**: Automatic query optimization
+### What We Offer:
 
-### 5. Authentication & Authorization
+✅ **Seamless Integration** - Connect all 24 domains effortlessly  
+✅ **Domain Independence** - Each domain maintains its unique value  
+✅ **Smart Orchestration** - Automated workflows across domains  
+✅ **Real-Time Synchronization** - Keep data consistent everywhere  
 
-- **SSO Integration**: Single sign-on across all domains
-- **JWT Validation**: Secure token-based authentication
-- **RBAC Enforcement**: Role-based access control
-- **API Key Management**: Manage third-party API keys
-- **OAuth2 Support**: Standard OAuth2 flows
+### Key Principles:
 
-### 6. Developer Experience
+- **Non-Intrusive** - Domains remain fully independent
+- **Value Preservation** - Each domain's core value is protected
+- **Flexible Integration** - Domains choose what to share
+- **Scalable Architecture** - Grows with the ecosystem
 
-- **Developer Portal**: API documentation and testing
-- **SDK Generation**: Auto-generate client SDKs
-- **Interactive Playground**: Test APIs in browser
-- **Code Examples**: Sample code in multiple languages
-- **Webhook Testing**: Test webhook integrations
+## 🚀 Access the Application
 
-## 🏗️ Data Architecture
+### The full Nexus integration platform is available at:
 
-### Entity Relationship Overview
+👉 **[Go to Nexus Integration Hub](/apps/nexus)**
+
+The complete application includes:
+- **Integration Dashboard** - Monitor all cross-domain connections
+- **API Gateway** - Unified access to all domain services
+- **Event Bus** - Real-time event distribution
+- **Workflow Engine** - Automate multi-domain processes
+- **GraphQL Gateway** - Query multiple domains in one request
+- **Developer Portal** - API documentation and testing tools
+
+## 🔗 Integration Architecture
+
+### How Nexus Connects Domains
 
 ```
-API (1) ──────< (M) Endpoint
-                      │
-User (1) ──────< (M) APIKey ──────> (M) Request
-                      │                    │
-Integration (1) ──< Workflow          ├──< Response
-                      │                    └──< Log
-                      └──< Event
-                            │
-Service (1) ──────< Route  └──< Subscription
-              │
-              └──< HealthCheck
+                    ┌─────────────┐
+                    │  Nexus.pi   │
+                    │ Integration │
+                    │     Hub     │
+                    └──────┬──────┘
+                           │
+        ┌──────────────────┼──────────────────┐
+        │                  │                  │
+   ┌────▼────┐       ┌────▼────┐       ┌────▼────┐
+   │ Domain  │       │ Domain  │       │ Domain  │
+   │   API   │       │  Events │       │  Data   │
+   │ Gateway │       │   Bus   │       │  Sync   │
+   └────┬────┘       └────┬────┘       └────┬────┘
+        │                  │                  │
+   ┌────▼──────────────────▼──────────────────▼────┐
+   │  All 24 Domains (Fully Independent)            │
+   │  FundX • Assets • NBF • Insure • Commerce •... │
+   └─────────────────────────────────────────────────┘
 ```
 
-### Core Entities
+## 🌟 Core Capabilities
 
-#### 1. Integration
+### 1. API Gateway
+- **Unified Access** - Single entry point for all domain APIs
+- **Smart Routing** - Intelligent request distribution
+- **Rate Limiting** - Protect domains from overload
+- **Authentication** - Centralized security layer
+- **Load Balancing** - Distribute traffic efficiently
 
-Cross-domain integration configuration.
+### 2. Event Bus
+- **Publish-Subscribe** - Domains publish events, others subscribe
+- **Real-Time Updates** - Instant notifications across domains
+- **Event Filtering** - Selective event consumption
+- **Reliable Delivery** - Guaranteed event delivery
+- **Event History** - Replay past events if needed
 
-**Attributes:**
+### 3. Data Synchronization
+- **Selective Sync** - Domains control what data to share
+- **Conflict Resolution** - Intelligent merge strategies
+- **Change Tracking** - Monitor data changes
+- **Eventual Consistency** - Maintain data integrity
+- **Privacy Controls** - Respect data sovereignty
 
-- `id`: Unique identifier (UUID)
-- `name`: Integration name
-- `description`: Integration description
-- `sourceDomains`: Array of source domains
-- `targetDomains`: Array of target domains
-- `type`: Integration type (API, EVENT, WEBHOOK, BATCH)
-- `config`: Integration configuration (JSON)
-- `transformations`: Data transformation rules (JSON)
-- `isActive`: Integration status
-- `createdBy`: Creator user ID
-- `createdAt`: Creation timestamp
+### 4. Workflow Orchestration
+- **Multi-Domain Workflows** - Automate processes across domains
+- **Conditional Logic** - Smart decision-making
+- **Error Handling** - Graceful failure recovery
+- **Retry Mechanisms** - Automatic retry on failure
+- **Visual Workflow Builder** - No-code automation
 
-#### 2. Workflow
+### 5. GraphQL Federation
+- **Unified Schema** - Query multiple domains in one request
+- **Flexible Queries** - Get exactly what you need
+- **Real-Time Subscriptions** - Live data updates
+- **Schema Stitching** - Combine domain schemas
+- **Query Optimization** - Efficient data fetching
 
-Automated multi-domain process.
+## 🏛️ Domain Integration Examples
 
-**Attributes:**
+### Example 1: Investment Creation Flow
 
-- `id`: Unique identifier
-- `name`: Workflow name
-- `description`: Workflow description
-- `trigger`: Trigger configuration (JSON)
-- `steps`: Workflow steps array (JSON)
-- `conditions`: Conditional logic (JSON)
-- `isActive`: Workflow status
-- `version`: Workflow version
-- `executionCount`: Total executions
-- `successRate`: Success percentage
-- `createdAt`: Creation date
+When a user creates an investment in **FundX.pi**:
 
-#### 3. Event
+1. **FundX** publishes `investment.created` event to **Nexus**
+2. **Nexus** routes event to subscribed domains:
+   - **Assets.pi** - Creates corresponding asset in portfolio
+   - **Analytics.pi** - Records investment for analysis
+   - **Alert.pi** - Sends confirmation notification
+3. Each domain processes independently
+4. All maintain their unique value and autonomy
 
-Domain event for pub-sub.
+### Example 2: Unified Customer Profile
 
-**Attributes:**
+**TEC Assistant** queries customer profile via **Nexus**:
 
-- `id`: Unique identifier
-- `type`: Event type (e.g., 'asset.created')
-- `domainId`: Source domain
-- `payload`: Event data (JSON)
-- `metadata`: Additional metadata (JSON)
-- `timestamp`: Event timestamp
-- `publisherId`: Publisher ID
-- `correlationId`: Request correlation ID
-- `retryCount`: Retry attempts
-
-#### 4. APIKey
-
-API access key for authentication.
-
-**Attributes:**
-
-- `id`: Unique identifier
-- `key`: API key (hashed)
-- `userId`: Key owner
-- `name`: Friendly name for the key
-- `permissions`: Array of allowed permissions
-- `rateLimit`: Key-specific rate limit
-- `quotaLimit`: Monthly request quota
-- `allowedDomains`: Allowed domains array
-- `allowedIPs`: IP whitelist array
-- `isActive`: Key status
-- `expiresAt`: Expiration date
-- `lastUsedAt`: Last usage timestamp
-- `createdAt`: Creation date
-
-#### 5. Service
-
-Registered backend service.
-
-**Attributes:**
-
-- `id`: Unique identifier
-- `name`: Service name
-- `domainId`: Domain reference
-- `url`: Service URL
-- `protocol`: Protocol (HTTP, gRPC, GraphQL)
-- `healthCheckUrl`: Health check endpoint
-- `status`: Service status (HEALTHY, DEGRADED, DOWN)
-- `lastHealthCheck`: Last check timestamp
-- `version`: Service version
-- `metadata`: Service metadata (JSON)
-
-#### 6. Subscription
-
-Event subscription.
-
-**Attributes:**
-
-- `id`: Unique identifier
-- `subscriberId`: Subscriber ID (user or service)
-- `eventType`: Event type pattern
-- `domainId`: Source domain (or \* for all)
-- `webhook`: Webhook URL (if applicable)
-- `filter`: Event filter criteria (JSON)
-- `isActive`: Subscription status
-- `createdAt`: Creation date
-
-## 🔌 API Endpoints
-
-### Gateway Management
-
-- `GET /api/nexus/health` - Gateway health check
-- `GET /api/nexus/stats` - Gateway statistics
-- `GET /api/nexus/routes` - List all routes
-
-### GraphQL
-
-- `POST /api/nexus/graphql` - GraphQL endpoint
-- `GET /api/nexus/graphql/schema` - Get GraphQL schema
-- `WS /api/nexus/graphql` - GraphQL subscriptions
-
-### Integrations
-
-- `GET /api/nexus/integrations` - List integrations
-- `POST /api/nexus/integrations` - Create integration
-- `GET /api/nexus/integrations/:id` - Get integration details
-- `PUT /api/nexus/integrations/:id` - Update integration
-- `DELETE /api/nexus/integrations/:id` - Delete integration
-- `POST /api/nexus/integrations/:id/test` - Test integration
-
-### Workflows
-
-- `GET /api/nexus/workflows` - List workflows
-- `POST /api/nexus/workflows` - Create workflow
-- `GET /api/nexus/workflows/:id` - Get workflow details
-- `PUT /api/nexus/workflows/:id` - Update workflow
-- `DELETE /api/nexus/workflows/:id` - Delete workflow
-- `POST /api/nexus/workflows/:id/execute` - Execute workflow
-- `GET /api/nexus/workflows/:id/executions` - Execution history
-
-### Events
-
-- `POST /api/nexus/events/publish` - Publish event
-- `GET /api/nexus/events` - Event stream (SSE)
-- `WS /api/nexus/events` - Event stream (WebSocket)
-- `POST /api/nexus/events/subscribe` - Create subscription
-- `GET /api/nexus/events/subscriptions` - List subscriptions
-- `DELETE /api/nexus/events/subscriptions/:id` - Delete subscription
-
-### API Keys
-
-- `GET /api/nexus/keys` - List user's API keys
-- `POST /api/nexus/keys` - Create new API key
-- `PUT /api/nexus/keys/:id` - Update API key
-- `DELETE /api/nexus/keys/:id` - Revoke API key
-- `POST /api/nexus/keys/:id/rotate` - Rotate API key
-
-### Analytics
-
-- `GET /api/nexus/analytics/usage` - API usage statistics
-- `GET /api/nexus/analytics/performance` - Performance metrics
-- `GET /api/nexus/analytics/errors` - Error analytics
-- `GET /api/nexus/analytics/top-apis` - Most used APIs
-
-## 🔗 Integration Map
-
-### Nexus as Central Hub
-
-#### All Domains → Nexus
-
-- **API Registration**: Register domain APIs
-- **Event Publishing**: Publish domain events
-- **Service Discovery**: Find other domain services
-- **Authentication**: Validate user tokens
-
-#### Nexus → All Domains
-
-- **Request Routing**: Route requests to domain services
-- **Event Distribution**: Deliver events to subscribers
-- **Load Balancing**: Distribute load across instances
-- **Circuit Breaking**: Protect from failures
-
-### Specific Integrations
-
-#### Nexus → System
-
-- **Logging**: Centralized log collection
-- **Metrics**: Performance data aggregation
-- **Health Monitoring**: Service health tracking
-
-#### Nexus → Alert
-
-- **Error Notifications**: Alert on errors
-- **Quota Warnings**: Notify on quota limits
-- **Service Alerts**: Notify on service issues
-
-#### Nexus → Analytics
-
-- **Usage Data**: API usage analytics
-- **Performance Data**: Response time analytics
-- **Integration Analytics**: Cross-domain usage patterns
-
-## 💼 Business Logic
-
-### GraphQL Query Resolution
-
-```javascript
-// Example: Query across multiple domains
-query {
-  user(id: "user_123") {
-    profile           # From System domain
-    portfolio {       # From Assets domain
-      totalValue
-      assets {
-        name
-        currentValue
-      }
-    }
-    investments {     # From FundX domain
-      strategy
-      amount
-      performance
-    }
-    orders {          # From Commerce domain
-      status
-      totalAmount
-    }
+```graphql
+query CustomerProfile($userId: ID!) {
+  user(id: $userId) {
+    # From TEC domain
+    profile { name, email }
+    
+    # From Assets domain
+    portfolio { totalValue, assets }
+    
+    # From FundX domain
+    investments { strategy, performance }
+    
+    # From Commerce domain
+    orders { status, totalAmount }
   }
 }
 ```
 
-### Workflow Execution Example
+**Nexus** orchestrates the query across domains and returns unified response.
 
-```javascript
-// Workflow: New investment → update portfolio → send notification
-{
-  "name": "Investment Creation Workflow",
-  "trigger": {
-    "eventType": "fundx.investment.created"
-  },
-  "steps": [
-    {
-      "action": "assets.createAsset",
-      "input": {
-        "portfolioId": "{{event.portfolioId}}",
-        "assetTypeId": "INVESTMENT",
-        "amount": "{{event.amount}}"
-      }
-    },
-    {
-      "action": "alert.send",
-      "input": {
-        "userId": "{{event.userId}}",
-        "type": "SUCCESS",
-        "message": "Investment created successfully"
-      }
-    },
-    {
-      "action": "analytics.track",
-      "input": {
-        "event": "investment_created",
-        "properties": "{{event}}"
-      }
-    }
-  ]
-}
-```
+### Example 3: Cross-Domain Workflow
 
-### Event Bus Pattern
+Order fulfillment workflow:
 
-```javascript
-// Publisher (FundX domain)
-nexus.publish("fundx.investment.created", {
-  userId: "user_123",
-  investmentId: "inv_456",
-  strategyId: "strategy_789",
-  amount: 10000,
-});
+1. **Commerce.pi** - Order confirmed
+2. **Nexus** orchestrates:
+   - **NBF.pi** - Process payment
+   - **Commerce.pi** - Update inventory
+   - **Alert.pi** - Send confirmation
+   - **Analytics.pi** - Track conversion
+3. All steps coordinated by **Nexus**
+4. Each domain maintains independence
 
-// Subscriber (Assets domain)
-nexus.subscribe("fundx.investment.created", async (event) => {
-  await assetsService.createAsset({
-    portfolioId: event.userId,
-    sourceId: event.investmentId,
-    amount: event.amount,
-  });
-});
-```
+## 🛡️ Preserving Domain Independence
 
-## 🛠️ Engineering Recommendations
+### Independence Principles:
 
-### Architecture Patterns
+1. **Opt-In Integration** - Domains choose what to expose
+2. **Data Sovereignty** - Domains own their data
+3. **Independent Deployment** - Domains deploy separately
+4. **Isolated Databases** - Each domain has its own database
+5. **Autonomous Operations** - Domains function independently
 
-1. **API Gateway Pattern**: Single entry point for all services
-2. **Event-Driven Architecture**: Async communication via events
-3. **CQRS**: Separate command and query paths
-4. **Saga Pattern**: Distributed transactions
+### How Nexus Respects Independence:
 
-### Performance Optimization
+- ✅ **Never modifies domain data directly**
+- ✅ **Requests data through domain APIs**
+- ✅ **Respects domain access controls**
+- ✅ **Preserves domain business logic**
+- ✅ **Allows domains to refuse integration**
 
-1. **Response Caching**: Redis cache for queries
-2. **GraphQL DataLoader**: Batch and cache database requests
-3. **Connection Pooling**: Reuse HTTP connections
-4. **HTTP/2**: Use HTTP/2 for multiplexing
-5. **Query Complexity Limiting**: Prevent expensive queries
+## 📊 Connected Domains
 
-### Scalability
+Nexus connects all 24 domains while preserving their unique value:
 
-1. **Horizontal Scaling**: Scale gateway instances
-2. **Event Bus**: Use Kafka/RabbitMQ for events
-3. **Database Sharding**: Shard by domain or user
-4. **CDN Integration**: Cache at edge
+### Financial Services
+- **FundX.pi** - Investment strategies (independent value preserved)
+- **Assets.pi** - Asset management (autonomous operations)
+- **NBF.pi** - Banking services (sovereign data control)
+- **Insure.pi** - Insurance products (independent pricing)
 
-### Reliability
+### Premium Services
+- **VIP.pi**, **Elite.pi**, **Titan.pi**, **Epic.pi**, **Legend.pi**
+- Each maintains exclusive value and independent membership models
 
-1. **Circuit Breakers**: Prevent cascading failures
-2. **Retry Logic**: Exponential backoff
-3. **Timeout Configuration**: Set appropriate timeouts
-4. **Health Checks**: Regular service monitoring
-5. **Graceful Degradation**: Fallback responses
+### Commerce & Real Estate
+- **Commerce.pi**, **Ecommerce.pi**, **Estate.pi**
+- Independent catalogs, pricing, and inventory management
 
-### Security
+### Technology & Innovation
+- **Explorer.pi**, **DX.pi**, **NX.pi**, **System.pi**, **Analytics.pi**, **Alert.pi**
+- Each provides specialized services independently
 
-1. **Authentication**: JWT with short expiry
-2. **Authorization**: Fine-grained permissions
-3. **Rate Limiting**: Prevent abuse
-4. **Input Validation**: Strict schema validation
-5. **API Key Rotation**: Regular rotation
+### Specialized Services
+- **Life.pi**, **Connection.pi**, **Brookfield.pi**, **Zone.pi**
+- Unique service models maintained
 
-## 📊 Sample Data Models
+### AI Layer
+- **TEC.pi** - AI Assistant (uses Nexus for cross-domain queries)
 
-### Integration Example
+## 📞 Contact
 
-```json
-{
-  "id": "int_fundx_assets",
-  "name": "FundX to Assets Integration",
-  "description": "Sync investments to portfolio",
-  "sourceDomains": ["fundx"],
-  "targetDomains": ["assets"],
-  "type": "EVENT",
-  "config": {
-    "eventType": "fundx.investment.created",
-    "targetAction": "assets.createAsset"
-  },
-  "transformations": {
-    "assetTypeId": "INVESTMENT",
-    "name": "{{event.strategyName}}",
-    "amount": "{{event.amount}}"
-  },
-  "isActive": true
-}
-```
+- **Email:** nexus@tec.pi
+- **Technical Support:** support@tec.pi
+- **Integration Support:** integrations@tec.pi
+- **Sovereign Email:** yasserrr.fox17@gmail.com
 
-### Workflow Example
+## 🔗 Related Links
 
-```json
-{
-  "id": "workflow_order_fulfillment",
-  "name": "Order Fulfillment Workflow",
-  "trigger": {
-    "eventType": "commerce.order.confirmed"
-  },
-  "steps": [
-    {
-      "name": "Process Payment",
-      "action": "nbf.processPayment",
-      "input": {
-        "orderId": "{{event.orderId}}",
-        "amount": "{{event.amount}}"
-      }
-    },
-    {
-      "name": "Update Inventory",
-      "action": "commerce.updateInventory",
-      "input": {
-        "items": "{{event.items}}"
-      }
-    },
-    {
-      "name": "Send Confirmation",
-      "action": "alert.send",
-      "input": {
-        "userId": "{{event.userId}}",
-        "template": "order_confirmed"
-      }
-    }
-  ]
-}
-```
-
-## 🚀 Implementation Roadmap
-
-### Phase 1: Core Gateway (Current)
-
-- ✅ Basic request routing
-- ✅ Authentication validation
-- ⏳ Rate limiting
-- ⏳ Service registry
-- ⏳ Event bus
-
-### Phase 2: Advanced Integration
-
-- ⏳ GraphQL gateway
-- ⏳ Workflow engine
-- ⏳ Developer portal
-- ⏳ SDK generation
-- ⏳ Circuit breakers
-
-### Phase 3: Intelligence
-
-- 📋 AI-powered routing
-- 📋 Predictive caching
-- 📋 Anomaly detection
-- 📋 Auto-remediation
-- 📋 Smart workflows
-
-### Phase 4: Enterprise
-
-- 📋 Multi-tenancy
-- 📋 Advanced analytics
-- 📋 SLA management
-- 📋 Compliance tools
-- 📋 Enterprise support
-
-## 📝 Collaboration Notes
-
-### For Backend Developers
-
-- Use event bus for async operations
-- Implement idempotent endpoints
-- Add comprehensive logging
-- Monitor service health
-
-### For Frontend Developers
-
-- Use GraphQL for data fetching
-- Implement optimistic updates
-- Handle rate limits gracefully
-- Cache responses appropriately
-
-### For DevOps
-
-- Deploy in Kubernetes
-- Set up service mesh (Istio)
-- Configure monitoring (Prometheus/Grafana)
-- Implement blue-green deployment
+- [Full Application](/apps/nexus)
+- [API Gateway Documentation](/apps/nexus/api)
+- [Integration Examples](/apps/nexus/examples)
+- [Developer Portal](/apps/nexus/portal)
+- [TEC Ecosystem](/)
 
 ---
 
-**Domain Owner**: Nexus Team
-**Status**: Active Development
-**Priority**: CRITICAL - Core infrastructure
-**Last Updated**: January 2026
+# النسخة العربية
 
-**Next Steps:**
+## 🎯 نظرة عامة
 
-1. Complete GraphQL gateway implementation
-2. Build workflow engine
-3. Add AI-powered routing
-4. Create developer portal
-5. Implement distributed tracing
+**Nexus.pi** هو مركز التكامل والتنسيق الذي يربط جميع الـ 24 نطاقاً في نظام TEC البيئي. يضمن التواصل السلس ومزامنة البيانات وأتمتة سير العمل مع الحفاظ على استقلالية وقيمة كل نطاق.
+
+### 🌟 الهوية
+
+- **الاسم:** Nexus.pi (مركز التكامل)
+- **القطاع:** تكامل الأنظمة والتنسيق
+- **الأيقونة:** 🌐
+- **الشعار:** ربط التميز مع الحفاظ على الاستقلالية
+
+## 💡 عرض القيمة
+
+### ما نقدمه:
+
+✅ **تكامل سلس** - ربط جميع الـ 24 نطاق بسهولة  
+✅ **استقلالية النطاقات** - كل نطاق يحتفظ بقيمته الفريدة  
+✅ **تنسيق ذكي** - سير عمل آلي عبر النطاقات  
+✅ **مزامنة في الوقت الفعلي** - الحفاظ على اتساق البيانات  
+
+### المبادئ الأساسية:
+
+- **غير تطفلي** - النطاقات تبقى مستقلة بالكامل
+- **الحفاظ على القيمة** - قيمة كل نطاق الأساسية محمية
+- **تكامل مرن** - النطاقات تختار ما تشاركه
+- **معمارية قابلة للتوسع** - تنمو مع النظام البيئي
+
+## 🚀 الوصول إلى التطبيق
+
+### منصة التكامل الكاملة Nexus متاحة في:
+
+👉 **[انتقل إلى مركز التكامل Nexus](/apps/nexus)**
+
+التطبيق الكامل يتضمن:
+- **لوحة تحكم التكامل** - مراقبة جميع الاتصالات بين النطاقات
+- **بوابة API** - وصول موحد لجميع خدمات النطاقات
+- **ناقل الأحداث** - توزيع الأحداث في الوقت الفعلي
+- **محرك سير العمل** - أتمتة العمليات متعددة النطاقات
+- **بوابة GraphQL** - استعلام نطاقات متعددة في طلب واحد
+- **بوابة المطورين** - توثيق واختبار الـ API
+
+## 🔗 معمارية التكامل
+
+### كيف يربط Nexus النطاقات
+
+```
+                    ┌─────────────┐
+                    │  Nexus.pi   │
+                    │   مركز      │
+                    │  التكامل    │
+                    └──────┬──────┘
+                           │
+        ┌──────────────────┼──────────────────┐
+        │                  │                  │
+   ┌────▼────┐       ┌────▼────┐       ┌────▼────┐
+   │  بوابة  │       │  ناقل   │       │ مزامنة  │
+   │   API   │       │ الأحداث │       │البيانات │
+   └────┬────┘       └────┬────┘       └────┬────┘
+        │                  │                  │
+   ┌────▼──────────────────▼──────────────────▼────┐
+   │  جميع الـ 24 نطاق (مستقلة بالكامل)            │
+   │  FundX • Assets • NBF • Insure • Commerce •... │
+   └─────────────────────────────────────────────────┘
+```
+
+## 🌟 القدرات الأساسية
+
+### 1. بوابة API
+- **وصول موحد** - نقطة دخول واحدة لجميع واجهات النطاقات
+- **توجيه ذكي** - توزيع ذكي للطلبات
+- **تحديد المعدل** - حماية النطاقات من الحمل الزائد
+- **المصادقة** - طبقة أمان مركزية
+- **توزيع الحمل** - توزيع الحركة بكفاءة
+
+### 2. ناقل الأحداث
+- **نشر-اشتراك** - النطاقات تنشر الأحداث والأخرى تشترك
+- **تحديثات فورية** - إشعارات فورية عبر النطاقات
+- **تصفية الأحداث** - استهلاك انتقائي للأحداث
+- **تسليم موثوق** - ضمان تسليم الأحداث
+- **تاريخ الأحداث** - إعادة تشغيل الأحداث السابقة
+
+### 3. مزامنة البيانات
+- **مزامنة انتقائية** - النطاقات تتحكم في البيانات المشتركة
+- **حل التعارضات** - استراتيجيات دمج ذكية
+- **تتبع التغييرات** - مراقبة تغييرات البيانات
+- **الاتساق النهائي** - الحفاظ على سلامة البيانات
+- **ضوابط الخصوصية** - احترام سيادة البيانات
+
+### 4. تنسيق سير العمل
+- **سير عمل متعدد النطاقات** - أتمتة العمليات عبر النطاقات
+- **المنطق الشرطي** - اتخاذ قرارات ذكية
+- **معالجة الأخطاء** - استرداد رشيق من الفشل
+- **آليات إعادة المحاولة** - إعادة محاولة تلقائية عند الفشل
+- **منشئ سير عمل مرئي** - أتمتة بدون كود
+
+### 5. اتحاد GraphQL
+- **مخطط موحد** - استعلام نطاقات متعددة في طلب واحد
+- **استعلامات مرنة** - احصل على ما تحتاجه بالضبط
+- **اشتراكات في الوقت الفعلي** - تحديثات بيانات مباشرة
+- **دمج المخططات** - دمج مخططات النطاقات
+- **تحسين الاستعلام** - جلب بيانات فعال
+
+## 🛡️ الحفاظ على استقلالية النطاقات
+
+### مبادئ الاستقلالية:
+
+1. **التكامل الاختياري** - النطاقات تختار ما تكشفه
+2. **سيادة البيانات** - النطاقات تملك بياناتها
+3. **النشر المستقل** - النطاقات تنشر بشكل منفصل
+4. **قواعد بيانات معزولة** - كل نطاق له قاعدة بيانات خاصة
+5. **عمليات مستقلة** - النطاقات تعمل بشكل مستقل
+
+### كيف يحترم Nexus الاستقلالية:
+
+- ✅ **لا يعدل بيانات النطاق مباشرة أبداً**
+- ✅ **يطلب البيانات عبر واجهات النطاق**
+- ✅ **يحترم ضوابط الوصول للنطاق**
+- ✅ **يحافظ على منطق أعمال النطاق**
+- ✅ **يسمح للنطاقات برفض التكامل**
+
+## 📞 التواصل
+
+- **البريد الإلكتروني:** nexus@tec.pi
+- **الدعم الفني:** support@tec.pi
+- **دعم التكامل:** integrations@tec.pi
+- **البريد السيادي:** yasserrr.fox17@gmail.com
+
+## 🔗 روابط ذات صلة
+
+- [التطبيق الكامل](/apps/nexus)
+- [توثيق بوابة API](/apps/nexus/api)
+- [أمثلة التكامل](/apps/nexus/examples)
+- [بوابة المطورين](/apps/nexus/portal)
+- [نظام TEC البيئي](/)
+
+---
+
+**⚠️ ملاحظة مهمة / Important Notice**
+
+**English:**  
+This domain is an **identity gateway only**. It serves as a presentation layer for the Nexus Integration Hub. For access to the full operational platform, API gateway, event bus, workflow engine, and all integration tools, please visit `/apps/nexus`.
+
+**عربي:**  
+هذا النطاق هو **بوابة تعريفية فقط**. يعمل كطبقة عرض لمركز التكامل Nexus. للوصول إلى المنصة التشغيلية الكاملة وبوابة API وناقل الأحداث ومحرك سير العمل وجميع أدوات التكامل، يرجى زيارة `/apps/nexus`.
+
+---
+
+**Type / النوع:** Identity Gateway (بوابة تعريفية)  
+**Operational Application / التطبيق التشغيلي:** `/apps/nexus`  
+**Last Updated / آخر تحديث:** January 22, 2026  
+**Compliance Status / حالة الامتثال:** ✅ 100% Domain Sovereignty Policy Compliant
