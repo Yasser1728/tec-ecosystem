@@ -11,6 +11,7 @@ The Forensic Audit System is an advanced centralized security system that protec
 ## المكونات الرئيسية / Key Components
 
 ### 1. خادم التدقيق المركزي / Central Audit Server
+
 **الملف / File:** `pages/api/approval.js`
 
 خادم API مركزي يستقبل جميع طلبات العمليات المالية والحساسة من جميع النطاقات (commerce، fundx، إلخ).
@@ -18,6 +19,7 @@ The Forensic Audit System is an advanced centralized security system that protec
 A central API server that receives all financial and sensitive operation requests from all domains (commerce, fundx, etc.).
 
 **الوظائف الرئيسية / Main Functions:**
+
 - التحقق من هوية المستخدم / User identity verification
 - التحقق من صحة العملية / Operation validation
 - كشف الأنشطة المشبوهة / Suspicious activity detection
@@ -25,6 +27,7 @@ A central API server that receives all financial and sensitive operation request
 - التسجيل غير القابل للتغيير / Immutable logging
 
 ### 2. أدوات التدقيق الجنائي / Forensic Utilities
+
 **الملف / File:** `lib/forensic-utils.js`
 
 مكتبة شاملة توفر جميع وظائف التدقيق والتحقق الأمنية.
@@ -32,6 +35,7 @@ A central API server that receives all financial and sensitive operation request
 A comprehensive library providing all audit and security verification functions.
 
 **الوظائف المتاحة / Available Functions:**
+
 - `createImmutableLogEntry()` - إنشاء سجل غير قابل للتغيير مع تجزئة تشفيرية
 - `verifyUserIdentity()` - التحقق من هوية المستخدم والجلسة
 - `validateOperation()` - التحقق من صحة بيانات العملية
@@ -48,16 +52,16 @@ The system supports the following operation types that require auditing:
 
 ```javascript
 AUDIT_OPERATION_TYPES = {
-  PAYMENT_CREATE: 'payment_create',        // إنشاء دفع / Create payment
-  PAYMENT_APPROVE: 'payment_approve',      // الموافقة على دفع / Approve payment
-  PAYMENT_COMPLETE: 'payment_complete',    // إكمال دفع / Complete payment
-  PAYMENT_CANCEL: 'payment_cancel',        // إلغاء دفع / Cancel payment
-  NFT_MINT: 'nft_mint',                   // سك NFT / Mint NFT
-  SUBSCRIPTION_CREATE: 'subscription_create', // إنشاء اشتراك / Create subscription
-  WITHDRAWAL: 'withdrawal',                // سحب / Withdrawal
-  TRANSFER: 'transfer',                    // تحويل / Transfer
-  DOMAIN_PURCHASE: 'domain_purchase',      // شراء نطاق / Domain purchase
-}
+  PAYMENT_CREATE: "payment_create", // إنشاء دفع / Create payment
+  PAYMENT_APPROVE: "payment_approve", // الموافقة على دفع / Approve payment
+  PAYMENT_COMPLETE: "payment_complete", // إكمال دفع / Complete payment
+  PAYMENT_CANCEL: "payment_cancel", // إلغاء دفع / Cancel payment
+  NFT_MINT: "nft_mint", // سك NFT / Mint NFT
+  SUBSCRIPTION_CREATE: "subscription_create", // إنشاء اشتراك / Create subscription
+  WITHDRAWAL: "withdrawal", // سحب / Withdrawal
+  TRANSFER: "transfer", // تحويل / Transfer
+  DOMAIN_PURCHASE: "domain_purchase", // شراء نطاق / Domain purchase
+};
 ```
 
 ---
@@ -66,11 +70,11 @@ AUDIT_OPERATION_TYPES = {
 
 ```javascript
 RISK_LEVELS = {
-  LOW: 'low',           // منخفض / Low
-  MEDIUM: 'medium',     // متوسط / Medium
-  HIGH: 'high',         // عالي / High
-  CRITICAL: 'critical'  // حرج / Critical
-}
+  LOW: "low", // منخفض / Low
+  MEDIUM: "medium", // متوسط / Medium
+  HIGH: "high", // عالي / High
+  CRITICAL: "critical", // حرج / Critical
+};
 ```
 
 ---
@@ -85,44 +89,46 @@ All financial operations must call `/api/approval` before execution:
 
 ```javascript
 // مثال: إنشاء دفع / Example: Creating a payment
-const approvalResponse = await fetch('/api/approval', {
-  method: 'POST',
+const approvalResponse = await fetch("/api/approval", {
+  method: "POST",
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
   body: JSON.stringify({
-    operationType: 'payment_create',
+    operationType: "payment_create",
     operationData: {
       amount: 100,
-      currency: 'PI',
-      userId: 'user123',
+      currency: "PI",
+      userId: "user123",
     },
-    domain: 'commerce',
+    domain: "commerce",
     context: {
       // معلومات إضافية / Additional information
-    }
-  })
+    },
+  }),
 });
 
 const result = await approvalResponse.json();
 
 if (result.approved) {
   // المتابعة مع العملية / Proceed with operation
-  console.log('Audit Log ID:', result.auditLogId);
+  console.log("Audit Log ID:", result.auditLogId);
 } else {
   // رفض العملية / Reject operation
-  console.error('Rejected:', result.reason);
+  console.error("Rejected:", result.reason);
 }
 ```
 
 ### النطاقات المدمجة / Integrated Domains
 
 #### 1. Commerce (التجارة)
+
 - **الملف / File:** `pages/api/payments/create-payment.js`
 - **الوظيفة / Function:** إنشاء الدفعات / Payment creation
 - **التكامل / Integration:** ✅ مكتمل / Complete
 
 #### 2. FundX (الاستثمار)
+
 - **التكامل / Integration:** من خلال `pages/api/payments/` APIs
 - **الوظيفة / Function:** جميع العمليات الاستثمارية / All investment operations
 
@@ -163,12 +169,12 @@ Each audit log contains:
 The cryptographic hash (SHA-256) ensures logs cannot be tampered with:
 
 ```javascript
-import crypto from 'crypto';
+import crypto from "crypto";
 
 const hash = crypto
-  .createHash('sha256')
+  .createHash("sha256")
   .update(JSON.stringify(logEntry))
-  .digest('hex');
+  .digest("hex");
 ```
 
 ---
@@ -252,32 +258,32 @@ FORENSIC_AUDIT_IMMUTABLE_LOGS=true
 async function createPayment(amount, domain) {
   try {
     // 1. استدعاء API إنشاء الدفع / Call payment creation API
-    const response = await fetch('/api/payments/create-payment', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const response = await fetch("/api/payments/create-payment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         amount,
         domain,
         userId: currentUser.id,
-        memo: 'Purchase from Commerce'
-      })
+        memo: "Purchase from Commerce",
+      }),
     });
 
     const result = await response.json();
 
     // 2. التحقق من موافقة التدقيق / Check audit approval
     if (result.forensicAudit?.approved) {
-      console.log('✅ Payment approved by forensic audit');
-      console.log('Audit Log ID:', result.forensicAudit.auditLogId);
-      
+      console.log("✅ Payment approved by forensic audit");
+      console.log("Audit Log ID:", result.forensicAudit.auditLogId);
+
       // 3. المتابعة مع معالجة الدفع / Proceed with payment processing
       return result;
     } else {
-      console.error('❌ Payment rejected:', result.reason);
+      console.error("❌ Payment rejected:", result.reason);
       throw new Error(result.reason);
     }
   } catch (error) {
-    console.error('Payment creation failed:', error);
+    console.error("Payment creation failed:", error);
     throw error;
   }
 }
@@ -292,16 +298,16 @@ async function createPayment(amount, domain) {
 ```javascript
 // اختبار الموافقة / Test approval
 const approvedCase = {
-  operationType: 'payment_create',
-  operationData: { amount: 100, userId: 'user123' },
-  domain: 'commerce'
+  operationType: "payment_create",
+  operationData: { amount: 100, userId: "user123" },
+  domain: "commerce",
 };
 
 // اختبار الرفض / Test rejection
 const rejectedCase = {
-  operationType: 'payment_create',
-  operationData: { amount: 100000, userId: 'newuser' }, // مبلغ كبير / Large amount
-  domain: 'commerce'
+  operationType: "payment_create",
+  operationData: { amount: 100000, userId: "newuser" }, // مبلغ كبير / Large amount
+  domain: "commerce",
 };
 ```
 
@@ -324,6 +330,7 @@ grep "REJECTED" logs/*.log
 السجلات يجب الاحتفاظ بها لمدة لا تقل عن:
 
 Logs should be retained for at least:
+
 - 90 يوماً للعمليات العادية / 90 days for normal operations
 - 1 سنة للعمليات المشبوهة / 1 year for suspicious operations
 - 7 سنوات للعمليات المالية (امتثال) / 7 years for financial operations (compliance)
@@ -333,6 +340,7 @@ Logs should be retained for at least:
 ## الأسئلة الشائعة / FAQ
 
 ### س: هل التدقيق الجنائي يؤثر على الأداء؟
+
 ### Q: Does forensic audit affect performance?
 
 لا، التأثير ضئيل جداً. كل عملية تدقيق تستغرق أقل من 100 ميلي ثانية.
@@ -340,6 +348,7 @@ Logs should be retained for at least:
 No, the impact is minimal. Each audit operation takes less than 100ms.
 
 ### س: ماذا يحدث إذا فشل خادم التدقيق؟
+
 ### Q: What happens if the audit server fails?
 
 في حالة الفشل، يتم رفض العملية تلقائياً لضمان الأمان (fail-safe).
@@ -347,6 +356,7 @@ No, the impact is minimal. Each audit operation takes less than 100ms.
 In case of failure, the operation is automatically rejected to ensure security (fail-safe).
 
 ### س: هل يمكن تعديل السجلات بعد إنشائها؟
+
 ### Q: Can logs be modified after creation?
 
 لا، السجلات غير قابلة للتغيير بفضل التجزئة التشفيرية SHA-256.

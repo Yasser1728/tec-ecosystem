@@ -108,21 +108,25 @@ The TEC Sovereign Agent maintains operational excellence through continuous moni
 ### Common Scenarios and Resolutions
 
 #### Task Map Not Found
+
 - **Symptom**: Agent rejects request with "task map undefined" error
 - **Cause**: Requested task is not registered in the static task map registry
 - **Resolution**: Verify task map exists in `ai-agent/domain-task-map.js` and is properly configured
 
 #### Domain Access Denied
+
 - **Symptom**: "Domain not in allowlist" error during execution
 - **Cause**: Request targets a domain not explicitly permitted
 - **Resolution**: Check domain allowlist in council configuration; add domain if legitimate
 
 #### Ledger Write Failure
+
 - **Symptom**: Warning logged but execution may continue
 - **Cause**: Temporary ledger service unavailability
 - **Resolution**: Verify ledger service health; queued writes will retry automatically
 
 #### Policy Violation
+
 - **Symptom**: Immediate execution rejection with policy reference
 - **Cause**: Request violates governance constraints
 - **Resolution**: Review TEC council policies; request may require governance approval
@@ -135,6 +139,7 @@ This agent is governance-enforced, policy-bound, and statically verifiable.
 Its behavior is constrained, auditable, and intentionally non-autonomous.
 
 **Security Status**: ✅ All Codacy security issues resolved (verified 2026-01-11)
+
 - Cryptographically secure random generation: All security-sensitive code paths use `crypto.randomInt()` instead of `Math.random()`
 - Path traversal protection: Input sanitization implemented in all file system operations
 - Code quality: Zero ESLint errors or warnings

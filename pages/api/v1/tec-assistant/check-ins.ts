@@ -3,18 +3,23 @@
  * POST /api/v1/tec-assistant/check-ins
  */
 
-import { PrismaClient } from '@prisma/client';
-import type { NextApiRequest, NextApiResponse } from 'next';
-import { CheckInRepository } from '@/src/infrastructure/database/repositories/CheckInRepository';
-import { UserRepository } from '@/src/infrastructure/database/repositories/UserRepository';
-import { SignalRepository } from '@/src/infrastructure/database/repositories/SignalRepository';
-import { ConfirmDailyCheckIn } from '@/src/domain/use-cases/check-ins/ConfirmDailyCheckIn';
+import { PrismaClient } from "@prisma/client";
+import type { NextApiRequest, NextApiResponse } from "next";
+import { CheckInRepository } from "@/src/infrastructure/database/repositories/CheckInRepository";
+import { UserRepository } from "@/src/infrastructure/database/repositories/UserRepository";
+import { SignalRepository } from "@/src/infrastructure/database/repositories/SignalRepository";
+import { ConfirmDailyCheckIn } from "@/src/domain/use-cases/check-ins/ConfirmDailyCheckIn";
 
 const prisma = new PrismaClient();
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ success: false, error: { message: 'Method not allowed' } });
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
+  if (req.method !== "POST") {
+    return res
+      .status(405)
+      .json({ success: false, error: { message: "Method not allowed" } });
   }
 
   try {
@@ -23,7 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (!userId) {
       return res.status(400).json({
         success: false,
-        error: { code: 'MISSING_USER_ID', message: 'User ID is required' },
+        error: { code: "MISSING_USER_ID", message: "User ID is required" },
       });
     }
 
@@ -36,7 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const useCase = new ConfirmDailyCheckIn(
       checkInRepository,
       userRepository,
-      signalRepository
+      signalRepository,
     );
     const result = await useCase.execute({ userId });
 
@@ -56,16 +61,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       },
     });
   } catch (error) {
-    console.error('Check-in error:', error);
-    
-    const errorMessage = error instanceof Error ? error.message : 'Failed to confirm check-in';
-    
-    if (errorMessage === 'Already checked in today') {
+    console.error("Check-in error:", error);
+
+    const errorMessage =
+      error instanceof Error ? error.message : "Failed to confirm check-in";
+
+    if (errorMessage === "Already checked in today") {
       return res.status(409).json({
         success: false,
         error: {
-          code: 'ALREADY_CHECKED_IN',
-          message: 'You have already checked in today',
+          code: "ALREADY_CHECKED_IN",
+          message: "You have already checked in today",
         },
       });
     }
@@ -73,7 +79,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(500).json({
       success: false,
       error: {
-        code: 'CHECKIN_ERROR',
+        code: "CHECKIN_ERROR",
         message: errorMessage,
       },
     });

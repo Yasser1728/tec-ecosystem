@@ -3,9 +3,9 @@
  * Prisma-based data persistence
  */
 
-import { PrismaClient } from '@prisma/client';
-import { User, UserStatus, UserRole } from '../../../domain/entities/User';
-import { IUserRepository } from '../../../domain/interfaces/repositories/IUserRepository';
+import { PrismaClient } from "@prisma/client";
+import { User, UserStatus, UserRole } from "../../../domain/entities/User";
+import { IUserRepository } from "../../../domain/interfaces/repositories/IUserRepository";
 
 export class UserRepository implements IUserRepository {
   constructor(private prisma: PrismaClient) {}
@@ -21,7 +21,9 @@ export class UserRepository implements IUserRepository {
   }
 
   async findByPiUsername(piUsername: string): Promise<User | null> {
-    const user = await this.prisma.tecUser.findUnique({ where: { piUsername } });
+    const user = await this.prisma.tecUser.findUnique({
+      where: { piUsername },
+    });
     return user ? this.toDomain(user) : null;
   }
 
@@ -43,16 +45,19 @@ export class UserRepository implements IUserRepository {
   async delete(id: string): Promise<void> {
     await this.prisma.tecUser.update({
       where: { id },
-      data: { status: 'DELETED' },
+      data: { status: "DELETED" },
     });
   }
 
-  async list(page: number, limit: number): Promise<{ users: User[]; total: number }> {
+  async list(
+    page: number,
+    limit: number,
+  ): Promise<{ users: User[]; total: number }> {
     const [users, total] = await Promise.all([
       this.prisma.tecUser.findMany({
         skip: (page - 1) * limit,
         take: limit,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
       }),
       this.prisma.tecUser.count(),
     ]);

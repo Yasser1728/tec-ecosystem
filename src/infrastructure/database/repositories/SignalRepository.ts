@@ -2,9 +2,9 @@
  * Signal Repository Implementation - TEC Assistant Domain
  */
 
-import { PrismaClient } from '@prisma/client';
-import { Signal, SignalType } from '../../../domain/entities/Signal';
-import { ISignalRepository } from '../../../domain/interfaces/repositories/ISignalRepository';
+import { PrismaClient } from "@prisma/client";
+import { Signal, SignalType } from "../../../domain/entities/Signal";
+import { ISignalRepository } from "../../../domain/interfaces/repositories/ISignalRepository";
 
 export class SignalRepository implements ISignalRepository {
   constructor(private prisma: PrismaClient) {}
@@ -27,13 +27,13 @@ export class SignalRepository implements ISignalRepository {
 
   async getHistory(
     page: number,
-    limit: number
+    limit: number,
   ): Promise<{ signals: Signal[]; total: number }> {
     const [signals, total] = await Promise.all([
       this.prisma.tecSignal.findMany({
         skip: (page - 1) * limit,
         take: limit,
-        orderBy: { date: 'desc' },
+        orderBy: { date: "desc" },
       }),
       this.prisma.tecSignal.count(),
     ]);

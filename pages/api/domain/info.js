@@ -1,23 +1,23 @@
 // Domain Info API
 // Exposes domain metadata to frontend
 
-import { getDomainConfig } from '../../../lib/config/domain-registry';
+import { getDomainConfig } from "../../../lib/config/domain-registry";
 
 export default function handler(req, res) {
-  if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'Method not allowed' });
+  if (req.method !== "GET") {
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
     // Get domain information from request headers (set by middleware)
-    const domainName = req.headers['x-domain-name'];
-    const domainNameAr = req.headers['x-domain-name-ar'];
-    const domainTier = req.headers['x-domain-tier'];
-    const domainTheme = req.headers['x-domain-theme'];
-    const domainAnalytics = req.headers['x-domain-analytics'];
-    const domainIndependent = req.headers['x-domain-independent'];
-    const domainValue = req.headers['x-domain-value'];
-    const hostname = req.headers['host'];
+    const domainName = req.headers["x-domain-name"];
+    const domainNameAr = req.headers["x-domain-name-ar"];
+    const domainTier = req.headers["x-domain-tier"];
+    const domainTheme = req.headers["x-domain-theme"];
+    const domainAnalytics = req.headers["x-domain-analytics"];
+    const domainIndependent = req.headers["x-domain-independent"];
+    const domainValue = req.headers["x-domain-value"];
+    const hostname = req.headers["host"];
 
     // If domain headers are present, use them
     if (domainName) {
@@ -27,7 +27,7 @@ export default function handler(req, res) {
         tier: domainTier,
         theme: domainTheme,
         analytics: domainAnalytics,
-        independent: domainIndependent === 'true',
+        independent: domainIndependent === "true",
         value: domainValue,
         hostname: hostname,
       });
@@ -35,7 +35,7 @@ export default function handler(req, res) {
 
     // Otherwise, try to get domain config from hostname
     const domainConfig = getDomainConfig(hostname);
-    
+
     if (domainConfig) {
       return res.status(200).json({
         name: domainConfig.name,
@@ -51,19 +51,18 @@ export default function handler(req, res) {
 
     // Return default if not a recognized domain
     return res.status(200).json({
-      name: 'TEC Ecosystem',
-      nameAr: 'تِك النظام البيئي',
-      tier: 'Hub',
-      theme: 'tec-primary',
-      analytics: 'tec-analytics',
+      name: "TEC Ecosystem",
+      nameAr: "تِك النظام البيئي",
+      tier: "Hub",
+      theme: "tec-primary",
+      analytics: "tec-analytics",
       independent: false,
-      value: 'central-hub',
+      value: "central-hub",
       hostname: hostname,
     });
-
   } catch (error) {
     // Log error with context
-    console.error('Failed to retrieve domain info:', error.message);
-    return res.status(500).json({ error: 'Internal server error' });
+    console.error("Failed to retrieve domain info:", error.message);
+    return res.status(500).json({ error: "Internal server error" });
   }
 }

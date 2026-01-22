@@ -112,40 +112,21 @@ export default async function handler(req, res) {
 ### 📋 قائمة النطاقات (24 بوابة تعريفية):
 
 **الخدمات المالية (4 نطاقات)**
+
 1. **FundX** - استراتيجيات الاستثمار وإدارة المحافظ
 2. **Assets** - إدارة الأصول وتتبع المحفظة
 3. **NBF** - خدمات مصرفية وهندسة مالية
 4. **Insure** - التأمين وإدارة المخاطر
 
-**الخدمات المميزة (5 نطاقات)**
-5. **VIP** - فرص وعضويات حصرية
-6. **Elite** - استشارات استراتيجية متقدمة
-7. **Titan** - حلول مؤسسية عملاقة
-8. **Epic** - مشاريع وتجارب مميزة
-9. **Legend** - خدمات تراثية وموروثة
+**الخدمات المميزة (5 نطاقات)** 5. **VIP** - فرص وعضويات حصرية 6. **Elite** - استشارات استراتيجية متقدمة 7. **Titan** - حلول مؤسسية عملاقة 8. **Epic** - مشاريع وتجارب مميزة 9. **Legend** - خدمات تراثية وموروثة
 
-**التجارة والسوق (3 نطاقات)**
-10. **Commerce** - التجارة B2B والحلول التجارية
-11. **Ecommerce** - التجارة الرقمية والبيع بالتجزئة
-12. **Estate** - سوق العقارات وإدارة الممتلكات
+**التجارة والسوق (3 نطاقات)** 10. **Commerce** - التجارة B2B والحلول التجارية 11. **Ecommerce** - التجارة الرقمية والبيع بالتجزئة 12. **Estate** - سوق العقارات وإدارة الممتلكات
 
-**التكنولوجيا والابتكار (7 نطاقات)**
-13. **Explorer** - منصة الاكتشاف وخدمات السفر
-14. **DX** - التحول الرقمي والاستشارات
-15. **NX** - حلول تكنولوجية جيل جديد
-16. **System** - البنية التحتية والمراقبة
-17. **Analytics** - تحليل البيانات وذكاء الأعمال
-18. **Alert** - إشعارات ذكية ونظام مراقبة
-19. **Nexus** - محور التكامل بالذكاء الاصطناعي
+**التكنولوجيا والابتكار (7 نطاقات)** 13. **Explorer** - منصة الاكتشاف وخدمات السفر 14. **DX** - التحول الرقمي والاستشارات 15. **NX** - حلول تكنولوجية جيل جديد 16. **System** - البنية التحتية والمراقبة 17. **Analytics** - تحليل البيانات وذكاء الأعمال 18. **Alert** - إشعارات ذكية ونظام مراقبة 19. **Nexus** - محور التكامل بالذكاء الاصطناعي
 
-**الخدمات المتخصصة (4 نطاقات)**
-20. **Life** - نمط الحياة والنمو طويل المدى
-21. **Connection** - شبكات وشراكات نخبوية
-22. **Brookfield** - الاستثمار العقاري وصناديق العقارات
-23. **Zone** - خدمات إقليمية وحلول جغرافية
+**الخدمات المتخصصة (4 نطاقات)** 20. **Life** - نمط الحياة والنمو طويل المدى 21. **Connection** - شبكات وشراكات نخبوية 22. **Brookfield** - الاستثمار العقاري وصناديق العقارات 23. **Zone** - خدمات إقليمية وحلول جغرافية
 
-**المركز الرئيسي (نطاق واحد)**
-24. **TEC** - المركز الرئيسي لتنسيق النظام البيئي
+**المركز الرئيسي (نطاق واحد)** 24. **TEC** - المركز الرئيسي لتنسيق النظام البيئي
 
 </div>
 <!-- End of Arabic Section / نهاية القسم العربي -->
@@ -262,40 +243,21 @@ export default async function handler(req, res) {
 ### 📋 The 24 Domains (Identity Gateways):
 
 **Financial Services (4 Domains)**
+
 1. **FundX** - Investment Strategies & Portfolio Optimization
 2. **Assets** - Asset Management & Portfolio Tracking
 3. **NBF** - Next-Generation Banking & Financial Engineering
 4. **Insure** - Insurance & Risk Management
 
-**Premium Services (5 Domains)**
-5. **VIP** - Exclusive VIP Opportunities & Memberships
-6. **Elite** - Premium Strategic Consulting
-7. **Titan** - Enterprise-Level Solutions
-8. **Epic** - Premium Projects & Experiences
-9. **Legend** - Legacy & Heritage Services
+**Premium Services (5 Domains)** 5. **VIP** - Exclusive VIP Opportunities & Memberships 6. **Elite** - Premium Strategic Consulting 7. **Titan** - Enterprise-Level Solutions 8. **Epic** - Premium Projects & Experiences 9. **Legend** - Legacy & Heritage Services
 
-**Commerce & Marketplace (3 Domains)**
-10. **Commerce** - B2B Trading & Business Solutions
-11. **Ecommerce** - Digital Commerce & Online Retail
-12. **Estate** - Real Estate Marketplace & Property Management
+**Commerce & Marketplace (3 Domains)** 10. **Commerce** - B2B Trading & Business Solutions 11. **Ecommerce** - Digital Commerce & Online Retail 12. **Estate** - Real Estate Marketplace & Property Management
 
-**Technology & Innovation (7 Domains)**
-13. **Explorer** - Discovery Platform & Travel Services
-14. **DX** - Digital Transformation & Consulting
-15. **NX** - Next-Generation Technology Solutions
-16. **System** - Infrastructure & Operational Intelligence
-17. **Analytics** - Data Analytics & Business Intelligence
-18. **Alert** - Smart Notifications & Monitoring
-19. **Nexus** - AI-Powered Integration Hub
+**Technology & Innovation (7 Domains)** 13. **Explorer** - Discovery Platform & Travel Services 14. **DX** - Digital Transformation & Consulting 15. **NX** - Next-Generation Technology Solutions 16. **System** - Infrastructure & Operational Intelligence 17. **Analytics** - Data Analytics & Business Intelligence 18. **Alert** - Smart Notifications & Monitoring 19. **Nexus** - AI-Powered Integration Hub
 
-**Specialized Services (4 Domains)**
-20. **Life** - Lifestyle & Long-term Growth Services
-21. **Connection** - Elite Networking & Partnerships
-22. **Brookfield** - Property Investment & Real Estate Funds
-23. **Zone** - Regional Services & Geographic Solutions
+**Specialized Services (4 Domains)** 20. **Life** - Lifestyle & Long-term Growth Services 21. **Connection** - Elite Networking & Partnerships 22. **Brookfield** - Property Investment & Real Estate Funds 23. **Zone** - Regional Services & Geographic Solutions
 
-**Central Hub (1 Domain)**
-24. **TEC** - TEC Ecosystem Central Hub & Orchestration
+**Central Hub (1 Domain)** 24. **TEC** - TEC Ecosystem Central Hub & Orchestration
 
 ---
 
@@ -314,6 +276,7 @@ This policy **protects the architectural integrity** of TEC Ecosystem by ensurin
 ### Violation Detection:
 
 Any Domain directory containing:
+
 - `services/`, `api/`, `data-model/` folders
 - `.js`/`.ts` files with business logic
 - Database connections or schemas
@@ -338,6 +301,7 @@ If you find operational code in `/domains`, follow this process:
 **Policy Enforcement:** This is a mandatory architectural requirement.
 
 **Questions?** If you're unsure whether something belongs in `/domains` or `/apps`, ask:
+
 - "Is this code operational or presentational?"
 - "Does this contain logic, data, or APIs?"
 - If YES → belongs in `/apps`

@@ -1,6 +1,6 @@
 /**
  * Integration Test for Quick Start Service
- * 
+ *
  * Tests the Quick Start service functionality including:
  * - Progress tracking
  * - Step updates
@@ -8,39 +8,48 @@
  * - Progress percentage calculation
  */
 
-const quickStartService = require('../../lib/services/quickStartService');
-const { QUICK_START_STEPS, STATUS } = require('../../lib/services/quickStartService');
+const quickStartService = require("../../lib/services/quickStartService");
+const {
+  QUICK_START_STEPS,
+  STATUS,
+} = require("../../lib/services/quickStartService");
 
 // Test constants
 const INSURANCE_THRESHOLD = 10000; // Asset value threshold for insurance recommendation
 const MIN_INVESTMENT = 1000; // Minimum investment amount
 const NAV_PRICE = 125.5; // Net Asset Value price per share
 
-describe('QuickStartService Integration Tests', () => {
-  const testUserId = 'test_user_' + Date.now();
+describe("QuickStartService Integration Tests", () => {
+  const testUserId = "test_user_" + Date.now();
 
-  describe('Service Initialization', () => {
-    test('should have all required Quick Start steps defined', () => {
+  describe("Service Initialization", () => {
+    test("should have all required Quick Start steps defined", () => {
       expect(QUICK_START_STEPS).toBeDefined();
-      expect(QUICK_START_STEPS.AUTHENTICATION).toBe('authentication');
-      expect(QUICK_START_STEPS.PORTFOLIO_CREATION).toBe('portfolioCreation');
-      expect(QUICK_START_STEPS.ASSET_ADDITION).toBe('assetAddition');
-      expect(QUICK_START_STEPS.INSURANCE_RECOMMENDATION).toBe('insuranceRecommendation');
-      expect(QUICK_START_STEPS.INSURANCE_ACTIVATION).toBe('insuranceActivation');
-      expect(QUICK_START_STEPS.INVESTMENT_OPPORTUNITY).toBe('investmentOpportunity');
-      expect(QUICK_START_STEPS.FIRST_INVESTMENT).toBe('firstInvestment');
+      expect(QUICK_START_STEPS.AUTHENTICATION).toBe("authentication");
+      expect(QUICK_START_STEPS.PORTFOLIO_CREATION).toBe("portfolioCreation");
+      expect(QUICK_START_STEPS.ASSET_ADDITION).toBe("assetAddition");
+      expect(QUICK_START_STEPS.INSURANCE_RECOMMENDATION).toBe(
+        "insuranceRecommendation",
+      );
+      expect(QUICK_START_STEPS.INSURANCE_ACTIVATION).toBe(
+        "insuranceActivation",
+      );
+      expect(QUICK_START_STEPS.INVESTMENT_OPPORTUNITY).toBe(
+        "investmentOpportunity",
+      );
+      expect(QUICK_START_STEPS.FIRST_INVESTMENT).toBe("firstInvestment");
     });
 
-    test('should have all required status values defined', () => {
+    test("should have all required status values defined", () => {
       expect(STATUS).toBeDefined();
-      expect(STATUS.NOT_STARTED).toBe('NOT_STARTED');
-      expect(STATUS.IN_PROGRESS).toBe('IN_PROGRESS');
-      expect(STATUS.COMPLETED).toBe('COMPLETED');
+      expect(STATUS.NOT_STARTED).toBe("NOT_STARTED");
+      expect(STATUS.IN_PROGRESS).toBe("IN_PROGRESS");
+      expect(STATUS.COMPLETED).toBe("COMPLETED");
     });
   });
 
-  describe('Progress Tracking Logic', () => {
-    test('should calculate 0% progress for no completed steps', () => {
+  describe("Progress Tracking Logic", () => {
+    test("should calculate 0% progress for no completed steps", () => {
       const steps = {
         authentication: false,
         portfolioCreation: false,
@@ -48,17 +57,21 @@ describe('QuickStartService Integration Tests', () => {
         insuranceRecommendation: false,
         insuranceActivation: false,
         investmentOpportunity: false,
-        firstInvestment: false
+        firstInvestment: false,
       };
 
       const totalSteps = Object.keys(steps).length;
-      const completedSteps = Object.values(steps).filter(s => s === true).length;
-      const progressPercentage = Math.round((completedSteps / totalSteps) * 100);
+      const completedSteps = Object.values(steps).filter(
+        (s) => s === true,
+      ).length;
+      const progressPercentage = Math.round(
+        (completedSteps / totalSteps) * 100,
+      );
 
       expect(progressPercentage).toBe(0);
     });
 
-    test('should calculate 100% progress for all completed steps', () => {
+    test("should calculate 100% progress for all completed steps", () => {
       const steps = {
         authentication: true,
         portfolioCreation: true,
@@ -66,17 +79,21 @@ describe('QuickStartService Integration Tests', () => {
         insuranceRecommendation: true,
         insuranceActivation: true,
         investmentOpportunity: true,
-        firstInvestment: true
+        firstInvestment: true,
       };
 
       const totalSteps = Object.keys(steps).length;
-      const completedSteps = Object.values(steps).filter(s => s === true).length;
-      const progressPercentage = Math.round((completedSteps / totalSteps) * 100);
+      const completedSteps = Object.values(steps).filter(
+        (s) => s === true,
+      ).length;
+      const progressPercentage = Math.round(
+        (completedSteps / totalSteps) * 100,
+      );
 
       expect(progressPercentage).toBe(100);
     });
 
-    test('should calculate partial progress correctly', () => {
+    test("should calculate partial progress correctly", () => {
       const steps = {
         authentication: true,
         portfolioCreation: true,
@@ -84,19 +101,23 @@ describe('QuickStartService Integration Tests', () => {
         insuranceRecommendation: false,
         insuranceActivation: false,
         investmentOpportunity: false,
-        firstInvestment: false
+        firstInvestment: false,
       };
 
       const totalSteps = Object.keys(steps).length;
-      const completedSteps = Object.values(steps).filter(s => s === true).length;
-      const progressPercentage = Math.round((completedSteps / totalSteps) * 100);
+      const completedSteps = Object.values(steps).filter(
+        (s) => s === true,
+      ).length;
+      const progressPercentage = Math.round(
+        (completedSteps / totalSteps) * 100,
+      );
 
       expect(progressPercentage).toBe(43); // 3/7 = 42.86% ≈ 43%
     });
   });
 
-  describe('Next Step Recommendation Logic', () => {
-    test('should recommend authentication if no steps completed', () => {
+  describe("Next Step Recommendation Logic", () => {
+    test("should recommend authentication if no steps completed", () => {
       const steps = {
         authentication: false,
         portfolioCreation: false,
@@ -104,15 +125,17 @@ describe('QuickStartService Integration Tests', () => {
         insuranceRecommendation: false,
         insuranceActivation: false,
         investmentOpportunity: false,
-        firstInvestment: false
+        firstInvestment: false,
       };
 
       // Find first incomplete step
-      const nextStep = Object.entries(steps).find(([_, completed]) => !completed)?.[0];
-      expect(nextStep).toBe('authentication');
+      const nextStep = Object.entries(steps).find(
+        ([_, completed]) => !completed,
+      )?.[0];
+      expect(nextStep).toBe("authentication");
     });
 
-    test('should recommend portfolio creation after authentication', () => {
+    test("should recommend portfolio creation after authentication", () => {
       const steps = {
         authentication: true,
         portfolioCreation: false,
@@ -120,14 +143,16 @@ describe('QuickStartService Integration Tests', () => {
         insuranceRecommendation: false,
         insuranceActivation: false,
         investmentOpportunity: false,
-        firstInvestment: false
+        firstInvestment: false,
       };
 
-      const nextStep = Object.entries(steps).find(([_, completed]) => !completed)?.[0];
-      expect(nextStep).toBe('portfolioCreation');
+      const nextStep = Object.entries(steps).find(
+        ([_, completed]) => !completed,
+      )?.[0];
+      expect(nextStep).toBe("portfolioCreation");
     });
 
-    test('should indicate completion when all steps done', () => {
+    test("should indicate completion when all steps done", () => {
       const steps = {
         authentication: true,
         portfolioCreation: true,
@@ -135,29 +160,29 @@ describe('QuickStartService Integration Tests', () => {
         insuranceRecommendation: true,
         insuranceActivation: true,
         investmentOpportunity: true,
-        firstInvestment: true
+        firstInvestment: true,
       };
 
-      const allComplete = Object.values(steps).every(s => s === true);
+      const allComplete = Object.values(steps).every((s) => s === true);
       expect(allComplete).toBe(true);
     });
   });
 
-  describe('Workflow Validation', () => {
-    test('should ensure correct number of workflow steps', () => {
+  describe("Workflow Validation", () => {
+    test("should ensure correct number of workflow steps", () => {
       const stepCount = Object.keys(QUICK_START_STEPS).length;
       expect(stepCount).toBe(7);
     });
 
-    test('should validate workflow step order', () => {
+    test("should validate workflow step order", () => {
       const expectedOrder = [
-        'authentication',
-        'portfolioCreation',
-        'assetAddition',
-        'insuranceRecommendation',
-        'insuranceActivation',
-        'investmentOpportunity',
-        'firstInvestment'
+        "authentication",
+        "portfolioCreation",
+        "assetAddition",
+        "insuranceRecommendation",
+        "insuranceActivation",
+        "investmentOpportunity",
+        "firstInvestment",
       ];
 
       const actualSteps = Object.values(QUICK_START_STEPS);
@@ -165,8 +190,8 @@ describe('QuickStartService Integration Tests', () => {
     });
   });
 
-  describe('Insurance Threshold Logic', () => {
-    test('should recommend insurance for high-value assets', () => {
+  describe("Insurance Threshold Logic", () => {
+    test("should recommend insurance for high-value assets", () => {
       // Using constant from top of file
       const assetValue = 50000;
 
@@ -174,7 +199,7 @@ describe('QuickStartService Integration Tests', () => {
       expect(shouldRecommend).toBe(true);
     });
 
-    test('should not recommend insurance for low-value assets', () => {
+    test("should not recommend insurance for low-value assets", () => {
       // Using constant from top of file
       const assetValue = 5000;
 
@@ -182,7 +207,7 @@ describe('QuickStartService Integration Tests', () => {
       expect(shouldRecommend).toBe(false);
     });
 
-    test('should handle threshold boundary correctly', () => {
+    test("should handle threshold boundary correctly", () => {
       // Using constant from top of file
       const assetValueAtThreshold = INSURANCE_THRESHOLD;
       const assetValueBelowThreshold = 9999;
@@ -192,8 +217,8 @@ describe('QuickStartService Integration Tests', () => {
     });
   });
 
-  describe('Investment Validation', () => {
-    test('should validate minimum investment amount', () => {
+  describe("Investment Validation", () => {
+    test("should validate minimum investment amount", () => {
       // Using constant from top of file
       const validAmount = 5000;
       const invalidAmount = 500;
@@ -202,50 +227,52 @@ describe('QuickStartService Integration Tests', () => {
       expect(invalidAmount >= MIN_INVESTMENT).toBe(false);
     });
 
-    test('should calculate investment shares correctly', () => {
+    test("should calculate investment shares correctly", () => {
       const investmentAmount = 5000;
       const navPrice = NAV_PRICE;
       const expectedShares = investmentAmount / navPrice;
 
-      const calculatedShares = parseFloat((investmentAmount / navPrice).toFixed(4));
+      const calculatedShares = parseFloat(
+        (investmentAmount / navPrice).toFixed(4),
+      );
       expect(calculatedShares).toBeCloseTo(39.84, 2);
     });
   });
 
-  describe('Domain Integration Events', () => {
-    test('should define correct event types for domain communication', () => {
+  describe("Domain Integration Events", () => {
+    test("should define correct event types for domain communication", () => {
       const eventTypes = {
-        ASSET_CREATED: 'assets.asset.created',
-        PORTFOLIO_CREATED: 'assets.portfolio.created',
-        POLICY_CREATED: 'insure.policy.created',
-        INVESTMENT_CREATED: 'fundx.investment.created',
-        QUICKSTART_INITIALIZED: 'quickstart.initialized',
-        QUICKSTART_COMPLETED: 'quickstart.completed',
-        QUICKSTART_STEP_UPDATED: 'quickstart.step.updated'
+        ASSET_CREATED: "assets.asset.created",
+        PORTFOLIO_CREATED: "assets.portfolio.created",
+        POLICY_CREATED: "insure.policy.created",
+        INVESTMENT_CREATED: "fundx.investment.created",
+        QUICKSTART_INITIALIZED: "quickstart.initialized",
+        QUICKSTART_COMPLETED: "quickstart.completed",
+        QUICKSTART_STEP_UPDATED: "quickstart.step.updated",
       };
 
-      expect(eventTypes.ASSET_CREATED).toBe('assets.asset.created');
-      expect(eventTypes.PORTFOLIO_CREATED).toBe('assets.portfolio.created');
-      expect(eventTypes.POLICY_CREATED).toBe('insure.policy.created');
-      expect(eventTypes.INVESTMENT_CREATED).toBe('fundx.investment.created');
+      expect(eventTypes.ASSET_CREATED).toBe("assets.asset.created");
+      expect(eventTypes.PORTFOLIO_CREATED).toBe("assets.portfolio.created");
+      expect(eventTypes.POLICY_CREATED).toBe("insure.policy.created");
+      expect(eventTypes.INVESTMENT_CREATED).toBe("fundx.investment.created");
     });
 
-    test('should validate event data structure', () => {
+    test("should validate event data structure", () => {
       const assetCreatedEvent = {
-        eventType: 'assets.asset.created',
+        eventType: "assets.asset.created",
         eventData: {
-          assetId: 'asset_123',
-          userId: 'user_456',
+          assetId: "asset_123",
+          userId: "user_456",
           value: 50000,
-          portfolioId: 'portfolio_789'
+          portfolioId: "portfolio_789",
         },
         metadata: {
           timestamp: new Date().toISOString(),
-          eventId: 'evt_xyz'
-        }
+          eventId: "evt_xyz",
+        },
       };
 
-      expect(assetCreatedEvent.eventType).toBe('assets.asset.created');
+      expect(assetCreatedEvent.eventType).toBe("assets.asset.created");
       expect(assetCreatedEvent.eventData.assetId).toBeDefined();
       expect(assetCreatedEvent.eventData.userId).toBeDefined();
       expect(assetCreatedEvent.eventData.value).toBeGreaterThan(0);
@@ -253,8 +280,8 @@ describe('QuickStartService Integration Tests', () => {
     });
   });
 
-  describe('Premium Calculation', () => {
-    test('should calculate monthly insurance premium correctly', () => {
+  describe("Premium Calculation", () => {
+    test("should calculate monthly insurance premium correctly", () => {
       const assetValue = 47000;
       const annualRate = 0.01; // 1%
       const annualPremium = Math.round(assetValue * annualRate);
@@ -264,11 +291,11 @@ describe('QuickStartService Integration Tests', () => {
       expect(monthlyPremium).toBe(39);
     });
 
-    test('should handle different coverage amounts', () => {
+    test("should handle different coverage amounts", () => {
       const testCases = [
         { coverage: 10000, expectedMonthly: 8 },
         { coverage: 25000, expectedMonthly: 21 },
-        { coverage: 100000, expectedMonthly: 83 }
+        { coverage: 100000, expectedMonthly: 83 },
       ];
 
       testCases.forEach(({ coverage, expectedMonthly }) => {
@@ -279,41 +306,45 @@ describe('QuickStartService Integration Tests', () => {
     });
   });
 
-  describe('Error Handling', () => {
-    test('should validate required fields for portfolio creation', () => {
+  describe("Error Handling", () => {
+    test("should validate required fields for portfolio creation", () => {
       const portfolioData = {
-        name: 'Test Portfolio'
+        name: "Test Portfolio",
         // Missing: currency, userId
       };
 
       const isValid = portfolioData.name && portfolioData.name.length > 0;
       expect(isValid).toBe(true);
-      
+
       // In production, would also check other required fields
       const hasAllRequiredFields = portfolioData.name !== undefined;
       expect(hasAllRequiredFields).toBe(true);
     });
 
-    test('should validate required fields for asset creation', () => {
+    test("should validate required fields for asset creation", () => {
       const validAsset = {
-        portfolioId: 'portfolio_123',
-        name: 'Bitcoin',
-        assetType: 'CRYPTOCURRENCY',
+        portfolioId: "portfolio_123",
+        name: "Bitcoin",
+        assetType: "CRYPTOCURRENCY",
         quantity: 1,
-        purchasePrice: 45000
+        purchasePrice: 45000,
       };
 
-      const hasAllFields = !!(validAsset.portfolioId && validAsset.name && 
-                          validAsset.assetType && validAsset.quantity !== undefined && 
-                          validAsset.purchasePrice);
-      
+      const hasAllFields = !!(
+        validAsset.portfolioId &&
+        validAsset.name &&
+        validAsset.assetType &&
+        validAsset.quantity !== undefined &&
+        validAsset.purchasePrice
+      );
+
       expect(hasAllFields).toBe(true);
     });
 
-    test('should handle invalid session gracefully', () => {
+    test("should handle invalid session gracefully", () => {
       const session = null;
       const isAuthenticated = session !== null && session !== undefined;
-      
+
       expect(isAuthenticated).toBe(false);
     });
   });

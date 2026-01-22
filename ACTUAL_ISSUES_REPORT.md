@@ -10,17 +10,19 @@
 **الأسطر**: 43, 47, 54, 60, 61, 93, 94, 96, 128, 129
 
 **المشكلة**:
+
 ```javascript
 var self = this;
-var error = new Error('...');
-var paymentId = 'sandbox_payment_' + Date.now();
+var error = new Error("...");
+var paymentId = "sandbox_payment_" + Date.now();
 ```
 
 **الحل المقترح**:
+
 ```javascript
 const self = this;
-const error = new Error('...');
-const paymentId = 'sandbox_payment_' + Date.now();
+const error = new Error("...");
+const paymentId = "sandbox_payment_" + Date.now();
 ```
 
 **الأولوية**: متوسطة
@@ -31,21 +33,27 @@ const paymentId = 'sandbox_payment_' + Date.now();
 ### 2. TODO Comments (غير مكتملة) 📝
 
 #### a) `components/SystemIntegrityMonitor.js:46`
+
 ```javascript
 // TODO: Replace prompt with a proper modal dialog component for better UX
 ```
+
 **الحل**: إنشاء modal component بدلاً من prompt
 
 #### b) `components/ConsultationForm.js:67`
+
 ```javascript
 // TODO: Send to backend
 ```
+
 **الحل**: إضافة API call للـ backend
 
 #### c) `pages/api/audit-logs.js:49`
+
 ```javascript
 // TODO: Add admin role check to allow viewing all audit logs
 ```
+
 **الحل**: إضافة admin role verification
 
 **الأولوية**: منخفضة-متوسطة
@@ -56,11 +64,13 @@ const paymentId = 'sandbox_payment_' + Date.now();
 ### 3. استخدام `!== null` بدلاً من nullish coalescing ⚠️
 
 **الملف**: `lib/pi-auth.js:133`
+
 ```javascript
 return this.authenticated && this.user !== null;
 ```
 
 **الحل المقترح**:
+
 ```javascript
 return this.authenticated && this.user != null; // أو
 return this.authenticated && Boolean(this.user);
@@ -74,6 +84,7 @@ return this.authenticated && Boolean(this.user);
 ### 4. Empty catch blocks (محتملة) ⚠️
 
 **الملفات المحتملة**:
+
 - `lib/useApprovalOperation.js:58`
 - `lib/pi-payments.js:302`
 - `pages/_document.js:111`
@@ -85,6 +96,7 @@ return this.authenticated && Boolean(this.user);
 ### 5. Console.log في production code 📊
 
 **الملفات**:
+
 - `pages/index.js:22` - `console.log("Pi SDK methods:", ...)`
 - `lib/env-validation.js:84` - `console.error(...)`
 
@@ -108,17 +120,21 @@ return this.authenticated && Boolean(this.user);
 ## تحليل الأولويات / Priority Analysis
 
 ### حرجة (Critical) 🔴
+
 - لا توجد مشاكل حرجة حالياً ✅
 
 ### عالية (High) 🟠
+
 - لا توجد مشاكل عالية الأولوية ✅
 
 ### متوسطة (Medium) 🟡
+
 1. استخدام `var` في `_document.js`
 2. TODO في `audit-logs.js` (admin role check)
 3. TODO في `ConsultationForm.js` (backend integration)
 
 ### منخفضة (Low) 🟢
+
 1. TODO في `SystemIntegrityMonitor.js` (modal dialog)
 2. Console.log statements
 3. Code style issues
@@ -128,16 +144,19 @@ return this.authenticated && Boolean(this.user);
 ## خطة الإصلاح / Fix Plan
 
 ### المرحلة 1: إصلاحات سريعة (Quick Fixes)
+
 1. ✅ استبدال `var` بـ `const`/`let` في `_document.js`
 2. ✅ إزالة/تحسين console.log statements
 3. ✅ إصلاح code style issues
 
 ### المرحلة 2: Features غير مكتملة
+
 1. إضافة admin role check في audit-logs
 2. إضافة backend integration في ConsultationForm
 3. إنشاء modal component في SystemIntegrityMonitor
 
 ### المرحلة 3: تحسينات عامة
+
 1. إضافة proper logging library
 2. تحسين error handling
 3. Code review شامل
@@ -146,29 +165,32 @@ return this.authenticated && Boolean(this.user);
 
 ## الإحصائيات / Statistics
 
-| الفئة | العدد |
-|------|------|
-| Critical Issues | 0 ✅ |
-| High Priority | 0 ✅ |
-| Medium Priority | 3 🟡 |
-| Low Priority | 3 🟢 |
-| **Total** | **6** |
+| الفئة           | العدد |
+| --------------- | ----- |
+| Critical Issues | 0 ✅  |
+| High Priority   | 0 ✅  |
+| Medium Priority | 3 🟡  |
+| Low Priority    | 3 🟢  |
+| **Total**       | **6** |
 
 ---
 
 ## التوصيات / Recommendations
 
 ### فورية (Immediate)
+
 1. ✅ إصلاح `var` في `_document.js`
 2. ✅ مراجعة catch blocks
 3. ✅ تنظيف console.log statements
 
 ### قصيرة المدى (Short Term)
+
 1. إضافة admin role check
 2. إكمال backend integration
 3. إنشاء modal components
 
 ### طويلة المدى (Long Term)
+
 1. إضافة proper logging system
 2. تحسين error handling strategy
 3. إضافة code quality checks في CI/CD
@@ -180,12 +202,14 @@ return this.authenticated && Boolean(this.user);
 ✅ **المشروع في حالة جيدة جداً**
 
 **النقاط الإيجابية**:
+
 - لا توجد مشاكل أمنية حرجة
 - معظم المشاكل الكبيرة تم حلها
 - الكود يعمل بنجاح (113 tests passing)
 - ESLint clean (0 errors)
 
 **المشاكل المتبقية**:
+
 - 6 مشاكل فقط (3 متوسطة، 3 منخفضة)
 - معظمها code quality وfeatures غير مكتملة
 - لا تؤثر على الأمان أو الوظائف الأساسية

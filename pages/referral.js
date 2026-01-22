@@ -10,21 +10,25 @@ import Footer from "../components/Footer";
 function generateSecureReferralCode() {
   // Use Web Crypto API for secure random generation
   const array = new Uint8Array(4);
-  if (typeof window !== 'undefined' && window.crypto && window.crypto.getRandomValues) {
+  if (
+    typeof window !== "undefined" &&
+    window.crypto &&
+    window.crypto.getRandomValues
+  ) {
     window.crypto.getRandomValues(array);
     // Convert to hex string and uppercase
     const hexString = Array.from(array)
-      .map(b => b.toString(16).padStart(2, '0'))
-      .join('')
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("")
       .toUpperCase();
     return `TEC-${hexString}`;
   }
   // Fallback for SSR (will be replaced on client mount)
-  return 'TEC-XXXXXXXX';
+  return "TEC-XXXXXXXX";
 }
 
 export default function Referral() {
-  const [referralCode, setReferralCode] = useState('TEC-XXXXXXXX');
+  const [referralCode, setReferralCode] = useState("TEC-XXXXXXXX");
   const [copied, setCopied] = useState(false);
 
   // Generate secure referral code on client side only

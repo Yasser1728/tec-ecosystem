@@ -52,6 +52,7 @@ The TEC Ecosystem uses multiple integration patterns:
 **Scenario**: User makes investment in FundX, automatically tracked in Assets
 
 **Flow**:
+
 ```javascript
 // 1. User invests in FundX
 POST /api/fundx/investments
@@ -94,6 +95,7 @@ GET /api/analytics/portfolio/performance
 **Scenario**: User purchases property with financing and insurance
 
 **Flow**:
+
 ```javascript
 // 1. User finds property in Estate
 GET /api/estate/properties/prop_123
@@ -139,6 +141,7 @@ eventBus.publish('estate.property.purchased', {...})
 **Scenario**: User books flight with automatic payment and insurance
 
 **Flow**:
+
 ```javascript
 // 1. User searches and selects flight
 GET /api/explorer/search/flights
@@ -183,6 +186,7 @@ eventBus.on('explorer.booking.confirmed', async (data) => {
 **Scenario**: User purchases valuable collectible
 
 **Flow**:
+
 ```javascript
 // 1. User purchases item
 POST /api/ecommerce/orders
@@ -219,6 +223,7 @@ await assetService.handleCommerceProduct({
 **Scenario**: VIP member gets benefits across ecosystem
 
 **Flow**:
+
 ```javascript
 // 1. User subscribes to VIP
 POST /api/vip/subscribe
@@ -257,6 +262,7 @@ eventBus.on('vip.membership.activated', async (data) => {
 Format: `{domain}.{entity}.{action}`
 
 Examples:
+
 - `fundx.investment.created`
 - `estate.property.purchased`
 - `nbf.loan.approved`
@@ -286,32 +292,38 @@ Examples:
 ### Standard Events by Domain
 
 **FundX**:
+
 - `fundx.investment.created`
 - `fundx.investment.closed`
 - `fundx.distribution.paid`
 
 **NBF**:
+
 - `nbf.account.created`
 - `nbf.transfer.completed`
 - `nbf.loan.approved`
 - `nbf.loan.disbursed`
 
 **Assets**:
+
 - `assets.asset.created`
 - `assets.asset.updated`
 - `assets.valuation.recorded`
 
 **Estate**:
+
 - `estate.property.listed`
 - `estate.property.purchased`
 - `estate.offer.made`
 
 **Explorer**:
+
 - `explorer.booking.created`
 - `explorer.booking.confirmed`
 - `explorer.booking.cancelled`
 
 **Insure**:
+
 - `insure.policy.issued`
 - `insure.claim.submitted`
 - `insure.claim.approved`
@@ -330,7 +342,7 @@ query UserDashboard {
       name
       email
     }
-    
+
     # Assets domain
     portfolios {
       id
@@ -341,20 +353,20 @@ query UserDashboard {
         currentValue
       }
     }
-    
+
     # FundX domain
     investments {
       strategy
       currentValue
       return
     }
-    
+
     # NBF domain
     accounts {
       accountNumber
       balance
     }
-    
+
     # Explorer domain
     upcomingTrips {
       destination
@@ -450,7 +462,7 @@ Read-only views for analytics without tight coupling:
 ```sql
 -- View: user_financial_summary
 CREATE VIEW user_financial_summary AS
-SELECT 
+SELECT
   u.id as user_id,
   a.total_portfolio_value,
   f.total_investments,
@@ -497,12 +509,12 @@ Handle integration failures gracefully:
 ```javascript
 try {
   // Try to create asset in Assets domain
-  await assetService.createAsset(data)
+  await assetService.createAsset(data);
 } catch (error) {
   // Log error but don't fail the main operation
-  logger.error('Failed to create asset', error)
+  logger.error("Failed to create asset", error);
   // Queue for retry
-  await retryQueue.add('create_asset', data)
+  await retryQueue.add("create_asset", data);
 }
 ```
 
@@ -514,11 +526,11 @@ Prevent cascading failures:
 const circuitBreaker = new CircuitBreaker(assetService.createAsset, {
   timeout: 5000,
   errorThreshold: 50,
-  resetTimeout: 30000
-})
+  resetTimeout: 30000,
+});
 
 // Calls will fail fast if Assets service is down
-await circuitBreaker.fire(data)
+await circuitBreaker.fire(data);
 ```
 
 ### 4. Versioning
@@ -587,22 +599,22 @@ logs.query({
 Use tools like OpenTelemetry to trace requests:
 
 ```javascript
-const span = tracer.startSpan('create_investment')
+const span = tracer.startSpan("create_investment");
 try {
   // Main operation
-  await fundxService.createInvestment(data)
-  
+  await fundxService.createInvestment(data);
+
   // Child span for asset creation
-  const assetSpan = tracer.startSpan('create_asset', {
-    parent: span
-  })
-  await assetService.createAsset(data)
-  assetSpan.end()
-  
-  span.end()
+  const assetSpan = tracer.startSpan("create_asset", {
+    parent: span,
+  });
+  await assetService.createAsset(data);
+  assetSpan.end();
+
+  span.end();
 } catch (error) {
-  span.recordException(error)
-  throw error
+  span.recordException(error);
+  throw error;
 }
 ```
 

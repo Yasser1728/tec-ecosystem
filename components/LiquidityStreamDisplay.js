@@ -3,7 +3,7 @@
  * Shows system liquidity overview and pending/frozen transfers
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 export default function LiquidityStreamDisplay() {
   const [liquidityData, setLiquidityData] = useState(null);
@@ -18,13 +18,13 @@ export default function LiquidityStreamDisplay() {
 
   const fetchLiquidityData = async () => {
     try {
-      const response = await fetch('/api/system-control/liquidity-stream');
+      const response = await fetch("/api/system-control/liquidity-stream");
       if (response.ok) {
         const result = await response.json();
         setLiquidityData(result.data);
       }
     } catch (error) {
-      console.error('Failed to fetch liquidity data:', error);
+      console.error("Failed to fetch liquidity data:", error);
     } finally {
       setLoading(false);
     }
@@ -45,7 +45,7 @@ export default function LiquidityStreamDisplay() {
   }
 
   const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
+    if (!dateString) return "N/A";
     return new Date(dateString).toLocaleString();
   };
 
@@ -76,7 +76,7 @@ export default function LiquidityStreamDisplay() {
         <div className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/50 rounded-lg p-4">
           <p className="text-sm text-purple-400 mb-1">Frozen Value</p>
           <p className="text-3xl font-bold text-white">
-            {liquidityData?.totalFrozenValue?.toFixed(2) || '0.00'} π
+            {liquidityData?.totalFrozenValue?.toFixed(2) || "0.00"} π
           </p>
         </div>
 
@@ -105,9 +105,9 @@ export default function LiquidityStreamDisplay() {
                   <div>
                     <span
                       className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
-                        transfer.status === 'FROZEN'
-                          ? 'bg-blue-500/20 text-blue-400'
-                          : 'bg-yellow-500/20 text-yellow-400'
+                        transfer.status === "FROZEN"
+                          ? "bg-blue-500/20 text-blue-400"
+                          : "bg-yellow-500/20 text-yellow-400"
                       }`}
                     >
                       {transfer.status}
@@ -123,26 +123,36 @@ export default function LiquidityStreamDisplay() {
                 <div className="grid md:grid-cols-2 gap-4 text-sm">
                   <div>
                     <p className="text-gray-400">Source Domain</p>
-                    <p className="text-white font-semibold">{transfer.sourceDomain}</p>
+                    <p className="text-white font-semibold">
+                      {transfer.sourceDomain}
+                    </p>
                   </div>
                   <div>
                     <p className="text-gray-400">Target Domain</p>
-                    <p className="text-white font-semibold">{transfer.targetDomain}</p>
+                    <p className="text-white font-semibold">
+                      {transfer.targetDomain}
+                    </p>
                   </div>
                   <div>
                     <p className="text-gray-400">Created</p>
-                    <p className="text-white">{formatDate(transfer.createdAt)}</p>
+                    <p className="text-white">
+                      {formatDate(transfer.createdAt)}
+                    </p>
                   </div>
                   {transfer.frozenAt && (
                     <div>
                       <p className="text-gray-400">Frozen</p>
-                      <p className="text-white">{formatDate(transfer.frozenAt)}</p>
+                      <p className="text-white">
+                        {formatDate(transfer.frozenAt)}
+                      </p>
                     </div>
                   )}
                 </div>
 
                 <div className="mt-3 pt-3 border-t border-gray-700">
-                  <p className="text-xs text-gray-500">Transfer ID: {transfer.id}</p>
+                  <p className="text-xs text-gray-500">
+                    Transfer ID: {transfer.id}
+                  </p>
                 </div>
               </div>
             ))}
@@ -151,7 +161,9 @@ export default function LiquidityStreamDisplay() {
           <div className="text-center py-12 bg-gray-900 rounded-lg">
             <p className="text-4xl mb-3">✅</p>
             <p className="text-gray-400">No pending or frozen transfers</p>
-            <p className="text-sm text-gray-500 mt-1">System liquidity is flowing normally</p>
+            <p className="text-sm text-gray-500 mt-1">
+              System liquidity is flowing normally
+            </p>
           </div>
         )}
       </div>

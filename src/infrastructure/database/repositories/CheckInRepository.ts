@@ -2,10 +2,10 @@
  * CheckIn Repository Implementation - TEC Assistant Domain
  */
 
-import { PrismaClient } from '@prisma/client';
-import { CheckIn } from '../../../domain/entities/CheckIn';
-import { SignalType } from '../../../domain/entities/Signal';
-import { ICheckInRepository } from '../../../domain/interfaces/repositories/ICheckInRepository';
+import { PrismaClient } from "@prisma/client";
+import { CheckIn } from "../../../domain/entities/CheckIn";
+import { SignalType } from "../../../domain/entities/Signal";
+import { ICheckInRepository } from "../../../domain/interfaces/repositories/ICheckInRepository";
 
 export class CheckInRepository implements ICheckInRepository {
   constructor(private prisma: PrismaClient) {}
@@ -26,14 +26,14 @@ export class CheckInRepository implements ICheckInRepository {
   async findByUserId(
     userId: string,
     page: number,
-    limit: number
+    limit: number,
   ): Promise<{ checkIns: CheckIn[]; total: number }> {
     const [checkIns, total] = await Promise.all([
       this.prisma.tecCheckIn.findMany({
         where: { userId },
         skip: (page - 1) * limit,
         take: limit,
-        orderBy: { date: 'desc' },
+        orderBy: { date: "desc" },
       }),
       this.prisma.tecCheckIn.count({ where: { userId } }),
     ]);
@@ -47,7 +47,7 @@ export class CheckInRepository implements ICheckInRepository {
   async findLatestByUserId(userId: string): Promise<CheckIn | null> {
     const checkIn = await this.prisma.tecCheckIn.findFirst({
       where: { userId },
-      orderBy: { date: 'desc' },
+      orderBy: { date: "desc" },
     });
     return checkIn ? this.toDomain(checkIn) : null;
   }

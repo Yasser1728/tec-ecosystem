@@ -7,18 +7,21 @@ The **TEC Core** provides a universal sovereign boilerplate that all 24 domains 
 ## Core Components
 
 ### 1. ForensicLogger
+
 - Immutable audit trail for all operations
 - Cryptographic hash-based integrity verification
 - Suspicious activity detection
 - Real-time threat monitoring
 
 ### 2. ApprovalCenter
+
 - Centralized approval system for major transactions
 - Sovereign email integration (yasserrr.fox17@gmail.com)
 - Multi-level authorization workflows
 - Emergency circuit breaker controls
 
 ### 3. Domain Integration
+
 - Automatic connection for all domains in `/apps`
 - Shared utilities and common interfaces
 - Consistent security policies
@@ -37,22 +40,23 @@ The **TEC Core** provides a universal sovereign boilerplate that all 24 domains 
 All domains in `/apps` automatically inherit core functionality:
 
 ```javascript
-import { DomainBootstrap } from '@core/bootstrap';
-import { ForensicLogger } from '@core/forensic';
-import { ApprovalCenter } from '@core/approval';
+import { DomainBootstrap } from "@core/bootstrap";
+import { ForensicLogger } from "@core/forensic";
+import { ApprovalCenter } from "@core/approval";
 
 // Initialize domain with sovereign controls
 const domain = new DomainBootstrap({
-  name: 'fundx',
-  database: 'fundx_db',
+  name: "fundx",
+  database: "fundx_db",
   forensicEnabled: true,
-  approvalRequired: true
+  approvalRequired: true,
 });
 ```
 
 ## Sovereign Control
 
 All major transactions and operations are subject to sovereign oversight through:
+
 - Central approval authority
 - Email notifications to yasserrr.fox17@gmail.com
 - Multi-signature requirements for high-value operations
@@ -61,6 +65,7 @@ All major transactions and operations are subject to sovereign oversight through
 ## Integration with Domains
 
 Each domain in `/apps` inherits:
+
 - Forensic logging capabilities
 - Approval workflow system
 - Database isolation patterns

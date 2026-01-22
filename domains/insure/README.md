@@ -1,9 +1,11 @@
 # Insure Domain - Insurance & Risk Management Solutions
+
 # دومين التأمين - حلول التأمين وإدارة المخاطر
 
 ---
 
 ## 🌐 Language / اللغة
+
 - [English Version](#english-version)
 - [النسخة العربية](#النسخة-العربية)
 
@@ -18,6 +20,7 @@ Insure (insure.pi) provides comprehensive insurance and risk management solution
 **Vision**: To democratize insurance access and provide transparent, fair, and efficient risk management solutions for all TEC Ecosystem users through blockchain-enabled smart contracts and decentralized verification.
 
 **Core Values**:
+
 - **Transparency**: Clear policy terms and automated claim processing
 - **Fairness**: AI-powered premium calculation without discrimination
 - **Efficiency**: Smart contract automation for instant payouts
@@ -27,6 +30,7 @@ Insure (insure.pi) provides comprehensive insurance and risk management solution
 ## 📋 Core Features
 
 ### 1. Insurance Products
+
 - **Asset Insurance**: Protection for high-value assets (property, vehicles, collectibles)
 - **Life Insurance**: Term and whole life insurance policies
 - **Health Insurance**: Medical coverage and health protection
@@ -34,18 +38,21 @@ Insure (insure.pi) provides comprehensive insurance and risk management solution
 - **Transaction Insurance**: Protection for high-value purchases and deals
 
 ### 2. Claims Management
+
 - **Digital Claims**: Streamlined online claim submission
 - **Smart Contracts**: Automated claim processing and payouts
 - **Document Management**: Secure storage of policy documents
 - **Claims Tracking**: Real-time status updates
 
 ### 3. Risk Assessment
+
 - **Risk Profiling**: Personalized risk assessment
 - **Premium Calculation**: AI-powered premium pricing
 - **Coverage Optimization**: Optimal coverage recommendations
 - **Risk Mitigation**: Preventive risk management advice
 
 ### 4. Policy Management
+
 - **Policy Lifecycle**: Easy policy purchase, renewal, and cancellation
 - **Multi-Policy Discounts**: Bundled coverage savings
 - **Payment Automation**: Automated premium payments
@@ -54,16 +61,19 @@ Insure (insure.pi) provides comprehensive insurance and risk management solution
 ## 🔗 Key Entities
 
 ### Policy
+
 - **Types**: LIFE, HEALTH, PROPERTY, AUTO, TRAVEL, TRANSACTION
 - **Attributes**: policyNumber, coverageAmount, premium, term, status
 - **Coverage**: Deductibles, limits, exclusions
 
 ### Claim
+
 - **Attributes**: policyId, amount, incidentDate, description, documents
 - **Status**: SUBMITTED, UNDER_REVIEW, APPROVED, REJECTED, PAID
 - **Processing**: Automated verification, manual review
 
 ### Premium Payment
+
 - **Frequency**: MONTHLY, QUARTERLY, ANNUALLY
 - **Attributes**: amount, dueDate, paymentDate, status
 - **Automation**: Auto-pay from NBF accounts
@@ -71,6 +81,7 @@ Insure (insure.pi) provides comprehensive insurance and risk management solution
 ## 🔌 API Endpoints
 
 ### Policies
+
 - `GET /api/insure/products` - List insurance products
 - `POST /api/insure/quote` - Get insurance quote
 - `POST /api/insure/policies` - Purchase policy
@@ -79,12 +90,14 @@ Insure (insure.pi) provides comprehensive insurance and risk management solution
 - `PUT /api/insure/policies/:id/renew` - Renew policy
 
 ### Claims
+
 - `POST /api/insure/claims` - Submit claim
 - `GET /api/insure/claims` - List user claims
 - `GET /api/insure/claims/:id` - Get claim status
 - `POST /api/insure/claims/:id/documents` - Upload claim documents
 
 ### Payments
+
 - `GET /api/insure/payments` - List premium payments
 - `POST /api/insure/payments/:id/pay` - Make premium payment
 - `POST /api/insure/payments/autopay` - Setup auto-payment
@@ -92,25 +105,33 @@ Insure (insure.pi) provides comprehensive insurance and risk management solution
 ## 🔗 Integration with Other Domains
 
 ### Assets Domain
+
 **Flow**: Asset Acquisition → Insurance Recommendation
+
 - Suggest insurance for new high-value assets
 - Automatic coverage for financed assets
 - Asset valuation for coverage determination
 
 ### Estate Domain
+
 **Flow**: Property Purchase → Property Insurance
+
 - Mandatory insurance for mortgaged properties
 - Integrated insurance quotes during purchase
 - Coverage amount based on property value
 
 ### NBF Domain
+
 **Flow**: Loan → Required Insurance
+
 - Collateral insurance for loans
 - Life insurance for loan protection
 - Premium payment automation
 
 ### Commerce/Ecommerce Domains
+
 **Flow**: Purchase → Transaction Insurance
+
 - Optional purchase protection
 - Warranty extensions
 - Shipping insurance
@@ -118,6 +139,7 @@ Insure (insure.pi) provides comprehensive insurance and risk management solution
 ## 💼 Business Logic
 
 ### Policy Purchase Flow
+
 ```javascript
 1. User requests quote with details
 2. Risk assessment and pricing
@@ -130,6 +152,7 @@ Insure (insure.pi) provides comprehensive insurance and risk management solution
 ```
 
 ### Claim Processing Flow
+
 ```javascript
 1. User submits claim with details
 2. Initial automated validation
@@ -143,6 +166,7 @@ Insure (insure.pi) provides comprehensive insurance and risk management solution
 ```
 
 ### Premium Calculation
+
 ```javascript
 basePremium = coverageAmount × riskFactor × duration
 adjustedPremium = basePremium × userRiskScore
@@ -152,6 +176,7 @@ finalPremium = adjustedPremium × (1 - discounts) + fees
 ## 📊 Sample Data Models
 
 ### Policy Example
+
 ```json
 {
   "id": "policy_insure_life_001",
@@ -177,6 +202,7 @@ finalPremium = adjustedPremium × (1 - discounts) + fees
 ```
 
 ### Claim Example
+
 ```json
 {
   "id": "claim_insure_001",
@@ -226,6 +252,7 @@ finalPremium = adjustedPremium × (1 - discounts) + fees
 **الرؤية**: إضفاء الطابع الديمقراطي على الوصول إلى التأمين وتوفير حلول إدارة المخاطر الشفافة والعادلة والفعالة لجميع مستخدمي نظام TEC البيئي من خلال العقود الذكية المدعومة بتقنية البلوكشين والتحقق اللامركزي.
 
 **القيم الأساسية**:
+
 - **الشفافية**: شروط وثائق واضحة ومعالجة تلقائية للمطالبات
 - **العدالة**: حساب الأقساط بالذكاء الاصطناعي بدون تمييز
 - **الكفاءة**: أتمتة العقود الذكية للدفعات الفورية
@@ -235,6 +262,7 @@ finalPremium = adjustedPremium × (1 - discounts) + fees
 ## 📋 الميزات الأساسية
 
 ### 1. منتجات التأمين
+
 - **تأمين الأصول**: حماية للأصول عالية القيمة (العقارات، المركبات، المقتنيات)
 - **التأمين على الحياة**: وثائق التأمين على الحياة لأجل والحياة الكاملة
 - **التأمين الصحي**: التغطية الطبية وحماية الصحة
@@ -242,18 +270,21 @@ finalPremium = adjustedPremium × (1 - discounts) + fees
 - **تأمين المعاملات**: حماية للمشتريات والصفقات عالية القيمة
 
 ### 2. إدارة المطالبات
+
 - **المطالبات الرقمية**: تقديم مطالبات عبر الإنترنت بشكل مبسط
 - **العقود الذكية**: معالجة ودفع المطالبات تلقائيًا
 - **إدارة المستندات**: تخزين آمن لمستندات الوثائق
 - **تتبع المطالبات**: تحديثات الحالة في الوقت الفعلي
 
 ### 3. تقييم المخاطر
+
 - **تحديد ملف المخاطر**: تقييم مخاطر شخصي
 - **حساب الأقساط**: تسعير الأقساط بالذكاء الاصطناعي
 - **تحسين التغطية**: توصيات التغطية المثلى
 - **تخفيف المخاطر**: نصائح إدارة المخاطر الوقائية
 
 ### 4. إدارة الوثائق
+
 - **دورة حياة الوثيقة**: شراء الوثيقة وتجديدها وإلغاؤها بسهولة
 - **خصومات الوثائق المتعددة**: توفير التغطية المجمعة
 - **أتمتة الدفع**: دفعات الأقساط التلقائية
@@ -262,9 +293,11 @@ finalPremium = adjustedPremium × (1 - discounts) + fees
 ## 🏗️ الكيانات الرئيسية
 
 ### الوثيقة (Policy)
+
 **الأنواع**: حياة، صحة، عقار، سيارة، سفر، معاملة
 
 **السمات**:
+
 - `id`: معرف فريد (UUID)
 - `userId`: مرجع المالك
 - `policyNumber`: رقم الوثيقة الفريد
@@ -285,7 +318,9 @@ finalPremium = adjustedPremium × (1 - discounts) + fees
 - `updatedAt`: طابع زمني لآخر تحديث
 
 ### المطالبة (Claim)
+
 **السمات**:
+
 - `id`: معرف فريد (UUID)
 - `policyId`: مرجع الوثيقة
 - `claimNumber`: رقم المطالبة الفريد
@@ -304,9 +339,11 @@ finalPremium = adjustedPremium × (1 - discounts) + fees
 - `metadata`: بيانات إضافية للمطالبة
 
 ### دفع القسط (Premium Payment)
+
 **التكرار**: شهري، ربع سنوي، سنوي
 
 **السمات**:
+
 - `id`: معرف فريد
 - `policyId`: مرجع الوثيقة
 - `amount`: مبلغ القسط
@@ -321,7 +358,9 @@ finalPremium = adjustedPremium × (1 - discounts) + fees
 - `updatedAt`: طابع زمني لآخر تحديث
 
 ### تقييم المخاطر (Risk Assessment)
+
 **السمات**:
+
 - `id`: معرف فريد
 - `userId`: مرجع المستخدم
 - `policyType`: نوع الوثيقة المقيمة
@@ -338,41 +377,48 @@ finalPremium = adjustedPremium × (1 - discounts) + fees
 ### الوثائق
 
 **GET /api/insure/products**
+
 - الوصف: عرض منتجات التأمين
 - المصادقة: اختيارية
 - معاملات الاستعلام: `type`, `category`, `minCoverage`, `maxPremium`
 - الاستجابة: مصفوفة من منتجات التأمين
 
 **POST /api/insure/quote**
+
 - الوصف: الحصول على عرض أسعار تأمين
 - المصادقة: مطلوبة
 - نص الطلب: `{ type, coverageAmount, term, personalInfo }`
 - الاستجابة: كائن عرض الأسعار مع تفاصيل القسط والتغطية
 
 **POST /api/insure/policies**
+
 - الوصف: شراء وثيقة تأمين
 - المصادقة: مطلوبة
 - نص الطلب: `{ quoteId, paymentMethod, beneficiaries }`
 - الاستجابة: كائن الوثيقة المُنشأة
 
 **GET /api/insure/policies**
+
 - الوصف: عرض وثائق المستخدم
 - المصادقة: مطلوبة
 - معاملات الاستعلام: `status`, `type`
 - الاستجابة: مصفوفة من وثائق المستخدم
 
 **GET /api/insure/policies/:id**
+
 - الوصف: الحصول على تفاصيل الوثيقة
 - المصادقة: مطلوبة
 - الاستجابة: كائن الوثيقة الكامل مع السجل
 
 **PUT /api/insure/policies/:id/renew**
+
 - الوصف: تجديد الوثيقة
 - المصادقة: مطلوبة
 - نص الطلب: `{ term, updateBeneficiaries }`
 - الاستجابة: كائن الوثيقة المجددة
 
 **DELETE /api/insure/policies/:id**
+
 - الوصف: إلغاء الوثيقة
 - المصادقة: مطلوبة
 - نص الطلب: `{ reason, effectiveDate }`
@@ -381,29 +427,34 @@ finalPremium = adjustedPremium × (1 - discounts) + fees
 ### المطالبات
 
 **POST /api/insure/claims**
+
 - الوصف: تقديم مطالبة
 - المصادقة: مطلوبة
 - نص الطلب: `{ policyId, claimAmount, incidentDate, incidentType, description }`
 - الاستجابة: كائن المطالبة المُنشأة
 
 **GET /api/insure/claims**
+
 - الوصف: عرض مطالبات المستخدم
 - المصادقة: مطلوبة
 - معاملات الاستعلام: `policyId`, `status`
 - الاستجابة: مصفوفة من مطالبات المستخدم
 
 **GET /api/insure/claims/:id**
+
 - الوصف: الحصول على حالة المطالبة
 - المصادقة: مطلوبة
 - الاستجابة: كائن المطالبة مع سجل المعالجة
 
 **POST /api/insure/claims/:id/documents**
+
 - الوصف: رفع مستندات المطالبة
 - المصادقة: مطلوبة
 - نص الطلب: بيانات الملف متعددة الأجزاء
 - الاستجابة: قائمة المستندات المرفوعة
 
 **PUT /api/insure/claims/:id/withdraw**
+
 - الوصف: سحب المطالبة
 - المصادقة: مطلوبة
 - الاستجابة: تأكيد السحب
@@ -411,24 +462,28 @@ finalPremium = adjustedPremium × (1 - discounts) + fees
 ### الدفعات
 
 **GET /api/insure/payments**
+
 - الوصف: عرض دفعات الأقساط
 - المصادقة: مطلوبة
 - معاملات الاستعلام: `policyId`, `status`, `fromDate`, `toDate`
 - الاستجابة: مصفوفة من دفعات الأقساط
 
 **POST /api/insure/payments/:id/pay**
+
 - الوصف: إجراء دفع القسط
 - المصادقة: مطلوبة
 - نص الطلب: `{ paymentMethod, amount }`
 - الاستجابة: تأكيد الدفع
 
 **POST /api/insure/payments/autopay**
+
 - الوصف: إعداد الدفع التلقائي
 - المصادقة: مطلوبة
 - نص الطلب: `{ policyId, paymentMethod, autoPayEnabled }`
 - الاستجابة: تأكيد إعداد الدفع التلقائي
 
 **PUT /api/insure/payments/autopay/:id**
+
 - الوصف: تحديث إعدادات الدفع التلقائي
 - المصادقة: مطلوبة
 - نص الطلب: `{ enabled, paymentMethod }`
@@ -437,12 +492,14 @@ finalPremium = adjustedPremium × (1 - discounts) + fees
 ### تقييم المخاطر
 
 **POST /api/insure/risk-assessment**
+
 - الوصف: إجراء تقييم للمخاطر
 - المصادقة: مطلوبة
 - نص الطلب: `{ policyType, personalInfo, assetDetails }`
 - الاستجابة: كائن تقييم المخاطر مع الدرجة والتوصيات
 
 **GET /api/insure/risk-assessment/:id**
+
 - الوصف: الحصول على تقييم المخاطر السابق
 - المصادقة: مطلوبة
 - الاستجابة: كائن تقييم المخاطر
@@ -454,6 +511,7 @@ finalPremium = adjustedPremium × (1 - discounts) + fees
 **التدفق**: استحواذ الأصل → توصية التأمين
 
 **السيناريو**:
+
 1. يضيف المستخدم أصلًا عالي القيمة في دومين Assets
 2. ينشر Assets حدث `asset.created` مع تفاصيل الأصل
 3. خدمة Insure تحلل قيمة الأصل ونوعه
@@ -461,23 +519,24 @@ finalPremium = adjustedPremium × (1 - discounts) + fees
 5. يمكن للمستخدم الحصول على عرض أسعار وشراء تغطية مباشرة
 
 **التكامل التقني**:
+
 ```javascript
 // Insure service listening to Assets events
 // INSURANCE_THRESHOLD is configured in environment (e.g., 10000 Pi for high-value assets)
 const INSURANCE_THRESHOLD = process.env.INSURANCE_THRESHOLD || 10000;
 
-eventBus.on('assets.asset.created', async (data) => {
+eventBus.on("assets.asset.created", async (data) => {
   if (data.value > INSURANCE_THRESHOLD) {
     const recommendation = await insuranceService.generateRecommendation({
       assetId: data.id,
       assetType: data.type,
       value: data.value,
-      userId: data.userId
+      userId: data.userId,
     });
-    
+
     await notificationService.send(data.userId, {
-      type: 'INSURANCE_RECOMMENDATION',
-      data: recommendation
+      type: "INSURANCE_RECOMMENDATION",
+      data: recommendation,
     });
   }
 });
@@ -488,6 +547,7 @@ eventBus.on('assets.asset.created', async (data) => {
 **التدفق**: شراء العقار → تأمين عقاري
 
 **السيناريو**:
+
 1. يكمل المستخدم شراء عقار في Estate
 2. إذا كان العقار ممولًا، التأمين إلزامي
 3. ينشر Estate حدث `property.purchased`
@@ -496,6 +556,7 @@ eventBus.on('assets.asset.created', async (data) => {
 6. عند الموافقة، يتم إنشاء الوثيقة وربطها بالعقار
 
 **الحالات الخاصة**:
+
 - العقارات الممولة: تأمين إلزامي بمبلغ تغطية يساوي قيمة القرض على الأقل
 - العقارات المشتراة نقدًا: تأمين اختياري ولكن موصى به بشدة
 - التغطية الموسعة: حماية إضافية للمحتويات والكوارث الطبيعية
@@ -505,6 +566,7 @@ eventBus.on('assets.asset.created', async (data) => {
 **التدفق**: قرض → تأمين مطلوب
 
 **السيناريو**:
+
 1. يتقدم المستخدم بطلب قرض في NBF
 2. يتطلب NBF تأمينًا على الضمانات
 3. ينشر NBF حدث `loan.approved`
@@ -513,11 +575,13 @@ eventBus.on('assets.asset.created', async (data) => {
 6. يتم ربط الوثيقة بالقرض
 
 **أنواع التأمين المطلوبة**:
+
 - تأمين الضمانات: حماية للأصل المستخدم كضمان
 - تأمين الحياة: للقروض الكبيرة، لحماية المقترض وعائلته
 - تأمين العجز: تغطية دفعات القرض في حالة العجز
 
 **الأتمتة**:
+
 - الدفع التلقائي من حساب NBF
 - تجديد تلقائي مرتبط بمدة القرض
 - إشعار المُقرض تلقائيًا في حالة انتهاء صلاحية الوثيقة
@@ -527,6 +591,7 @@ eventBus.on('assets.asset.created', async (data) => {
 **التدفق**: شراء → تأمين المعاملة
 
 **السيناريو**:
+
 1. يشتري المستخدم منتجًا عالي القيمة
 2. يُعرض خيار تأمين المعاملة عند الدفع
 3. إذا اختار المستخدم التأمين:
@@ -535,6 +600,7 @@ eventBus.on('assets.asset.created', async (data) => {
    - التغطية تشمل: العيوب، التلف أثناء الشحن، السرقة
 
 **أنواع التغطية**:
+
 - حماية الشراء: حماية لمدة 30-90 يومًا
 - تمديد الضمان: تمديد ضمان الشركة المصنعة
 - تأمين الشحن: حماية أثناء النقل
@@ -545,6 +611,7 @@ eventBus.on('assets.asset.created', async (data) => {
 **التدفق**: عضوية متميزة → تغطية تأمين محسّنة
 
 **السيناريو**:
+
 1. أعضاء VIP/Elite يحصلون على تغطية تأمين محسّنة
 2. خصومات على جميع منتجات التأمين (10-30%)
 3. معالجة مطالبات سريعة (24 ساعة)
@@ -552,6 +619,7 @@ eventBus.on('assets.asset.created', async (data) => {
 5. تغطية حصرية غير متاحة للمستخدمين العاديين
 
 **المزايا الخاصة**:
+
 - عدم وجود فترات انتظار
 - تغطية عالمية تلقائية
 - حدود تغطية أعلى
@@ -560,6 +628,7 @@ eventBus.on('assets.asset.created', async (data) => {
 ## 💼 منطق الأعمال
 
 ### تدفق شراء الوثيقة
+
 ```javascript
 1. يطلب المستخدم عرض أسعار مع التفاصيل
 2. تقييم المخاطر والتسعير:
@@ -579,6 +648,7 @@ eventBus.on('assets.asset.created', async (data) => {
 ```
 
 ### تدفق معالجة المطالبات
+
 ```javascript
 1. يقدم المستخدم المطالبة مع التفاصيل
 2. التحقق الأولي التلقائي:
@@ -611,6 +681,7 @@ eventBus.on('assets.asset.created', async (data) => {
 ```
 
 ### حساب القسط
+
 ```javascript
 // Constants for premium calculation
 const RISK_BASE_MULTIPLIER = 0.5;      // Minimum risk multiplier (50%)
@@ -648,6 +719,7 @@ finalPremium = adjustedPremium + sum(fees)
 ## 📊 نماذج البيانات النموذجية
 
 ### مثال وثيقة التأمين على الحياة
+
 ```json
 {
   "id": "policy_insure_life_001",
@@ -689,6 +761,7 @@ finalPremium = adjustedPremium + sum(fees)
 ```
 
 ### مثال مطالبة
+
 ```json
 {
   "id": "claim_insure_001",
@@ -738,6 +811,7 @@ finalPremium = adjustedPremium + sum(fees)
 ```
 
 ### مثال دفع قسط
+
 ```json
 {
   "id": "payment_insure_001",
@@ -761,6 +835,7 @@ finalPremium = adjustedPremium + sum(fees)
 ```
 
 ### مثال تقييم المخاطر
+
 ```json
 {
   "id": "risk_assessment_001",
@@ -815,53 +890,64 @@ finalPremium = adjustedPremium + sum(fees)
 ## 🚀 التحسينات المستقبلية
 
 ### 1. التأمين البارامتري
+
 **الوصف**: دفعات تلقائية بناءً على مشغلات محددة مسبقًا
 
 **أمثلة**:
+
 - تأمين السفر: دفع تلقائي إذا تأخرت الرحلة أكثر من 3 ساعات
 - تأمين المحاصيل: دفع تلقائي بناءً على بيانات الطقس
 - تأمين الزلازل: دفع فوري بناءً على قوة الزلزال المسجلة
 
 **الفوائد**:
+
 - معالجة فورية للمطالبات
 - لا حاجة لتقديم مستندات
 - شفافية كاملة
 - تقليل تكاليف المعالجة
 
 ### 2. التأمين الصغير
+
 **الوصف**: منتجات تأمين صغيرة القيمة وقصيرة الأجل
 
 **أمثلة**:
+
 - تأمين على حدث لمدة يوم واحد
 - تأمين شحنة واحدة
 - تأمين جهاز محدد
 - تغطية لرحلة واحدة
 
 **خصائص**:
+
 - أقساط منخفضة جدًا (من 1 Pi)
 - شراء فوري
 - تغطية فورية
 - إلغاء سهل
 
 ### 3. التأمين من نظير إلى نظير (P2P)
+
 **الوصف**: مجموعات تأمين تعتمد على المجتمع
 
 **كيف يعمل**:
+
 1. مجموعة من المستخدمين يشكلون مجموعة تأمين
 2. يساهم الجميع بأقساط في صندوق مشترك
 3. تُدفع المطالبات من الصندوق المشترك
 4. في نهاية السنة، يتم توزيع الفائض
 
 **الفوائد**:
+
 - أقساط أقل
 - شفافية كاملة
 - مشاركة مجتمعية
 - حوافز لتقليل المطالبات
 
 ### 4. مُقيّم المطالبات بالذكاء الاصطناعي
+
 **الوصف**: معالجة آلية كاملة للمطالبات
 
 **القدرات**:
+
 - تحليل المستندات تلقائيًا
 - التحقق من الصور والفيديو
 - كشف الاحتيال المتقدم
@@ -869,15 +955,18 @@ finalPremium = adjustedPremium + sum(fees)
 - موافقة فورية للمطالبات البسيطة
 
 **التأثير**:
+
 - معالجة فورية (دقائق بدلاً من أيام)
 - دقة عالية
 - تكاليف منخفضة
 - تجربة مستخدم ممتازة
 
 ### 5. برامج العافية
+
 **الوصف**: برامج صحية ووقائية
 
 **الميزات**:
+
 - متتبع الصحة المتكامل
 - مكافآت على السلوكيات الصحية
 - خصومات على الأقساط للمشاركين
@@ -885,6 +974,7 @@ finalPremium = adjustedPremium + sum(fees)
 - شراكات مع مراكز اللياقة والعيادات
 
 **الفوائد**:
+
 - تقليل المطالبات
 - مستخدمون أكثر صحة
 - أقساط أقل
@@ -1010,16 +1100,19 @@ finalPremium = adjustedPremium + sum(fees)
 ## 📚 موارد إضافية
 
 ### للمطورين
+
 - **[أنواع TypeScript](./types/index.ts)** - تعريفات الأنواع الكاملة
 - **[خدمات الأعمال](./services/)** - منطق الأعمال الأساسي
 - **[مثال التكامل](./integration-example.md)** - أمثلة التكامل
 
 ### للمستخدمين
+
 - **[دليل المستخدم](./user-guide.md)** - دليل استخدام شامل
 - **[الأسئلة الشائعة](./faq.md)** - أسئلة وأجوبة شائعة
 - **[دليل المطالبات](./claims-guide.md)** - كيفية تقديم مطالبة
 
 ### للشركاء
+
 - **[دليل الشركاء](./partner-guide.md)** - معلومات للشركاء
 - **[واجهة برمجة التطبيقات](./api-docs.md)** - توثيق API للشركاء
 

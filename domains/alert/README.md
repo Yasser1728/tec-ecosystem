@@ -7,12 +7,14 @@ Alert (alert.pi) provides intelligent notification and monitoring services acros
 ## 📋 Core Features
 
 ### 1. Real-time Notifications
+
 - **Instant Delivery**: Sub-second notification delivery
 - **Priority Levels**: URGENT, HIGH, MEDIUM, LOW
 - **Rich Content**: Text, images, actions, and deep links
 - **Read Status**: Track notification read/unread status
 
 ### 2. Multi-Channel Delivery
+
 - **In-App Notifications**: Toast, badge, notification center
 - **Push Notifications**: Mobile and web push
 - **Email Notifications**: HTML templates with branding
@@ -20,6 +22,7 @@ Alert (alert.pi) provides intelligent notification and monitoring services acros
 - **Webhooks**: Custom webhook integrations
 
 ### 3. Alert Rules & Triggers
+
 - **Conditional Rules**: Create custom alert conditions
 - **Event-Based**: Trigger on specific domain events
 - **Scheduled Alerts**: Time-based notifications
@@ -27,6 +30,7 @@ Alert (alert.pi) provides intelligent notification and monitoring services acros
 - **Smart Bundling**: Group related notifications
 
 ### 4. Alert Management
+
 - **Notification Center**: Unified inbox for all alerts
 - **Filtering & Search**: Find specific notifications
 - **Bulk Actions**: Mark all read, dismiss, archive
@@ -49,9 +53,11 @@ User (1) ──────< (M) AlertSubscription
 ### Core Entities
 
 #### 1. Alert
+
 Represents a notification message sent to a user.
 
 **Attributes:**
+
 - `id`: Unique identifier (UUID)
 - `userId`: Recipient user ID
 - `domainId`: Source domain (fundx, assets, commerce, etc.)
@@ -67,9 +73,11 @@ Represents a notification message sent to a user.
 - `dismissedAt`: When alert was dismissed
 
 #### 2. AlertRule
+
 User-defined or system rules for when to send alerts.
 
 **Attributes:**
+
 - `id`: Unique identifier
 - `userId`: Rule owner (null for system rules)
 - `name`: Rule name
@@ -83,9 +91,11 @@ User-defined or system rules for when to send alerts.
 - `createdAt`: Creation timestamp
 
 #### 3. AlertSubscription
+
 User preferences for receiving alerts from domains.
 
 **Attributes:**
+
 - `id`: Unique identifier
 - `userId`: User ID
 - `domainId`: Domain ID (or null for global)
@@ -96,9 +106,11 @@ User preferences for receiving alerts from domains.
 - `createdAt`: Creation timestamp
 
 #### 4. Delivery
+
 Tracks delivery status for each alert across channels.
 
 **Attributes:**
+
 - `id`: Unique identifier
 - `alertId`: Parent alert reference
 - `channel`: Delivery channel
@@ -111,6 +123,7 @@ Tracks delivery status for each alert across channels.
 ## 🔌 API Endpoints
 
 ### Alerts
+
 - `POST /api/alert/send` - Send alert to user(s)
 - `GET /api/alert/notifications` - Get user's notifications
 - `GET /api/alert/notifications/:id` - Get specific alert
@@ -120,6 +133,7 @@ Tracks delivery status for each alert across channels.
 - `POST /api/alert/notifications/bulk-action` - Bulk operations
 
 ### Rules
+
 - `GET /api/alert/rules` - List user's alert rules
 - `POST /api/alert/rules` - Create alert rule
 - `GET /api/alert/rules/:id` - Get rule details
@@ -128,11 +142,13 @@ Tracks delivery status for each alert across channels.
 - `PUT /api/alert/rules/:id/toggle` - Enable/disable rule
 
 ### Subscriptions
+
 - `GET /api/alert/subscriptions` - Get user's subscriptions
 - `PUT /api/alert/subscriptions` - Update subscription preferences
 - `POST /api/alert/subscriptions/test` - Send test notification
 
 ### Analytics
+
 - `GET /api/alert/stats` - Get notification statistics
 - `GET /api/alert/delivery-status` - Check delivery status
 
@@ -141,26 +157,31 @@ Tracks delivery status for each alert across channels.
 ### Incoming: Alert Triggers from Other Domains
 
 #### Assets Domain → Alert
+
 - **Price Alerts**: Asset price reaches threshold
 - **Portfolio Alerts**: Portfolio value changes significantly
 - **Transaction Alerts**: Buy/sell confirmations
 
 #### FundX Domain → Alert
+
 - **Investment Alerts**: Strategy performance updates
 - **Opportunity Alerts**: New investment opportunities
 - **Rebalancing Alerts**: Portfolio rebalancing recommendations
 
 #### Commerce Domain → Alert
+
 - **Order Alerts**: Order confirmation, shipping updates
 - **Inventory Alerts**: Low stock notifications
 - **Payment Alerts**: Payment status updates
 
 #### NBF Domain → Alert
+
 - **Transaction Alerts**: Payment confirmations
 - **Balance Alerts**: Low balance warnings
 - **Security Alerts**: Suspicious activity detected
 
 #### System Domain → Alert
+
 - **Maintenance Alerts**: Scheduled maintenance notifications
 - **System Alerts**: System health and performance
 - **Security Alerts**: Security incidents and updates
@@ -168,6 +189,7 @@ Tracks delivery status for each alert across channels.
 ### Outgoing: Alert Services to Other Domains
 
 #### Alert → All Domains
+
 - **Notification Service**: Send notifications on behalf of domains
 - **Alert Templates**: Pre-built notification templates
 - **Delivery Tracking**: Monitor notification delivery status
@@ -176,6 +198,7 @@ Tracks delivery status for each alert across channels.
 ## 💼 Business Logic
 
 ### Alert Creation Flow
+
 ```javascript
 1. Domain event occurs (e.g., price change)
 2. Check if user has alert rule for this event
@@ -191,6 +214,7 @@ Tracks delivery status for each alert across channels.
 ```
 
 ### Smart Bundling Logic
+
 ```javascript
 1. Receive multiple related alerts within time window
 2. Group alerts by: user, domain, type
@@ -200,6 +224,7 @@ Tracks delivery status for each alert across channels.
 ```
 
 ### Priority Handling
+
 ```javascript
 - URGENT: Bypass quiet hours, all enabled channels
 - HIGH: Respect quiet hours, all channels except SMS
@@ -210,24 +235,28 @@ Tracks delivery status for each alert across channels.
 ## 🛠️ Engineering Recommendations
 
 ### Performance Optimization
+
 1. **Queue System**: Use message queue (Redis/RabbitMQ) for alert processing
 2. **Batch Processing**: Bundle notifications for efficiency
 3. **Rate Limiting**: Prevent notification flooding
 4. **Caching**: Cache user preferences and rules
 
 ### Scalability
+
 1. **Horizontal Scaling**: Scale alert workers independently
 2. **Partitioning**: Partition by user ID for better distribution
 3. **Async Processing**: All notifications sent asynchronously
 4. **Dead Letter Queue**: Handle failed deliveries gracefully
 
 ### Reliability
+
 1. **Retry Logic**: Exponential backoff for failed deliveries
 2. **Idempotency**: Prevent duplicate notifications
 3. **Monitoring**: Track delivery rates and failures
 4. **Fallback Channels**: Use alternative channels if primary fails
 
 ### Security
+
 1. **Content Validation**: Sanitize alert content
 2. **Rate Limiting**: Prevent abuse and spam
 3. **Authentication**: Verify sender permissions
@@ -236,6 +265,7 @@ Tracks delivery status for each alert across channels.
 ## 📊 Sample Data Models
 
 ### Alert Example
+
 ```json
 {
   "id": "alert_123abc",
@@ -261,6 +291,7 @@ Tracks delivery status for each alert across channels.
 ```
 
 ### Alert Rule Example
+
 ```json
 {
   "id": "rule_789xyz",
@@ -283,6 +314,7 @@ Tracks delivery status for each alert across channels.
 ## 🚀 Implementation Roadmap
 
 ### Phase 1: Core Infrastructure (Current)
+
 - ✅ Basic notification system
 - ✅ In-app notifications
 - ✅ Alert CRUD operations
@@ -290,6 +322,7 @@ Tracks delivery status for each alert across channels.
 - ⏳ User preferences
 
 ### Phase 2: Advanced Features
+
 - ⏳ Alert rules engine
 - ⏳ Smart bundling
 - ⏳ Email templates
@@ -297,12 +330,14 @@ Tracks delivery status for each alert across channels.
 - ⏳ SMS integration
 
 ### Phase 3: Intelligence & Analytics
+
 - 📋 Machine learning for optimal delivery times
 - 📋 Notification effectiveness analytics
 - 📋 Smart frequency adjustment
 - 📋 A/B testing for notification content
 
 ### Phase 4: Enterprise Features
+
 - 📋 Webhook integrations
 - 📋 Custom notification channels
 - 📋 Advanced reporting
@@ -311,24 +346,28 @@ Tracks delivery status for each alert across channels.
 ## 📝 Collaboration Notes
 
 ### For Frontend Developers
+
 - Use WebSocket connection for real-time notifications
 - Implement notification badge with unread count
 - Add notification center UI component
 - Support rich notification content (images, actions)
 
 ### For Backend Developers
+
 - Implement event emitter pattern for domain events
 - Use queue system for async notification processing
 - Add retry logic with exponential backoff
 - Monitor delivery success rates
 
 ### For Mobile Developers
+
 - Integrate platform-specific push notification SDKs
 - Handle notification taps with deep linking
 - Support notification actions (mark read, dismiss)
 - Implement notification grouping
 
 ### For DevOps
+
 - Set up Redis/RabbitMQ for message queue
 - Configure email service (SendGrid, AWS SES)
 - Set up SMS gateway (Twilio)
@@ -342,6 +381,7 @@ Tracks delivery status for each alert across channels.
 **Last Updated**: January 2026
 
 **Next Steps:**
+
 1. Complete multi-channel delivery implementation
 2. Build alert rules engine
 3. Integrate with all 24 domains

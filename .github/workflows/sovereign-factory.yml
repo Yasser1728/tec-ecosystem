@@ -6,9 +6,9 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
-  checks: write
-  actions: read
+  contents: read   # Changed from write to read (principle of least privilege)
+  checks: write    # Required for test results
+  actions: read    # Required for artifacts
 
 jobs:
   sovereign-pipeline:
@@ -49,11 +49,14 @@ jobs:
       - name: 🟢 Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       # 3️⃣ Install dependencies
+      # Note: We need devDependencies (TypeScript, @types/*) for the build step
       - name: 📚 Install Dependencies
+        env:
+          NPM_CONFIG_PRODUCTION: "false"
         run: npm ci
 
       # 4️⃣ Generate Prisma Client (DB & Sandbox)

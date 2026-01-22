@@ -1,50 +1,51 @@
 /**
  * Epic.pi - Premium Projects
- * 
+ *
  * Exclusive high-value projects and opportunities
- * 
+ *
  * Sector: Premium Services
  * Category: premium
  */
 
-import { DomainBootstrap } from '../../core/bootstrap';
-import { getDomainDatabaseConfig } from '../../core/database';
-import domainConfig from './config';
+import { DomainBootstrap } from "../../core/bootstrap";
+import { getDomainDatabaseConfig } from "../../core/database";
+import domainConfig from "./config";
 
 /**
  * Epic Domain Class
- * 
+ *
  * Extends DomainBootstrap with epic-specific functionality
  */
 export class EpicDomain extends DomainBootstrap {
   constructor(options = {}) {
     // Get database configuration
-    const dbConfig = getDomainDatabaseConfig('epic');
-    
+    const dbConfig = getDomainDatabaseConfig("epic");
+
     super({
       ...domainConfig,
       ...options,
-      name: 'epic',
+      name: "epic",
       database: dbConfig.database,
       forensicEnabled: true,
-      approvalRequired: true
+      approvalRequired: true,
     });
-    
+
     console.log(`[Epic] Domain initialized with sovereign controls`);
   }
-  
+
   /**
    * Get domain-specific information
    */
   getDomainInfo() {
     return {
       ...this.getMetadata(),
-      sector: 'Premium Services',
-      category: 'premium',
-      function: 'Legacy projects, early access opportunities, and elite membership'
+      sector: "Premium Services",
+      category: "premium",
+      function:
+        "Legacy projects, early access opportunities, and elite membership",
     };
   }
-  
+
   /**
    * Example: Execute a domain-specific operation with full controls
    */
@@ -57,15 +58,15 @@ export class EpicDomain extends DomainBootstrap {
       async () => {
         // Domain-specific operation logic goes here
         console.log(`[Epic] Executing ${operationType}`);
-        
+
         // TODO: Implement domain-specific operations
-        
+
         return {
           success: true,
-          domain: 'epic',
-          operation: operationType
+          domain: "epic",
+          operation: operationType,
         };
-      }
+      },
     );
   }
 }

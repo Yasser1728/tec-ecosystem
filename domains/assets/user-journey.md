@@ -13,6 +13,7 @@ This document outlines the complete user journey through the TEC Ecosystem, from
 **Entry Point**: User discovers TEC Ecosystem through Pi Network integration
 
 #### Actions:
+
 1. **Landing on TEC Portal** (`tec.pi`)
    - User browses the ecosystem overview
    - Views 24 integrated domains
@@ -31,6 +32,7 @@ This document outlines the complete user journey through the TEC Ecosystem, from
    - Accept terms and conditions
 
 **Technical Flow:**
+
 ```
 User → TEC Landing Page
      → Pi Auth Button Click
@@ -42,7 +44,8 @@ User → TEC Landing Page
 
 **Domains Involved**: `TEC`, `System`
 
-**Event Published**: 
+**Event Published**:
+
 - `system.user.registered`
 - `system.user.profile.created`
 
@@ -67,6 +70,7 @@ User → TEC Landing Page
    - Join community discussions
 
 **Technical Flow:**
+
 ```
 User → Nexus Portal
      → Domain Catalog
@@ -96,7 +100,8 @@ User → Nexus Portal
    - Configure notifications
    - Link Pi wallet
 
-**Event Published**: 
+**Event Published**:
+
 - `nbf.account.created`
 - `system.kyc.completed`
 
@@ -114,6 +119,7 @@ User → Nexus Portal
    - Upload supporting documents
 
 **Technical Flow:**
+
 ```
 NBF Account Creation
      → Event: nbf.account.created
@@ -123,7 +129,8 @@ NBF Account Creation
      → Analytics Domain Updates
 ```
 
-**Event Published**: 
+**Event Published**:
+
 - `assets.portfolio.created`
 - `analytics.data.updated`
 
@@ -163,6 +170,7 @@ NBF Account Creation
    - Payment confirmation received
 
 **Cross-Domain Integration Flow:**
+
 ```
 FundX: Investment Created
      ↓
@@ -195,56 +203,56 @@ User Dashboard Updated (Real-time)
 ```javascript
 // 1. FundX creates investment
 const investment = await fundxService.createInvestment({
-  userId: 'user_123',
-  strategyId: 'balanced_growth',
+  userId: "user_123",
+  strategyId: "balanced_growth",
   amount: 10000,
-  portfolioId: 'port_abc',
+  portfolioId: "port_abc",
 });
 
 // 2. FundX publishes event
-eventBus.publish('fundx.investment.created', {
+eventBus.publish("fundx.investment.created", {
   investmentId: investment.id,
-  portfolioId: 'port_abc',
-  userId: 'user_123',
-  strategyName: 'Balanced Growth Strategy',
+  portfolioId: "port_abc",
+  userId: "user_123",
+  strategyName: "Balanced Growth Strategy",
   amount: 10000,
   shares: 400,
   pricePerUnit: 25,
   date: new Date(),
-  strategy: 'BALANCED',
-  riskLevel: 'MEDIUM',
+  strategy: "BALANCED",
+  riskLevel: "MEDIUM",
 });
 
 // 3. Assets Domain handles event
-eventBus.subscribe('fundx.investment.created', async (eventData) => {
+eventBus.subscribe("fundx.investment.created", async (eventData) => {
   const asset = await assetService.createAsset({
     portfolioId: eventData.portfolioId,
-    assetTypeId: 'INVESTMENT',
+    assetTypeId: "INVESTMENT",
     name: eventData.strategyName,
     quantity: eventData.shares,
     purchasePrice: eventData.pricePerUnit,
     purchaseDate: eventData.date,
     metadata: {
       sourceId: eventData.investmentId,
-      sourceDomain: 'fundx',
+      sourceDomain: "fundx",
       strategy: eventData.strategy,
       riskLevel: eventData.riskLevel,
     },
   });
-  
+
   // 4. Assets publishes asset created
-  eventBus.publish('assets.asset.created', {
+  eventBus.publish("assets.asset.created", {
     assetId: asset.id,
     portfolioId: asset.portfolioId,
     userId: eventData.userId,
-    assetType: 'INVESTMENT',
+    assetType: "INVESTMENT",
     value: asset.currentValue,
-    sourceDomain: 'fundx',
+    sourceDomain: "fundx",
   });
 });
 
 // 5. Analytics Domain processes
-eventBus.subscribe('assets.asset.created', async (eventData) => {
+eventBus.subscribe("assets.asset.created", async (eventData) => {
   await analyticsService.processAssetCreation({
     userId: eventData.userId,
     assetType: eventData.assetType,
@@ -255,6 +263,7 @@ eventBus.subscribe('assets.asset.created', async (eventData) => {
 ```
 
 **Event Published**:
+
 - `fundx.investment.created`
 - `nbf.payment.completed`
 - `assets.asset.created`
@@ -284,6 +293,7 @@ eventBus.subscribe('assets.asset.created', async (eventData) => {
    - Make payment via NBF
 
 **Cross-Domain Flow:**
+
 ```
 Estate: Property Purchased
      → Assets: Real Estate Asset Created
@@ -306,6 +316,7 @@ Estate: Property Purchased
    - Renewal reminders configured
 
 **Technical Flow:**
+
 ```
 Insure: Policy Created
      ↓
@@ -318,6 +329,7 @@ Assets Domain:
 ```
 
 **Event Published**:
+
 - `estate.property.purchased`
 - `insure.policy.created`
 - `insure.policy.asset.linked`
@@ -345,6 +357,7 @@ Assets Domain:
    - Delivery scheduled
 
 **Cross-Domain Flow:**
+
 ```
 Commerce: Product Purchased (trackAsAsset: true)
      → Assets: Creates Digital/Physical Asset
@@ -367,6 +380,7 @@ Commerce: Product Purchased (trackAsAsset: true)
    - Concierge services
 
 **Event Published**:
+
 - `commerce.product.purchased`
 - `assets.asset.created`
 - `vip.status.upgraded`
@@ -395,6 +409,7 @@ Commerce: Product Purchased (trackAsAsset: true)
    - Review investment insights
 
 **Using Analysis API:**
+
 ```javascript
 // Get comprehensive asset analysis
 const analysis = await assetService.analyzeAssetData(assetId);
@@ -420,6 +435,7 @@ const analysis = await assetService.analyzeAssetData(assetId);
    - Optimize for tax efficiency
 
 **Event Published**:
+
 - `assets.analysis.requested`
 - `analytics.report.generated`
 - `alert.triggered`
@@ -460,6 +476,7 @@ const analysis = await assetService.analyzeAssetData(assetId);
    - Opportunity identification
 
 **Event Published**:
+
 - `analytics.dashboard.created`
 - `alert.configured`
 - `system.automation.enabled`
@@ -475,36 +492,42 @@ const analysis = await assetService.analyzeAssetData(assetId);
 #### Achievement Checklist:
 
 ✅ **Comprehensive Asset Tracking**
+
 - All investments tracked in unified portfolio
 - Real-time valuation across asset classes
 - Complete transaction history
 - Document management system
 
 ✅ **Diversified Portfolio**
+
 - Multiple asset types (crypto, real estate, investments, physical assets)
 - Balanced risk profile
 - Insurance coverage on valuable assets
 - Regular rebalancing
 
 ✅ **Automated Management**
+
 - Automated investments and rebalancing
 - Smart alerts and notifications
 - Tax optimization strategies
 - Performance monitoring
 
 ✅ **Data-Driven Decisions**
+
 - Real-time analytics and insights
 - Historical performance tracking
 - Risk assessment tools
 - AI-powered recommendations
 
 ✅ **Cross-Domain Integration**
+
 - Seamless experience across all domains
 - Single source of truth for financial data
 - Unified authentication and payments
 - Consolidated reporting
 
 ✅ **Premium Benefits**
+
 - VIP tier benefits
 - Exclusive investment opportunities
 - Priority support
@@ -517,21 +540,25 @@ const analysis = await assetService.analyzeAssetData(assetId);
 ### Key Integration Points
 
 #### 1. Investment Flow
+
 ```
 FundX → Assets → Analytics → Alert
 ```
 
 #### 2. Property Purchase Flow
+
 ```
 Estate → Assets → Insure → Analytics
 ```
 
 #### 3. Commerce Flow
+
 ```
 Commerce → Assets → Analytics → VIP
 ```
 
 #### 4. Value Update Flow
+
 ```
 PriceFeed → Assets → Portfolio Value → Analytics → Alert
 ```
@@ -577,6 +604,7 @@ PriceFeed → Assets → Portfolio Value → Analytics → Alert
 ## 🎓 Key Learning Points
 
 ### For Users:
+
 1. **Start Simple**: Begin with one domain, expand gradually
 2. **Understand Integration**: Each action triggers ecosystem-wide updates
 3. **Leverage Automation**: Use smart features to reduce manual work
@@ -584,6 +612,7 @@ PriceFeed → Assets → Portfolio Value → Analytics → Alert
 5. **Optimize Continuously**: Use analytics to improve financial decisions
 
 ### For Developers:
+
 1. **Event-Driven Design**: All domains communicate via Event Bus
 2. **Loose Coupling**: Domains are independent but integrated
 3. **Idempotency**: Handle duplicate events gracefully
@@ -595,6 +624,7 @@ PriceFeed → Assets → Portfolio Value → Analytics → Alert
 ## 🔐 Security & Privacy
 
 Throughout the journey:
+
 - **Authentication**: Pi Network-based authentication
 - **Authorization**: Role-based access control (RBAC)
 - **Data Encryption**: All sensitive data encrypted at rest and in transit
@@ -606,6 +636,7 @@ Throughout the journey:
 ## 📈 Success Metrics
 
 User progresses through journey tracked by:
+
 - **Domains Activated**: Number of domains user has engaged with
 - **Portfolio Value**: Total asset value across all domains
 - **Integration Score**: Level of cross-domain utilization

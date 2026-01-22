@@ -3,7 +3,7 @@
  * Contract for signal data persistence
  */
 
-import { Signal } from '../../entities/Signal';
+import { Signal } from "../../entities/Signal";
 
 export interface ISignalRepository {
   /**
@@ -24,5 +24,8 @@ export interface ISignalRepository {
   /**
    * Get signal history with pagination
    */
-  getHistory(page: number, limit: number): Promise<{ signals: Signal[]; total: number }>;
+  getHistory(
+    page: number,
+    limit: number,
+  ): Promise<{ signals: Signal[]; total: number }>;
 }

@@ -34,12 +34,14 @@ This architecture ensures that each domain maintains its intrinsic value and can
 ### 1. Next.js Configuration (`next.config.js`)
 
 The configuration includes:
+
 - **Security headers** for all routes (X-Frame-Options, X-Content-Type-Options, X-DNS-Prefetch-Control)
 - **Rewrites** for .pi domain routing (handled via middleware)
 
 ### 2. Middleware Intelligence Layer (`middleware.js`)
 
 The middleware provides:
+
 - **Domain detection** - Identifies .pi domains and extracts configuration
 - **Custom headers** - Injects domain metadata into request headers:
   - `X-Domain-Name` - Domain name (English)
@@ -55,6 +57,7 @@ The middleware provides:
 ### 3. Domain Registry (`lib/config/domain-registry.js`)
 
 Centralized configuration containing:
+
 - Complete metadata for all 24 sovereign domains
 - Helper functions for domain lookup and filtering
 - Tier classifications and theme mappings
@@ -64,6 +67,7 @@ Centralized configuration containing:
 ### 4. Domain Info API (`pages/api/domain/info.js`)
 
 REST endpoint that:
+
 - Reads domain headers from middleware
 - Returns domain metadata as JSON
 - Provides fallback for non-.pi domains
@@ -72,26 +76,30 @@ REST endpoint that:
 ## 🌐 Domain Mapping
 
 ### Finance & Investment Tier (6 domains)
+
 - **fundx.pi** - High-yield investment strategies
 - **assets.pi** - Asset management and diversification
 - **nbf.pi** - Next-generation banking and finance
 - **insure.pi** - Comprehensive insurance solutions
-- **vip.pi** - Exclusive VIP services *(requires auth)*
+- **vip.pi** - Exclusive VIP services _(requires auth)_
 - **life.pi** - Life insurance and wealth protection
 
 ### Commerce & Trade Tier (4 domains)
+
 - **commerce.pi** - B2B commerce and trade platform
 - **ecommerce.pi** - Online marketplace and retail
 - **connection.pi** - Business networking and partnerships
-- **elite.pi** - Elite merchant services *(requires auth)*
+- **elite.pi** - Elite merchant services _(requires auth)_
 
 ### Real Estate Tier (4 domains)
+
 - **estate.pi** - Real estate investment and management
 - **brookfield.pi** - Premium real estate development
 - **explorer.pi** - Property discovery and exploration
 - **zone.pi** - Regional real estate zones
 
 ### Technology Tier (5 domains)
+
 - **dx.pi** - Digital transformation services
 - **nx.pi** - Next-generation technology solutions
 - **system.pi** - Enterprise system integration
@@ -99,12 +107,14 @@ REST endpoint that:
 - **alert.pi** - Real-time monitoring and alerts
 
 ### Authority & Legacy Tier (4 domains)
-- **titan.pi** - Enterprise-level strategic services *(requires auth)*
+
+- **titan.pi** - Enterprise-level strategic services _(requires auth)_
 - **nexus.pi** - Central connection hub
-- **epic.pi** - Large-scale project management *(requires auth)*
-- **legend.pi** - Legacy business solutions *(requires auth)*
+- **epic.pi** - Large-scale project management _(requires auth)_
+- **legend.pi** - Legacy business solutions _(requires auth)_
 
 ### Hub (1 domain)
+
 - **tec.pi** - Total Ecosystem Connection - Central Hub
 
 **Total**: 24 sovereign domains
@@ -114,6 +124,7 @@ REST endpoint that:
 ### Premium Domains Requiring Authentication
 
 The following domains require Pi Network authentication:
+
 - vip.pi
 - elite.pi
 - titan.pi
@@ -139,7 +150,7 @@ if (domainConfig.requiresAuth) {
     req: request,
     secret: process.env.NEXTAUTH_SECRET,
   });
-  
+
   if (!token) {
     const signInUrl = new URL("/auth/signin", request.url);
     signInUrl.searchParams.set("callbackUrl", pathname);
@@ -187,21 +198,23 @@ The architecture is designed to support future scaling:
 ### Frontend: Fetching Domain Info
 
 ```javascript
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 export default function MyPage() {
   const [domainInfo, setDomainInfo] = useState(null);
 
   useEffect(() => {
-    fetch('/api/domain/info')
-      .then(res => res.json())
-      .then(data => setDomainInfo(data));
+    fetch("/api/domain/info")
+      .then((res) => res.json())
+      .then((data) => setDomainInfo(data));
   }, []);
 
   return (
     <div>
       {domainInfo && (
-        <h1>{domainInfo.name} - {domainInfo.nameAr}</h1>
+        <h1>
+          {domainInfo.name} - {domainInfo.nameAr}
+        </h1>
       )}
     </div>
   );
@@ -211,13 +224,16 @@ export default function MyPage() {
 ### Backend: Using Domain Registry
 
 ```javascript
-import { getDomainConfig, getDomainsByTier } from './lib/config/domain-registry';
+import {
+  getDomainConfig,
+  getDomainsByTier,
+} from "./lib/config/domain-registry";
 
 // Get specific domain
-const fundxConfig = getDomainConfig('fundx.pi');
+const fundxConfig = getDomainConfig("fundx.pi");
 
 // Get all finance domains
-const financeDomains = getDomainsByTier('Finance & Investment');
+const financeDomains = getDomainsByTier("Finance & Investment");
 
 // Get all independent domains
 const independentDomains = getIndependentDomains();
@@ -227,9 +243,9 @@ const independentDomains = getIndependentDomains();
 
 ```javascript
 export default function handler(req, res) {
-  const domainName = req.headers['x-domain-name'];
-  const isIndependent = req.headers['x-domain-independent'] === 'true';
-  
+  const domainName = req.headers["x-domain-name"];
+  const isIndependent = req.headers["x-domain-independent"] === "true";
+
   // Implement domain-specific logic
   if (isIndependent) {
     // Handle sovereign domain
@@ -252,6 +268,7 @@ Each domain has a theme identifier that can be used for styling:
 ## 🔍 Monitoring & Analytics
 
 Each domain has its own analytics identifier:
+
 - Enables independent tracking
 - Supports domain-specific KPIs
 - Allows for monetization analysis

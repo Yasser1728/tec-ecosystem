@@ -1,21 +1,21 @@
 /**
  * Unit Tests for TEC Service
- * 
+ *
  * @module tests/unit/tecService.test
  */
 
-const TecService = require('../../services/tecService');
+const TecService = require("../../services/tecService");
 
-describe('TecService', () => {
+describe("TecService", () => {
   let tecService;
 
   beforeEach(() => {
     tecService = new TecService();
   });
 
-  describe('getDashboardData', () => {
-    it('should return dashboard data for a user', async () => {
-      const userId = 'test-user-123';
+  describe("getDashboardData", () => {
+    it("should return dashboard data for a user", async () => {
+      const userId = "test-user-123";
       const data = await tecService.getDashboardData(userId);
 
       expect(data).toBeDefined();
@@ -27,23 +27,23 @@ describe('TecService', () => {
     });
   });
 
-  describe('getAllDomains', () => {
-    it('should return list of domains', async () => {
+  describe("getAllDomains", () => {
+    it("should return list of domains", async () => {
       const domains = await tecService.getAllDomains();
 
       expect(domains).toBeInstanceOf(Array);
       expect(domains.length).toBeGreaterThan(0);
-      expect(domains[0]).toHaveProperty('id');
-      expect(domains[0]).toHaveProperty('name');
-      expect(domains[0]).toHaveProperty('category');
+      expect(domains[0]).toHaveProperty("id");
+      expect(domains[0]).toHaveProperty("name");
+      expect(domains[0]).toHaveProperty("category");
     });
   });
 
-  describe('authenticateUser', () => {
-    it('should authenticate user with valid credentials', async () => {
+  describe("authenticateUser", () => {
+    it("should authenticate user with valid credentials", async () => {
       const credentials = {
-        username: 'testuser',
-        password: 'testpass',
+        username: "testuser",
+        password: "testpass",
       };
 
       const result = await tecService.authenticateUser(credentials);
@@ -53,15 +53,15 @@ describe('TecService', () => {
       expect(result.token).toBeDefined();
     });
 
-    it('should throw error for missing credentials', async () => {
-      const credentials = { username: 'testuser' };
+    it("should throw error for missing credentials", async () => {
+      const credentials = { username: "testuser" };
 
       await expect(tecService.authenticateUser(credentials)).rejects.toThrow();
     });
   });
 
-  describe('getEcosystemHealth', () => {
-    it('should return ecosystem health status', async () => {
+  describe("getEcosystemHealth", () => {
+    it("should return ecosystem health status", async () => {
       const health = await tecService.getEcosystemHealth();
 
       expect(health).toBeDefined();

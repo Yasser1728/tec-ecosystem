@@ -31,18 +31,21 @@ TEC Ecosystem represents a revolutionary approach to building interconnected bus
 ### Operating Philosophy
 
 **Microservices at Scale:** Each domain is a microservice that can be:
+
 - Developed independently by specialized teams
 - Scaled independently based on demand
 - Deployed independently with zero downtime
 - Monetized independently or as bundles
 
 **Data Sovereignty:** Each domain owns its data while sharing necessary information through:
+
 - RESTful APIs for synchronous operations
 - Event bus for asynchronous updates
 - Read-only database views for analytics
 - GraphQL gateway for unified queries
 
 **Progressive Enhancement:**
+
 - Start with core domains (Assets, FundX, Explorer, Commerce)
 - Gradually activate remaining domains
 - Each domain adds value independently
@@ -88,6 +91,7 @@ TEC Ecosystem represents a revolutionary approach to building interconnected bus
 **Example User Stories:**
 
 **Story 1: Investment Professional**
+
 - Starts at `fundx.pi` to explore investment strategies
 - Discovers `assets.pi` for portfolio management
 - Uses `analytics.pi` for data insights
@@ -95,6 +99,7 @@ TEC Ecosystem represents a revolutionary approach to building interconnected bus
 - All unified under single Pi Network identity
 
 **Story 2: Real Estate Investor**
+
 - Begins at `estate.pi` browsing properties
 - Discovers `brookfield.pi` for investment funds
 - Uses `nbf.pi` for financing solutions
@@ -102,6 +107,7 @@ TEC Ecosystem represents a revolutionary approach to building interconnected bus
 - Seamless experience across 4 domains
 
 **Story 3: Entrepreneur**
+
 - Starts business on `commerce.pi`
 - Builds presence on `ecommerce.pi`
 - Gets financing from `fundx.pi`
@@ -127,6 +133,7 @@ TEC Ecosystem represents a revolutionary approach to building interconnected bus
 - ⏳ **Testing Infrastructure**: Unit, integration, and E2E test suites
 
 **Deliverables:**
+
 - Complete domain documentation for all 24 domains
 - Working implementation of 4 core domains
 - Unified authentication and authorization system
@@ -142,12 +149,10 @@ TEC Ecosystem represents a revolutionary approach to building interconnected bus
   - Complete banking and insurance features
   - Portfolio management and tracking
   - Investment strategies and analytics
-  
 - 📋 **Commerce Block** (Commerce, Ecommerce, Estate)
   - B2B and B2C marketplaces
   - Real estate transactions
   - Shopping cart and checkout flows
-  
 - 📋 **Technology Block** (System, DX, Analytics, Alert)
   - System monitoring and management
   - Digital transformation tools
@@ -155,6 +160,7 @@ TEC Ecosystem represents a revolutionary approach to building interconnected bus
   - Notification system
 
 **Deliverables:**
+
 - 12 fully operational domains
 - Cross-domain integration patterns established
 - Event bus for domain communication
@@ -171,18 +177,17 @@ TEC Ecosystem represents a revolutionary approach to building interconnected bus
   - Premium consulting services
   - Enterprise solutions
   - Legacy and heritage services
-  
 - 📋 **Innovation Block** (NX, Explorer, Nexus)
   - Next-generation technologies
   - Discovery and exploration platform
   - API integration hub
-  
 - 📋 **Lifestyle Block** (Life, Connection, Zone)
   - Lifestyle and wellness services
   - Networking and relationships
   - Geographic-based services
 
 **Deliverables:**
+
 - 20+ operational domains
 - Premium tier features and access controls
 - Advanced analytics and insights
@@ -201,7 +206,6 @@ TEC Ecosystem represents a revolutionary approach to building interconnected bus
   - Predictive analytics
   - Automated workflows
   - Cross-domain optimization
-  
 - 📋 **Enterprise Ready**:
   - Multi-tenant support
   - White-label capabilities
@@ -209,6 +213,7 @@ TEC Ecosystem represents a revolutionary approach to building interconnected bus
   - Compliance certifications
 
 **Deliverables:**
+
 - 24 fully operational domains
 - AI-powered features across ecosystem
 - Mobile apps (iOS/Android)
@@ -225,13 +230,11 @@ TEC Ecosystem represents a revolutionary approach to building interconnected bus
   - Regional marketplaces
   - Local payment methods
   - Compliance with regional regulations
-  
 - 📋 **Ecosystem Growth**:
   - Third-party developer platform
   - Plugin marketplace
   - API monetization
   - Partner network expansion
-  
 - 📋 **Advanced Capabilities**:
   - Blockchain integration beyond Pi
   - DeFi features
@@ -239,6 +242,7 @@ TEC Ecosystem represents a revolutionary approach to building interconnected bus
   - Metaverse presence
 
 **Deliverables:**
+
 - Global presence in 50+ countries
 - Developer ecosystem with 1000+ third-party apps
 - 1M+ active users
@@ -249,24 +253,28 @@ TEC Ecosystem represents a revolutionary approach to building interconnected bus
 ### Development Principles for Each Phase
 
 **Quality Over Speed:**
+
 - Each domain must meet quality standards before moving forward
 - Comprehensive testing at every phase
 - Security audits before major releases
 - User feedback integration in iterative cycles
 
 **Iterative Enhancement:**
+
 - Start with MVP features for each domain
 - Add advanced features based on user needs
 - Continuous improvement based on analytics
 - Regular performance optimization
 
 **Collaborative Development:**
+
 - Clear documentation at every step
 - Open communication channels
 - Code reviews and pair programming
 - Knowledge sharing sessions
 
 **Sustainable Growth:**
+
 - Scalable architecture from day one
 - Performance monitoring and optimization
 - Technical debt management
@@ -332,19 +340,22 @@ Each of the 24 domains follows this structure:
 ### Integration Patterns
 
 **Pattern 1: Synchronous API Calls**
+
 ```javascript
 // Commerce domain calling Assets domain
 const userPortfolio = await assetsService.getPortfolio(userId);
 ```
 
 **Pattern 2: Event-Driven Communication**
+
 ```javascript
 // FundX publishes investment event
-eventBus.publish('investment.created', { userId, amount, strategy });
+eventBus.publish("investment.created", { userId, amount, strategy });
 // Assets listens and updates portfolio
 ```
 
 **Pattern 3: Shared Data Views**
+
 ```sql
 -- Read-only view for cross-domain queries
 CREATE VIEW user_financial_summary AS
@@ -361,54 +372,60 @@ CREATE VIEW user_financial_summary AS
 ### Development Standards
 
 **1. Code Organization**
+
 - Follow domain-driven design (DDD) principles
 - Keep domains loosely coupled
 - Use dependency injection for testability
 - Implement repository pattern for data access
 
 **2. API Design**
+
 - Use RESTful conventions for CRUD operations
 - Implement GraphQL for complex queries
 - Version all APIs (v1, v2, etc.)
 - Document with OpenAPI/Swagger
 
 **3. Data Management**
+
 - Each domain has its own database schema
 - Use Prisma ORM for type-safe database access
 - Implement soft deletes for audit trails
 - Maintain referential integrity across domains
 
 **4. Security**
+
 - Implement JWT-based authentication
 - Use RBAC (Role-Based Access Control) for authorization
 - Encrypt sensitive data at rest and in transit
 - Conduct regular security audits
 
 **5. Testing Strategy**
+
 ```javascript
 // Unit tests for business logic
-describe('AssetService', () => {
-  test('calculatePortfolioValue', () => {
+describe("AssetService", () => {
+  test("calculatePortfolioValue", () => {
     // Test implementation
   });
 });
 
 // Integration tests for APIs
-describe('Assets API', () => {
-  test('GET /api/assets/portfolio', async () => {
+describe("Assets API", () => {
+  test("GET /api/assets/portfolio", async () => {
     // Test API endpoint
   });
 });
 
 // E2E tests for user journeys
-describe('Investment Journey', () => {
-  test('User can create and track investment', async () => {
+describe("Investment Journey", () => {
+  test("User can create and track investment", async () => {
     // Test full workflow
   });
 });
 ```
 
 **6. Performance Optimization**
+
 - Implement caching at multiple layers (Redis)
 - Use CDN for static assets
 - Optimize database queries with indexes
@@ -416,6 +433,7 @@ describe('Investment Journey', () => {
 - Use lazy loading for domain modules
 
 **7. Monitoring & Observability**
+
 - Log all significant events
 - Track metrics (response time, error rates)
 - Implement distributed tracing
@@ -423,6 +441,7 @@ describe('Investment Journey', () => {
 - Use APM tools (Application Performance Monitoring)
 
 **8. Deployment Strategy**
+
 - Use containerization (Docker)
 - Implement CI/CD pipelines
 - Blue-green deployments for zero downtime
@@ -430,6 +449,7 @@ describe('Investment Journey', () => {
 - Feature flags for gradual rollouts
 
 **9. Documentation Standards**
+
 - Maintain up-to-date README for each domain
 - Document all public APIs
 - Include code examples
@@ -437,6 +457,7 @@ describe('Investment Journey', () => {
 - Write deployment guides
 
 **10. Code Quality**
+
 - Use ESLint and Prettier for code formatting
 - Enforce code reviews before merging
 - Maintain test coverage above 80%
@@ -446,27 +467,32 @@ describe('Investment Journey', () => {
 ### Technology Stack
 
 **Frontend:**
+
 - Next.js 15 (React Framework)
 - Tailwind CSS (Styling)
 - React Query (State Management)
 - React Hook Form (Forms)
 
 **Backend:**
+
 - Node.js (Runtime)
 - Next.js API Routes (API Layer)
 - Prisma (ORM)
 - NextAuth.js (Authentication)
 
 **Database:**
+
 - PostgreSQL (Primary Database)
 - Redis (Caching)
 
 **Infrastructure:**
+
 - Vercel (Hosting)
 - GitHub Actions (CI/CD)
 - Cloudflare (CDN)
 
 **Monitoring:**
+
 - Sentry (Error Tracking)
 - Vercel Analytics (Performance)
 - Custom Logging Service

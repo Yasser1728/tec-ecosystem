@@ -10,10 +10,10 @@ import {
   dualForensicCheck,
   toggleCircuitBreaker,
   getSystemLiquidityStream,
-} from '../../lib/forensic-utils';
+} from "../../lib/forensic-utils";
 
 // Mock Prisma client
-jest.mock('../../lib/db/prisma', () => ({
+jest.mock("../../lib/db/prisma", () => ({
   prisma: {
     systemControl: {
       findFirst: jest.fn(),
@@ -33,25 +33,25 @@ jest.mock('../../lib/db/prisma', () => ({
   },
 }));
 
-import { prisma } from '../../lib/db/prisma';
+import { prisma } from "../../lib/db/prisma";
 
-describe('System Integrity Levels', () => {
-  it('should have all required integrity levels', () => {
-    expect(SYSTEM_INTEGRITY_LEVEL.NORMAL).toBe('NORMAL');
-    expect(SYSTEM_INTEGRITY_LEVEL.WARNING).toBe('WARNING');
-    expect(SYSTEM_INTEGRITY_LEVEL.CRITICAL).toBe('CRITICAL');
-    expect(SYSTEM_INTEGRITY_LEVEL.LOCKED).toBe('LOCKED');
+describe("System Integrity Levels", () => {
+  it("should have all required integrity levels", () => {
+    expect(SYSTEM_INTEGRITY_LEVEL.NORMAL).toBe("NORMAL");
+    expect(SYSTEM_INTEGRITY_LEVEL.WARNING).toBe("WARNING");
+    expect(SYSTEM_INTEGRITY_LEVEL.CRITICAL).toBe("CRITICAL");
+    expect(SYSTEM_INTEGRITY_LEVEL.LOCKED).toBe("LOCKED");
   });
 });
 
-describe('Emergency Circuit Breaker', () => {
+describe("Emergency Circuit Breaker", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('should allow operations when circuit breaker is inactive', async () => {
+  it("should allow operations when circuit breaker is inactive", async () => {
     prisma.systemControl.findFirst.mockResolvedValue({
-      id: 'sys1',
+      id: "sys1",
       integrityLevel: SYSTEM_INTEGRITY_LEVEL.NORMAL,
       circuitBreakerActive: false,
     });
@@ -62,28 +62,28 @@ describe('Emergency Circuit Breaker', () => {
     expect(result.integrityLevel).toBe(SYSTEM_INTEGRITY_LEVEL.NORMAL);
   });
 
-  it('should block operations when circuit breaker is active', async () => {
+  it("should block operations when circuit breaker is active", async () => {
     prisma.systemControl.findFirst.mockResolvedValue({
-      id: 'sys1',
+      id: "sys1",
       integrityLevel: SYSTEM_INTEGRITY_LEVEL.LOCKED,
       circuitBreakerActive: true,
-      lockReason: 'Manual activation for testing',
+      lockReason: "Manual activation for testing",
     });
 
     const result = await emergencyCircuitBreaker();
 
     expect(result.blocked).toBe(true);
     expect(result.status).toBe(403);
-    expect(result.message).toBe('System Lock: Integrity Breach Detected');
+    expect(result.message).toBe("System Lock: Integrity Breach Detected");
     expect(result.integrityLevel).toBe(SYSTEM_INTEGRITY_LEVEL.LOCKED);
   });
 
-  it('should block when system is in LOCKED state', async () => {
+  it("should block when system is in LOCKED state", async () => {
     prisma.systemControl.findFirst.mockResolvedValue({
-      id: 'sys1',
+      id: "sys1",
       integrityLevel: SYSTEM_INTEGRITY_LEVEL.LOCKED,
       circuitBreakerActive: false,
-      lockReason: 'System integrity compromised',
+      lockReason: "System integrity compromised",
     });
 
     const result = await emergencyCircuitBreaker();
@@ -92,28 +92,30 @@ describe('Emergency Circuit Breaker', () => {
     expect(result.status).toBe(403);
   });
 
-  it('should handle database errors and default to blocking with critical state', async () => {
+  it("should handle database errors and default to blocking with critical state", async () => {
     // When checkSystemIntegrity fails, it returns a fail-safe object with CRITICAL state
     // This causes emergencyCircuitBreaker to block with 403
-    prisma.systemControl.findFirst.mockRejectedValue(new Error('Database error'));
+    prisma.systemControl.findFirst.mockRejectedValue(
+      new Error("Database error"),
+    );
 
     const result = await emergencyCircuitBreaker();
 
     expect(result.blocked).toBe(true);
     expect(result.status).toBe(403);
-    expect(result.message).toBe('System Lock: Integrity Breach Detected');
-    expect(result.details).toContain('System integrity check failed');
+    expect(result.message).toBe("System Lock: Integrity Breach Detected");
+    expect(result.details).toContain("System integrity check failed");
   });
 });
 
-describe('Check System Integrity', () => {
+describe("Check System Integrity", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('should return existing system control', async () => {
+  it("should return existing system control", async () => {
     const mockSystemControl = {
-      id: 'sys1',
+      id: "sys1",
       integrityLevel: SYSTEM_INTEGRITY_LEVEL.NORMAL,
       circuitBreakerActive: false,
     };
@@ -126,9 +128,9 @@ describe('Check System Integrity', () => {
     expect(prisma.systemControl.findFirst).toHaveBeenCalled();
   });
 
-  it('should create system control if not exists', async () => {
+  it("should create system control if not exists", async () => {
     const mockNewSystemControl = {
-      id: 'sys1',
+      id: "sys1",
       integrityLevel: SYSTEM_INTEGRITY_LEVEL.NORMAL,
       circuitBreakerActive: false,
     };
@@ -147,8 +149,10 @@ describe('Check System Integrity', () => {
     });
   });
 
-  it('should default to CRITICAL on error', async () => {
-    prisma.systemControl.findFirst.mockRejectedValue(new Error('Database error'));
+  it("should default to CRITICAL on error", async () => {
+    prisma.systemControl.findFirst.mockRejectedValue(
+      new Error("Database error"),
+    );
 
     const result = await checkSystemIntegrity();
 
@@ -157,52 +161,56 @@ describe('Check System Integrity', () => {
   });
 });
 
-describe('Toggle Circuit Breaker', () => {
+describe("Toggle Circuit Breaker", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('should activate circuit breaker and freeze pending transfers', async () => {
+  it("should activate circuit breaker and freeze pending transfers", async () => {
     const mockSystemControl = {
-      id: 'sys1',
+      id: "sys1",
       integrityLevel: SYSTEM_INTEGRITY_LEVEL.NORMAL,
       circuitBreakerActive: false,
     };
 
     const mockUpdatedControl = {
-      id: 'sys1',
+      id: "sys1",
       integrityLevel: SYSTEM_INTEGRITY_LEVEL.LOCKED,
       circuitBreakerActive: true,
-      lockReason: 'Manual activation',
-      lockedBy: 'admin123',
+      lockReason: "Manual activation",
+      lockedBy: "admin123",
     };
 
     prisma.systemControl.findFirst.mockResolvedValue(mockSystemControl);
     prisma.systemControl.update.mockResolvedValue(mockUpdatedControl);
     prisma.transfer.updateMany.mockResolvedValue({ count: 5 });
 
-    const result = await toggleCircuitBreaker('admin123', true, 'Manual activation');
+    const result = await toggleCircuitBreaker(
+      "admin123",
+      true,
+      "Manual activation",
+    );
 
     expect(result.success).toBe(true);
     expect(result.systemControl.circuitBreakerActive).toBe(true);
     expect(prisma.transfer.updateMany).toHaveBeenCalledWith({
-      where: { status: 'PENDING' },
+      where: { status: "PENDING" },
       data: {
-        status: 'FROZEN',
+        status: "FROZEN",
         frozenAt: expect.any(Date),
       },
     });
   });
 
-  it('should deactivate circuit breaker', async () => {
+  it("should deactivate circuit breaker", async () => {
     const mockSystemControl = {
-      id: 'sys1',
+      id: "sys1",
       integrityLevel: SYSTEM_INTEGRITY_LEVEL.LOCKED,
       circuitBreakerActive: true,
     };
 
     const mockUpdatedControl = {
-      id: 'sys1',
+      id: "sys1",
       integrityLevel: SYSTEM_INTEGRITY_LEVEL.NORMAL,
       circuitBreakerActive: false,
       lockReason: null,
@@ -212,45 +220,55 @@ describe('Toggle Circuit Breaker', () => {
     prisma.systemControl.findFirst.mockResolvedValue(mockSystemControl);
     prisma.systemControl.update.mockResolvedValue(mockUpdatedControl);
 
-    const result = await toggleCircuitBreaker('admin123', false, 'Manual deactivation');
+    const result = await toggleCircuitBreaker(
+      "admin123",
+      false,
+      "Manual deactivation",
+    );
 
     expect(result.success).toBe(true);
     expect(result.systemControl.circuitBreakerActive).toBe(false);
-    expect(result.systemControl.integrityLevel).toBe(SYSTEM_INTEGRITY_LEVEL.NORMAL);
+    expect(result.systemControl.integrityLevel).toBe(
+      SYSTEM_INTEGRITY_LEVEL.NORMAL,
+    );
   });
 });
 
-describe('Dual Forensic Check', () => {
+describe("Dual Forensic Check", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('should block transfer when circuit breaker is active', async () => {
+  it("should block transfer when circuit breaker is active", async () => {
     prisma.systemControl.findFirst.mockResolvedValue({
       integrityLevel: SYSTEM_INTEGRITY_LEVEL.LOCKED,
       circuitBreakerActive: true,
-      lockReason: 'System locked',
+      lockReason: "System locked",
     });
 
-    const sourceUser = { id: 'user1', email: 'source@test.com', piId: 'pi1' };
-    const targetUser = { id: 'user2', email: 'target@test.com', piId: 'pi2' };
+    const sourceUser = { id: "user1", email: "source@test.com", piId: "pi1" };
+    const targetUser = { id: "user2", email: "target@test.com", piId: "pi2" };
 
     const result = await dualForensicCheck({
       sourceUser,
       targetUser,
-      transferData: { amount: 100, sourceDomain: 'fundx', targetDomain: 'commerce' },
+      transferData: {
+        amount: 100,
+        sourceDomain: "fundx",
+        targetDomain: "commerce",
+      },
       request: {},
     });
 
     expect(result.approved).toBe(false);
     expect(result.blocked).toBe(true);
-    expect(result.reason).toContain('System Lock');
+    expect(result.reason).toContain("System Lock");
   });
 
-  it('should perform dual audit and approve valid transfer', async () => {
+  it("should perform dual audit and approve valid transfer", async () => {
     // Mock normal system state
     prisma.systemControl.findFirst.mockResolvedValue({
-      id: 'sys1',
+      id: "sys1",
       integrityLevel: SYSTEM_INTEGRITY_LEVEL.NORMAL,
       circuitBreakerActive: false,
     });
@@ -260,24 +278,28 @@ describe('Dual Forensic Check', () => {
 
     // Mock audit log creation
     prisma.auditLog.create.mockResolvedValue({
-      id: 'audit123',
-      hash: 'hash123',
+      id: "audit123",
+      hash: "hash123",
     });
 
     // Mock system control update
     prisma.systemControl.update.mockResolvedValue({
-      id: 'sys1',
+      id: "sys1",
       integrityLevel: SYSTEM_INTEGRITY_LEVEL.NORMAL,
       circuitBreakerActive: false,
     });
 
-    const sourceUser = { id: 'user1', email: 'source@test.com', piId: 'pi1' };
-    const targetUser = { id: 'user2', email: 'target@test.com', piId: 'pi2' };
+    const sourceUser = { id: "user1", email: "source@test.com", piId: "pi1" };
+    const targetUser = { id: "user2", email: "target@test.com", piId: "pi2" };
 
     const result = await dualForensicCheck({
       sourceUser,
       targetUser,
-      transferData: { amount: 100, sourceDomain: 'fundx', targetDomain: 'commerce' },
+      transferData: {
+        amount: 100,
+        sourceDomain: "fundx",
+        targetDomain: "commerce",
+      },
       request: {},
     });
 
@@ -287,30 +309,30 @@ describe('Dual Forensic Check', () => {
   });
 });
 
-describe('Get System Liquidity Stream', () => {
+describe("Get System Liquidity Stream", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('should return liquidity data with pending transfers', async () => {
+  it("should return liquidity data with pending transfers", async () => {
     const mockTransfers = [
       {
-        id: 'transfer1',
+        id: "transfer1",
         amount: 100,
-        currency: 'PI',
-        status: 'PENDING',
-        sourceDomain: 'fundx',
-        targetDomain: 'commerce',
+        currency: "PI",
+        status: "PENDING",
+        sourceDomain: "fundx",
+        targetDomain: "commerce",
         createdAt: new Date(),
         frozenAt: null,
       },
       {
-        id: 'transfer2',
+        id: "transfer2",
         amount: 200,
-        currency: 'PI',
-        status: 'FROZEN',
-        sourceDomain: 'estate',
-        targetDomain: 'commerce',
+        currency: "PI",
+        status: "FROZEN",
+        sourceDomain: "estate",
+        targetDomain: "commerce",
         createdAt: new Date(),
         frozenAt: new Date(),
       },
@@ -320,7 +342,7 @@ describe('Get System Liquidity Stream', () => {
     prisma.systemControl.findFirst.mockResolvedValue({
       integrityLevel: SYSTEM_INTEGRITY_LEVEL.WARNING,
       circuitBreakerActive: false,
-      lockReason: 'Monitoring anomalies',
+      lockReason: "Monitoring anomalies",
     });
     prisma.transfer.count.mockResolvedValue(10);
 
@@ -333,8 +355,8 @@ describe('Get System Liquidity Stream', () => {
     expect(result.recentVolume.last24Hours).toBe(10);
   });
 
-  it('should handle errors and return safe defaults', async () => {
-    prisma.transfer.findMany.mockRejectedValue(new Error('Database error'));
+  it("should handle errors and return safe defaults", async () => {
+    prisma.transfer.findMany.mockRejectedValue(new Error("Database error"));
 
     const result = await getSystemLiquidityStream();
 

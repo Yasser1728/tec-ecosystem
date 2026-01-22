@@ -332,16 +332,16 @@ Build & Deploy:
 
 ## 📊 Statistics
 
-| Metric | Value |
-|--------|-------|
-| **Total Domains** | 24 |
-| **Core Modules** | 7 |
-| **Total Files Created** | 107+ |
-| **Lines of Code** | 8,307+ |
-| **Documentation Coverage** | 100% |
-| **Security Features** | 2 (ForensicLogger + ApprovalCenter) |
-| **Database Schemas** | 24 |
-| **Approval Thresholds** | 3 levels |
+| Metric                     | Value                               |
+| -------------------------- | ----------------------------------- |
+| **Total Domains**          | 24                                  |
+| **Core Modules**           | 7                                   |
+| **Total Files Created**    | 107+                                |
+| **Lines of Code**          | 8,307+                              |
+| **Documentation Coverage** | 100%                                |
+| **Security Features**      | 2 (ForensicLogger + ApprovalCenter) |
+| **Database Schemas**       | 24                                  |
+| **Approval Thresholds**    | 3 levels                            |
 
 ## 🚀 Next Steps
 

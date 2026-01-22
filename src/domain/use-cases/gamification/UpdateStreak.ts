@@ -3,8 +3,8 @@
  * Updates user streak based on check-in history
  */
 
-import { IUserRepository } from '../../interfaces/repositories/IUserRepository';
-import { ICheckInRepository } from '../../interfaces/repositories/ICheckInRepository';
+import { IUserRepository } from "../../interfaces/repositories/IUserRepository";
+import { ICheckInRepository } from "../../interfaces/repositories/ICheckInRepository";
 
 export interface UpdateStreakInput {
   userId: string;
@@ -19,17 +19,19 @@ export interface UpdateStreakOutput {
 export class UpdateStreak {
   constructor(
     private userRepository: IUserRepository,
-    private checkInRepository: ICheckInRepository
+    private checkInRepository: ICheckInRepository,
   ) {}
 
   async execute(input: UpdateStreakInput): Promise<UpdateStreakOutput> {
     const user = await this.userRepository.findById(input.userId);
     if (!user) {
-      throw new Error('User not found');
+      throw new Error("User not found");
     }
 
     const today = this.getStartOfDay(new Date());
-    const latestCheckIn = await this.checkInRepository.findLatestByUserId(input.userId);
+    const latestCheckIn = await this.checkInRepository.findLatestByUserId(
+      input.userId,
+    );
 
     let streakBroken = false;
 
@@ -45,7 +47,9 @@ export class UpdateStreak {
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
     const yesterdayStr = this.getStartOfDay(yesterday).toISOString();
-    const latestCheckInStr = this.getStartOfDay(latestCheckIn.date).toISOString();
+    const latestCheckInStr = this.getStartOfDay(
+      latestCheckIn.date,
+    ).toISOString();
     const todayStr = today.toISOString();
 
     // Check if streak should be maintained or broken

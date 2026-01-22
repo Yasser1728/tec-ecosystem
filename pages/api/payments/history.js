@@ -20,15 +20,19 @@ export default async function handler(req, res) {
   const sanitizeNumber = (value, fallback, min, max) => {
     const parsed = parseInt(value, 10);
     if (Number.isNaN(parsed)) return fallback;
-    const lowerBounded = typeof min === "number" ? Math.max(parsed, min) : parsed;
-    return typeof max === "number"
-      ? Math.min(lowerBounded, max)
-      : lowerBounded;
+    const lowerBounded =
+      typeof min === "number" ? Math.max(parsed, min) : parsed;
+    return typeof max === "number" ? Math.min(lowerBounded, max) : lowerBounded;
   };
 
   const { userId, limit, offset, status } = req.query;
 
-  const limitNumber = sanitizeNumber(limit, DEFAULT_LIMIT, MIN_LIMIT, MAX_LIMIT);
+  const limitNumber = sanitizeNumber(
+    limit,
+    DEFAULT_LIMIT,
+    MIN_LIMIT,
+    MAX_LIMIT,
+  );
   const offsetNumber = sanitizeNumber(offset, 0, 0);
 
   if (!userId) {

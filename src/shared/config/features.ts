@@ -12,25 +12,25 @@ export const TEC_ASSISTANT_CONFIG = {
   // Features
   FEATURES: {
     ADVANCED_SIGNALS: {
-      key: 'advanced_signals',
-      name: 'Advanced Signals',
-      description: 'Get AI-powered personalized daily signals',
+      key: "advanced_signals",
+      name: "Advanced Signals",
+      description: "Get AI-powered personalized daily signals",
       price: 10,
-      currency: 'PI',
+      currency: "PI",
     },
     SIGNAL_HISTORY: {
-      key: 'signal_history',
-      name: 'Signal History',
-      description: 'Access your complete signal history',
+      key: "signal_history",
+      name: "Signal History",
+      description: "Access your complete signal history",
       price: 5,
-      currency: 'PI',
+      currency: "PI",
     },
     PREMIUM_INSIGHTS: {
-      key: 'premium_insights',
-      name: 'Premium Insights',
-      description: 'Unlock AI-powered behavioral insights',
+      key: "premium_insights",
+      name: "Premium Insights",
+      description: "Unlock AI-powered behavioral insights",
       price: 15,
-      currency: 'PI',
+      currency: "PI",
     },
   },
 
@@ -46,5 +46,7 @@ export const TEC_ASSISTANT_CONFIG = {
 };
 
 export const getFeatureByKey = (key: string) => {
-  return Object.values(TEC_ASSISTANT_CONFIG.FEATURES).find((f) => f.key === key);
+  return Object.values(TEC_ASSISTANT_CONFIG.FEATURES).find(
+    (f) => f.key === key,
+  );
 };

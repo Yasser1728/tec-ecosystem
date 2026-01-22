@@ -13,6 +13,7 @@
 The TEC (Titan Elite Commerce) Ecosystem implements an **App-First Pi-Native Architecture** where business logic and data ownership reside exclusively within application layers, while domain gateways (.pi) serve purely as routing endpoints with **zero logic or data**.
 
 This architecture ensures:
+
 - **Domain Sovereignty**: Each of 24 business domains operates independently
 - **Clean Separation**: Gateways route; applications process
 - **Pi Network Integration**: Native Pi cryptocurrency and authentication
@@ -23,15 +24,18 @@ This architecture ensures:
 ## 🏗️ Architecture Layers
 
 ### Layer 1: Core Infrastructure
+
 The foundational layer providing essential services to the entire ecosystem.
 
 **Components:**
+
 - **Authentication System** (NextAuth.js + Pi Network SDK)
 - **Database Layer** (PostgreSQL + Prisma ORM)
 - **Security Framework** (Rate limiting, Circuit breakers)
 - **Shared Utilities** (Logging, Monitoring, Configuration)
 
 **Responsibilities:**
+
 - User authentication and session management
 - Data persistence and integrity
 - Security policy enforcement
@@ -40,9 +44,11 @@ The foundational layer providing essential services to the entire ecosystem.
 ---
 
 ### Layer 2: Modules & Business Logic
+
 The application layer where all business logic resides.
 
 **Structure:**
+
 ```
 apps/
 ├── [domain]/              # Each domain's business logic
@@ -54,6 +60,7 @@ apps/
 ```
 
 **Domains (24 Total):**
+
 1. **assets** - Asset Management & Trading
 2. **fundx** - Investment & Funding Platform
 3. **estate** - Real Estate Marketplace
@@ -80,15 +87,18 @@ apps/
 24. **tec** - TEC Parent Authority
 
 **Key Principle:**
+
 > **All business logic, data processing, and state management happen here.**
 > Domains are self-contained microservices with clear boundaries.
 
 ---
 
 ### Layer 3: Nexus (API Gateway)
+
 The routing and orchestration layer that connects users to applications.
 
 **Capabilities:**
+
 - **Request Routing**: Intelligent traffic distribution
 - **Load Balancing**: Optimal resource utilization
 - **Rate Limiting**: API abuse prevention
@@ -97,6 +107,7 @@ The routing and orchestration layer that connects users to applications.
 - **Authentication Gateway**: Token validation and authorization
 
 **What Nexus Does NOT Do:**
+
 - ❌ Business logic processing
 - ❌ Data storage or caching (beyond session data)
 - ❌ Domain-specific operations
@@ -123,12 +134,14 @@ explorer.pi       → routes to apps/explorer/
 ### Gateway Responsibilities
 
 **What .pi Gateways DO:**
+
 - ✅ Route incoming requests to appropriate application layer
 - ✅ Provide SEO-friendly URLs and branding
 - ✅ Handle SSL/TLS termination
 - ✅ Perform basic request validation (format, structure)
 
 **What .pi Gateways DO NOT DO:**
+
 - ❌ Execute business logic
 - ❌ Store or query data
 - ❌ Maintain state or sessions
@@ -158,6 +171,7 @@ export default function DomainGateway() {
 ### Native Pi Cryptocurrency
 
 The TEC Ecosystem is Pi-Native, meaning:
+
 - All transactions use Pi cryptocurrency
 - Pi Network SDK integrated at core level
 - User authentication leverages Pi Network identity
@@ -166,6 +180,7 @@ The TEC Ecosystem is Pi-Native, meaning:
 ### Integration Points
 
 1. **Authentication Layer**
+
    ```javascript
    // lib/pi-sdk.js
    - Pi Network OAuth integration
@@ -174,6 +189,7 @@ The TEC Ecosystem is Pi-Native, meaning:
    ```
 
 2. **Payment Processing**
+
    ```javascript
    // core/payments/
    - Pi payment initialization
@@ -232,23 +248,27 @@ User Response
 ### Multi-Layer Security
 
 **Layer 1: Gateway Level**
+
 - DDoS protection
 - SSL/TLS encryption
 - Basic request validation
 
 **Layer 2: Nexus Level**
+
 - Rate limiting per user/IP
 - Circuit breakers for failing services
 - JWT token validation
 - API key verification
 
 **Layer 3: Application Level**
+
 - Input sanitization
 - Business rule validation
 - Role-based access control (RBAC)
 - Data encryption at rest
 
 **Layer 4: Database Level**
+
 - Row-level security
 - Encrypted connections
 - Audit logging
@@ -261,6 +281,7 @@ User Response
 ### Microservices Deployment
 
 Each of the 24 domains can be:
+
 - **Independently Deployed**: Zero downtime deployments
 - **Independently Scaled**: Based on domain-specific load
 - **Independently Monitored**: Domain-specific metrics and alerts
@@ -269,18 +290,21 @@ Each of the 24 domains can be:
 ### Infrastructure
 
 **Primary Platform:** Vercel
+
 - Edge Network CDN
 - Serverless Functions
 - Automatic SSL
 - Global deployment
 
 **Database:** Managed PostgreSQL
+
 - Multi-region replication
 - Automated backups
 - Connection pooling
 - Query optimization
 
 **Caching:** Redis (when needed)
+
 - Session storage
 - API response caching
 - Real-time features
@@ -292,6 +316,7 @@ Each of the 24 domains can be:
 ### Next.js Framework
 
 **Rendering Strategies:**
+
 - **Static Site Generation (SSG)**: Marketing pages, documentation
 - **Server-Side Rendering (SSR)**: Dynamic content, personalized pages
 - **Client-Side Rendering (CSR)**: Interactive features, dashboards
@@ -319,6 +344,7 @@ components/
 ### Horizontal Scaling
 
 Each domain scales independently:
+
 - Load balancer distributes traffic
 - Auto-scaling based on metrics
 - Database read replicas for heavy queries
@@ -342,10 +368,10 @@ Domains communicate asynchronously through events:
 
 ```javascript
 // Domain A publishes event
-eventBus.publish('order.created', orderData);
+eventBus.publish("order.created", orderData);
 
 // Domain B subscribes to event
-eventBus.subscribe('order.created', async (orderData) => {
+eventBus.subscribe("order.created", async (orderData) => {
   // Process in Domain B
 });
 ```
@@ -400,6 +426,7 @@ Ensures backward compatibility as APIs evolve.
 ### Independence
 
 Each domain maintains:
+
 - **Own Data Models**: Prisma schemas per domain
 - **Own Business Logic**: Isolated services and utilities
 - **Own APIs**: Domain-specific endpoints
@@ -408,6 +435,7 @@ Each domain maintains:
 ### Integration
 
 Domains integrate through:
+
 - **Standard APIs**: Well-defined contracts
 - **Event Bus**: Asynchronous messaging
 - **Shared Core**: Common authentication and utilities
@@ -418,23 +446,27 @@ Domains integrate through:
 ## 🛠️ Technology Stack Summary
 
 ### Frontend
+
 - **Framework**: Next.js 15.5
 - **UI Library**: React 18+
 - **Styling**: Tailwind CSS
 - **State Management**: React Context + Custom Hooks
 
 ### Backend
+
 - **Runtime**: Node.js
 - **API Framework**: Next.js API Routes
 - **Database**: PostgreSQL
 - **ORM**: Prisma
 
 ### Authentication
+
 - **Library**: NextAuth.js
 - **Strategy**: JWT + Session-based
 - **Provider**: Pi Network SDK
 
 ### DevOps
+
 - **Deployment**: Vercel
 - **CI/CD**: GitHub Actions
 - **Monitoring**: Vercel Analytics
@@ -447,10 +479,12 @@ Domains integrate through:
 ### Visual Representations
 
 For detailed visual architecture diagrams, see:
+
 - **PNG Diagram**: `/assets/architecture-map.png`
 - **SVG Diagram**: `/assets/architecture-map.svg`
 
 These diagrams illustrate:
+
 - Complete layer architecture (Core/Modules/Nexus)
 - Domain gateway routing (.pi domains)
 - Pi Network integration points
@@ -496,11 +530,13 @@ These diagrams illustrate:
 This architecture document is maintained by the TEC Ecosystem core team.
 
 **Review Schedule:**
+
 - **Quarterly Reviews**: Assess architecture effectiveness
 - **Annual Updates**: Major architectural decisions and changes
 - **Ad-hoc Reviews**: When introducing new domains or major features
 
 **Change Process:**
+
 1. Propose architectural change via RFC (Request for Comments)
 2. Review by architecture team
 3. Community feedback period
@@ -514,6 +550,7 @@ This architecture document is maintained by the TEC Ecosystem core team.
 The TEC Ecosystem architecture provides a robust, scalable, and maintainable foundation for 24 independent business domains operating within a unified ecosystem. By maintaining clear separation between routing (gateways), orchestration (Nexus), and business logic (applications), we ensure each domain can evolve independently while benefiting from shared infrastructure and standards.
 
 The App-First Pi-Native approach ensures that:
+
 - Business logic stays where it belongs (in applications)
 - Gateways remain pure routing mechanisms
 - Pi Network integration is native and seamless
@@ -527,4 +564,3 @@ This architecture positions TEC Ecosystem for sustainable growth and evolution i
 **Last Updated:** January 2026  
 **Status:** ✅ Official & Approved  
 **Maintainer:** TEC Ecosystem Core Team
-

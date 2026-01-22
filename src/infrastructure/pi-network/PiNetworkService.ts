@@ -8,7 +8,7 @@ import {
   PiAuthResult,
   PiPaymentData,
   PiPaymentResult,
-} from '../../domain/interfaces/services/IPiNetworkService';
+} from "../../domain/interfaces/services/IPiNetworkService";
 
 export class PiNetworkService implements IPiNetworkService {
   private readonly apiKey: string;
@@ -17,8 +17,8 @@ export class PiNetworkService implements IPiNetworkService {
   constructor(apiKey: string, sandbox: boolean = true) {
     this.apiKey = apiKey;
     this.apiUrl = sandbox
-      ? 'https://api.minepi.com/v2'
-      : 'https://api.minepi.com/v2';
+      ? "https://api.minepi.com/v2"
+      : "https://api.minepi.com/v2";
   }
 
   async verifyAuth(accessToken: string): Promise<PiAuthResult> {
@@ -30,7 +30,7 @@ export class PiNetworkService implements IPiNetworkService {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to verify Pi authentication');
+        throw new Error("Failed to verify Pi authentication");
       }
 
       const data = await response.json();
@@ -49,9 +49,9 @@ export class PiNetworkService implements IPiNetworkService {
   async createPayment(paymentData: PiPaymentData): Promise<string> {
     try {
       const response = await fetch(`${this.apiUrl}/payments`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Key ${this.apiKey}`,
         },
         body: JSON.stringify({
@@ -65,7 +65,7 @@ export class PiNetworkService implements IPiNetworkService {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to create Pi payment');
+        throw new Error("Failed to create Pi payment");
       }
 
       const data = await response.json();
@@ -77,16 +77,19 @@ export class PiNetworkService implements IPiNetworkService {
 
   async approvePayment(paymentId: string): Promise<void> {
     try {
-      const response = await fetch(`${this.apiUrl}/payments/${paymentId}/approve`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Key ${this.apiKey}`,
+      const response = await fetch(
+        `${this.apiUrl}/payments/${paymentId}/approve`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Key ${this.apiKey}`,
+          },
         },
-      });
+      );
 
       if (!response.ok) {
-        throw new Error('Failed to approve Pi payment');
+        throw new Error("Failed to approve Pi payment");
       }
     } catch (error) {
       throw new Error(`Pi payment approval failed: ${error}`);
@@ -95,17 +98,20 @@ export class PiNetworkService implements IPiNetworkService {
 
   async completePayment(paymentId: string, txHash: string): Promise<void> {
     try {
-      const response = await fetch(`${this.apiUrl}/payments/${paymentId}/complete`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Key ${this.apiKey}`,
+      const response = await fetch(
+        `${this.apiUrl}/payments/${paymentId}/complete`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Key ${this.apiKey}`,
+          },
+          body: JSON.stringify({ txid: txHash }),
         },
-        body: JSON.stringify({ txid: txHash }),
-      });
+      );
 
       if (!response.ok) {
-        throw new Error('Failed to complete Pi payment');
+        throw new Error("Failed to complete Pi payment");
       }
     } catch (error) {
       throw new Error(`Pi payment completion failed: ${error}`);
@@ -114,16 +120,19 @@ export class PiNetworkService implements IPiNetworkService {
 
   async cancelPayment(paymentId: string): Promise<void> {
     try {
-      const response = await fetch(`${this.apiUrl}/payments/${paymentId}/cancel`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Key ${this.apiKey}`,
+      const response = await fetch(
+        `${this.apiUrl}/payments/${paymentId}/cancel`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Key ${this.apiKey}`,
+          },
         },
-      });
+      );
 
       if (!response.ok) {
-        throw new Error('Failed to cancel Pi payment');
+        throw new Error("Failed to cancel Pi payment");
       }
     } catch (error) {
       throw new Error(`Pi payment cancellation failed: ${error}`);
@@ -139,7 +148,7 @@ export class PiNetworkService implements IPiNetworkService {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to get Pi payment');
+        throw new Error("Failed to get Pi payment");
       }
 
       const data = await response.json();

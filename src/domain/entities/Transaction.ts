@@ -4,18 +4,18 @@
  */
 
 export enum TransactionType {
-  UNLOCK_FEATURE = 'UNLOCK_FEATURE',
-  SUBSCRIPTION = 'SUBSCRIPTION',
-  TIP = 'TIP',
-  REFUND = 'REFUND',
+  UNLOCK_FEATURE = "UNLOCK_FEATURE",
+  SUBSCRIPTION = "SUBSCRIPTION",
+  TIP = "TIP",
+  REFUND = "REFUND",
 }
 
 export enum TransactionStatus {
-  PENDING = 'PENDING',
-  COMPLETED = 'COMPLETED',
-  FAILED = 'FAILED',
-  CANCELLED = 'CANCELLED',
-  REFUNDED = 'REFUNDED',
+  PENDING = "PENDING",
+  COMPLETED = "COMPLETED",
+  FAILED = "FAILED",
+  CANCELLED = "CANCELLED",
+  REFUNDED = "REFUNDED",
 }
 
 export interface TransactionProps {

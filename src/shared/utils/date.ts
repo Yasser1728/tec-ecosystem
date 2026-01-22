@@ -35,5 +35,5 @@ export const daysBetween = (date1: Date, date2: Date): number => {
 };
 
 export const formatDate = (date: Date): string => {
-  return date.toISOString().split('T')[0];
+  return date.toISOString().split("T")[0];
 };

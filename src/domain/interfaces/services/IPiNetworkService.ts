@@ -25,8 +25,8 @@ export interface PiPaymentResult {
   metadata: Record<string, unknown>;
   fromAddress: string;
   toAddress: string;
-  direction: 'user_to_app' | 'app_to_user';
-  network: 'Pi Network' | 'Pi Testnet';
+  direction: "user_to_app" | "app_to_user";
+  network: "Pi Network" | "Pi Testnet";
   createdAt: string;
   txHash?: string;
   status: {

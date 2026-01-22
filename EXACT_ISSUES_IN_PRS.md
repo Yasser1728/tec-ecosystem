@@ -24,38 +24,42 @@
 **السطر**: 196
 
 **الكود الحالي**:
+
 ```javascript
 // Fisher-Yates shuffle algorithm for proper randomization
 const shuffled = [...prompts];
 for (let i = shuffled.length - 1; i > 0; i--) {
-  const j = Math.floor(Math.random() * (i + 1));  // ❌ المشكلة هنا
+  const j = Math.floor(Math.random() * (i + 1)); // ❌ المشكلة هنا
   [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
 }
 ```
 
 **السبب**: استخدام Math.random() في shuffle algorithm
 
-**التأثير**: 
+**التأثير**:
+
 - منخفض - هذا فقط لترتيب suggestions عشوائياً
 - ليس في كود أمني حساس
 - لكن Codacy يعتبره مشكلة
 
 **الحل**:
+
 ```javascript
-const crypto = require('crypto');
+const crypto = require("crypto");
 
 // Fisher-Yates shuffle with crypto
 const shuffled = [...prompts];
 for (let i = shuffled.length - 1; i > 0; i--) {
   // استخدام crypto بدلاً من Math.random
   const randomBytes = crypto.randomBytes(4);
-  const randomValue = randomBytes.readUInt32BE(0) / 0xFFFFFFFF;
+  const randomValue = randomBytes.readUInt32BE(0) / 0xffffffff;
   const j = Math.floor(randomValue * (i + 1));
   [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
 }
 ```
 
 **أو الحل الأبسط**:
+
 ```javascript
 const crypto = require('crypto');
 
@@ -74,7 +78,7 @@ getSuggestions() {
     const j = crypto.randomInt(0, i + 1);  // ✅ الحل
     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
   }
-  
+
   return shuffled.slice(0, 4);
 }
 ```
@@ -86,6 +90,7 @@ getSuggestions() {
 ### الفحص الشامل
 
 **الملفات المفحوصة**:
+
 - `lib/services/quickStartService.js`
 - `pages/api/quickstart/status.js`
 - `pages/api/assets/portfolios.js`
@@ -98,6 +103,7 @@ getSuggestions() {
 **النتيجة**: ✅ **لا توجد مشاكل**
 
 **التفاصيل**:
+
 - ✅ لا يوجد Math.random()
 - ✅ لا يوجد var
 - ✅ استخدام === بدلاً من ==
@@ -110,6 +116,7 @@ getSuggestions() {
 ### الفحص الشامل
 
 **الملفات المفحوصة**:
+
 - `core/forensics/ForensicLogger.js`
 - `core/events/EventBus.js`
 - `core/identity/IdentityManager.js`
@@ -120,6 +127,7 @@ getSuggestions() {
 **النتيجة**: ✅ **لا توجد مشاكل**
 
 **التفاصيل**:
+
 - ✅ تم إصلاح Math.random → crypto.randomBytes
 - ✅ تم إصلاح Path Traversal
 - ✅ 18 مشكلة أمنية تم حلها
@@ -133,15 +141,16 @@ getSuggestions() {
 
 ### المشاكل الفعلية
 
-| PR | المشاكل | التفاصيل |
-|----|---------|----------|
-| **#170** | ❌ 1 | Math.random في shuffle |
-| **#160** | ✅ 0 | نظيف تماماً |
-| **#129** | ✅ 0 | تم إصلاح كل شيء |
+| PR       | المشاكل | التفاصيل               |
+| -------- | ------- | ---------------------- |
+| **#170** | ❌ 1    | Math.random في shuffle |
+| **#160** | ✅ 0    | نظيف تماماً            |
+| **#129** | ✅ 0    | تم إصلاح كل شيء        |
 
 ### الإجراء المطلوب
 
 #### PR #170 - يحتاج إصلاح واحد فقط
+
 ```javascript
 // في domains/tec/services/aiAssistantService.js
 // السطر 196
@@ -153,13 +162,15 @@ const j = Math.floor(Math.random() * (i + 1));
 const j = crypto.randomInt(0, i + 1);
 
 // وأضف في أول الملف:
-const crypto = require('crypto');
+const crypto = require("crypto");
 ```
 
 #### PR #160 - جاهز للدمج ✅
+
 لا يحتاج أي تعديل
 
 #### PR #129 - جاهز للدمج ✅
+
 لا يحتاج أي تعديل (فقط rebase من main)
 
 ---
@@ -169,16 +180,19 @@ const crypto = require('crypto');
 ### لماذا Math.random() مشكلة؟
 
 **حسب Codacy**:
+
 - Math.random() ليس cryptographically secure
 - يمكن التنبؤ بالنتائج
 - لا يجب استخدامه في أي كود قد يؤثر على الأمان
 
 **لكن في حالتنا**:
+
 - الاستخدام فقط لترتيب suggestions
 - ليس في كود أمني حساس
 - التأثير منخفض جداً
 
 **مع ذلك**:
+
 - من الأفضل استخدام crypto.randomInt
 - لتجنب تحذيرات Codacy
 - ولتحسين جودة الكود
@@ -190,11 +204,13 @@ const crypto = require('crypto');
 ### لـ PR #170
 
 **الخطوات**:
+
 1. Checkout PR #170
 2. تعديل ملف واحد فقط
 3. Commit و Push
 
 **الأمر الكامل**:
+
 ```bash
 cd /workspaces/tec-ecosystem
 git checkout pr-170
@@ -220,15 +236,18 @@ git push origin pr-170:copilot/initial-implementation-tec-pi
 ### ✅ المشكلة بسيطة جداً!
 
 **الحقيقة**:
+
 - فقط **1 سطر** يحتاج تعديل في PR #170
 - PR #160 و #129 نظيفين تماماً
 
 **الإصلاح**:
+
 - 5 دقائق فقط
 - تعديل سطر واحد
 - ثم جميع الـ PRs جاهزة للدمج
 
 **التقييم**:
+
 - المشكلة: ⭐ (1/5) - بسيطة جداً
 - الحل: ⭐⭐⭐⭐⭐ (5/5) - سهل جداً
 - الوقت: ⚡ 5 دقائق

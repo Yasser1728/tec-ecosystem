@@ -1,19 +1,24 @@
 /**
  * Audit Logs API Endpoint
- * 
+ * W3SA Security Enhancements Applied
+ *
  * Provides access to audit logs for authorized users
  */
 
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from './auth/[...nextauth]';
-import { fetchAuditLogs, getAuditLogCount } from '../../lib/forensic-utils';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "./auth/[...nextauth]";
+import { fetchAuditLogs, getAuditLogCount } from "../../lib/forensic-utils";
+import { withCORS } from "../../middleware/cors";
+import { withErrorHandler } from "../../lib/utils/errorHandler";
+import { requirePermission } from "../../lib/auth/permissions";
+import { PERMISSIONS } from "../../lib/roles/definitions";
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   // Only accept GET requests
-  if (req.method !== 'GET') {
+  if (req.method !== "GET") {
     return res.status(405).json({
-      error: 'Method not allowed',
-      message: 'This endpoint only accepts GET requests',
+      error: "Method not allowed",
+      message: "This endpoint only accepts GET requests",
     });
   }
 
@@ -24,8 +29,8 @@ export default async function handler(req, res) {
     // Check if user is authenticated
     if (!session || !session.user) {
       return res.status(401).json({
-        error: 'Unauthorized',
-        message: 'You must be logged in to view audit logs',
+        error: "Unauthorized",
+        message: "You must be logged in to view audit logs",
       });
     }
 
@@ -47,8 +52,9 @@ export default async function handler(req, res) {
 
     // Only allow users to see their own logs unless they are admin
     // Admin users can query logs for any user using the userId parameter
-    const isAdmin = session.user.tier === 'ADMIN' || session.user.role === 'ADMIN';
-    
+    const isAdmin =
+      session.user.tier === "ADMIN" || session.user.role === "ADMIN";
+
     if (isAdmin && userId) {
       // Admin can view logs for specific user
       options.userId = userId;
@@ -59,7 +65,7 @@ export default async function handler(req, res) {
 
     // Add optional filters
     if (operationType) options.operationType = operationType;
-    if (approved !== undefined) options.approved = approved === 'true';
+    if (approved !== undefined) options.approved = approved === "true";
     if (domain) options.domain = domain;
 
     // Fetch audit logs and count
@@ -80,14 +86,21 @@ export default async function handler(req, res) {
       },
     });
   } catch (error) {
-    console.error('[AUDIT LOGS API ERROR]', error);
+    console.error("[AUDIT LOGS API ERROR]", error);
 
     return res.status(500).json({
-      error: 'Internal server error',
-      message: 'An error occurred while fetching audit logs',
-      ...(process.env.NODE_ENV === 'development' && {
+      error: "Internal server error",
+      message: "An error occurred while fetching audit logs",
+      ...(process.env.NODE_ENV === "development" && {
         errorDetails: error.message,
       }),
     });
   }
 }
+
+// Apply security middleware layers
+export default withCORS(
+  withErrorHandler(
+    requirePermission(PERMISSIONS.AUDIT_LOGS_VIEW)(handler)
+  )
+);

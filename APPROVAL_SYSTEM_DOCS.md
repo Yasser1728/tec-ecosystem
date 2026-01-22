@@ -17,6 +17,7 @@ All approval operations and transactions are now saved to a PostgreSQL/Supabase 
 **Database Table:** `audit_logs`
 
 **Fields:**
+
 - `id` - Unique identifier
 - `userId` - User who initiated the operation
 - `operationType` - Type of operation (payment_create, withdrawal, etc.)
@@ -52,12 +53,14 @@ When an operation is rejected, the user immediately receives a Toast notificatio
 عند رفض أي عملية، يتلقى المستخدم على الفور إشعار Toast يوضح سبب الرفض.
 
 **Notification Types:**
+
 - ✓ Success (green) - Operation approved
 - ✕ Error (red) - Operation rejected
 - ⚠ Warning (orange) - High risk operation
 - ℹ Info (blue) - Informational messages
 
 **Common Rejection Reasons:**
+
 - Identity verification failed | فشل التحقق من الهوية
 - Invalid operation data | بيانات العملية غير صحيحة
 - Amount exceeds limit | المبلغ يتجاوز الحد
@@ -130,6 +133,7 @@ When running in sandbox mode (`NEXT_PUBLIC_PI_SANDBOX=true` or `PI_SANDBOX_MODE=
 - **Demo** - Demonstration purposes | أغراض العرض التوضيحي
 
 **Sandbox Response:**
+
 ```json
 {
   "approved": true,
@@ -153,6 +157,7 @@ When running in sandbox mode (`NEXT_PUBLIC_PI_SANDBOX=true` or `PI_SANDBOX_MODE=
 #### Production Mode | وضع الإنتاج
 
 **Request Body:**
+
 ```json
 {
   "operationType": "payment_create",
@@ -169,6 +174,7 @@ When running in sandbox mode (`NEXT_PUBLIC_PI_SANDBOX=true` or `PI_SANDBOX_MODE=
 ```
 
 **Response (Approved):**
+
 ```json
 {
   "approved": true,
@@ -183,6 +189,7 @@ When running in sandbox mode (`NEXT_PUBLIC_PI_SANDBOX=true` or `PI_SANDBOX_MODE=
 ```
 
 **Response (Rejected):**
+
 ```json
 {
   "approved": false,
@@ -199,6 +206,7 @@ When running in sandbox mode (`NEXT_PUBLIC_PI_SANDBOX=true` or `PI_SANDBOX_MODE=
 Fetch audit logs for the authenticated user.
 
 **Query Parameters:**
+
 - `limit` (default: 50) - Number of records to fetch
 - `offset` (default: 0) - Pagination offset
 - `operationType` (optional) - Filter by operation type
@@ -206,6 +214,7 @@ Fetch audit logs for the authenticated user.
 - `domain` (optional) - Filter by business domain
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -234,33 +243,33 @@ Fetch audit logs for the authenticated user.
 ### Using the Approval Hook in React
 
 ```javascript
-import { useApprovalOperation } from '../../lib/useApprovalOperation';
+import { useApprovalOperation } from "../../lib/useApprovalOperation";
 
 function MyComponent() {
   const { submitForApproval, isProcessing, error } = useApprovalOperation();
 
   const handlePayment = async () => {
     const result = await submitForApproval({
-      operationType: 'payment_create',
-      domain: 'commerce',
+      operationType: "payment_create",
+      domain: "commerce",
       operationData: {
         amount: 100,
-        domain: 'commerce',
+        domain: "commerce",
       },
     });
 
     if (result.success) {
       // Handle success
-      console.log('Payment approved!', result.auditLogId);
+      console.log("Payment approved!", result.auditLogId);
     } else {
       // Error is automatically shown via toast
-      console.log('Payment rejected:', result.reason);
+      console.log("Payment rejected:", result.reason);
     }
   };
 
   return (
     <button onClick={handlePayment} disabled={isProcessing}>
-      {isProcessing ? 'Processing...' : 'Submit Payment'}
+      {isProcessing ? "Processing..." : "Submit Payment"}
     </button>
   );
 }
@@ -272,19 +281,19 @@ function MyComponent() {
 import {
   showSuccessToast,
   showErrorToast,
-  showRejectionNotification
-} from '../../lib/toast-notification';
+  showRejectionNotification,
+} from "../../lib/toast-notification";
 
 // Success notification
-showSuccessToast('Payment completed successfully!');
+showSuccessToast("Payment completed successfully!");
 
 // Error notification
-showErrorToast('Something went wrong');
+showErrorToast("Something went wrong");
 
 // Rejection notification with details
-showRejectionNotification('Amount exceeds limit', {
-  operationType: 'payment_create',
-  domain: 'commerce'
+showRejectionNotification("Amount exceeds limit", {
+  operationType: "payment_create",
+  domain: "commerce",
 });
 ```
 

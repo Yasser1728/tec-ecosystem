@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 /**
  * AlertSummary Component
@@ -15,27 +15,27 @@ export default function AlertSummary({ userId }) {
       setIsLoading(true);
       try {
         // Mock data - replace with actual API call
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise((resolve) => setTimeout(resolve, 500));
         setAlerts([
           {
-            id: '1',
-            type: 'info',
-            title: 'New Domain Available',
-            message: 'TEC Explorer is now available for preview',
+            id: "1",
+            type: "info",
+            title: "New Domain Available",
+            message: "TEC Explorer is now available for preview",
             timestamp: new Date(Date.now() - 1800000).toISOString(),
             read: false,
           },
           {
-            id: '2',
-            type: 'warning',
-            title: 'Subscription Renewal',
-            message: 'Your subscription will renew in 7 days',
+            id: "2",
+            type: "warning",
+            title: "Subscription Renewal",
+            message: "Your subscription will renew in 7 days",
             timestamp: new Date(Date.now() - 86400000).toISOString(),
             read: false,
           },
         ]);
       } catch (error) {
-        console.error('Error fetching alerts:', error);
+        console.error("Error fetching alerts:", error);
       } finally {
         setIsLoading(false);
       }
@@ -46,35 +46,35 @@ export default function AlertSummary({ userId }) {
 
   const getAlertIcon = (type) => {
     switch (type) {
-      case 'info':
-        return '💡';
-      case 'warning':
-        return '⚠️';
-      case 'error':
-        return '❌';
-      case 'success':
-        return '✅';
+      case "info":
+        return "💡";
+      case "warning":
+        return "⚠️";
+      case "error":
+        return "❌";
+      case "success":
+        return "✅";
       default:
-        return '📢';
+        return "📢";
     }
   };
 
   const getAlertColor = (type) => {
     switch (type) {
-      case 'info':
-        return 'border-blue-500/30 bg-blue-500/10';
-      case 'warning':
-        return 'border-yellow-500/30 bg-yellow-500/10';
-      case 'error':
-        return 'border-red-500/30 bg-red-500/10';
-      case 'success':
-        return 'border-green-500/30 bg-green-500/10';
+      case "info":
+        return "border-blue-500/30 bg-blue-500/10";
+      case "warning":
+        return "border-yellow-500/30 bg-yellow-500/10";
+      case "error":
+        return "border-red-500/30 bg-red-500/10";
+      case "success":
+        return "border-green-500/30 bg-green-500/10";
       default:
-        return 'border-gray-500/30 bg-gray-500/10';
+        return "border-gray-500/30 bg-gray-500/10";
     }
   };
 
-  const unreadCount = alerts.filter(a => !a.read).length;
+  const unreadCount = alerts.filter((a) => !a.read).length;
   const displayAlerts = expanded ? alerts : alerts.slice(0, 2);
 
   if (isLoading) {
@@ -106,7 +106,7 @@ export default function AlertSummary({ userId }) {
             onClick={() => setExpanded(!expanded)}
             className="text-[#00c6ff] hover:text-[#00ff9d] text-sm font-semibold transition-colors"
           >
-            {expanded ? 'Show Less' : 'View All'}
+            {expanded ? "Show Less" : "View All"}
           </button>
         )}
       </div>
@@ -123,7 +123,7 @@ export default function AlertSummary({ userId }) {
             <div
               key={alert.id}
               className={`p-4 rounded-lg border ${getAlertColor(alert.type)} ${
-                !alert.read ? 'font-semibold' : 'opacity-75'
+                !alert.read ? "font-semibold" : "opacity-75"
               } transition-all hover:opacity-100`}
             >
               <div className="flex items-start space-x-3">

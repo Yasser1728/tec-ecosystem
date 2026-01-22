@@ -3,7 +3,7 @@
  * Displays system integrity level and circuit breaker status
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 export default function SystemIntegrityMonitor({ onRefresh }) {
   const [liquidityData, setLiquidityData] = useState(null);
@@ -19,13 +19,13 @@ export default function SystemIntegrityMonitor({ onRefresh }) {
 
   const fetchLiquidityData = async () => {
     try {
-      const response = await fetch('/api/system-control/liquidity-stream');
+      const response = await fetch("/api/system-control/liquidity-stream");
       if (response.ok) {
         const result = await response.json();
         setLiquidityData(result.data);
       }
     } catch (error) {
-      console.error('Failed to fetch liquidity data:', error);
+      console.error("Failed to fetch liquidity data:", error);
     } finally {
       setLoading(false);
     }
@@ -37,25 +37,27 @@ export default function SystemIntegrityMonitor({ onRefresh }) {
 
     if (isActive) {
       // Deactivating - just confirm
-      if (!confirm('Are you sure you want to deactivate the circuit breaker?')) {
+      if (
+        !confirm("Are you sure you want to deactivate the circuit breaker?")
+      ) {
         return;
       }
-      reason = 'Manual deactivation';
+      reason = "Manual deactivation";
     } else {
       // Activating - get reason
       // TODO: Replace prompt with a proper modal dialog component for better UX
-      reason = prompt('Enter reason for activating circuit breaker:');
-      if (!reason || reason.trim() === '') {
-        alert('A valid reason is required to activate the circuit breaker.');
+      reason = prompt("Enter reason for activating circuit breaker:");
+      if (!reason || reason.trim() === "") {
+        alert("A valid reason is required to activate the circuit breaker.");
         return;
       }
     }
 
     setToggling(true);
     try {
-      const response = await fetch('/api/system-control/circuit-breaker', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/system-control/circuit-breaker", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           activate: !isActive,
           reason,
@@ -70,8 +72,8 @@ export default function SystemIntegrityMonitor({ onRefresh }) {
         alert(`Failed: ${error.message || error.error}`);
       }
     } catch (error) {
-      console.error('Failed to toggle circuit breaker:', error);
-      alert('Failed to toggle circuit breaker');
+      console.error("Failed to toggle circuit breaker:", error);
+      alert("Failed to toggle circuit breaker");
     } finally {
       setToggling(false);
     }
@@ -88,52 +90,52 @@ export default function SystemIntegrityMonitor({ onRefresh }) {
     );
   }
 
-  const integrityLevel = liquidityData?.systemIntegrity?.level || 'NORMAL';
+  const integrityLevel = liquidityData?.systemIntegrity?.level || "NORMAL";
   const circuitBreakerActive =
     liquidityData?.systemIntegrity?.circuitBreakerActive || false;
 
   const getLevelColor = (level) => {
     switch (level) {
-      case 'NORMAL':
-        return 'from-green-500 to-emerald-500';
-      case 'WARNING':
-        return 'from-yellow-500 to-orange-500';
-      case 'CRITICAL':
-        return 'from-orange-500 to-red-500';
-      case 'LOCKED':
-        return 'from-red-500 to-red-700';
+      case "NORMAL":
+        return "from-green-500 to-emerald-500";
+      case "WARNING":
+        return "from-yellow-500 to-orange-500";
+      case "CRITICAL":
+        return "from-orange-500 to-red-500";
+      case "LOCKED":
+        return "from-red-500 to-red-700";
       default:
-        return 'from-gray-500 to-gray-600';
+        return "from-gray-500 to-gray-600";
     }
   };
 
   const getLevelBorderColor = (level) => {
     switch (level) {
-      case 'NORMAL':
-        return 'border-green-500';
-      case 'WARNING':
-        return 'border-yellow-500';
-      case 'CRITICAL':
-        return 'border-orange-500';
-      case 'LOCKED':
-        return 'border-red-500';
+      case "NORMAL":
+        return "border-green-500";
+      case "WARNING":
+        return "border-yellow-500";
+      case "CRITICAL":
+        return "border-orange-500";
+      case "LOCKED":
+        return "border-red-500";
       default:
-        return 'border-gray-500';
+        return "border-gray-500";
     }
   };
 
   const getLevelIcon = (level) => {
     switch (level) {
-      case 'NORMAL':
-        return '✅';
-      case 'WARNING':
-        return '⚠️';
-      case 'CRITICAL':
-        return '🚨';
-      case 'LOCKED':
-        return '🔒';
+      case "NORMAL":
+        return "✅";
+      case "WARNING":
+        return "⚠️";
+      case "CRITICAL":
+        return "🚨";
+      case "LOCKED":
+        return "🔒";
       default:
-        return '❓';
+        return "❓";
     }
   };
 
@@ -164,7 +166,7 @@ export default function SystemIntegrityMonitor({ onRefresh }) {
         <div>
           <p className="text-sm text-gray-400 mb-1">Circuit Breaker</p>
           <p className="text-3xl font-bold text-white">
-            {circuitBreakerActive ? '🔴 ACTIVE' : '🟢 INACTIVE'}
+            {circuitBreakerActive ? "🔴 ACTIVE" : "🟢 INACTIVE"}
           </p>
         </div>
       </div>
@@ -173,18 +175,22 @@ export default function SystemIntegrityMonitor({ onRefresh }) {
       {liquidityData?.systemIntegrity?.lockReason && (
         <div className="mb-6 p-4 bg-black/30 rounded-lg">
           <p className="text-sm text-gray-400 mb-1">Lock Reason</p>
-          <p className="text-white">{liquidityData.systemIntegrity.lockReason}</p>
+          <p className="text-white">
+            {liquidityData.systemIntegrity.lockReason}
+          </p>
         </div>
       )}
 
       {/* Circuit Breaker Toggle */}
       <div className="flex items-center justify-between p-4 bg-black/30 rounded-lg">
         <div>
-          <p className="text-white font-semibold mb-1">Emergency Circuit Breaker</p>
+          <p className="text-white font-semibold mb-1">
+            Emergency Circuit Breaker
+          </p>
           <p className="text-sm text-gray-400">
             {circuitBreakerActive
-              ? 'All transfers are currently suspended'
-              : 'System is operating normally'}
+              ? "All transfers are currently suspended"
+              : "System is operating normally"}
           </p>
         </div>
         <button
@@ -192,11 +198,11 @@ export default function SystemIntegrityMonitor({ onRefresh }) {
           disabled={toggling}
           className={`px-6 py-3 rounded-lg font-bold transition-all ${
             circuitBreakerActive
-              ? 'bg-green-500 hover:bg-green-600'
-              : 'bg-red-500 hover:bg-red-600'
-          } ${toggling ? 'opacity-50 cursor-not-allowed' : ''}`}
+              ? "bg-green-500 hover:bg-green-600"
+              : "bg-red-500 hover:bg-red-600"
+          } ${toggling ? "opacity-50 cursor-not-allowed" : ""}`}
         >
-          {toggling ? '...' : circuitBreakerActive ? 'DEACTIVATE' : 'ACTIVATE'}
+          {toggling ? "..." : circuitBreakerActive ? "DEACTIVATE" : "ACTIVATE"}
         </button>
       </div>
     </div>

@@ -1,25 +1,38 @@
 import crypto from "crypto";
 import { prisma } from "../../../lib/db/prisma";
 import { AUDIT_OPERATION_TYPES } from "../../../lib/forensic-utils";
-import { verifyPiPayment, generateAuditHash } from "../../../lib/payments/piVerify";
+import {
+  verifyPiPayment,
+  generateAuditHash,
+} from "../../../lib/payments/piVerify";
+import { withCORS } from "../../../middleware/cors";
+import { withBodyValidation } from "../../../lib/validations";
+import { CreatePaymentSchema } from "../../../lib/validations/payment";
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { amount, memo, domain, userId, category = "general", metadata } = req.body;
-
-  if (!amount || !domain || !userId) {
-    return res.status(400).json({ error: "Invalid payment data" });
-  }
+  // Use validated body from middleware
+  const {
+    amount,
+    memo,
+    domain,
+    userId,
+    category,
+    metadata,
+  } = req.validatedBody;
 
   try {
     // Direct verification - NO fetch to avoid ECONNREFUSED on serverless
     const verification = await verifyPiPayment(userId);
-    
+
     if (!verification.valid) {
-      console.warn("Payment creation verification failed:", verification.reason);
+      console.warn(
+        "Payment creation verification failed:",
+        verification.reason,
+      );
       return res.status(403).json({
         error: "Verification failed",
         reason: verification.reason,
@@ -97,3 +110,6 @@ export default async function handler(req, res) {
     });
   }
 }
+
+// Apply CORS and validation middleware
+export default withCORS(withBodyValidation(handler, CreatePaymentSchema));

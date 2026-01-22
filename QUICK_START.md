@@ -1,9 +1,11 @@
 # 🚀 Quick Start - TEC Ecosystem Complete User Journey
+
 # دليل البدء السريع - رحلة المستخدم الكاملة في نظام TEC البيئي
 
 ---
 
 ## 🌐 Language / اللغة
+
 - [English Version](#english-version)
 - [النسخة العربية](#النسخة-العربية)
 
@@ -33,6 +35,7 @@ The Quick Start workflow consists of four integrated steps:
 **Endpoint:** `POST /api/auth/pi-authenticate`
 
 **Request:**
+
 ```json
 {
   "piToken": "your-pi-access-token",
@@ -41,6 +44,7 @@ The Quick Start workflow consists of four integrated steps:
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -71,6 +75,7 @@ After authentication, create your first asset portfolio to start tracking your w
 **Endpoint:** `POST /api/assets/portfolios`
 
 **Request:**
+
 ```json
 {
   "name": "My Main Portfolio",
@@ -81,6 +86,7 @@ After authentication, create your first asset portfolio to start tracking your w
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -107,6 +113,7 @@ After authentication, create your first asset portfolio to start tracking your w
 **Endpoint:** `POST /api/assets`
 
 **Request:**
+
 ```json
 {
   "portfolioId": "portfolio_xyz123",
@@ -120,6 +127,7 @@ After authentication, create your first asset portfolio to start tracking your w
 ```
 
 **Event Published:** `assets.asset.created`
+
 ```javascript
 {
   eventType: 'assets.asset.created',
@@ -146,6 +154,7 @@ After authentication, create your first asset portfolio to start tracking your w
 When you add a high-value asset (value > 10,000 PI), the Insure domain automatically receives an event and generates an insurance recommendation.
 
 **Automatic Process:**
+
 1. Assets domain publishes `assets.asset.created` event
 2. Insure service listens and evaluates asset value
 3. If value exceeds threshold, insurance recommendation is generated
@@ -154,6 +163,7 @@ When you add a high-value asset (value > 10,000 PI), the Insure domain automatic
 **Endpoint:** `GET /api/insure/recommendations`
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -183,6 +193,7 @@ When you add a high-value asset (value > 10,000 PI), the Insure domain automatic
 **Endpoint:** `POST /api/insure/policies`
 
 **Request:**
+
 ```json
 {
   "recommendationId": "rec_ins_001",
@@ -194,6 +205,7 @@ When you add a high-value asset (value > 10,000 PI), the Insure domain automatic
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -215,6 +227,7 @@ When you add a high-value asset (value > 10,000 PI), the Insure domain automatic
 ```
 
 **Event Published:** `insure.policy.created`
+
 ```javascript
 {
   eventType: 'insure.policy.created',
@@ -237,10 +250,12 @@ Based on your portfolio and risk profile, FundX recommends suitable investment o
 **Endpoint:** `GET /api/fundx/opportunities/recommended`
 
 **Query Parameters:**
+
 - `portfolioId`: Your portfolio ID
 - `riskProfile`: "CONSERVATIVE" | "MODERATE" | "AGGRESSIVE"
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -270,6 +285,7 @@ Based on your portfolio and risk profile, FundX recommends suitable investment o
 **Endpoint:** `POST /api/fundx/investments`
 
 **Request:**
+
 ```json
 {
   "strategyId": "strategy_balanced_growth",
@@ -280,6 +296,7 @@ Based on your portfolio and risk profile, FundX recommends suitable investment o
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -290,7 +307,7 @@ Based on your portfolio and risk profile, FundX recommends suitable investment o
     "strategyName": "Balanced Growth Portfolio",
     "amount": 5000,
     "shares": 39.84,
-    "entryPrice": 125.50,
+    "entryPrice": 125.5,
     "status": "ACTIVE",
     "createdAt": "2026-01-04T12:15:00Z"
   },
@@ -305,6 +322,7 @@ Based on your portfolio and risk profile, FundX recommends suitable investment o
 ```
 
 **Event Published:** `fundx.investment.created`
+
 ```javascript
 {
   eventType: 'fundx.investment.created',
@@ -360,102 +378,102 @@ Complete Quick Start Journey ✅
 **Test File:** `tests/e2e/quickstart-workflow.test.js`
 
 ```javascript
-describe('Quick Start Complete Workflow', () => {
-  test('should complete full user journey', async () => {
+describe("Quick Start Complete Workflow", () => {
+  test("should complete full user journey", async () => {
     // 1. Register/Login
     const authResponse = await request(app)
-      .post('/api/auth/pi-authenticate')
-      .send({ piToken: 'test_token', language: 'en' });
-    
+      .post("/api/auth/pi-authenticate")
+      .send({ piToken: "test_token", language: "en" });
+
     expect(authResponse.status).toBe(200);
     const userId = authResponse.body.user.id;
-    
+
     // 2. Create Portfolio
     const portfolioResponse = await request(app)
-      .post('/api/assets/portfolios')
-      .set('Authorization', `Bearer ${authResponse.body.session.token}`)
+      .post("/api/assets/portfolios")
+      .set("Authorization", `Bearer ${authResponse.body.session.token}`)
       .send({
-        name: 'Test Portfolio',
-        currency: 'PI',
-        isDefault: true
+        name: "Test Portfolio",
+        currency: "PI",
+        isDefault: true,
       });
-    
+
     expect(portfolioResponse.status).toBe(201);
     const portfolioId = portfolioResponse.body.portfolio.id;
-    
+
     // 3. Add High-Value Asset
     const assetResponse = await request(app)
-      .post('/api/assets')
-      .set('Authorization', `Bearer ${authResponse.body.session.token}`)
+      .post("/api/assets")
+      .set("Authorization", `Bearer ${authResponse.body.session.token}`)
       .send({
         portfolioId,
-        name: 'Bitcoin Holdings',
-        assetType: 'CRYPTOCURRENCY',
+        name: "Bitcoin Holdings",
+        assetType: "CRYPTOCURRENCY",
         quantity: 1,
         purchasePrice: 45000,
-        currentPrice: 47000
+        currentPrice: 47000,
       });
-    
+
     expect(assetResponse.status).toBe(201);
-    
+
     // Wait for insurance recommendation event processing
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     // 4. Check Insurance Recommendations
     const insuranceResponse = await request(app)
-      .get('/api/insure/recommendations')
-      .set('Authorization', `Bearer ${authResponse.body.session.token}`);
-    
+      .get("/api/insure/recommendations")
+      .set("Authorization", `Bearer ${authResponse.body.session.token}`);
+
     expect(insuranceResponse.status).toBe(200);
     expect(insuranceResponse.body.recommendations.length).toBeGreaterThan(0);
-    
+
     // 5. Activate Insurance
     const policyResponse = await request(app)
-      .post('/api/insure/policies')
-      .set('Authorization', `Bearer ${authResponse.body.session.token}`)
+      .post("/api/insure/policies")
+      .set("Authorization", `Bearer ${authResponse.body.session.token}`)
       .send({
         recommendationId: insuranceResponse.body.recommendations[0].id,
         assetId: assetResponse.body.asset.id,
         coverageAmount: 47000,
         term: 12,
-        paymentMethod: 'PI_WALLET'
+        paymentMethod: "PI_WALLET",
       });
-    
+
     expect(policyResponse.status).toBe(201);
-    
+
     // 6. Get Investment Opportunities
     const opportunitiesResponse = await request(app)
-      .get('/api/fundx/opportunities/recommended')
-      .query({ portfolioId, riskProfile: 'MODERATE' })
-      .set('Authorization', `Bearer ${authResponse.body.session.token}`);
-    
+      .get("/api/fundx/opportunities/recommended")
+      .query({ portfolioId, riskProfile: "MODERATE" })
+      .set("Authorization", `Bearer ${authResponse.body.session.token}`);
+
     expect(opportunitiesResponse.status).toBe(200);
     expect(opportunitiesResponse.body.opportunities.length).toBeGreaterThan(0);
-    
+
     // 7. Make Investment
     const investmentResponse = await request(app)
-      .post('/api/fundx/investments')
-      .set('Authorization', `Bearer ${authResponse.body.session.token}`)
+      .post("/api/fundx/investments")
+      .set("Authorization", `Bearer ${authResponse.body.session.token}`)
       .send({
         strategyId: opportunitiesResponse.body.opportunities[0].strategyId,
         amount: 5000,
         portfolioId,
-        paymentMethod: 'PI_WALLET'
+        paymentMethod: "PI_WALLET",
       });
-    
+
     expect(investmentResponse.status).toBe(201);
-    
+
     // Verify Quick Start completion
     const statusResponse = await request(app)
-      .get('/api/quickstart/status')
-      .set('Authorization', `Bearer ${authResponse.body.session.token}`);
-    
+      .get("/api/quickstart/status")
+      .set("Authorization", `Bearer ${authResponse.body.session.token}`);
+
     expect(statusResponse.body.completed).toBe(true);
     expect(statusResponse.body.steps).toMatchObject({
       authentication: true,
       portfolioCreation: true,
       insuranceActivation: true,
-      firstInvestment: true
+      firstInvestment: true,
     });
   });
 });
@@ -466,25 +484,30 @@ describe('Quick Start Complete Workflow', () => {
 ## 📚 API Reference Summary
 
 ### Authentication
+
 - `POST /api/auth/pi-authenticate` - Authenticate with Pi Network
 
 ### Assets Domain (assets.pi)
+
 - `POST /api/assets/portfolios` - Create portfolio
 - `GET /api/assets/portfolios` - List portfolios
 - `POST /api/assets` - Add asset to portfolio
 - `GET /api/assets` - List assets
 
 ### Insure Domain (insure.pi)
+
 - `GET /api/insure/recommendations` - Get insurance recommendations
 - `POST /api/insure/policies` - Purchase insurance policy
 - `GET /api/insure/policies` - List user policies
 
 ### FundX Domain (fundx.pi)
+
 - `GET /api/fundx/opportunities/recommended` - Get recommended investments
 - `POST /api/fundx/investments` - Create investment
 - `GET /api/fundx/investments` - List user investments
 
 ### Quick Start Tracking
+
 - `GET /api/quickstart/status` - Get workflow completion status
 - `POST /api/quickstart/complete` - Mark workflow as complete
 
@@ -497,25 +520,25 @@ describe('Quick Start Complete Workflow', () => {
 The three domains communicate through a centralized event bus (`lib/eventBus.js`):
 
 ```javascript
-const eventBus = require('@/lib/eventBus');
+const eventBus = require("@/lib/eventBus");
 
 // Assets domain publishes events
-eventBus.publish('assets.asset.created', {
-  assetId: 'asset_123',
-  userId: 'user_abc',
+eventBus.publish("assets.asset.created", {
+  assetId: "asset_123",
+  userId: "user_abc",
   value: 50000,
-  type: 'CRYPTOCURRENCY'
+  type: "CRYPTOCURRENCY",
 });
 
 // Insure domain listens for events
-eventBus.on('assets.asset.created', async (eventData) => {
+eventBus.on("assets.asset.created", async (eventData) => {
   if (eventData.value > 10000) {
     await generateInsuranceRecommendation(eventData);
   }
 });
 
 // FundX domain listens for portfolio updates
-eventBus.on('assets.portfolio.updated', async (eventData) => {
+eventBus.on("assets.portfolio.updated", async (eventData) => {
   await updateInvestmentRecommendations(eventData.userId);
 });
 ```
@@ -566,6 +589,7 @@ NEXT_PUBLIC_APP_URL=https://tec-ecosystem.vercel.app
 ## 🎉 Success!
 
 You now have a complete understanding of the TEC Ecosystem Quick Start workflow. Users can seamlessly:
+
 - Create accounts and authenticate
 - Set up asset portfolios
 - Receive intelligent insurance recommendations
@@ -573,6 +597,7 @@ You now have a complete understanding of the TEC Ecosystem Quick Start workflow.
 - Track everything in one integrated platform
 
 **Next Steps:**
+
 - Explore individual domain documentation
 - Try the API endpoints
 - Review the example code
@@ -604,6 +629,7 @@ You now have a complete understanding of the TEC Ecosystem Quick Start workflow.
 **نقطة النهاية:** `POST /api/auth/pi-authenticate`
 
 **الطلب:**
+
 ```json
 {
   "piToken": "your-pi-access-token",
@@ -612,6 +638,7 @@ You now have a complete understanding of the TEC Ecosystem Quick Start workflow.
 ```
 
 **الاستجابة:**
+
 ```json
 {
   "success": true,
@@ -642,6 +669,7 @@ You now have a complete understanding of the TEC Ecosystem Quick Start workflow.
 **نقطة النهاية:** `POST /api/assets/portfolios`
 
 **الطلب:**
+
 ```json
 {
   "name": "محفظتي الرئيسية",
@@ -652,6 +680,7 @@ You now have a complete understanding of the TEC Ecosystem Quick Start workflow.
 ```
 
 **الاستجابة:**
+
 ```json
 {
   "success": true,
@@ -678,6 +707,7 @@ You now have a complete understanding of the TEC Ecosystem Quick Start workflow.
 **نقطة النهاية:** `POST /api/assets`
 
 **الطلب:**
+
 ```json
 {
   "portfolioId": "portfolio_xyz123",
@@ -699,6 +729,7 @@ You now have a complete understanding of the TEC Ecosystem Quick Start workflow.
 عندما تضيف أصلًا عالي القيمة (القيمة > 10,000 PI)، يستقبل دومين التأمين الحدث تلقائيًا ويُنشئ توصية تأمين.
 
 **العملية التلقائية:**
+
 1. دومين الأصول ينشر حدث `assets.asset.created`
 2. خدمة التأمين تستمع وتقيّم قيمة الأصل
 3. إذا تجاوزت القيمة الحد الأدنى، يتم إنشاء توصية تأمين
@@ -707,6 +738,7 @@ You now have a complete understanding of the TEC Ecosystem Quick Start workflow.
 **نقطة النهاية:** `GET /api/insure/recommendations`
 
 **الاستجابة:**
+
 ```json
 {
   "success": true,
@@ -780,25 +812,30 @@ FundX يوصي باستثمار (fundx.pi)
 ## 📚 ملخص مرجع API
 
 ### المصادقة
+
 - `POST /api/auth/pi-authenticate` - المصادقة مع شبكة Pi
 
 ### دومين الأصول (assets.pi)
+
 - `POST /api/assets/portfolios` - إنشاء محفظة
 - `GET /api/assets/portfolios` - عرض المحافظ
 - `POST /api/assets` - إضافة أصل إلى المحفظة
 - `GET /api/assets` - عرض الأصول
 
 ### دومين التأمين (insure.pi)
+
 - `GET /api/insure/recommendations` - الحصول على توصيات التأمين
 - `POST /api/insure/policies` - شراء وثيقة تأمين
 - `GET /api/insure/policies` - عرض وثائق المستخدم
 
 ### دومين الاستثمار (fundx.pi)
+
 - `GET /api/fundx/opportunities/recommended` - الحصول على استثمارات موصى بها
 - `POST /api/fundx/investments` - إنشاء استثمار
 - `GET /api/fundx/investments` - عرض استثمارات المستخدم
 
 ### تتبع البدء السريع
+
 - `GET /api/quickstart/status` - الحصول على حالة اكتمال المسار
 - `POST /api/quickstart/complete` - وضع علامة على المسار كمكتمل
 
@@ -807,6 +844,7 @@ FundX يوصي باستثمار (fundx.pi)
 ## 🎉 نجاح!
 
 لديك الآن فهم كامل لمسار البدء السريع في نظام TEC البيئي. يمكن للمستخدمين بسلاسة:
+
 - إنشاء حسابات والمصادقة
 - إعداد محافظ الأصول
 - استلام توصيات تأمين ذكية
@@ -814,6 +852,7 @@ FundX يوصي باستثمار (fundx.pi)
 - تتبع كل شيء في منصة متكاملة واحدة
 
 **الخطوات التالية:**
+
 - استكشف توثيق الدومينات الفردية
 - جرب نقاط نهاية API
 - راجع أمثلة التعليمات البرمجية
