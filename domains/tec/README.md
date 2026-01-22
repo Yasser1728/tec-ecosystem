@@ -132,6 +132,19 @@ TEC Assistant provides seamless access to all ecosystem domains:
 - **Educational Content** - Tips and tutorials
 - **Community Highlights** - Popular activities and trends
 
+## 📋 Specification & Documentation
+
+**TEC Assistant operates under strict sovereign protocols:**
+
+- 📜 [**TEC Assistant Specification**](/apps/tec/TEC_ASSISTANT_SPECIFICATION.md) - Complete operational specification
+  - Language detection rules (English/Arabic)
+  - Tier-based tone system (VIP/Elite/Titan/Legend)
+  - Authority structure (TEC.pi vs Nexus.pi)
+  - AI Layer integration protocols
+  - Dashboard architecture
+  - Response construction rules
+  - Value & prestige preservation guidelines
+
 ## 📞 Contact
 
 - **Email:** tec@tec.pi
@@ -141,6 +154,7 @@ TEC Assistant provides seamless access to all ecosystem domains:
 ## 🔗 Related Links
 
 - [Full Application](/apps/tec)
+- [TEC Assistant Specification](/apps/tec/TEC_ASSISTANT_SPECIFICATION.md)
 - [All Domains](/domains)
 - [API Documentation](/apps/tec/services)
 - [TEC Ecosystem Home](/)
