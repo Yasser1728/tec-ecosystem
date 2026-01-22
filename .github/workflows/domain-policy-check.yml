@@ -1,0 +1,65 @@
+name: Domain Policy Enforcement
+
+on:
+  pull_request:
+    paths:
+      - 'domains/**'
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'domains/**'
+
+jobs:
+  check-domain-policy:
+    runs-on: ubuntu-latest
+    name: Verify Domain Sovereignty Policy
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Check for operational files in domains
+        run: |
+          echo "🔍 Checking for policy violations in /domains..."
+          
+          # Check for JavaScript/TypeScript files (except README.md)
+          JS_FILES=$(find domains -type f \( -name "*.js" -o -name "*.ts" -o -name "*.jsx" -o -name "*.tsx" \) ! -name "README.md" 2>/dev/null || true)
+          
+          if [ ! -z "$JS_FILES" ]; then
+            echo "❌ VIOLATION: Operational files found in /domains:"
+            echo "$JS_FILES"
+            echo ""
+            echo "These files must be moved to /apps directory."
+            exit 1
+          fi
+          
+          # Check for prohibited directories
+          PROHIBITED_DIRS=$(find domains -type d \( -name "services" -o -name "api" -o -name "tests" -o -name "data-model" -o -name "models" -o -name "types" \) 2>/dev/null || true)
+          
+          if [ ! -z "$PROHIBITED_DIRS" ]; then
+            echo "❌ VIOLATION: Prohibited directories found in /domains:"
+            echo "$PROHIBITED_DIRS"
+            echo ""
+            echo "These directories are not allowed in /domains per the Domain Sovereignty Policy."
+            echo "See domains/README.md for policy details."
+            exit 1
+          fi
+          
+          echo "✅ Domain policy compliance verified"
+          echo "✅ No operational files in /domains"
+          echo "✅ No prohibited directories in /domains"
+          echo ""
+          echo "All domains comply with the Domain Sovereignty Policy:"
+          echo "- /domains contains identity gateways only (README.md + optional landing/assets)"
+          echo "- All operational code is in /apps"
+      
+      - name: Success
+        if: success()
+        run: |
+          echo "🎉 All checks passed!"
+          echo "📋 Domain sovereignty policy is enforced"
+          echo ""
+          echo "Policy: domains/README.md"
+          echo "Violations: 0"

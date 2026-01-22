@@ -4,7 +4,7 @@
  * These tests verify the core functionality of the AssetService class,
  * including asset creation, updates, calculations, and analysis.
  *
- * @module domains/assets/tests/unit/assetService.test
+ * @module apps/assets/tests/unit/assetService.test
  */
 
 const AssetService = require("../../services/assetService");
