@@ -23,6 +23,7 @@ dist
 # Environment files
 .env*
 !.env.example
+!.env.vercel.example
 
 # Backup files
 *.backup

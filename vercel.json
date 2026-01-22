@@ -1,0 +1,57 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "regions": ["iad1"],
+  "env": {
+    "NODE_ENV": "production",
+    "NEXT_PUBLIC_PI_NETWORK": "mainnet",
+    "NEXT_PUBLIC_PI_SANDBOX": "false"
+  },
+  "build": {
+    "env": {
+      "NODE_ENV": "production"
+    }
+  },
+  "github": {
+    "enabled": true,
+    "autoAlias": true,
+    "silent": false,
+    "autoJobCancelation": true
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "/api/:path*"
+    }
+  ],
+  "functions": {
+    "api/**/*.js": {
+      "maxDuration": 30
+    },
+    "api/**/*.ts": {
+      "maxDuration": 30
+    }
+  }
+}
