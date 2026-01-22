@@ -1,0 +1,230 @@
+name: Vercel Deployment Check
+
+on:
+  push:
+    branches: [main, develop, staging]
+  pull_request:
+    branches: [main, develop, staging]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  deployments: write
+  statuses: write
+  checks: write
+
+jobs:
+  vercel-check:
+    runs-on: ubuntu-latest
+    name: ✅ Verify Vercel Deployment Ready
+
+    steps:
+      # 1️⃣ Checkout repository
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      # 2️⃣ Setup Node.js
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      # 3️⃣ Install dependencies
+      - name: 📚 Install dependencies
+        run: npm ci
+
+      # 4️⃣ Generate Prisma Client
+      - name: 🔧 Generate Prisma Client
+        run: npx prisma generate
+        env:
+          SKIP_ENV_VALIDATION: "true"
+
+      # 5️⃣ Verify vercel.json exists and is valid
+      - name: 🔍 Verify vercel.json Configuration
+        run: |
+          echo "🔍 Checking vercel.json..."
+          if [ ! -f "vercel.json" ]; then
+            echo "❌ vercel.json not found!"
+            exit 1
+          fi
+          echo "✅ vercel.json found"
+          
+          # Validate JSON syntax
+          if ! jq empty vercel.json 2>/dev/null; then
+            echo "❌ vercel.json has invalid JSON syntax!"
+            exit 1
+          fi
+          echo "✅ vercel.json is valid JSON"
+          
+          # Display configuration
+          echo "📋 Vercel Configuration:"
+          cat vercel.json | jq '.'
+
+      # 6️⃣ Check vercel-ignore.sh script
+      - name: 🔍 Verify Vercel Ignore Script
+        run: |
+          echo "🔍 Checking vercel-ignore.sh..."
+          if [ ! -f "vercel-ignore.sh" ]; then
+            echo "❌ vercel-ignore.sh not found!"
+            exit 1
+          fi
+          echo "✅ vercel-ignore.sh found"
+          
+          # Make sure it's executable
+          chmod +x vercel-ignore.sh
+          echo "✅ vercel-ignore.sh is executable"
+          
+          # Display script content
+          echo "📋 Ignore Script Content:"
+          cat vercel-ignore.sh
+
+      # 7️⃣ Test build for Vercel
+      - name: 🏗️ Test Vercel Build
+        run: npm run build
+        env:
+          NODE_ENV: production
+          NEXT_PUBLIC_BASE_URL: https://tec-ecosystem.vercel.app
+          DATABASE_URL: postgresql://dummy:user@dummy:5432/dummy?schema=public
+          NEXT_PUBLIC_PI_APP_ID: dummy_app_id
+          NEXT_PUBLIC_PI_SANDBOX: "true"
+          NEXT_PUBLIC_API_URL: http://localhost:3000
+          SKIP_ENV_VALIDATION: "true"
+          NEXTAUTH_URL: https://tec-ecosystem.vercel.app
+          NEXTAUTH_SECRET: dummy_secret_for_build_only
+
+      # 8️⃣ Check build output
+      - name: 📊 Verify Build Output
+        run: |
+          echo "🔍 Checking build output..."
+          if [ ! -d ".next" ]; then
+            echo "❌ .next directory not found!"
+            exit 1
+          fi
+          echo "✅ .next directory exists"
+          
+          # Check for critical files
+          if [ ! -f ".next/BUILD_ID" ]; then
+            echo "❌ BUILD_ID not found!"
+            exit 1
+          fi
+          echo "✅ BUILD_ID found: $(cat .next/BUILD_ID)"
+          
+          # Display build info
+          echo "📊 Build Statistics:"
+          du -sh .next/
+          echo "📄 Pages built: $(find .next -name '*.html' | wc -l)"
+          echo "📦 JS chunks: $(find .next -name '*.js' | wc -l)"
+
+      # 9️⃣ Verify environment variables template
+      - name: 🔐 Check Environment Variables Template
+        run: |
+          echo "🔍 Checking .env.example..."
+          if [ ! -f ".env.example" ]; then
+            echo "⚠️ Warning: .env.example not found!"
+          else
+            echo "✅ .env.example found"
+            echo "📋 Required Environment Variables:"
+            grep "^[A-Z]" .env.example | grep -v "^#" | cut -d= -f1 | sort | uniq
+          fi
+
+      # 🔟 Test vercel-ignore script logic
+      - name: 🧪 Test Branch Filter Logic
+        run: |
+          echo "🧪 Testing vercel-ignore.sh logic..."
+          
+          # Test main branch (should build)
+          export VERCEL_GIT_COMMIT_REF="main"
+          if bash vercel-ignore.sh; then
+            echo "❌ Main branch returned exit 0 (should be exit 1 to build)"
+            exit 1
+          else
+            echo "✅ Main branch will trigger build (exit 1)"
+          fi
+          
+          # Test staging branch (should build)
+          export VERCEL_GIT_COMMIT_REF="staging"
+          if bash vercel-ignore.sh; then
+            echo "❌ Staging branch returned exit 0 (should be exit 1 to build)"
+            exit 1
+          else
+            echo "✅ Staging branch will trigger build (exit 1)"
+          fi
+          
+          # Test other branch (should skip)
+          export VERCEL_GIT_COMMIT_REF="feature/test"
+          if bash vercel-ignore.sh; then
+            echo "✅ Feature branch will skip build (exit 0)"
+          else
+            echo "❌ Feature branch returned exit 1 (should be exit 0 to skip)"
+            exit 1
+          fi
+
+      # 1️⃣1️⃣ Check Next.js configuration
+      - name: ⚙️ Verify Next.js Configuration
+        run: |
+          echo "🔍 Checking next.config.js..."
+          if [ ! -f "next.config.js" ]; then
+            echo "❌ next.config.js not found!"
+            exit 1
+          fi
+          echo "✅ next.config.js found"
+          
+          # Display configuration
+          echo "📋 Next.js Configuration:"
+          cat next.config.js
+
+      # 1️⃣2️⃣ Verify deployment documentation
+      - name: 📚 Check Deployment Documentation
+        run: |
+          echo "🔍 Checking deployment documentation..."
+          
+          docs_found=0
+          
+          if [ -f "VERCEL_DEPLOYMENT_CHECKS.md" ]; then
+            echo "✅ VERCEL_DEPLOYMENT_CHECKS.md found"
+            docs_found=$((docs_found + 1))
+          fi
+          
+          if [ -f "DEPLOY_INSTRUCTIONS.md" ]; then
+            echo "✅ DEPLOY_INSTRUCTIONS.md found"
+            docs_found=$((docs_found + 1))
+          fi
+          
+          if [ -f "DEPLOY_NOW.md" ]; then
+            echo "✅ DEPLOY_NOW.md found"
+            docs_found=$((docs_found + 1))
+          fi
+          
+          if [ $docs_found -eq 0 ]; then
+            echo "⚠️ Warning: No deployment documentation found"
+          else
+            echo "✅ Found $docs_found deployment documentation file(s)"
+          fi
+
+      # 1️⃣3️⃣ Final summary
+      - name: ✅ Deployment Ready Summary
+        run: |
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "🎉 Vercel Deployment Check Passed!"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo ""
+          echo "✅ vercel.json is valid and configured"
+          echo "✅ Build completes successfully"
+          echo "✅ Branch filtering logic works correctly"
+          echo "✅ All required files are present"
+          echo ""
+          echo "🚀 Ready for Vercel deployment!"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+      # 1️⃣4️⃣ Create deployment status
+      - name: 📝 Update Deployment Status
+        if: always()
+        run: |
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "state=success" >> $GITHUB_OUTPUT
+            echo "description=Vercel deployment checks passed ✅" >> $GITHUB_OUTPUT
+          else
+            echo "state=failure" >> $GITHUB_OUTPUT
+            echo "description=Vercel deployment checks failed ❌" >> $GITHUB_OUTPUT
+          fi

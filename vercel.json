@@ -1,0 +1,53 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "outputDirectory": ".next",
+  "ignoreCommand": "bash vercel-ignore.sh",
+  "regions": ["iad1"],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/validation-key.txt",
+      "destination": "/api/validation-key"
+    }
+  ],
+  "env": {
+    "NEXT_PUBLIC_BASE_URL": "https://tec-ecosystem.vercel.app",
+    "NEXT_PUBLIC_PI_SANDBOX": "true",
+    "NODE_ENV": "production"
+  },
+  "build": {
+    "env": {
+      "SKIP_ENV_VALIDATION": "true"
+    }
+  }
+}
