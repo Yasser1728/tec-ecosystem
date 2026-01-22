@@ -4,7 +4,7 @@
  * These tests verify the integration between Assets domain and other domains
  * through the Event Bus, ensuring events are properly published and consumed.
  *
- * @module domains/assets/tests/integration/eventBus.test
+ * @module apps/assets/tests/integration/eventBus.test
  */
 
 const eventBus = require("../../../../lib/eventBus");

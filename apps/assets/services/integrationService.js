@@ -4,7 +4,7 @@
  * Handles all cross-domain integrations for the Assets domain using the Event Bus.
  * This service listens to events from other domains and creates/updates assets accordingly.
  *
- * @module domains/assets/services/integrationService
+ * @module apps/assets/services/integrationService
  */
 
 const eventBus = require("../../../lib/eventBus");

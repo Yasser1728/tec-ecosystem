@@ -4,7 +4,7 @@
  * This file provides comprehensive type definitions for all entities
  * and operations within the Assets domain.
  *
- * @module domains/assets/types
+ * @module apps/assets/types
  */
 
 // =====================================================

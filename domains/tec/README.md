@@ -1,261 +1,307 @@
-# TEC Domain - TEC Ecosystem Central Hub & Orchestration
-
-## 🎯 Domain Mission
-
-TEC (tec.pi) serves as the central hub and orchestration layer for the entire TEC Ecosystem, providing unified access, coordination, and management across all 24 domains. This implementation includes the TEC Assistant - an AI-powered concierge for intelligent ecosystem navigation.
-
-## 📋 Core Features
-
-- **Unified Dashboard**: Single view of all ecosystem activities with real-time widgets
-- **TEC AI Assistant**: Intelligent chatbot guide for ecosystem navigation
-- **Domain Navigation**: Easy access to all 24 domains
-- **User Management**: Centralized authentication and profiles (skeleton implementation)
-- **Subscription Management**: Tier upgrades and billing
-- **Alert System**: Real-time notifications and system alerts
-- **Ecosystem Analytics**: Cross-domain insights and metrics
-
-## 🏗️ Implementation Structure
-
-### Services (`domains/tec/services/`)
-
-- **tecService.js**: Core business logic for TEC operations
-  - Dashboard data management
-  - Domain registry
-  - Alert summaries
-  - Ecosystem health monitoring
-  - User authentication (skeleton)
-- **aiAssistantService.js**: AI Assistant business logic
-  - Message processing with mock responses
-  - Conversation history management
-  - Context-aware suggestions
-  - Pattern-based intelligent replies
-
-### Models (`domains/tec/models/`)
-
-- Placeholder model definitions for:
-  - UserProfile
-  - Activity
-  - Alert
-  - Domain
-
-### Tests (`domains/tec/tests/`)
-
-- Unit tests for tecService
-- Unit tests for aiAssistantService
-- Integration test placeholders
-
-## 🎨 Components (`components/tec/`)
-
-- **DashboardWidget.js**: Reusable metric display cards
-  - Animated loading states
-  - Color-coded themes
-  - Icon support
-- **AssistantChatBox.js**: Interactive chat interface
-  - Real-time messaging
-  - Suggestion chips
-  - Link recommendations
-  - Conversation history
-- **AlertSummary.js**: Notification center
-  - Type-based filtering
-  - Read/unread tracking
-  - Expandable view
-
-## 🖥️ Pages (`pages/tec/`)
-
-- **index.js**: TEC Landing & Dashboard
-  - Hero section with quick actions
-  - Dashboard widgets (4-column grid)
-  - Alert summary
-  - Quick access cards to key features
-- **login.js**: Authentication skeleton
-  - Username/password form
-  - Pi Network integration placeholder
-  - Guest access option
-  - "Remember me" functionality
-- **ai-assistant.js**: AI Assistant chat interface
-  - Full-page chat experience
-  - Sidebar with quick actions
-  - Popular topics
-  - System status indicator
-
-## 🔌 API Endpoints
-
-### Implemented
-
-- `POST /api/tec/assistant` - AI Assistant chat endpoint
-  - Accepts: `{ message, userId?, context? }`
-  - Returns: `{ content, suggestions?, links?, timestamp }`
-
-### Planned (Coming Soon)
-
-- `GET /api/tec/dashboard` - Unified dashboard data
-- `GET /api/tec/domains` - All domain information
-- `GET /api/tec/profile` - User profile
-- `PUT /api/tec/subscription` - Manage subscription
-- `GET /api/tec/alerts` - Get user alerts
-
-## 🔗 Integration
-
-- **All Domains**: Central coordination and orchestration
-- **Nexus**: API gateway and integration hub
-- **Analytics**: Ecosystem-wide analytics
-
-## 🌟 Special Features
-
-### TEC AI Assistant (Implemented)
-
-- **Intelligent Conversations**: Context-aware responses based on user queries
-- **Pattern Recognition**: Identifies domain, payment, subscription, and help-related questions
-- **Suggestions & Links**: Provides actionable next steps and relevant links
-- **Conversation Memory**: Maintains chat history for continuous conversations
-- **Mock Implementation**: Currently uses pattern-based responses; ready for AI model integration
-
-### Ecosystem Orchestration (Planned)
-
-- **Single Sign-On (SSO)**: Authenticate once, access all domains
-- **Unified Wallet**: Single Pi wallet across all services
-- **Cross-Domain Workflows**: Seamless multi-domain operations
-- **Centralized Notifications**: All alerts in one place
-
-### Domain Coordination
-
-- **Tier Management**: GUEST, STANDARD, PREMIUM, ADMIN access
-- **Permission System**: Fine-grained access control
-- **Resource Sharing**: Shared services and data
-- **Event Coordination**: Cross-domain event orchestration
-
-### User Experience
-
-- **Ecosystem Map**: Visual representation of all 24 domains
-- **Quick Actions**: Common tasks across domains
-- **Dashboard Widgets**: Real-time metrics and KPIs
-- **Search**: Global search across all domains (coming soon)
-- **Recommendations**: AI-powered domain and feature suggestions
-
-## 📊 Architecture Overview
-
-```
-TEC Central Hub
-       │
-       ├─→ Authentication & Authorization (skeleton)
-       ├─→ AI Assistant (implemented)
-       ├─→ Dashboard & Widgets (implemented)
-       ├─→ Alert System (implemented)
-       ├─→ Domain Registry & Discovery
-       ├─→ Event Coordination
-       ├─→ Resource Management
-       └─→ Analytics Aggregation
-           │
-           ├─→ Financial Services (4)
-           ├─→ Premium Services (5)
-           ├─→ Commerce (3)
-           ├─→ Technology (7)
-           ├─→ Specialized (4)
-           └─→ Central Hub (1)
-```
-
-## 🚀 Getting Started
-
-### Accessing TEC Pages
-
-1. **Dashboard**: Navigate to `/tec` for the main landing page
-2. **AI Assistant**: Visit `/tec/ai-assistant` to chat with the TEC Assistant
-3. **Login**: Access `/tec/login` for authentication (skeleton)
-
-### Using the AI Assistant
-
-```javascript
-// API Usage Example
-const response = await fetch("/api/tec/assistant", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    message: "Tell me about TEC domains",
-    userId: "user-123", // optional
-    context: {}, // optional
-  }),
-});
-
-const data = await response.json();
-// Returns: { content, suggestions?, links?, timestamp }
-```
-
-### Running Tests
-
-```bash
-# Run TEC domain tests
-npm test domains/tec/tests/unit/tecService.test.js
-npm test domains/tec/tests/unit/aiAssistantService.test.js
-```
-
-## 📝 Next Steps
-
-### Phase 1: Foundation (✅ Complete)
-
-- [x] Domain service structure
-- [x] AI Assistant service with mock responses
-- [x] Dashboard page with widgets
-- [x] Login skeleton page
-- [x] AI Assistant chat interface
-- [x] API endpoint for assistant
-- [x] Reusable components
-- [x] Unit tests
-
-### Phase 2: Backend Integration (🔄 In Progress)
-
-- [ ] Connect to real database (Prisma)
-- [ ] Implement NextAuth authentication
-- [ ] Pi Network payment integration
-- [ ] User session management
-- [ ] Real alert system
-
-### Phase 3: AI Enhancement (📋 Planned)
-
-- [ ] Integrate OpenAI/custom AI model
-- [ ] Advanced context understanding
-- [ ] Personalized recommendations
-- [ ] Multi-language support
-- [ ] Voice interaction
-
-### Phase 4: Advanced Features (📋 Planned)
-
-- [ ] Cross-domain search
-- [ ] Advanced analytics
-- [ ] Workflow automation
-- [ ] Admin dashboard
-- [ ] Mobile app support
-
-## 🔒 Security & Privacy
-
-- All services use server-side validation
-- Mock authentication ready for NextAuth integration
-- Conversation history stored temporarily (in-memory)
-- Ready for secure session management
-- API endpoints protected (to be implemented)
-
-## 🌐 Internationalization
-
-The implementation supports bilingual content (English/Arabic):
-
-- All UI components include Arabic translations
-- RTL support ready for implementation
-- AI Assistant can understand bilingual queries (to be enhanced)
-
-## 🚀 Strategic Importance
-
-The TEC domain represents the unified vision of the ecosystem:
-
-1. **Single Entry Point**: Users enter through TEC and discover all domains
-2. **Coordinated Experience**: Seamless navigation between domains
-3. **Unified Identity**: One account, one wallet, one profile
-4. **Centralized Governance**: Ecosystem-wide policies and rules
-5. **Strategic Vision**: Long-term ecosystem evolution and growth
-6. **AI-Powered Guidance**: Intelligent assistance for all user needs
+# 🤖 TEC.pi - AI-Powered Assistant & Customer Dashboard
+# مساعد TEC الذكي ولوحة تحكم العملاء
 
 ---
 
-**Domain Owner**: TEC Core Team  
-**Status**: Active Development - Foundation Complete  
-**Priority**: CRITICAL - Foundation of entire ecosystem  
-**Last Updated**: January 2026  
-**Current Phase**: Phase 1 Complete, Phase 2 Starting
+## 🌐 Language / اللغة
+
+- [English Version](#english-version)
+- [النسخة العربية](#النسخة-العربية)
+
+---
+
+# English Version
+
+## 🎯 Overview
+
+**TEC.pi** is your intelligent AI assistant and personalized dashboard for the TEC Ecosystem. It provides smart guidance, recommendations, and a unified interface to manage all your activities across 24 domains.
+
+### 🌟 Identity
+
+- **Name:** TEC.pi (TEC Assistant)
+- **Sector:** AI Layer & Customer Experience
+- **Icon:** 🤖
+- **Tagline:** Your Intelligent Guide to the TEC Ecosystem
+
+## 💡 Value Proposition
+
+### What We Offer:
+
+✅ **AI-Powered Assistant** - Intelligent chatbot that understands your needs  
+✅ **Personalized Dashboard** - Unified view of all your activities  
+✅ **Smart Recommendations** - AI-driven suggestions based on your behavior  
+✅ **Customer Guidance** - Step-by-step help across all domains  
+
+## 🚀 Access the Application
+
+### The full TEC Assistant application is available at:
+
+👉 **[Go to TEC Assistant Application](/apps/tec)**
+
+The complete application includes:
+- **Personalized Dashboard** - Your central command center
+- **AI Assistant Chatbot** - Natural language interaction
+- **Smart Recommendations** - Personalized suggestions
+- **Activity Timeline** - Track all your ecosystem activities
+- **Quick Actions** - One-click access to frequent tasks
+- **Cross-Domain Search** - Find anything across all domains
+
+## 🌐 Connected to All 24 Domains
+
+TEC Assistant provides seamless access to all ecosystem domains:
+
+### Financial Services (4)
+- **FundX.pi** - Investment strategies & portfolio management
+- **Assets.pi** - Asset tracking & portfolio optimization
+- **NBF.pi** - Banking & financial services
+- **Insure.pi** - Insurance & risk management
+
+### Premium Services (5)
+- **VIP.pi** - Exclusive membership benefits
+- **Elite.pi** - Premium consulting services
+- **Titan.pi** - Enterprise solutions
+- **Epic.pi** - Signature projects & experiences
+- **Legend.pi** - Heritage & legacy services
+
+### Commerce & Real Estate (3)
+- **Commerce.pi** - B2B trading platform
+- **Ecommerce.pi** - Online retail marketplace
+- **Estate.pi** - Real estate investment & management
+
+### Technology & Innovation (7)
+- **Explorer.pi** - Discovery & travel services
+- **DX.pi** - Digital transformation consulting
+- **NX.pi** - Next-generation technology
+- **System.pi** - Infrastructure & operations
+- **Analytics.pi** - Data analytics & business intelligence
+- **Alert.pi** - Smart notifications & monitoring
+- **Nexus.pi** - Integration hub (connects all domains)
+
+### Specialized Services (4)
+- **Life.pi** - Lifestyle & long-term planning
+- **Connection.pi** - Networking & partnerships
+- **Brookfield.pi** - Property investment
+- **Zone.pi** - Regional & location-based services
+
+### AI Assistant (1)
+**TEC.pi** - You are here - Your intelligent guide
+
+## 🤖 AI Layer - Your Intelligent Assistant
+
+### 1. Natural Language Understanding
+- **Chat Interface** - Talk to TEC like a human assistant
+- **Context Awareness** - Remembers your conversation history
+- **Multi-language Support** - Arabic and English
+- **Intent Recognition** - Understands what you want to do
+
+### 2. Smart Recommendations Engine
+- **Personalized Suggestions** - Based on your activity patterns
+- **Investment Opportunities** - AI-identified opportunities in FundX
+- **Shopping Recommendations** - Products from Commerce/Ecommerce
+- **Service Suggestions** - Relevant services from other domains
+
+### 3. Intelligent Guidance
+- **Onboarding Wizard** - Step-by-step setup for new users
+- **Process Assistance** - Guide you through complex workflows
+- **Best Practices** - AI-powered tips and suggestions
+- **Problem Resolution** - Smart troubleshooting assistance
+
+## 📊 Unified Dashboard Features
+
+### 1. Overview Panel
+- **Financial Summary** - Total assets, investments, income (from Assets, FundX, NBF)
+- **Activity Feed** - Real-time updates from all domains
+- **Notifications Center** - Alerts from Alert domain
+- **Quick Stats** - Key metrics across domains
+
+### 2. Domain Quick Access
+- **One-Click Navigation** - Fast access to any of the 24 domains
+- **Favorites** - Pin your most-used domains
+- **Recent Activities** - Jump back to recent actions
+- **Custom Widgets** - Personalize your dashboard layout
+
+### 3. Smart Search
+- **Global Search** - Find anything across all domains
+- **Smart Filters** - AI-powered search refinement
+- **Recent Searches** - Quick access to previous searches
+- **Suggested Results** - Predictive search suggestions
+
+### 4. Customer Engagement
+- **Recommendations Panel** - AI-curated opportunities
+- **Upsell Suggestions** - Relevant premium services
+- **Educational Content** - Tips and tutorials
+- **Community Highlights** - Popular activities and trends
+
+## 📋 Specification & Documentation
+
+**TEC Assistant operates under strict sovereign protocols:**
+
+- 📜 [**TEC Assistant Specification**](/apps/tec/TEC_ASSISTANT_SPECIFICATION.md) - Complete operational specification
+  - Language detection rules (English/Arabic)
+  - Tier-based tone system (VIP/Elite/Titan/Legend)
+  - Authority structure (TEC.pi vs Nexus.pi)
+  - AI Layer integration protocols
+  - Dashboard architecture
+  - Response construction rules
+  - Value & prestige preservation guidelines
+
+- 🛡️ [**Domain Independence Protocol**](/apps/tec/DOMAIN_INDEPENDENCE_PROTOCOL.md) - **CRITICAL**
+  - Domain sovereignty guarantees
+  - Value preservation mechanisms
+  - Data sovereignty rules
+  - Integration opt-in model
+  - Protection safeguards
+  - Compliance requirements
+
+- 🎨 [**Architecture Diagrams**](/apps/tec/TEC_ASSISTANT_ARCHITECTURE_DIAGRAM.md)
+  - Visual system architecture
+  - Request flow diagrams
+  - Authority structure visualization
+
+## 📞 Contact
+
+- **Email:** tec@tec.pi
+- **Technical Support:** support@tec.pi
+- **Sovereign Email:** yasserrr.fox17@gmail.com
+
+## 🔗 Related Links
+
+- [Full Application](/apps/tec)
+- [TEC Assistant Specification](/apps/tec/TEC_ASSISTANT_SPECIFICATION.md)
+- [All Domains](/domains)
+- [API Documentation](/apps/tec/services)
+- [TEC Ecosystem Home](/)
+
+---
+
+# النسخة العربية
+
+## 🎯 نظرة عامة
+
+**TEC.pi** هو مساعدك الذكي ولوحة التحكم الشخصية في نظام TEC البيئي. يوفر إرشادات ذكية وتوصيات مخصصة وواجهة موحدة لإدارة جميع أنشطتك عبر 24 نطاقاً.
+
+### 🌟 الهوية
+
+- **الاسم:** TEC.pi (مساعد TEC)
+- **القطاع:** طبقة الذكاء الاصطناعي وتجربة العملاء
+- **الأيقونة:** 🤖
+- **الشعار:** دليلك الذكي في نظام TEC البيئي
+
+## 💡 عرض القيمة
+
+### ما نقدمه:
+
+✅ **مساعد ذكي مدعوم بالـ AI** - محادثة ذكية تفهم احتياجاتك  
+✅ **لوحة تحكم شخصية** - عرض موحد لجميع أنشطتك  
+✅ **توصيات ذكية** - اقتراحات مدعومة بالذكاء الاصطناعي  
+✅ **إرشاد العملاء** - مساعدة خطوة بخطوة عبر جميع النطاقات  
+
+## 🚀 الوصول إلى التطبيق
+
+### تطبيق مساعد TEC الكامل متاح في:
+
+👉 **[انتقل إلى تطبيق مساعد TEC](/apps/tec)**
+
+التطبيق الكامل يتضمن:
+- **لوحة تحكم شخصية** - مركز القيادة المركزي
+- **روبوت الدردشة الذكي** - تفاعل باللغة الطبيعية
+- **توصيات ذكية** - اقتراحات مخصصة لك
+- **جدول الأنشطة** - تتبع جميع أنشطتك في النظام
+- **إجراءات سريعة** - وصول بنقرة واحدة للمهام المتكررة
+- **بحث شامل** - ابحث عن أي شيء عبر جميع النطاقات
+
+## 🏛️ النطاقات الـ 24
+
+### الخدمات المالية (4)
+**FundX** • **Assets** • **NBF** • **Insure**
+
+### الخدمات المميزة (5)
+**VIP** • **Elite** • **Titan** • **Epic** • **Legend**
+
+### التجارة (3)
+**Commerce** • **Ecommerce** • **Estate**
+
+### التكنولوجيا (7)
+**Explorer** • **DX** • **NX** • **System** • **Analytics** • **Alert** • **Nexus**
+
+### الخدمات المتخصصة (4)
+**Life** • **Connection** • **Brookfield** • **Zone**
+
+### المركز (1)
+**TEC** - أنت هنا
+
+## 🤖 طبقة الذكاء الاصطناعي - مساعدك الذكي
+
+### 1. فهم اللغة الطبيعية
+- **واجهة المحادثة** - تحدث مع TEC كمساعد بشري
+- **الوعي بالسياق** - يتذكر تاريخ محادثاتك
+- **دعم متعدد اللغات** - العربية والإنجليزية
+- **التعرف على النية** - يفهم ما تريد القيام به
+
+### 2. محرك التوصيات الذكية
+- **اقتراحات مخصصة** - بناءً على أنماط نشاطك
+- **فرص استثمارية** - فرص محددة بالذكاء الاصطناعي في FundX
+- **توصيات تسوق** - منتجات من Commerce/Ecommerce
+- **اقتراحات خدمات** - خدمات ذات صلة من نطاقات أخرى
+
+### 3. الإرشاد الذكي
+- **معالج الإعداد** - إعداد خطوة بخطوة للمستخدمين الجدد
+- **مساعدة العمليات** - إرشادك خلال سير العمل المعقد
+- **أفضل الممارسات** - نصائح واقتراحات مدعومة بالذكاء الاصطناعي
+- **حل المشكلات** - مساعدة ذكية في استكشاف الأخطاء
+
+## 📊 ميزات لوحة التحكم الموحدة
+
+### 1. لوحة النظرة العامة
+- **ملخص مالي** - إجمالي الأصول والاستثمارات والدخل (من Assets و FundX و NBF)
+- **موجز الأنشطة** - تحديثات في الوقت الفعلي من جميع النطاقات
+- **مركز الإشعارات** - تنبيهات من نطاق Alert
+- **إحصائيات سريعة** - مقاييس رئيسية عبر النطاقات
+
+### 2. الوصول السريع للنطاقات
+- **تنقل بنقرة واحدة** - وصول سريع لأي من الـ 24 نطاق
+- **المفضلة** - تثبيت النطاقات الأكثر استخداماً
+- **الأنشطة الأخيرة** - العودة إلى الإجراءات الأخيرة
+- **عناصر واجهة مخصصة** - تخصيص تخطيط لوحة التحكم
+
+### 3. البحث الذكي
+- **بحث شامل** - ابحث عن أي شيء عبر جميع النطاقات
+- **مرشحات ذكية** - تحسين البحث بالذكاء الاصطناعي
+- **عمليات البحث الأخيرة** - وصول سريع للبحوث السابقة
+- **نتائج مقترحة** - اقتراحات بحث تنبؤية
+
+### 4. تفاعل العملاء
+- **لوحة التوصيات** - فرص منسقة بالذكاء الاصطناعي
+- **اقتراحات البيع الإضافي** - خدمات مميزة ذات صلة
+- **محتوى تعليمي** - نصائح ودروس تعليمية
+- **أبرز المجتمع** - الأنشطة والاتجاهات الشائعة
+
+## 📞 التواصل
+
+- **البريد الإلكتروني:** tec@tec.pi
+- **الدعم الفني:** support@tec.pi
+- **البريد السيادي:** yasserrr.fox17@gmail.com
+
+## 🔗 روابط ذات صلة
+
+- [التطبيق الكامل](/apps/tec)
+- [جميع النطاقات](/domains)
+- [توثيق API](/apps/tec/services)
+- [الصفحة الرئيسية لنظام TEC](/)
+
+---
+
+**⚠️ ملاحظة مهمة / Important Notice**
+
+**English:**  
+This domain is an **identity gateway only**. It serves as a presentation layer for the TEC AI Assistant. For access to the full operational dashboard, AI chatbot, recommendation engine, and all interactive features, please visit `/apps/tec`.
+
+**عربي:**  
+هذا النطاق هو **بوابة تعريفية فقط**. يعمل كطبقة عرض لمساعد TEC الذكي. للوصول إلى لوحة التحكم التشغيلية الكاملة وروبوت الدردشة الذكي ومحرك التوصيات وجميع الميزات التفاعلية، يرجى زيارة `/apps/tec`.
+
+---
+
+**Type / النوع:** Identity Gateway (بوابة تعريفية)  
+**Operational Application / التطبيق التشغيلي:** `/apps/tec`  
+**Last Updated / آخر تحديث:** January 22, 2026  
+**Compliance Status / حالة الامتثال:** ✅ 100% Domain Sovereignty Policy Compliant
