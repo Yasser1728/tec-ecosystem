@@ -41,7 +41,6 @@
     }
   ],
   "env": {
-    "NEXT_PUBLIC_BASE_URL": "https://tec-ecosystem.vercel.app",
     "NEXT_PUBLIC_PI_SANDBOX": "true",
     "NODE_ENV": "production"
   },

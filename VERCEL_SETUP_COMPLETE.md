@@ -173,7 +173,7 @@ NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
 
 # Forensic Audit
 FORENSIC_AUDIT_SECRET=<generate-secret>
-SOVEREIGN_EMAIL=yasserrr.fox17@gmail.com
+SOVEREIGN_EMAIL=<your-admin-email>
 ```
 
 ---

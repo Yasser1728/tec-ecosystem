@@ -91,7 +91,7 @@ jobs:
           NEXT_PUBLIC_API_URL: http://localhost:3000
           SKIP_ENV_VALIDATION: "true"
           NEXTAUTH_URL: https://tec-ecosystem.vercel.app
-          NEXTAUTH_SECRET: dummy_secret_for_build_only
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET || 'build-test-secret-not-for-production' }}
 
       # 8️⃣ Check build output
       - name: 📊 Verify Build Output
