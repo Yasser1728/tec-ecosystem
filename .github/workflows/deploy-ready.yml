@@ -1,7 +1,0 @@
-name: Disabled
-on: workflow_dispatch
-jobs:
-  disabled:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "Workflow disabled"
