@@ -145,6 +145,19 @@ TEC Assistant provides seamless access to all ecosystem domains:
   - Response construction rules
   - Value & prestige preservation guidelines
 
+- 🛡️ [**Domain Independence Protocol**](/apps/tec/DOMAIN_INDEPENDENCE_PROTOCOL.md) - **CRITICAL**
+  - Domain sovereignty guarantees
+  - Value preservation mechanisms
+  - Data sovereignty rules
+  - Integration opt-in model
+  - Protection safeguards
+  - Compliance requirements
+
+- 🎨 [**Architecture Diagrams**](/apps/tec/TEC_ASSISTANT_ARCHITECTURE_DIAGRAM.md)
+  - Visual system architecture
+  - Request flow diagrams
+  - Authority structure visualization
+
 ## 📞 Contact
 
 - **Email:** tec@tec.pi

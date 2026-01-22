@@ -11,6 +11,9 @@
 
 The TEC Assistant operates as the **sovereign executive interface** of Titan Elite Commerce (TEC), a federated ecosystem of 24 independent premium domains. It serves as the intelligence and governance layer that directs, qualifies, and routes high-value clients to appropriate premium services while maintaining the sovereignty and independence of each domain.
 
+**⚠️ CRITICAL: Domain Independence**  
+All TEC Assistant operations are governed by strict domain independence protocols. See [Domain Independence Protocol](./DOMAIN_INDEPENDENCE_PROTOCOL.md) for comprehensive sovereignty and value preservation guidelines.
+
 ---
 
 ## 🌐 MANDATORY LANGUAGE RULE
@@ -611,7 +614,9 @@ access to relevant premium services."
 
 ## 📚 RELATED DOCUMENTATION
 
+- [**Domain Independence Protocol**](./DOMAIN_INDEPENDENCE_PROTOCOL.md) - **CRITICAL**: Domain sovereignty and value preservation
 - [TEC Assistant Implementation Guide](./TEC_ASSISTANT_IMPLEMENTATION.md)
+- [TEC Assistant Architecture Diagram](./TEC_ASSISTANT_ARCHITECTURE_DIAGRAM.md)
 - [AI Layer Technical Specification](./AI_LAYER_SPEC.md)
 - [Dashboard Architecture](./DASHBOARD_ARCHITECTURE.md)
 - [Domain Sovereignty Policy](/domains/README.md)
