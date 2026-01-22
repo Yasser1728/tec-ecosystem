@@ -41,7 +41,7 @@ The following pull requests should be reviewed and closed manually:
 - PR #292 - bump development-dependencies group
 
 #### Work in Progress / Feature PRs
-- PR #313 - [WIP] Remove unnecessary actions and close open pull requests (THIS PR)
+- PR #313 - [WIP] Remove unnecessary actions and close open pull requests (Current cleanup PR)
 - PR #285 - [WIP] Add AI layer to TEC Assistant with bilingual support
 - PR #268 - Fix all Codacy code quality violations
 - PR #266 - Add safe path resolution and domain validation
@@ -140,7 +140,8 @@ gh pr close <PR_NUMBER> --comment "Closing as part of repository cleanup"
 **How to delete branches:**
 ```bash
 # Using GitHub CLI (delete multiple branches)
-gh api repos/tec-ecosystem/tec-ecosystem/git/refs/heads/BRANCH_NAME -X DELETE
+# Replace OWNER/REPO with your repository details
+gh api repos/OWNER/REPO/git/refs/heads/BRANCH_NAME -X DELETE
 
 # Or via GitHub web interface:
 # 1. Navigate to https://github.com/tec-ecosystem/tec-ecosystem/branches
