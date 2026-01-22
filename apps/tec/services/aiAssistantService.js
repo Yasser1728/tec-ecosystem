@@ -7,7 +7,7 @@
  * @module services/aiAssistantService
  */
 
-const crypto = require("crypto");
+import crypto from "crypto";
 
 class AiAssistantService {
   constructor() {
@@ -62,6 +62,17 @@ class AiAssistantService {
   }
 
   /**
+   * Detect if message is in Arabic
+   *
+   * @param {string} text - Text to check
+   * @returns {boolean} True if Arabic
+   */
+  isArabic(text) {
+    const arabicRegex = /[\u0600-\u06FF]/;
+    return arabicRegex.test(text);
+  }
+
+  /**
    * Generate response based on message content (mock implementation)
    *
    * @param {string} message - User message
@@ -73,6 +84,7 @@ class AiAssistantService {
     await new Promise((resolve) => setTimeout(resolve, 800));
 
     const lowerMessage = message.toLowerCase();
+    const isArabicMessage = this.isArabic(message);
 
     // Pattern-based mock responses
     if (lowerMessage.includes("domain") || lowerMessage.includes("domains")) {
@@ -163,6 +175,23 @@ class AiAssistantService {
     }
 
     // Default response
+    if (isArabicMessage) {
+      return {
+        content:
+          "أهلاً بك في TEC Assistant! أنا هنا لمساعدتك في التنقل في منظومة الأعمال المكونة من 24 مجالاً متميزاً. يمكنك أن تسألني عن المجالات المتاحة، طرق الدفع، الاشتراكات، أو كيفية البدء. كيف يمكنني مساعدتك اليوم؟",
+        suggestions: [
+          "استكشف المجالات",
+          "كيفية الدفع",
+          "البدء",
+          "الدعم",
+        ],
+        links: [
+          { text: "لوحة التحكم", url: "/tec" },
+          { text: "جميع المجالات", url: "/domains" },
+        ],
+      };
+    }
+
     return {
       content:
         "Thank you for your message! I'm the TEC Assistant, here to help you navigate our ecosystem of 24 business domains. You can ask me about specific domains, payment methods, subscriptions, or how to get started. What would you like to know?",
@@ -239,8 +268,5 @@ class AiAssistantService {
   }
 }
 
-// Export class for flexibility in testing and dependency injection
-module.exports = AiAssistantService;
-
-// Export singleton instance as default
-module.exports.default = new AiAssistantService();
+// Export class as default
+export default AiAssistantService;
