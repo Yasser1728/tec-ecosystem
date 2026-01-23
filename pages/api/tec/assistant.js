@@ -1,11 +1,19 @@
 /**
  * TEC AI Assistant API Endpoint
  * Handles chat interactions with the TEC AI Assistant
+ * 
+ * Integrates with Governance Layer for:
+ * - Language detection (Arabic/English)
+ * - Domain sovereignty enforcement
+ * - Zero-Trust security verification
+ * - Decision Dashboard output (not raw analytics)
+ * - No behavioral tracking or marketing analytics
  *
  * @route POST /api/tec/assistant
  */
 
 import AiAssistantService from "../../../apps/tec/services/aiAssistantService.js";
+import { tecAssistantGovernance } from "../../../lib/assistant/governance.js";
 
 // Singleton instance to maintain conversation history across requests
 const assistantService = new AiAssistantService();
@@ -33,19 +41,51 @@ export default async function handler(req, res) {
     // Use session userId or default to 'guest'
     const effectiveUserId = userId || req.session?.user?.id || "guest";
 
+    // Build governance context
+    const governanceContext = {
+      sessionId: req.cookies?.sessionId,
+      ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
+      headers: req.headers,
+      userRole: req.session?.user?.tier || 'STANDARD',
+      ...context
+    };
+
+    // Process through Governance Layer
+    const governedResponse = await tecAssistantGovernance.processGovernedRequest(
+      effectiveUserId,
+      message,
+      governanceContext
+    );
+
+    // If governance denied access, return denial
+    if (!governedResponse.success) {
+      return res.status(403).json(governedResponse);
+    }
+
     // Process message through AI Assistant Service
-    const response = await assistantService.processMessage(
+    const assistantResponse = await assistantService.processMessage(
       effectiveUserId,
       message,
       context || {},
     );
 
-    // Return successful response
-    return res.status(200).json({
+    // Merge governed insights with assistant response
+    const finalResponse = {
       success: true,
-      ...response,
+      language: governedResponse.language,
+      responseType: 'advisory', // Always advisory, never executable
+      ...assistantResponse,
+      governance: {
+        approved: true,
+        domains: governedResponse.governance.domains,
+        restrictions: governedResponse.governance.restrictions
+      },
+      decisionDashboard: governedResponse.dashboard,
+      insights: governedResponse.insights,
       timestamp: new Date().toISOString(),
-    });
+    };
+
+    return res.status(200).json(finalResponse);
   } catch (error) {
     console.error("Error in assistant API:", error);
 
