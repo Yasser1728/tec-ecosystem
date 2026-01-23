@@ -763,6 +763,21 @@ We welcome contributions to the **public** components! Please read our [Contribu
 
 **Note**: Private components are proprietary and not open for external contributions.
 
+### Merge Conflict Resolution
+
+📚 **Need help resolving merge conflicts?** We've created comprehensive guides to help:
+
+- 🚀 [Quick Reference Card](./QUICK_REFERENCE_MERGE_CONFLICTS.md) - Fast solutions (Arabic + English)
+- 📖 [Complete Resolution Guide](./MERGE_CONFLICT_RESOLUTION_GUIDE.md) - Step-by-step instructions
+- 📊 [Branch & Merge Status](./BRANCH_MERGE_STATUS.md) - Current repository state
+- 🔧 **Automated Tool**: `./scripts/check-merge-conflicts.sh` - Check your branch for conflicts
+
+**Quick check for your PR:**
+```bash
+git checkout your-branch-name
+./scripts/check-merge-conflicts.sh
+```
+
 ### Known CI/CD Issues
 
 ⚠️ **GitHub Copilot Autovalidate**: The repository has identified bugs in GitHub's Copilot Pull Request Reviewer autovalidate tool that may cause CI failures. These are **GitHub infrastructure issues**, not problems with the repository code.
