@@ -19,13 +19,11 @@
   },
   "env": {
     "NODE_ENV": "production",
-    "NEXT_PUBLIC_PI_SANDBOX": "true",
-    "SKIP_ENV_VALIDATION": "true"
+    "NEXT_PUBLIC_PI_SANDBOX": "true"
   },
   "build": {
     "env": {
-      "NEXT_TELEMETRY_DISABLED": "1",
-      "SKIP_ENV_VALIDATION": "true"
+      "NEXT_TELEMETRY_DISABLED": "1"
     }
   },
   "headers": [
@@ -39,10 +37,6 @@
         {
           "key": "X-Frame-Options",
           "value": "SAMEORIGIN"
-        },
-        {
-          "key": "X-XSS-Protection",
-          "value": "1; mode=block"
         },
         {
           "key": "Referrer-Policy",

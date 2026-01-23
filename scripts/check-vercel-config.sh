@@ -19,6 +19,21 @@ WARNINGS=0
 SUCCESS=0
 
 # =============================================================================
+# 0. فحص المتطلبات (jq)
+# =============================================================================
+
+if ! command -v jq &> /dev/null; then
+    echo -e "${YELLOW}⚠${NC} jq غير مثبت - سيتم تخطي فحوصات JSON"
+    echo "  لتثبيت jq: sudo apt-get install jq أو brew install jq"
+    ((WARNINGS++))
+    SKIP_JSON_CHECKS=true
+else
+    SKIP_JSON_CHECKS=false
+fi
+
+echo ""
+
+# =============================================================================
 # 1. فحص وجود الملفات الأساسية
 # =============================================================================
 
@@ -74,6 +89,11 @@ echo ""
 echo "🧪 3. اختبار vercel-ignore.sh..."
 
 if [ -f "vercel-ignore.sh" ] && [ -x "vercel-ignore.sh" ]; then
+  # ملاحظة: vercel-ignore.sh يستخدم exit codes بشكل معكوس عمداً:
+  # exit 1 = المتابعة في البناء (proceed)
+  # exit 0 = تخطي البناء (skip)
+  # هذا يتبع توثيق Vercel للـ Ignored Build Step
+  
   # Test main branch
   VERCEL_GIT_COMMIT_REF=main bash vercel-ignore.sh > /dev/null 2>&1
   if [ $? -eq 1 ]; then
@@ -117,39 +137,44 @@ echo ""
 echo "📝 4. فحص vercel.json..."
 
 if [ -f "vercel.json" ]; then
-  # Check if valid JSON
-  if jq empty vercel.json > /dev/null 2>&1; then
-    echo -e "  ${GREEN}✓${NC} vercel.json: JSON صالح"
-    ((SUCCESS++))
-    
-    # Check for required fields
-    if jq -e '.buildCommand' vercel.json > /dev/null 2>&1; then
-      echo -e "  ${GREEN}✓${NC} buildCommand موجود"
-      ((SUCCESS++))
-    else
-      echo -e "  ${YELLOW}⚠${NC} buildCommand مفقود"
-      ((WARNINGS++))
-    fi
-    
-    if jq -e '.framework' vercel.json > /dev/null 2>&1; then
-      echo -e "  ${GREEN}✓${NC} framework موجود"
-      ((SUCCESS++))
-    else
-      echo -e "  ${YELLOW}⚠${NC} framework مفقود"
-      ((WARNINGS++))
-    fi
-    
-    if jq -e '.ignoreCommand' vercel.json > /dev/null 2>&1; then
-      echo -e "  ${GREEN}✓${NC} ignoreCommand موجود"
-      ((SUCCESS++))
-    else
-      echo -e "  ${YELLOW}⚠${NC} ignoreCommand مفقود"
-      ((WARNINGS++))
-    fi
-    
+  if [ "$SKIP_JSON_CHECKS" = true ]; then
+    echo -e "  ${YELLOW}⚠${NC} تخطي فحص JSON (jq غير متوفر)"
+    ((WARNINGS++))
   else
-    echo -e "  ${RED}✗${NC} vercel.json: JSON غير صالح"
-    ((ERRORS++))
+    # Check if valid JSON
+    if jq empty vercel.json > /dev/null 2>&1; then
+      echo -e "  ${GREEN}✓${NC} vercel.json: JSON صالح"
+      ((SUCCESS++))
+      
+      # Check for required fields
+      if jq -e '.buildCommand' vercel.json > /dev/null 2>&1; then
+        echo -e "  ${GREEN}✓${NC} buildCommand موجود"
+        ((SUCCESS++))
+      else
+        echo -e "  ${YELLOW}⚠${NC} buildCommand مفقود"
+        ((WARNINGS++))
+      fi
+      
+      if jq -e '.framework' vercel.json > /dev/null 2>&1; then
+        echo -e "  ${GREEN}✓${NC} framework موجود"
+        ((SUCCESS++))
+      else
+        echo -e "  ${YELLOW}⚠${NC} framework مفقود"
+        ((WARNINGS++))
+      fi
+      
+      if jq -e '.ignoreCommand' vercel.json > /dev/null 2>&1; then
+        echo -e "  ${GREEN}✓${NC} ignoreCommand موجود"
+        ((SUCCESS++))
+      else
+        echo -e "  ${YELLOW}⚠${NC} ignoreCommand مفقود"
+        ((WARNINGS++))
+      fi
+      
+    else
+      echo -e "  ${RED}✗${NC} vercel.json: JSON غير صالح"
+      ((ERRORS++))
+    fi
   fi
 else
   echo -e "  ${RED}✗${NC} vercel.json غير موجود"
@@ -165,44 +190,49 @@ echo ""
 echo "📦 5. فحص package.json scripts..."
 
 if [ -f "package.json" ]; then
-  # Check for build script
-  if jq -e '.scripts.build' package.json > /dev/null 2>&1; then
-    BUILD_CMD=$(jq -r '.scripts.build' package.json)
-    echo -e "  ${GREEN}✓${NC} build script: $BUILD_CMD"
-    ((SUCCESS++))
-  else
-    echo -e "  ${RED}✗${NC} build script مفقود"
-    ((ERRORS++))
-  fi
-  
-  # Check for dev script
-  if jq -e '.scripts.dev' package.json > /dev/null 2>&1; then
-    DEV_CMD=$(jq -r '.scripts.dev' package.json)
-    echo -e "  ${GREEN}✓${NC} dev script: $DEV_CMD"
-    ((SUCCESS++))
-  else
-    echo -e "  ${YELLOW}⚠${NC} dev script مفقود"
+  if [ "$SKIP_JSON_CHECKS" = true ]; then
+    echo -e "  ${YELLOW}⚠${NC} تخطي فحص package.json (jq غير متوفر)"
     ((WARNINGS++))
-  fi
-  
-  # Check for start script
-  if jq -e '.scripts.start' package.json > /dev/null 2>&1; then
-    START_CMD=$(jq -r '.scripts.start' package.json)
-    echo -e "  ${GREEN}✓${NC} start script: $START_CMD"
-    ((SUCCESS++))
   else
-    echo -e "  ${YELLOW}⚠${NC} start script مفقود"
-    ((WARNINGS++))
-  fi
-  
-  # Check for postinstall script
-  if jq -e '.scripts.postinstall' package.json > /dev/null 2>&1; then
-    POSTINSTALL_CMD=$(jq -r '.scripts.postinstall' package.json)
-    echo -e "  ${GREEN}✓${NC} postinstall script: $POSTINSTALL_CMD"
-    ((SUCCESS++))
-  else
-    echo -e "  ${YELLOW}⚠${NC} postinstall script مفقود (قد يحتاج Prisma)"
-    ((WARNINGS++))
+    # Check for build script
+    if jq -e '.scripts.build' package.json > /dev/null 2>&1; then
+      BUILD_CMD=$(jq -r '.scripts.build' package.json)
+      echo -e "  ${GREEN}✓${NC} build script: $BUILD_CMD"
+      ((SUCCESS++))
+    else
+      echo -e "  ${RED}✗${NC} build script مفقود"
+      ((ERRORS++))
+    fi
+    
+    # Check for dev script
+    if jq -e '.scripts.dev' package.json > /dev/null 2>&1; then
+      DEV_CMD=$(jq -r '.scripts.dev' package.json)
+      echo -e "  ${GREEN}✓${NC} dev script: $DEV_CMD"
+      ((SUCCESS++))
+    else
+      echo -e "  ${YELLOW}⚠${NC} dev script مفقود"
+      ((WARNINGS++))
+    fi
+    
+    # Check for start script
+    if jq -e '.scripts.start' package.json > /dev/null 2>&1; then
+      START_CMD=$(jq -r '.scripts.start' package.json)
+      echo -e "  ${GREEN}✓${NC} start script: $START_CMD"
+      ((SUCCESS++))
+    else
+      echo -e "  ${YELLOW}⚠${NC} start script مفقود"
+      ((WARNINGS++))
+    fi
+    
+    # Check for postinstall script
+    if jq -e '.scripts.postinstall' package.json > /dev/null 2>&1; then
+      POSTINSTALL_CMD=$(jq -r '.scripts.postinstall' package.json)
+      echo -e "  ${GREEN}✓${NC} postinstall script: $POSTINSTALL_CMD"
+      ((SUCCESS++))
+    else
+      echo -e "  ${YELLOW}⚠${NC} postinstall script مفقود (قد يحتاج Prisma)"
+      ((WARNINGS++))
+    fi
   fi
 else
   echo -e "  ${RED}✗${NC} package.json غير موجود"
