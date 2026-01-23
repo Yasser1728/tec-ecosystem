@@ -2,15 +2,13 @@ name: Vercel Deployment Check
 
 on:
   push:
-    branches: [main, develop, staging]
+    branches: [main, staging]
   pull_request:
-    branches: [main, develop, staging]
+    branches: [main, staging]
   workflow_dispatch:
 
 permissions:
   contents: read
-  deployments: write
-  statuses: write
   checks: write
 
 jobs:
@@ -84,13 +82,13 @@ jobs:
         run: npm run build
         env:
           NODE_ENV: production
-          NEXT_PUBLIC_BASE_URL: https://tec-ecosystem.vercel.app
+          NEXT_PUBLIC_BASE_URL: https://example.com
           DATABASE_URL: postgresql://dummy:user@dummy:5432/dummy?schema=public
           NEXT_PUBLIC_PI_APP_ID: dummy_app_id
           NEXT_PUBLIC_PI_SANDBOX: "true"
           NEXT_PUBLIC_API_URL: http://localhost:3000
           SKIP_ENV_VALIDATION: "true"
-          NEXTAUTH_URL: https://tec-ecosystem.vercel.app
+          NEXTAUTH_URL: https://example.com
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET || 'build-test-secret-not-for-production' }}
 
       # 8️⃣ Check build output
@@ -216,15 +214,3 @@ jobs:
           echo ""
           echo "🚀 Ready for Vercel deployment!"
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-
-      # 1️⃣4️⃣ Create deployment status
-      - name: 📝 Update Deployment Status
-        if: always()
-        run: |
-          if [ "${{ job.status }}" == "success" ]; then
-            echo "state=success" >> $GITHUB_OUTPUT
-            echo "description=Vercel deployment checks passed ✅" >> $GITHUB_OUTPUT
-          else
-            echo "state=failure" >> $GITHUB_OUTPUT
-            echo "description=Vercel deployment checks failed ❌" >> $GITHUB_OUTPUT
-          fi
