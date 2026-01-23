@@ -163,6 +163,13 @@ npm run test:coverage
 - **[سياسة الأمان](./docs/SECURITY.md)**: إرشادات الأمان والإبلاغ
 - **[سجل التغييرات](./docs/CHANGELOG.md)**: تاريخ الإصدارات
 
+### أدلة Pull Request والدمج
+
+- **[دليل سريع لدمج PRs](./docs/PR_MERGE_QUICK_REFERENCE.md)**: أوامر سريعة وقائمة تحقق
+- **[دليل دمج PRs المتعددة (عربي)](./docs/MERGE_MULTIPLE_PRS_GUIDE_AR.md)**: دليل شامل لدمج عدة PRs
+- **[Merge Multiple PRs Guide (English)](./docs/MERGE_MULTIPLE_PRS_GUIDE.md)**: Complete guide in English
+- **[دليل التعاون](./COLLABORATION_GUIDE.md)**: أفضل ممارسات التعاون الجماعي
+
 ---
 
 ## 🏗️ البنية المعمارية
