@@ -14,7 +14,7 @@
  *   - Run from repository root
  */
 
-const { execSync } = require('child_process');
+import { execSync } from 'child_process';
 
 // Colors for console output
 const colors = {
@@ -284,13 +284,10 @@ function main() {
 }
 
 // Run the script
-if (require.main === module) {
-  try {
-    main();
-  } catch (error) {
-    log(`\n❌ Error: ${error.message}`, colors.red);
-    process.exit(1);
-  }
+try {
+  main();
+} catch (error) {
+  log(`\n❌ Error: ${error.message}`, colors.red);
+  process.exit(1);
 }
 
-module.exports = { main };
