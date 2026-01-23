@@ -4,7 +4,7 @@
  * @module tests/unit/aiAssistantService.test
  */
 
-const AiAssistantService = require("../../services/aiAssistantService");
+import AiAssistantService from "../../services/aiAssistantService.js";
 
 describe("AiAssistantService", () => {
   let assistantService;
