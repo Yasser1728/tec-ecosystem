@@ -458,7 +458,311 @@ This domain is an **identity gateway only**. It serves as a presentation layer f
 
 ---
 
+**Last Updated / آخر تحديث:** January 23, 2026  
+**Compliance Status / حالة الامتثال:** ✅ 100% Domain Sovereignty Policy Compliant
+
+---
+
+## 🚀 Quick Start
+
+### For Developers
+
+1. **Install Dependencies**
+   ```bash
+   npm install
+   ```
+
+2. **Set Up Environment**
+   ```bash
+   cp .env.example .env.local
+   # Edit .env.local with your configuration
+   ```
+
+3. **Run Development Server**
+   ```bash
+   npm run dev
+   # Open http://localhost:3000/tec
+   ```
+
+4. **Access TEC Assistant**
+   ```bash
+   # Navigate to: http://localhost:3000/apps/tec
+   # Or use the dashboard: http://localhost:3000/tec/dashboard
+   ```
+
+### For Users
+
+1. **Access Dashboard**: Visit `/tec/dashboard` for the unified control center
+2. **AI Assistant**: Click "AI Assistant" button or visit `/tec/ai-assistant`
+3. **Browse Domains**: Navigate to `/domains` to see all 24 business domains
+4. **Quick Search**: Use the global search to find anything across domains
+
+---
+
+## 📖 API Reference
+
+### Core Endpoints
+
+| Endpoint | Method | Description | Auth Required |
+|----------|--------|-------------|---------------|
+| `/api/health` | GET | System health check | No |
+| `/api/ready` | GET | Readiness probe | No |
+| `/api/metrics` | GET | Performance metrics | Yes |
+| `/api/assistant/chat` | POST | Chat with AI assistant | Yes |
+| `/api/assistant/context` | GET | Get conversation context | Yes |
+| `/api/assistant/recommend` | POST | Get AI recommendations | Yes |
+| `/api/dashboard/summary` | GET | Dashboard summary data | Yes |
+| `/api/dashboard/activity` | GET | Recent activity feed | Yes |
+| `/api/dashboard/stats` | GET | Quick statistics | Yes |
+| `/api/domains` | GET | List all 24 domains | No |
+| `/api/domains/:domain` | GET | Get specific domain info | No |
+| `/api/domains/:domain/health` | GET | Domain health status | Yes |
+
+### Request Example
+
+```javascript
+// Chat with AI Assistant
+fetch('/api/assistant/chat', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer <token>'
+  },
+  body: JSON.stringify({
+    message: 'Show me investment opportunities',
+    language: 'en'
+  })
+})
+```
+
+### Response Format
+
+```json
+{
+  "status": "success",
+  "data": {
+    "response": "Here are the top investment opportunities...",
+    "recommendations": [...],
+    "context": {...}
+  },
+  "timestamp": "2026-01-23T15:00:00Z"
+}
+```
+
+---
+
+## ⚙️ Configuration
+
+### Environment Variables
+
+```bash
+# Core Configuration
+NODE_ENV=production
+PORT=3000
+BASE_URL=https://tec.pi
+
+# Database
+DATABASE_URL=postgresql://...
+SHADOW_DATABASE_URL=postgresql://...
+
+# Authentication
+NEXTAUTH_SECRET=your_secret_here
+NEXTAUTH_URL=https://tec.pi
+
+# Pi Network Integration
+PI_NETWORK_API_KEY=your_api_key
+PI_NETWORK_SANDBOX=false
+
+# AI Configuration
+AI_MODEL=governance-approved
+AI_MAX_TOKENS=500
+AI_TEMPERATURE=0.7
+
+# Monitoring
+MONITORING_ENABLED=true
+METRICS_INTERVAL=10
+ALERT_CHANNELS=email,slack
+```
+
+### Key Configuration Files
+
+| File | Purpose |
+|------|---------|
+| `lib/config/tec-pi-config.js` | Main TEC.pi configuration |
+| `lib/config/domains.js` | Domain tier configuration |
+| `lib/config/domain-health.js` | Health monitoring settings |
+| `lib/domainMapping.js` | Domain routing configuration |
+| `apps/tec/config.js` | TEC app-specific settings |
+
+### Feature Flags
+
+```javascript
+// Enable/disable features in tec-pi-config.js
+features: {
+  aiAssistant: true,        // AI chat functionality
+  dashboard: true,          // Dashboard access
+  recommendations: true,    // AI recommendations
+  crossDomainSearch: true,  // Search across domains
+  notifications: true,      // Alert system
+  analytics: true,          // Analytics tracking
+  customWidgets: true,      // Custom dashboard widgets
+  exportData: true,         // Data export capability
+  voiceAssistant: false,    // Voice feature (future)
+  betaFeatures: false       // Experimental features
+}
+```
+
+---
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+#### Issue: AI Assistant Not Responding
+
+**Symptoms:**
+- Chat messages not sending
+- No response from assistant
+- Timeout errors
+
+**Solutions:**
+1. Check network connection
+2. Verify authentication token is valid
+3. Check AI service status at `/api/health`
+4. Clear browser cache and cookies
+5. Try incognito/private mode
+
+**Code Check:**
+```bash
+# Check if AI service is running
+curl http://localhost:3000/api/health
+
+# Expected response:
+# {"status":"operational","services":{"aiAssistant":"operational"}}
+```
+
+#### Issue: Dashboard Not Loading
+
+**Symptoms:**
+- Blank dashboard screen
+- Loading spinner never completes
+- 404 or 500 errors
+
+**Solutions:**
+1. Clear browser cache
+2. Check console for JavaScript errors
+3. Verify domain configurations are loaded
+4. Restart development server
+
+**Debug Commands:**
+```bash
+# Restart dev server
+npm run dev
+
+# Check for build errors
+npm run build
+
+# Run in debug mode
+NODE_OPTIONS='--inspect' npm run dev
+```
+
+#### Issue: Domain Health Status Showing Offline
+
+**Symptoms:**
+- Red status indicators
+- "Offline" or "Unhealthy" status
+- Health check failing
+
+**Solutions:**
+1. Check domain service is running
+2. Verify health check endpoints
+3. Review `lib/config/domain-health.js` settings
+4. Check network connectivity
+
+**Configuration Check:**
+```javascript
+// Verify health check settings in domain-health.js
+globalSettings: {
+  checkInterval: 30,
+  timeout: 5000,
+  retries: 3
+}
+```
+
+#### Issue: Slow Performance
+
+**Symptoms:**
+- Dashboard takes > 3 seconds to load
+- API responses are slow
+- Timeouts on requests
+
+**Solutions:**
+1. Check SLO metrics: Target P95 < 200ms
+2. Review database query performance
+3. Check CDN cache status
+4. Monitor server resource usage
+
+**Performance Check:**
+```bash
+# Check metrics
+curl http://localhost:3000/api/metrics
+
+# Monitor response times
+npm run test:performance
+```
+
+#### Issue: Authentication Errors
+
+**Symptoms:**
+- "Unauthorized" errors
+- Redirect loops on login
+- Session expires immediately
+
+**Solutions:**
+1. Check `NEXTAUTH_SECRET` is set
+2. Verify `NEXTAUTH_URL` matches your domain
+3. Clear cookies and try again
+4. Check Pi Network API credentials
+
+**Auth Debug:**
+```bash
+# Verify environment variables
+echo $NEXTAUTH_SECRET
+echo $NEXTAUTH_URL
+
+# Test authentication endpoint
+curl -X POST http://localhost:3000/api/auth/signin
+```
+
+### Getting Help
+
+If issues persist:
+
+1. **Check Documentation**: Review the full spec at `/apps/tec/TEC_ASSISTANT_SPECIFICATION.md`
+2. **Check Architecture**: See system architecture at `/docs/TEC_PI_ARCHITECTURE_OVERVIEW.md`
+3. **Contact Support**:
+   - Technical: `support@tec.pi`
+   - Emergency: `emergency@tec.pi`
+   - Governance: `governance@tec.pi`
+
+### Debug Mode
+
+Enable debug logging:
+
+```bash
+# Set debug environment variable
+export DEBUG=tec:*
+
+# Run with verbose logging
+npm run dev -- --verbose
+
+# Check application logs
+tail -f logs/tec-app.log
+```
+
+---
+
 **Type / النوع:** Identity Gateway (بوابة تعريفية)  
 **Operational Application / التطبيق التشغيلي:** `/apps/tec`  
-**Last Updated / آخر تحديث:** January 22, 2026  
+**Last Updated / آخر تحديث:** January 23, 2026  
 **Compliance Status / حالة الامتثال:** ✅ 100% Domain Sovereignty Policy Compliant
