@@ -722,6 +722,13 @@ npm run test:coverage
 - **[Security Policy](./docs/SECURITY.md)**: Security guidelines and reporting
 - **[Changelog](./docs/CHANGELOG.md)**: Version history
 
+### Pull Request & Merge Guides
+
+- **[PR Merge Quick Reference](./docs/PR_MERGE_QUICK_REFERENCE.md)**: Quick commands and checklist
+- **[Merge Multiple PRs Guide (English)](./docs/MERGE_MULTIPLE_PRS_GUIDE.md)**: Complete guide to merging multiple PRs
+- **[Merge Multiple PRs Guide (Arabic)](./docs/MERGE_MULTIPLE_PRS_GUIDE_AR.md)**: دليل دمج PRs المتعددة بالعربية
+- **[Collaboration Guide](./COLLABORATION_GUIDE.md)**: Team collaboration best practices
+
 ---
 
 ## 🏗️ Architecture
