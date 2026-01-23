@@ -37,6 +37,35 @@ export const domainConfig = {
     manualReviewAmount: 10000, // PI
     criticalAmount: 50000, // PI
   },
+
+  // Service Level Agreement (SLA)
+  sla: {
+    uptime: 99.99,
+    responseTime: 200,
+    supportHours: "24/7",
+  },
+
+  // AI Configuration
+  ai: {
+    model: "governance-approved",
+    maxTokens: 500,
+    temperature: 0.7,
+    languages: ["en", "ar"],
+  },
+
+  // Compliance Configuration
+  compliance: {
+    standards: ["ISO27001", "SOC2", "GDPR"],
+    lastAudit: "2026-01-23",
+    dataResidency: "sovereign",
+  },
+
+  // Monitoring Configuration
+  monitoring: {
+    enabled: true,
+    metricsInterval: 10,
+    alertChannels: ["email", "slack"],
+  },
 };
 
 export default domainConfig;
