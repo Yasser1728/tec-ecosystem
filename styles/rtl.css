@@ -1,0 +1,311 @@
+/**
+ * RTL (Right-to-Left) Styling System
+ * TEC Ecosystem - Arabic Language Support
+ * 
+ * Features:
+ * - Layout flipping for RTL
+ * - Text alignment adjustments
+ * - Icon mirroring where needed
+ * - Safe area adjustments for mobile
+ * - Directional animations
+ */
+
+/* ===================================
+   RTL Document Direction
+   =================================== */
+
+[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+
+[dir="ltr"] {
+  direction: ltr;
+  text-align: left;
+}
+
+/* ===================================
+   Flexbox RTL Support
+   =================================== */
+
+[dir="rtl"] .flex-row {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .flex-row-reverse {
+  flex-direction: row;
+}
+
+/* ===================================
+   Spacing & Margins RTL
+   =================================== */
+
+[dir="rtl"] .ml-1 { margin-right: 0.25rem; margin-left: 0; }
+[dir="rtl"] .ml-2 { margin-right: 0.5rem; margin-left: 0; }
+[dir="rtl"] .ml-3 { margin-right: 0.75rem; margin-left: 0; }
+[dir="rtl"] .ml-4 { margin-right: 1rem; margin-left: 0; }
+[dir="rtl"] .ml-auto { margin-right: auto; margin-left: 0; }
+
+[dir="rtl"] .mr-1 { margin-left: 0.25rem; margin-right: 0; }
+[dir="rtl"] .mr-2 { margin-left: 0.5rem; margin-right: 0; }
+[dir="rtl"] .mr-3 { margin-left: 0.75rem; margin-right: 0; }
+[dir="rtl"] .mr-4 { margin-left: 1rem; margin-right: 0; }
+[dir="rtl"] .mr-auto { margin-left: auto; margin-right: 0; }
+
+[dir="rtl"] .pl-1 { padding-right: 0.25rem; padding-left: 0; }
+[dir="rtl"] .pl-2 { padding-right: 0.5rem; padding-left: 0; }
+[dir="rtl"] .pl-3 { padding-right: 0.75rem; padding-left: 0; }
+[dir="rtl"] .pl-4 { padding-right: 1rem; padding-left: 0; }
+
+[dir="rtl"] .pr-1 { padding-left: 0.25rem; padding-right: 0; }
+[dir="rtl"] .pr-2 { padding-left: 0.5rem; padding-right: 0; }
+[dir="rtl"] .pr-3 { padding-left: 0.75rem; padding-right: 0; }
+[dir="rtl"] .pr-4 { padding-left: 1rem; padding-right: 0; }
+
+/* ===================================
+   Text Alignment RTL
+   =================================== */
+
+[dir="rtl"] .text-left {
+  text-align: right;
+}
+
+[dir="rtl"] .text-right {
+  text-align: left;
+}
+
+/* ===================================
+   Border Radius RTL
+   =================================== */
+
+[dir="rtl"] .rounded-l {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-top-right-radius: 0.25rem;
+  border-bottom-right-radius: 0.25rem;
+}
+
+[dir="rtl"] .rounded-r {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-top-left-radius: 0.25rem;
+  border-bottom-left-radius: 0.25rem;
+}
+
+[dir="rtl"] .rounded-tl {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0.25rem;
+}
+
+[dir="rtl"] .rounded-tr {
+  border-top-right-radius: 0;
+  border-top-left-radius: 0.25rem;
+}
+
+[dir="rtl"] .rounded-bl {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0.25rem;
+}
+
+[dir="rtl"] .rounded-br {
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0.25rem;
+}
+
+/* ===================================
+   Transforms & Positioning RTL
+   =================================== */
+
+[dir="rtl"] .left-0 { left: auto; right: 0; }
+[dir="rtl"] .right-0 { right: auto; left: 0; }
+[dir="rtl"] .left-auto { left: auto; }
+[dir="rtl"] .right-auto { right: auto; }
+
+/* ===================================
+   Icon Mirroring RTL
+   (Mirror directional icons like arrows)
+   =================================== */
+
+[dir="rtl"] .rtl-mirror {
+  transform: scaleX(-1);
+}
+
+[dir="rtl"] .arrow-icon,
+[dir="rtl"] .chevron-icon {
+  transform: scaleX(-1);
+}
+
+/* ===================================
+   Chat Bubbles RTL
+   =================================== */
+
+[dir="rtl"] .chat-bubble-user {
+  border-bottom-right-radius: 0.25rem;
+  border-bottom-left-radius: 1rem;
+}
+
+[dir="rtl"] .chat-bubble-assistant {
+  border-bottom-left-radius: 0.25rem;
+  border-bottom-right-radius: 1rem;
+}
+
+[dir="ltr"] .chat-bubble-user {
+  border-bottom-left-radius: 0.25rem;
+  border-bottom-right-radius: 1rem;
+}
+
+[dir="ltr"] .chat-bubble-assistant {
+  border-bottom-right-radius: 0.25rem;
+  border-bottom-left-radius: 1rem;
+}
+
+/* ===================================
+   Animations RTL
+   =================================== */
+
+@keyframes slide-in-rtl {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in-ltr {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+[dir="rtl"] .animate-slide-in {
+  animation: slide-in-rtl 0.3s ease-out;
+}
+
+[dir="ltr"] .animate-slide-in {
+  animation: slide-in-ltr 0.3s ease-out;
+}
+
+/* Fade In Up Animation */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.4s ease-out;
+}
+
+/* Fade In Animation */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+/* ===================================
+   Safe Area Support (iOS)
+   =================================== */
+
+@supports (padding: env(safe-area-inset-bottom)) {
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .safe-area-left {
+    padding-left: env(safe-area-inset-left);
+  }
+  
+  .safe-area-right {
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* ===================================
+   Typography RTL
+   =================================== */
+
+[dir="rtl"] {
+  font-family: 'Cairo', 'Tajawal', 'Noto Sans Arabic', sans-serif;
+}
+
+[dir="ltr"] {
+  font-family: 'Inter', 'Segoe UI', 'Roboto', sans-serif;
+}
+
+/* ===================================
+   Scrollbar RTL
+   =================================== */
+
+[dir="rtl"] ::-webkit-scrollbar {
+  width: 8px;
+}
+
+[dir="rtl"] ::-webkit-scrollbar-track {
+  background: var(--tec-dark, #0a0e2b);
+}
+
+[dir="rtl"] ::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, var(--tec-green, #00ff9d), var(--tec-blue, #00c6ff));
+  border-radius: 10px;
+}
+
+/* ===================================
+   Form Elements RTL
+   =================================== */
+
+[dir="rtl"] input[type="text"],
+[dir="rtl"] input[type="email"],
+[dir="rtl"] input[type="password"],
+[dir="rtl"] textarea,
+[dir="rtl"] select {
+  text-align: right;
+}
+
+[dir="ltr"] input[type="text"],
+[dir="ltr"] input[type="email"],
+[dir="ltr"] input[type="password"],
+[dir="ltr"] textarea,
+[dir="ltr"] select {
+  text-align: left;
+}
+
+/* ===================================
+   Utility Classes
+   =================================== */
+
+.rtl-flip {
+  transform: scaleX(-1);
+}
+
+[dir="rtl"] .ltr-only {
+  display: none;
+}
+
+[dir="ltr"] .rtl-only {
+  display: none;
+}

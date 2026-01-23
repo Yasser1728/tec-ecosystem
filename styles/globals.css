@@ -3,11 +3,17 @@
 @tailwind components;
 @tailwind utilities;
 
+/* استيراد RTL Support */
+@import './rtl.css';
+
 /* إعدادات الواجهة السيادية */
 :root {
   --tec-dark: #0a0e2b;
+  --tec-darker: #060818;
   --tec-green: #00ff9d;
   --tec-blue: #00c6ff;
+  --tec-gold: #ffd700;
+  --tec-platinum: #e5e4e2;
 }
 
 body {
@@ -37,3 +43,39 @@ body {
 .titan-gradient-text {
   @apply bg-gradient-to-r from-[#00ff9d] via-[#00c6ff] to-[#0072ff] bg-clip-text text-transparent;
 }
+
+/* RTL-specific utility classes */
+.rtl-space-x-reverse > * + * {
+  margin-inline-start: 0;
+  margin-inline-end: var(--space-x-reverse);
+}
+
+.rtl-divide-x-reverse > * + * {
+  border-inline-start-width: 0;
+  border-inline-end-width: var(--divide-x-reverse);
+}
+
+/* Safe area utilities */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.pt-safe {
+  padding-top: env(safe-area-inset-top);
+}
+
+.pl-safe {
+  padding-left: env(safe-area-inset-left);
+}
+
+.pr-safe {
+  padding-right: env(safe-area-inset-right);
+}
+
+/* Smooth transitions for language switching */
+* {
+  transition-property: margin, padding, text-align;
+  transition-duration: 0.2s;
+  transition-timing-function: ease-in-out;
+}
+
