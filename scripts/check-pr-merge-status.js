@@ -7,6 +7,8 @@
  * and provides recommendations for merging them.
  * 
  * Usage:
+ *   npm run pr:check
+ *   npm run pr:status
  *   node scripts/check-pr-merge-status.js
  * 
  * Requirements:
@@ -78,8 +80,11 @@ function checkGhCli() {
 function getPullRequests() {
   log('\n📊 Fetching open pull requests...', colors.cyan);
   
+  // Allow configuration via environment variable, default to 50
+  const limit = process.env.PR_CHECK_LIMIT || 50;
+  
   const prsJson = exec(
-    'gh pr list --json number,title,author,createdAt,updatedAt,state,mergeable,statusCheckRollup,reviewDecision --limit 50',
+    `gh pr list --json number,title,author,createdAt,updatedAt,state,mergeable,statusCheckRollup,reviewDecision --limit ${limit}`,
     true
   );
   
