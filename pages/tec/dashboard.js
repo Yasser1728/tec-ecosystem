@@ -67,11 +67,12 @@ export default function Dashboard() {
     { id: "Commerce", name: "Commerce", count: stats.byCategory.Commerce },
     { id: "Technology", name: "Technology", count: stats.byCategory.Technology },
     { id: "Specialized", name: "Specialized", count: stats.byCategory.Specialized },
+    { id: "Hub", name: "Hub", count: stats.byCategory.Hub },
   ];
 
   const getFilteredDomains = () => {
     if (selectedCategory === "all") {
-      return Object.entries(getDomainStats().byCategory)
+      return Object.entries(stats.byCategory)
         .flatMap(([category]) => getDomainsByCategory(category));
     }
     return getDomainsByCategory(selectedCategory);
@@ -201,7 +202,7 @@ export default function Dashboard() {
 
                 {/* Domain Grid */}
                 <div className="grid md:grid-cols-2 gap-4 max-h-[600px] overflow-y-auto">
-                  {getFilteredDomains().map(({ domain, route, name, status, sla }) => (
+                  {getFilteredDomains().map(({ domain, route, name, nameAr, status, sla, priority }) => (
                     <Link key={domain} href={route}>
                       <div className="group bg-gray-700/50 border border-gray-600 rounded-lg p-4 hover:border-[#00ff9d] transition-all cursor-pointer">
                         <div className="flex items-start justify-between mb-3">
@@ -210,8 +211,26 @@ export default function Dashboard() {
                               {domain}
                             </h3>
                             <p className="text-sm text-gray-400">{name}</p>
+                            {nameAr && (
+                              <p className="text-xs text-gray-500 mt-1" lang="ar">
+                                {nameAr}
+                              </p>
+                            )}
                           </div>
                           <div className="flex flex-col items-end gap-1">
+                            {priority && (
+                              <span
+                                className={`text-xs px-2 py-1 rounded ${
+                                  priority === "Tier 1"
+                                    ? "bg-yellow-500/20 text-yellow-400"
+                                    : priority === "Tier 2"
+                                      ? "bg-blue-500/20 text-blue-400"
+                                      : "bg-gray-500/20 text-gray-400"
+                                }`}
+                              >
+                                {priority}
+                              </span>
+                            )}
                             <span
                               className={`text-xs px-2 py-1 rounded-full ${
                                 status === "active"

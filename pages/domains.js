@@ -72,8 +72,11 @@ export default function Domains() {
             <p className="text-xl text-gray-400 mb-6">
               24 Premium Domains on Pi Network
             </p>
-            <div className="inline-flex items-center gap-2 bg-green-500/10 border border-green-500/50 rounded-full px-6 py-2">
-              <span className="text-green-400 text-2xl" aria-label="All domains secured">✓</span>
+            <div 
+              className="inline-flex items-center gap-2 bg-green-500/10 border border-green-500/50 rounded-full px-6 py-2"
+              aria-label="All domains secured"
+            >
+              <span className="text-green-400 text-2xl" aria-hidden="true">✓</span>
               <span className="text-green-400 font-semibold">
                 All Domains Secured
               </span>
