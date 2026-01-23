@@ -7,7 +7,7 @@
  * @module services/aiAssistantService
  */
 
-const crypto = require("crypto");
+import crypto from "crypto";
 
 class AiAssistantService {
   constructor() {
@@ -240,7 +240,7 @@ class AiAssistantService {
 }
 
 // Export class for flexibility in testing and dependency injection
-module.exports = AiAssistantService;
+export { AiAssistantService };
 
 // Export singleton instance as default
-module.exports.default = new AiAssistantService();
+export default AiAssistantService;

@@ -5,7 +5,7 @@
  * @route POST /api/tec/assistant
  */
 
-const AiAssistantService = require("../../../apps/tec/services/aiAssistantService");
+import AiAssistantService from "../../../apps/tec/services/aiAssistantService.js";
 
 // Singleton instance to maintain conversation history across requests
 const assistantService = new AiAssistantService();
