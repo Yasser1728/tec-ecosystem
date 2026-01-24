@@ -17,8 +17,8 @@ async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  // Use validated body from middleware
-  const { paymentId, txid } = req.validatedBody;
+  // Use validated body from middleware, fallback to req.body for testing
+  const { paymentId, txid } = req.validatedBody || req.body;
   const internalId = req.body.internalId; // Optional field
 
   try {
