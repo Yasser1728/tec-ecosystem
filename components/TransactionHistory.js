@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { piAuth } from "../lib/pi-auth";
+import { piAuth } from "../lib/pi-auth.js";
 
 export default function TransactionHistory() {
   const [payments, setPayments] = useState([]);

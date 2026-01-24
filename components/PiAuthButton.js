@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { piAuth } from "../lib/pi-auth";
+import { piAuth } from "../lib/pi-auth.js";
 
 export default function PiAuthButton({ onAuthSuccess, onAuthError }) {
   const [loading, setLoading] = useState(false);
