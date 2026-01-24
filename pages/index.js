@@ -3,10 +3,13 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import { BottomNav } from "../components/layout";
 import ParticlesCanvas from "../components/ParticlesCanvas";
 import PiAuthButton from "../components/PiAuthButton";
+import { useLanguage } from "../hooks/useLanguage";
 
 export default function Home() {
+  const { isRTL } = useLanguage();
   const [piUser, setPiUser] = useState(null);
   const [paymentStatus, setPaymentStatus] = useState("");
 
@@ -226,7 +229,7 @@ export default function Home() {
 
       <Header />
 
-      <main className="relative min-h-screen bg-gray-900 text-white">
+      <main className="relative min-h-screen bg-gray-900 text-white pb-16 md:pb-0" dir={isRTL ? 'rtl' : 'ltr'}>
         <ParticlesCanvas />
 
         {/* Hero Section */}
@@ -374,6 +377,7 @@ export default function Home() {
       </main>
 
       <Footer />
+      <BottomNav />
     </>
   );
 }
