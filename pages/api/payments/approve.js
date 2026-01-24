@@ -57,11 +57,12 @@ async function handler(req, res) {
       });
     }
 
-    // Production mode: Call Pi Network API to approve the payment
-    const piConfig = getPiApiConfig();
-
-    if (!piConfig.apiKey) {
-      console.error("❌ PI_API_KEY not configured for production mode");
+    // Production mode: Get Pi API configuration (validates API key is present)
+    let piConfig;
+    try {
+      piConfig = getPiApiConfig(true); // requireApiKey = true for production
+    } catch (error) {
+      console.error("❌", error.message);
       return res.status(500).json({
         error: "Server configuration error",
         message: "Production mode requires PI_API_KEY to be configured.",

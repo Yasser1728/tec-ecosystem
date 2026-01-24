@@ -65,11 +65,12 @@ async function handler(req, res) {
       });
     }
 
-    // Production mode - call Pi Platform API
-    const piConfig = getPiApiConfig();
-
-    if (!piConfig.apiKey) {
-      console.error("❌ PI_API_KEY not configured for production mode");
+    // Production mode: Get Pi API configuration (validates API key is present)
+    let piConfig;
+    try {
+      piConfig = getPiApiConfig(true); // requireApiKey = true for production
+    } catch (error) {
+      console.error("❌", error.message);
       return res.status(500).json({
         success: false,
         error: "Server configuration error",

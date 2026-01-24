@@ -34,7 +34,7 @@ export default function handler(req, res) {
 
   // Return validation key as plain text (required by Pi Platform)
   res.setHeader("Content-Type", "text/plain");
-  // Cache for 5 minutes - short enough for key rotation scenarios
+  // Cache for 5 minutes (reduced from 1 hour) to allow faster key rotation for security
   res.setHeader("Cache-Control", "public, max-age=300");
   res.status(200).send(validationKey);
 }
