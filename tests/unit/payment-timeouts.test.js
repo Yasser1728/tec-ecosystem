@@ -142,19 +142,10 @@ describe('Payment Timeouts Configuration', () => {
   });
 
   describe('withRetry', () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-      jest.useFakeTimers();
-    });
-
-    afterEach(() => {
-      jest.useRealTimers();
-    });
-
     it('should succeed on first attempt', async () => {
       const mockFn = jest.fn().mockResolvedValue('success');
       
-      const result = await withRetry(mockFn, 3, 1000, 'Test Operation');
+      const result = await withRetry(mockFn, 3, 10, 'Test Operation');
       
       expect(result).toBe('success');
       expect(mockFn).toHaveBeenCalledTimes(1);
@@ -167,15 +158,7 @@ describe('Payment Timeouts Configuration', () => {
         .mockRejectedValueOnce(new Error('fail 2'))
         .mockResolvedValue('success');
       
-      const promise = withRetry(mockFn, 3, 100, 'Test Operation');
-      
-      // Fast-forward through retries
-      jest.advanceTimersByTime(100);
-      await Promise.resolve();
-      jest.advanceTimersByTime(200);
-      await Promise.resolve();
-      
-      const result = await promise;
+      const result = await withRetry(mockFn, 3, 10, 'Test Operation');
       
       expect(result).toBe('success');
       expect(mockFn).toHaveBeenCalledTimes(3);
@@ -184,39 +167,32 @@ describe('Payment Timeouts Configuration', () => {
     it('should fail after max retries', async () => {
       const mockFn = jest.fn().mockRejectedValue(new Error('persistent failure'));
       
-      const promise = withRetry(mockFn, 3, 100, 'Test Operation');
+      await expect(
+        withRetry(mockFn, 3, 10, 'Test Operation')
+      ).rejects.toThrow('Test Operation failed after 3 attempts');
       
-      // Fast-forward through all retries
-      jest.advanceTimersByTime(100);
-      await Promise.resolve();
-      jest.advanceTimersByTime(200);
-      await Promise.resolve();
-      jest.advanceTimersByTime(400);
-      await Promise.resolve();
-      
-      await expect(promise).rejects.toThrow('Test Operation failed after 3 attempts');
       expect(mockFn).toHaveBeenCalledTimes(3);
     });
 
-    it('should use exponential backoff', async () => {
+    it('should use exponential backoff delays', async () => {
       const mockFn = jest.fn().mockRejectedValue(new Error('fail'));
-      const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+      const delays = [];
       
-      const promise = withRetry(mockFn, 4, 1000, 'Test Operation');
+      // Spy on setTimeout to capture delays
+      const originalSetTimeout = global.setTimeout;
+      global.setTimeout = jest.fn((fn, delay) => {
+        delays.push(delay);
+        return originalSetTimeout(fn, delay);
+      });
       
-      // Check exponential backoff delays: 1000, 2000, 4000, 8000
-      jest.advanceTimersByTime(1000);
-      await Promise.resolve();
+      await withRetry(mockFn, 3, 100, 'Test Operation').catch(() => {});
       
-      jest.advanceTimersByTime(2000);
-      await Promise.resolve();
+      // Restore original setTimeout
+      global.setTimeout = originalSetTimeout;
       
-      jest.advanceTimersByTime(4000);
-      await Promise.resolve();
-      
-      await expect(promise).rejects.toThrow();
-      
-      setTimeoutSpy.mockRestore();
+      // Check exponential backoff: 100, 200 (100 * 2^1), 400 (100 * 2^2)
+      expect(delays).toContain(100);
+      expect(delays).toContain(200);
     });
   });
 });

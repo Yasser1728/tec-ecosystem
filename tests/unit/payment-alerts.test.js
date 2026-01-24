@@ -62,7 +62,7 @@ describe('Payment Alert Logger', () => {
       expect(alert.message).toBe('Test error message');
       expect(alert.context.paymentId).toBe('123');
       expect(alert.context.environment).toBeDefined();
-      expect(alert.context.service).toBe('payment-system');
+      expect(alert.context.systemService).toBe('payment-system');
       expect(alert.timestamp).toBeDefined();
     });
 
