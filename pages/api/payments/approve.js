@@ -21,8 +21,6 @@ async function handler(req, res) {
   const { paymentId } = req.validatedBody || req.body;
 
   try {
-    console.log("Approving payment:", paymentId);
-
     // Validate Pi configuration
     const configValidation = validatePiConfig();
     if (!configValidation.isValid) {
@@ -37,6 +35,8 @@ async function handler(req, res) {
         missingConfig: configValidation.missing,
       });
     }
+
+    console.log("Approving payment:", paymentId, `(${configValidation.isSandbox ? "sandbox" : "production"} mode)`);
 
     // Check if in sandbox mode
     const isSandbox = configValidation.isSandbox;
@@ -67,8 +67,6 @@ async function handler(req, res) {
         message: "Production mode requires PI_API_KEY to be configured.",
       });
     }
-
-    console.log("Approving payment:", paymentId);
 
     // Retry logic - try up to 3 times with delays
     const maxRetries = 3;
