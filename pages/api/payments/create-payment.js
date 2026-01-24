@@ -8,6 +8,7 @@ import {
 import { withCORS } from "../../../middleware/cors";
 import { withBodyValidation } from "../../../lib/validations";
 import { CreatePaymentSchema } from "../../../lib/validations/payment";
+import { validatePiConfig } from "../../../lib/pi-config-validator";
 
 async function handler(req, res) {
   if (req.method !== "POST") {
@@ -25,6 +26,21 @@ async function handler(req, res) {
   } = req.validatedBody;
 
   try {
+    // Validate Pi configuration before processing payment
+    const configValidation = validatePiConfig();
+    if (!configValidation.isValid) {
+      console.error(
+        "❌ Pi Network not configured:",
+        configValidation.missing.join(", ")
+      );
+      return res.status(500).json({
+        error: "Pi Network configuration error",
+        message:
+          "Server is not properly configured for Pi Network payments. Please contact administrator.",
+        missingConfig: configValidation.missing,
+      });
+    }
+
     // Direct verification - NO fetch to avoid ECONNREFUSED on serverless
     const verification = await verifyPiPayment(userId);
 
@@ -62,6 +78,7 @@ async function handler(req, res) {
       userId,
       amount,
       domain,
+      sandbox: configValidation.isSandbox,
     });
 
     // Create payment record in database with PENDING status
@@ -80,6 +97,7 @@ async function handler(req, res) {
           auditLogId,
           auditHash,
           forensicApproval: true,
+          sandbox: configValidation.isSandbox,
         },
       },
     });
@@ -92,6 +110,7 @@ async function handler(req, res) {
         amount: payment.amount,
         domain: payment.domain,
         status: payment.status,
+        sandbox: configValidation.isSandbox,
       },
       forensicAudit: {
         approved: true,
@@ -99,7 +118,7 @@ async function handler(req, res) {
         auditHash,
         riskLevel: "low",
       },
-      message: "Payment initiated. Complete transaction in Pi Browser.",
+      message: `Payment initiated. Complete transaction in Pi Browser.${configValidation.isSandbox ? " (Sandbox mode)" : ""}`,
     });
   } catch (error) {
     console.error("Payment creation error:", error);
