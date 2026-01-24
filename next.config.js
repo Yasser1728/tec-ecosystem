@@ -8,11 +8,17 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  
+  // ESM Compatibility for next-auth
   experimental: {
     serverActions: {
       enabled: true,
     },
+    esmExternals: 'loose',
   },
+  
+  // Transpile next-auth for ESM compatibility
+  transpilePackages: ['next-auth', '@auth/core'],
   trailingSlash: false,
   skipTrailingSlashRedirect: true,
   async rewrites() {
