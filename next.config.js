@@ -14,11 +14,11 @@ const nextConfig = {
     serverActions: {
       enabled: true,
     },
-    esmExternals: 'loose',
+    esmExternals: true,
   },
   
   // Transpile next-auth for ESM compatibility
-  transpilePackages: ['next-auth', '@auth/core'],
+  transpilePackages: ['next-auth'],
   trailingSlash: false,
   skipTrailingSlashRedirect: true,
   async rewrites() {
