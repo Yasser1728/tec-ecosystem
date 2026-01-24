@@ -5,7 +5,7 @@
 
 import crypto from "crypto";
 import { prisma } from "../../../lib/db/prisma";
-import { piAuth } from "../../../lib/pi-auth";
+import { piAuth } from "../../../lib/pi-auth.js";
 import { withCORS } from "../../../middleware/cors";
 import { withBodyValidation } from "../../../lib/validations";
 import { MintNFTSchema } from "../../../lib/validations/nft";

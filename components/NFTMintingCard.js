@@ -4,8 +4,8 @@ import {
   nftMinting,
   CERTIFICATE_TYPES,
   CERTIFICATE_METADATA,
-} from "../lib/nft-minting";
-import { piAuth } from "../lib/pi-auth";
+} from "../lib/nft-minting.js";
+import { piAuth } from "../lib/pi-auth.js";
 
 export default function NFTMintingCard({ domainName }) {
   const [selectedType, setSelectedType] = useState("ownership");
