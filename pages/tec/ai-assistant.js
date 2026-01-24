@@ -3,13 +3,16 @@ import Head from "next/head";
 import Link from "next/link";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import { BottomNav } from "../../components/layout";
 import AssistantChatBox from "../../components/tec/AssistantChatBox";
+import { useLanguage } from "../../hooks/useLanguage";
 
 /**
  * AI Assistant Page
  * Chat interface for the TEC AI Assistant (TEC Concierge)
  */
 export default function AIAssistant() {
+  const { isRTL } = useLanguage();
   const [suggestedPrompts] = useState([
     "What domains are available in TEC?",
     "How do I make payments with Pi?",
@@ -35,7 +38,7 @@ export default function AIAssistant() {
 
       <Header />
 
-      <main className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
+      <main className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 pb-16 md:pb-0" dir={isRTL ? 'rtl' : 'ltr'}>
         <div className="container mx-auto px-4 py-8">
           {/* Page Header */}
           <div className="mb-8">
@@ -206,6 +209,7 @@ export default function AIAssistant() {
       </main>
 
       <Footer />
+      <BottomNav />
     </>
   );
 }

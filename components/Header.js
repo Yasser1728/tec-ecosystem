@@ -1,3 +1,5 @@
+import { LanguageToggle } from "./layout";
+
 export default function Header() {
   return (
     <header className="p-4 bg-gray-900 border-b border-[#00ff9d]/20">
@@ -8,7 +10,10 @@ export default function Header() {
           </h1>
           <p className="text-xs text-gray-400">Titan Elite Commerce</p>
         </div>
-        <div className="text-sm text-gray-400">Powered by Pi Network</div>
+        <div className="flex items-center gap-4">
+          <LanguageToggle compact />
+          <div className="text-sm text-gray-400">Powered by Pi Network</div>
+        </div>
       </div>
     </header>
   );

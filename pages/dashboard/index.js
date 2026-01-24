@@ -5,8 +5,11 @@ import Head from "next/head";
 import Link from "next/link";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import { BottomNav } from "../../components/layout";
+import { useLanguage } from "../../hooks/useLanguage";
 
 function Dashboard({ session }) {
+  const { isRTL } = useLanguage();
   const user = session?.user;
   const [auditLogs, setAuditLogs] = useState([]);
   const [isLoadingLogs, setIsLoadingLogs] = useState(false);
@@ -78,10 +81,10 @@ function Dashboard({ session }) {
         <title>Dashboard - TEC Ecosystem</title>
       </Head>
 
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white" dir={isRTL ? 'rtl' : 'ltr'}>
         <Header />
 
-        <main className="container mx-auto px-4 py-12">
+        <main className="container mx-auto px-4 py-12 pb-16 md:pb-0">
           {/* Welcome Section */}
           <div className="mb-8">
             <h1 className="text-4xl font-bold mb-2">
@@ -271,6 +274,7 @@ function Dashboard({ session }) {
         </main>
 
         <Footer />
+        <BottomNav />
       </div>
     </>
   );

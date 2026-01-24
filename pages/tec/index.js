@@ -2,10 +2,14 @@ import Head from "next/head";
 import Link from "next/link";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import { BottomNav } from "../../components/layout";
 import DashboardWidget from "../../components/tec/DashboardWidget";
 import AlertSummary from "../../components/tec/AlertSummary";
+import { useLanguage } from "../../hooks/useLanguage";
 
 export default function TEC() {
+  const { isRTL } = useLanguage();
+  
   return (
     <>
       <Head>
@@ -18,7 +22,7 @@ export default function TEC() {
 
       <Header />
 
-      <main className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
+      <main className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 pb-16 md:pb-0" dir={isRTL ? 'rtl' : 'ltr'}>
         <div className="container mx-auto px-4 py-16">
           {/* Hero Section */}
           <div className="mb-12">
@@ -142,6 +146,7 @@ export default function TEC() {
       </main>
 
       <Footer />
+      <BottomNav />
     </>
   );
 }
