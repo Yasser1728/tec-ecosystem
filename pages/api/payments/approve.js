@@ -10,6 +10,7 @@ import { ApprovePaymentSchema } from "../../../lib/validations/payment";
 import { withErrorHandler } from "../../../lib/utils/errorHandler";
 import { requirePermission } from "../../../lib/auth/permissions";
 import { PERMISSIONS } from "../../../lib/roles/definitions";
+import { validatePiConfig, getPiApiConfig } from "../../../lib/pi-config-validator";
 
 async function handler(req, res) {
   if (req.method !== "POST") {
@@ -22,30 +23,49 @@ async function handler(req, res) {
   try {
     console.log("Approving payment:", paymentId);
 
+    // Validate Pi configuration
+    const configValidation = validatePiConfig();
+    if (!configValidation.isValid) {
+      console.error(
+        "❌ Pi Network not configured:",
+        configValidation.missing.join(", ")
+      );
+      return res.status(500).json({
+        error: "Pi Network configuration error",
+        message:
+          "Server is not properly configured for Pi Network payments. Please contact administrator.",
+        missingConfig: configValidation.missing,
+      });
+    }
+
     // Check if in sandbox mode
-    const isSandbox =
-      process.env.NEXT_PUBLIC_PI_SANDBOX === "true" ||
-      process.env.PI_SANDBOX_MODE === "true";
+    const isSandbox = configValidation.isSandbox;
 
     if (isSandbox) {
       // Sandbox mode: auto-approve without calling Pi API
       const auditLogId = `audit-${Date.now()}-${crypto.randomUUID()}`;
+
+      console.log("✅ [Sandbox] Payment approved:", paymentId);
 
       return res.status(200).json({
         success: true,
         approved: true,
         paymentId,
         auditLogId,
-        message: "Payment approved successfully",
+        sandbox: true,
+        message: "Payment approved successfully (sandbox mode)",
       });
     }
 
     // Production mode: Call Pi Network API to approve the payment
-    const piApiKey = process.env.PI_API_KEY;
+    const piConfig = getPiApiConfig();
 
-    if (!piApiKey) {
-      console.error("PI_API_KEY not configured");
-      return res.status(500).json({ error: "Server configuration error" });
+    if (!piConfig.apiKey) {
+      console.error("❌ PI_API_KEY not configured for production mode");
+      return res.status(500).json({
+        error: "Server configuration error",
+        message: "Production mode requires PI_API_KEY to be configured.",
+      });
     }
 
     console.log("Approving payment:", paymentId);
@@ -59,11 +79,11 @@ async function handler(req, res) {
         console.log(`Attempt ${attempt}/${maxRetries} to approve payment...`);
 
         const approveResponse = await fetch(
-          `https://api.minepi.com/v2/payments/${paymentId}/approve`,
+          `${piConfig.apiUrl}/payments/${paymentId}/approve`,
           {
             method: "POST",
             headers: {
-              Authorization: `Key ${piApiKey}`,
+              Authorization: `Key ${piConfig.apiKey}`,
               "Content-Type": "application/json",
             },
           },
@@ -82,6 +102,7 @@ async function handler(req, res) {
             approved: true,
             paymentId,
             auditLogId,
+            sandbox: false,
             message: "Payment approved successfully",
           });
         }

@@ -11,6 +11,7 @@ import { withCORS } from "../../../middleware/cors";
 import { withBodyValidation } from "../../../lib/validations";
 import { CompletePaymentSchema } from "../../../lib/validations/payment";
 import { withErrorHandler } from "../../../lib/utils/errorHandler";
+import { validatePiConfig, getPiApiConfig } from "../../../lib/pi-config-validator";
 
 async function handler(req, res) {
   if (req.method !== "POST") {
@@ -22,10 +23,23 @@ async function handler(req, res) {
   const internalId = req.body.internalId; // Optional field
 
   try {
+    // Validate Pi configuration
+    const configValidation = validatePiConfig();
+    if (!configValidation.isValid) {
+      console.error(
+        "❌ Pi Network not configured:",
+        configValidation.missing.join(", ")
+      );
+      return res.status(500).json({
+        error: "Pi Network configuration error",
+        message:
+          "Server is not properly configured for Pi Network payments. Please contact administrator.",
+        missingConfig: configValidation.missing,
+      });
+    }
+
     // Check if running in sandbox mode
-    const isSandbox =
-      process.env.NEXT_PUBLIC_PI_SANDBOX === "true" ||
-      process.env.PI_SANDBOX_MODE === "true";
+    const isSandbox = configValidation.isSandbox;
 
     if (isSandbox) {
       // Sandbox mode: Log payment and return success immediately
@@ -45,28 +59,30 @@ async function handler(req, res) {
           txid: txid,
           completedAt: new Date().toISOString(),
           verified: true,
+          sandbox: true,
         },
         message: "Payment completed (sandbox mode)",
       });
     }
 
     // Production mode - call Pi Platform API
-    const PI_API_KEY = process.env.PI_API_KEY;
+    const piConfig = getPiApiConfig();
 
-    if (!PI_API_KEY) {
-      console.error("❌ PI_API_KEY not configured");
+    if (!piConfig.apiKey) {
+      console.error("❌ PI_API_KEY not configured for production mode");
       return res.status(500).json({
         success: false,
         error: "Server configuration error",
+        message: "Production mode requires PI_API_KEY to be configured.",
       });
     }
 
     const piCompleteResponse = await fetch(
-      `https://api.minepi.com/v2/payments/${paymentId}/complete`,
+      `${piConfig.apiUrl}/payments/${paymentId}/complete`,
       {
         method: "POST",
         headers: {
-          Authorization: `Key ${PI_API_KEY}`,
+          Authorization: `Key ${piConfig.apiKey}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ txid }),
@@ -95,6 +111,7 @@ async function handler(req, res) {
         txid: txid,
         completedAt: new Date().toISOString(),
         verified: true,
+        sandbox: false,
         // Include only safe fields from Pi API response
         ...(piCompleteData.identifier && {
           piIdentifier: piCompleteData.identifier,
