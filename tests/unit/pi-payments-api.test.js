@@ -387,11 +387,14 @@ describe("Pi Payment API Endpoints", () => {
           txid: "txid-abc-123",
           internalId: "payment-123",
         },
+        headers: {},
       };
 
       const res = {
+        setHeader: jest.fn(),
         status: jest.fn().mockReturnThis(),
         json: jest.fn(),
+        end: jest.fn(),
       };
 
       await handler(req, res);
@@ -442,11 +445,14 @@ describe("Pi Payment API Endpoints", () => {
           txid: "txid-abc-123",
           internalId: "payment-123",
         },
+        headers: {},
       };
 
       const res = {
+        setHeader: jest.fn(),
         status: jest.fn().mockReturnThis(),
         json: jest.fn(),
+        end: jest.fn(),
       };
 
       await handler(req, res);
@@ -488,11 +494,14 @@ describe("Pi Payment API Endpoints", () => {
           paymentId: "pi-payment-123",
           txid: "txid-abc-123",
         },
+        headers: {},
       };
 
       const res = {
+        setHeader: jest.fn(),
         status: jest.fn().mockReturnThis(),
         json: jest.fn(),
+        end: jest.fn(),
       };
 
       await handler(req, res);
@@ -523,11 +532,14 @@ describe("Pi Payment API Endpoints", () => {
           paymentId: "pi-payment-123",
           txid: "txid-abc-123",
         },
+        headers: {},
       };
 
       const res = {
+        setHeader: jest.fn(),
         status: jest.fn().mockReturnThis(),
         json: jest.fn(),
+        end: jest.fn(),
       };
 
       await handler(req, res);
@@ -549,11 +561,14 @@ describe("Pi Payment API Endpoints", () => {
           paymentId: "pi-payment-123",
           // Missing txid
         },
+        headers: {},
       };
 
       const res = {
+        setHeader: jest.fn(),
         status: jest.fn().mockReturnThis(),
         json: jest.fn(),
+        end: jest.fn(),
       };
 
       await handler(req, res);
