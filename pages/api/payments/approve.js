@@ -10,6 +10,9 @@ import { ApprovePaymentSchema } from "../../../lib/validations/payment";
 import { withErrorHandler } from "../../../lib/utils/errorHandler";
 import { requirePermission } from "../../../lib/auth/permissions";
 import { PERMISSIONS } from "../../../lib/roles/definitions";
+import { PAYMENT_TIMEOUTS, fetchWithTimeout, withRetry } from "../../../lib/config/payment-timeouts.js";
+import { paymentAlertLogger } from "../../../lib/monitoring/payment-alerts.js";
+import { handlePaymentError, getLocaleFromRequest, PAYMENT_ERROR_CODES } from "../../../lib/errors/payment-errors.js";
 
 async function handler(req, res) {
   if (req.method !== "POST") {
@@ -18,6 +21,9 @@ async function handler(req, res) {
 
   // Use validated body from middleware, fallback to req.body for testing
   const { paymentId } = req.validatedBody || req.body;
+  
+  // Get user's preferred locale for error messages
+  const locale = getLocaleFromRequest(req);
 
   try {
     console.log("Approving payment:", paymentId);
@@ -45,103 +51,109 @@ async function handler(req, res) {
 
     if (!piApiKey) {
       console.error("PI_API_KEY not configured");
+      paymentAlertLogger.critical('approve-payment', new Error('PI_API_KEY not configured'), { paymentId });
       return res.status(500).json({ error: "Server configuration error" });
     }
 
     console.log("Approving payment:", paymentId);
 
-    // Retry logic - try up to 3 times with delays
-    const maxRetries = 3;
-    const retryDelay = 2000; // 2 seconds between retries
+    // Use centralized retry logic with configured timeouts
+    try {
+      const result = await withRetry(
+        async () => {
+          console.log(`Attempting to approve payment ${paymentId}...`);
 
-    for (let attempt = 1; attempt <= maxRetries; attempt++) {
-      try {
-        console.log(`Attempt ${attempt}/${maxRetries} to approve payment...`);
-
-        const approveResponse = await fetch(
-          `https://api.minepi.com/v2/payments/${paymentId}/approve`,
-          {
-            method: "POST",
-            headers: {
-              Authorization: `Key ${piApiKey}`,
-              "Content-Type": "application/json",
+          const approveResponse = await fetchWithTimeout(
+            `https://api.minepi.com/v2/payments/${paymentId}/approve`,
+            {
+              method: "POST",
+              headers: {
+                Authorization: `Key ${piApiKey}`,
+                "Content-Type": "application/json",
+              },
             },
-          },
-        );
-
-        // If successful, return the result
-        if (approveResponse.ok) {
-          const approveData = await approveResponse.json();
-          console.log("✅ Payment approved successfully:", approveData);
-
-          // Generate audit log
-          const auditLogId = `audit-${Date.now()}-${crypto.randomUUID()}`;
-
-          return res.status(200).json({
-            success: true,
-            approved: true,
-            paymentId,
-            auditLogId,
-            message: "Payment approved successfully",
-          });
-        }
-
-        // If 404, payment not registered yet - retry
-        if (approveResponse.status === 404) {
-          const errorData = await approveResponse.json();
-          console.log(
-            `⏳ Payment not found yet (attempt ${attempt}):`,
-            errorData,
+            PAYMENT_TIMEOUTS.PI_API_APPROVE
           );
 
-          if (attempt < maxRetries) {
-            console.log(`Waiting ${retryDelay}ms before retry...`);
-            await new Promise((resolve) => setTimeout(resolve, retryDelay));
-            continue;
+          // If successful, return the result
+          if (approveResponse.ok) {
+            const approveData = await approveResponse.json();
+            console.log("✅ Payment approved successfully:", approveData);
+            return approveData;
           }
 
-          // Last attempt with 404 - return sanitized error
-          console.error("Payment not found after retries:", errorData);
-          return res.status(404).json({
-            error: "Failed to approve payment",
-            message: "Payment not found. Please try again later.",
-          });
-        }
+          // If 404, payment not registered yet - throw to trigger retry
+          if (approveResponse.status === 404) {
+            const errorData = await approveResponse.json().catch(() => ({}));
+            console.log(`⏳ Payment not found yet:`, errorData);
+            throw new Error('Payment not found - will retry');
+          }
 
-        // Other errors - don't retry
-        const errorText = await approveResponse.text();
-        console.error("❌ Pi API error:", approveResponse.status, errorText);
+          // Other errors - don't retry
+          const errorText = await approveResponse.text();
+          console.error("❌ Pi API error:", approveResponse.status, errorText);
+          
+          // Log to monitoring system
+          paymentAlertLogger.externalService(
+            'Pi Network API',
+            'approve-payment',
+            new Error(`Pi API returned ${approveResponse.status}`),
+            { paymentId, status: approveResponse.status }
+          );
 
-        return res.status(approveResponse.status).json({
-          error: "Failed to approve payment",
-          message: "Payment approval failed. Please contact support.",
-        });
-      } catch (error) {
-        console.error(`❌ Attempt ${attempt} failed:`, error.message);
+          throw new Error(`Pi API error: ${approveResponse.status}`);
+        },
+        PAYMENT_TIMEOUTS.MAX_RETRIES,
+        PAYMENT_TIMEOUTS.RETRY_DELAY,
+        'Payment Approval'
+      );
 
-        if (attempt < maxRetries) {
-          await new Promise((resolve) => setTimeout(resolve, retryDelay));
-          continue;
-        }
+      // Generate audit log
+      const auditLogId = `audit-${Date.now()}-${crypto.randomUUID()}`;
 
-        return res.status(500).json({
-          error: "Failed to approve payment",
-          message: "An error occurred while processing your request.",
-        });
+      return res.status(200).json({
+        success: true,
+        approved: true,
+        paymentId,
+        auditLogId,
+        message: "Payment approved successfully",
+      });
+
+    } catch (retryError) {
+      // All retries exhausted
+      console.error("❌ Payment approval failed after retries:", retryError);
+      
+      // Log timeout or failure
+      if (retryError.message.includes('timed out')) {
+        paymentAlertLogger.timeout('approve-payment', PAYMENT_TIMEOUTS.PI_API_APPROVE, { paymentId });
+      } else {
+        paymentAlertLogger.failure('approve-payment', retryError, { paymentId });
       }
-    }
 
-    // Should not reach here, but just in case
-    return res.status(500).json({
-      error: "Failed to approve payment after all retries",
-      message: "Unable to process payment approval. Please try again later.",
-    });
+      const errorResponse = handlePaymentError(
+        retryError,
+        'approve-payment',
+        locale,
+        process.env.NODE_ENV === 'development'
+      );
+
+      return res.status(500).json(errorResponse);
+    }
   } catch (error) {
     console.error("Payment approval error:", error);
-    return res.status(500).json({
-      error: "Failed to approve payment",
-      message: "An unexpected error occurred. Please contact support.",
-    });
+    
+    // Log critical error to monitoring system
+    paymentAlertLogger.critical('approve-payment', error, { paymentId });
+    
+    // Return bilingual error response
+    const errorResponse = handlePaymentError(
+      error,
+      'approve-payment',
+      locale,
+      process.env.NODE_ENV === 'development'
+    );
+
+    return res.status(500).json(errorResponse);
   }
 }
 
