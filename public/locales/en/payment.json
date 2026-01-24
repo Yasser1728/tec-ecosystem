@@ -1,0 +1,40 @@
+{
+  "errors": {
+    "timeout": "The payment operation timed out. Please try again.",
+    "unauthorized": "You are not authorized to perform this payment operation.",
+    "validationFailed": "Payment validation failed. Please check your input.",
+    "insufficientFunds": "Insufficient funds to complete this payment.",
+    "networkError": "Network error occurred. Please check your connection and try again.",
+    "externalServiceError": "External payment service is temporarily unavailable. Please try again later.",
+    "databaseError": "Database error occurred. Please contact support if this persists.",
+    "unknownError": "An unexpected error occurred. Please try again or contact support.",
+    "paymentNotFound": "Payment not found. Please verify the payment ID.",
+    "paymentAlreadyProcessed": "This payment has already been processed.",
+    "approvalFailed": "Payment approval failed. Please try again.",
+    "completionFailed": "Payment completion failed. Please contact support.",
+    "cancellationFailed": "Payment cancellation failed. Please contact support.",
+    "piSdkNotAvailable": "Pi Browser is required to complete this payment.",
+    "userNotAuthenticated": "You must be signed in to make a payment."
+  },
+  "status": {
+    "pending": "Pending",
+    "processing": "Processing",
+    "completed": "Completed",
+    "failed": "Failed",
+    "cancelled": "Cancelled"
+  },
+  "actions": {
+    "retry": "Retry Payment",
+    "cancel": "Cancel Payment",
+    "viewDetails": "View Details",
+    "contactSupport": "Contact Support"
+  },
+  "messages": {
+    "creating": "Creating payment...",
+    "approving": "Approving payment...",
+    "completing": "Completing payment...",
+    "success": "Payment completed successfully!",
+    "cancelled": "Payment was cancelled.",
+    "retrying": "Retrying payment operation..."
+  }
+}
