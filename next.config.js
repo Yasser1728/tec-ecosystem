@@ -14,10 +14,9 @@ const nextConfig = {
     serverActions: {
       enabled: true,
     },
-    esmExternals: true,
   },
   
-  // Transpile next-auth for ESM compatibility
+  // Transpile next-auth for ESM compatibility in "type": "module" projects
   transpilePackages: ['next-auth'],
   trailingSlash: false,
   skipTrailingSlashRedirect: true,
