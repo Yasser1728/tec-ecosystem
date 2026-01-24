@@ -1,9 +1,12 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
+// Helper to handle ESM/CommonJS interop
+const Credentials = CredentialsProvider.default || CredentialsProvider;
+
 export const authOptions = {
   providers: [
-    CredentialsProvider({
+    Credentials({
       id: "pi-network",
       name: "Pi Network",
       credentials: {
