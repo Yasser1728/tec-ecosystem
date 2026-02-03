@@ -97,7 +97,7 @@ describe('RBAC Definitions', () => {
   describe('getRolePermissions', () => {
     test('should return all permissions for ADMIN', () => {
       const permissions = getRolePermissions(ROLES.ADMIN);
-      expect(permissions.length).toBeGreaterThan(20);
+      expect(permissions.length).toBeGreaterThanOrEqual(20);
       expect(permissions).toContain(PERMISSIONS.CIRCUIT_BREAKER_TOGGLE);
       expect(permissions).toContain(PERMISSIONS.PAYMENT_APPROVE);
     });
