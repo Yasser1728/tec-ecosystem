@@ -396,8 +396,6 @@ describe("Pi Payment API Endpoints", () => {
       process.env.NEXT_PUBLIC_PI_SANDBOX = "false";
       process.env.PI_SANDBOX_MODE = "false";
       process.env.PI_API_KEY = "test-key";
-      process.env.NODE_ENV = "development"; // For more error details
-
       const handler = require("../../pages/api/payments/approve").default;
       const req = {
         method: "POST",
@@ -410,30 +408,14 @@ describe("Pi Payment API Endpoints", () => {
 
       const res = {
         setHeader: jest.fn(),
-        status: jest.fn(function(code) {
-          console.log('res.status called with:', code, 'returning:', this === res);
-          return this;
-        }),
-        json: jest.fn(function(data) {
-          console.log('res.json called with:', data);
-          return this;
-        }),
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
         end: jest.fn(),
       };
 
       await handler(req, res);
 
-      // Debug: Log what was actually called
-      console.log('res.json call count:', res.json.mock.calls.length);
-      console.log('res.status call count:', res.status.mock.calls.length);
-      for (let i = 0; i < res.json.mock.calls.length; i++) {
-        console.log(`res.json call #${i+1}:`, JSON.stringify(res.json.mock.calls[i][0], null, 2));
-      }
-      for (let i = 0; i < res.status.mock.calls.length; i++) {
-        console.log(`res.status call #${i+1}:`, res.status.mock.calls[i][0]);
-      }
-
-      expect(res.status).toHaveBeenCalledWith(400);
+expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith(
         expect.objectContaining({
           error: "Validation failed",
