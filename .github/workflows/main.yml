@@ -138,6 +138,7 @@ jobs:
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           vercel-args: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && '--prod' || '' }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-comment: false
           working-directory: ./
 
       - name: 📊 Deployment Summary
