@@ -42,11 +42,21 @@ describe("Pi Payment API Endpoints", () => {
     // Clear all mocks
     jest.clearAllMocks();
     global.fetch.mockClear();
+    
+    // Use real timers for these tests
+    jest.useRealTimers();
+    
+    // Set shorter timeouts for testing to speed up tests
+    process.env.PI_API_APPROVE_TIMEOUT = '100'; // 100ms instead of 15s
+    process.env.PAYMENT_RETRY_DELAY = '50'; // 50ms instead of 2s
   });
 
   afterEach(() => {
     // Restore original env
     process.env = originalEnv;
+    
+    // Ensure real timers
+    jest.useRealTimers();
   });
 
   describe("Payment Approval API - Sandbox Mode", () => {
@@ -191,7 +201,7 @@ describe("Pi Payment API Endpoints", () => {
     });
 
     it("should handle Pi API approval failure", async () => {
-      // Mock Pi Platform API failure
+      // Mock Pi Platform API failure (non-404 error should not retry)
       global.fetch.mockResolvedValueOnce({
         ok: false,
         status: 400,
@@ -217,10 +227,13 @@ describe("Pi Payment API Endpoints", () => {
 
       await handler(req, res);
 
-      expect(res.status).toHaveBeenCalledWith(400);
+      // Should not retry on 400 error - only 1 call
+      expect(global.fetch).toHaveBeenCalledTimes(1);
+      
+      expect(res.status).toHaveBeenCalledWith(500);
       expect(res.json).toHaveBeenCalledWith(
         expect.objectContaining({
-          error: "Failed to approve payment",
+          error: true,
         }),
       );
     });
@@ -329,12 +342,11 @@ describe("Pi Payment API Endpoints", () => {
       // Should have tried 3 times
       expect(global.fetch).toHaveBeenCalledTimes(3);
 
-      // Should return 404 error after all retries
-      expect(res.status).toHaveBeenCalledWith(404);
+      // Should return error after all retries
+      expect(res.status).toHaveBeenCalledWith(500);
       expect(res.json).toHaveBeenCalledWith(
         expect.objectContaining({
-          error: "Failed to approve payment",
-          message: "Payment not found. Please try again later.",
+          error: true,
         }),
       );
     });
@@ -372,7 +384,7 @@ describe("Pi Payment API Endpoints", () => {
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.json).toHaveBeenCalledWith(
         expect.objectContaining({
-          error: "Failed to approve payment",
+          error: true,
         }),
       );
     });

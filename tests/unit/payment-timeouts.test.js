@@ -152,10 +152,15 @@ describe('Payment Timeouts Configuration', () => {
     });
 
     it('should retry on failure and eventually succeed', async () => {
+      const error1 = new Error('fail 1');
+      error1.retriable = true;
+      const error2 = new Error('fail 2');
+      error2.retriable = true;
+      
       const mockFn = jest
         .fn()
-        .mockRejectedValueOnce(new Error('fail 1'))
-        .mockRejectedValueOnce(new Error('fail 2'))
+        .mockRejectedValueOnce(error1)
+        .mockRejectedValueOnce(error2)
         .mockResolvedValue('success');
       
       const result = await withRetry(mockFn, 3, 10, 'Test Operation');
@@ -165,7 +170,9 @@ describe('Payment Timeouts Configuration', () => {
     });
 
     it('should fail after max retries', async () => {
-      const mockFn = jest.fn().mockRejectedValue(new Error('persistent failure'));
+      const error = new Error('persistent failure');
+      error.retriable = true;
+      const mockFn = jest.fn().mockRejectedValue(error);
       
       await expect(
         withRetry(mockFn, 3, 10, 'Test Operation')
@@ -174,8 +181,23 @@ describe('Payment Timeouts Configuration', () => {
       expect(mockFn).toHaveBeenCalledTimes(3);
     });
 
+    it('should not retry on non-retriable errors', async () => {
+      const error = new Error('non-retriable failure');
+      error.retriable = false;
+      const mockFn = jest.fn().mockRejectedValue(error);
+      
+      await expect(
+        withRetry(mockFn, 3, 10, 'Test Operation')
+      ).rejects.toThrow('non-retriable failure');
+      
+      // Should only be called once since error is non-retriable
+      expect(mockFn).toHaveBeenCalledTimes(1);
+    });
+
     it('should use exponential backoff delays', async () => {
-      const mockFn = jest.fn().mockRejectedValue(new Error('fail'));
+      const error = new Error('fail');
+      error.retriable = true;
+      const mockFn = jest.fn().mockRejectedValue(error);
       const delays = [];
       
       // Spy on setTimeout to capture delays
@@ -190,7 +212,7 @@ describe('Payment Timeouts Configuration', () => {
       // Restore original setTimeout
       global.setTimeout = originalSetTimeout;
       
-      // Check exponential backoff: 100, 200 (100 * 2^1), 400 (100 * 2^2)
+      // Check exponential backoff: 100, 200 (100 * 2^1)
       expect(delays).toContain(100);
       expect(delays).toContain(200);
     });

@@ -82,14 +82,16 @@ async function handler(req, res) {
             return approveData;
           }
 
-          // If 404, payment not registered yet - throw to trigger retry
+          // If 404, payment not registered yet - throw retriable error to trigger retry
           if (approveResponse.status === 404) {
             const errorData = await approveResponse.json().catch(() => ({}));
             console.log(`⏳ Payment not found yet:`, errorData);
-            throw new Error('Payment not found - will retry');
+            const retriableError = new Error('Payment not found - will retry');
+            retriableError.retriable = true; // Mark as retriable
+            throw retriableError;
           }
 
-          // Other errors - don't retry
+          // Other errors - don't retry (throw non-retriable error)
           const errorText = await approveResponse.text();
           console.error("❌ Pi API error:", approveResponse.status, errorText);
           
@@ -101,7 +103,9 @@ async function handler(req, res) {
             { paymentId, status: approveResponse.status }
           );
 
-          throw new Error(`Pi API error: ${approveResponse.status}`);
+          const nonRetriableError = new Error(`Pi API error: ${approveResponse.status}`);
+          nonRetriableError.retriable = false; // Mark as non-retriable
+          throw nonRetriableError;
         },
         PAYMENT_TIMEOUTS.MAX_RETRIES,
         PAYMENT_TIMEOUTS.RETRY_DELAY,
