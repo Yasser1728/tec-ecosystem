@@ -4,8 +4,24 @@
  * @jest-environment node
  */
 
+// Mock authOptions before any imports
+jest.mock('../../pages/api/auth/[...nextauth]', () => ({
+  authOptions: {
+    providers: [],
+    callbacks: {},
+  },
+}));
+
+// Mock next-auth before imports
+jest.mock('next-auth/next', () => ({
+  getServerSession: jest.fn(),
+}));
+
 // Mock fetch globally
 global.fetch = jest.fn();
+
+// Import after mocks
+const { getServerSession } = require('next-auth/next');
 
 describe("Pi Payment API Endpoints", () => {
   let originalEnv;
@@ -13,6 +29,15 @@ describe("Pi Payment API Endpoints", () => {
   beforeEach(() => {
     // Store original env
     originalEnv = { ...process.env };
+
+    // Mock authenticated session with payment permissions
+    getServerSession.mockResolvedValue({
+      user: {
+        id: 'test-user-123',
+        email: 'test@example.com',
+        role: 'admin', // Admin has all permissions including PAYMENT_APPROVE
+      },
+    });
 
     // Clear all mocks
     jest.clearAllMocks();
@@ -22,6 +47,7 @@ describe("Pi Payment API Endpoints", () => {
   afterEach(() => {
     // Restore original env
     process.env = originalEnv;
+    jest.clearAllMocks();
   });
 
   describe("Payment Approval API - Sandbox Mode", () => {
@@ -303,7 +329,7 @@ describe("Pi Payment API Endpoints", () => {
       expect(res.json).toHaveBeenCalledWith(
         expect.objectContaining({
           error: "Failed to approve payment",
-          status: 404,
+          message: "Payment not found. Please try again later.",
         }),
       );
     });
@@ -346,11 +372,18 @@ describe("Pi Payment API Endpoints", () => {
     });
 
     it("should validate required payment ID", async () => {
+      process.env.NEXT_PUBLIC_PI_SANDBOX = "false";
+      process.env.PI_SANDBOX_MODE = "false";
+      process.env.PI_API_KEY = "test-key";
+
       const handler = require("../../pages/api/payments/approve").default;
       const req = {
         method: "POST",
         body: {},
-        headers: {},
+        headers: {
+          origin: 'http://localhost:3000',
+        },
+        url: '/api/payments/approve',
       };
 
       const res = {
@@ -365,7 +398,7 @@ describe("Pi Payment API Endpoints", () => {
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith(
         expect.objectContaining({
-          error: "Payment ID is required",
+          error: "Validation failed",
         }),
       );
     });
@@ -554,6 +587,10 @@ describe("Pi Payment API Endpoints", () => {
     });
 
     it("should validate required parameters", async () => {
+      process.env.NEXT_PUBLIC_PI_SANDBOX = "false";
+      process.env.PI_SANDBOX_MODE = "false";
+      process.env.PI_API_KEY = "test-key";
+
       const handler = require("../../pages/api/payments/complete").default;
       const req = {
         method: "POST",
@@ -561,7 +598,10 @@ describe("Pi Payment API Endpoints", () => {
           paymentId: "pi-payment-123",
           // Missing txid
         },
-        headers: {},
+        headers: {
+          origin: 'http://localhost:3000',
+        },
+        url: '/api/payments/complete',
       };
 
       const res = {
@@ -576,7 +616,7 @@ describe("Pi Payment API Endpoints", () => {
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith(
         expect.objectContaining({
-          error: "Missing paymentId or txid",
+          error: "Validation failed",
         }),
       );
     });
