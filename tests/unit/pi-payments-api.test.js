@@ -415,7 +415,7 @@ describe("Pi Payment API Endpoints", () => {
 
       await handler(req, res);
 
-expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith(
         expect.objectContaining({
           error: "Validation failed",
