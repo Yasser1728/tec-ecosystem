@@ -75,9 +75,17 @@ describe('Payment Timeout Configuration', () => {
     });
 
     it('should timeout and abort fetch', async () => {
-      global.fetch.mockImplementation(() => 
-        new Promise((resolve) => setTimeout(resolve, 1000))
-      );
+      // Create a promise that will be aborted
+      let abortController;
+      global.fetch.mockImplementation((url, options) => {
+        abortController = options.signal;
+        return new Promise((resolve, reject) => {
+          // Listen for abort signal
+          options.signal.addEventListener('abort', () => {
+            reject(Object.assign(new Error('The operation was aborted'), { name: 'AbortError' }));
+          });
+        });
+      });
 
       await expect(
         fetchWithTimeout('https://api.example.com', {}, 100)
