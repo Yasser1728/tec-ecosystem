@@ -99,10 +99,12 @@ Verified that required changes exist and can be merged:
 
 ## ملاحظات إضافية / Additional Notes
 
-- CodeQL سيستمر في العمل عبر GitHub's default setup
+### بالعربية:
+- CodeQL سيستمر في العمل عبر الإعداد الافتراضي من GitHub
 - الـ workflows المتبقية مناسبة للمشروع
 - لا توجد تغييرات في الكود الفعلي
 
+### In English:
 - CodeQL will continue via GitHub's default setup
 - Remaining workflows are appropriate for the project  
 - No actual code changes
