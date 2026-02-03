@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<ruleset name="TEC Ecosystem - Empty PMD Ruleset"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+        Empty PMD ruleset for JavaScript/TypeScript project.
+        This project does not contain Java code and should not be analyzed by PMD.
+        PMD (Programming Mistake Detector) is designed for Java, Apex, XML, and Visualforce.
+        This configuration prevents PMD from running and causing errors.
+    </description>
+
+    <!-- Exclude all files from PMD analysis -->
+    <exclude-pattern>.*</exclude-pattern>
+
+</ruleset>
