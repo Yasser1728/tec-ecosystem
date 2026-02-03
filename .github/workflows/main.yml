@@ -113,3 +113,29 @@ jobs:
       - name: ✅ Build & Factory Success
         if: success()
         run: echo "✅ Build + AI Factory completed successfully!"
+
+  vercel-deploy:
+    runs-on: ubuntu-latest
+    needs: build-and-sovereign
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🚀 Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        id: vercel-deploy
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && '--prod' || '' }}
+          working-directory: ./
+
+      - name: 📊 Deployment Summary
+        run: |
+          echo "### 🚀 Vercel Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** ✅ Deployed" >> $GITHUB_STEP_SUMMARY
+          echo "**URL:** ${{ steps.vercel-deploy.outputs.preview-url }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Environment:** ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && 'Production' || 'Preview' }}" >> $GITHUB_STEP_SUMMARY
