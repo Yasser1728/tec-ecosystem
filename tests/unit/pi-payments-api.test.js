@@ -68,7 +68,7 @@ describe("Pi Payment API Endpoints", () => {
       process.env.NEXTAUTH_URL = "http://localhost:3000";
     });
 
-    it("should approve payment in sandbox mode BY calling Pi API", async () => {
+    it("should approve payment in sandbox mode by calling Pi API", async () => {
       // Mock Pi Platform API approval for sandbox
       global.fetch.mockResolvedValueOnce({
         ok: true,
@@ -450,7 +450,7 @@ describe("Pi Payment API Endpoints", () => {
       process.env.PI_API_KEY = "test-api-key-123";
     });
 
-    it("should complete payment in sandbox mode BY calling Pi API", async () => {
+    it("should complete payment in sandbox mode by calling Pi API", async () => {
       // Mock Pi Platform API completion for sandbox
       global.fetch.mockResolvedValueOnce({
         ok: true,
