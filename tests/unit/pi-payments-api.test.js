@@ -17,6 +17,27 @@ jest.mock('next-auth/next', () => ({
   getServerSession: jest.fn(),
 }));
 
+// Mock forensic utils before imports
+jest.mock('../../lib/forensic-utils', () => ({
+  createAuditEntry: jest.fn().mockResolvedValue({ id: 'audit-123' }),
+  AUDIT_OPERATION_TYPES: {},
+  RISK_LEVELS: {},
+}));
+
+// Mock db/prisma before imports
+jest.mock('../../lib/db/prisma', () => ({
+  prisma: {
+    auditLog: {},
+    user: {},
+    payment: {},
+  },
+  default: {
+    auditLog: {},
+    user: {},
+    payment: {},
+  },
+}));
+
 // Mock fetch globally
 global.fetch = jest.fn();
 
@@ -375,7 +396,6 @@ describe("Pi Payment API Endpoints", () => {
       process.env.NEXT_PUBLIC_PI_SANDBOX = "false";
       process.env.PI_SANDBOX_MODE = "false";
       process.env.PI_API_KEY = "test-key";
-
       const handler = require("../../pages/api/payments/approve").default;
       const req = {
         method: "POST",
