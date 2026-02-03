@@ -39,14 +39,6 @@ const ALLOWED_ORIGINS = [
   'https://tec-ecosystem-*.vercel.app',
 ];
 
-// Allow localhost only in development
-if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
-  ALLOWED_ORIGINS.push('http://localhost:3000');
-  ALLOWED_ORIGINS.push('http://localhost:3001');
-  ALLOWED_ORIGINS.push('http://localhost:3002');
-  ALLOWED_ORIGINS.push('http://127.0.0.1:3000');
-}
-
 /**
  * Check if origin is allowed
  * @param {string} origin - Request origin
@@ -54,6 +46,20 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
  */
 function isOriginAllowed(origin) {
   if (!origin) return false;
+  
+  // Allow localhost only in development/test (checked at runtime)
+  const isDevelopment = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test';
+  if (isDevelopment) {
+    const localhostOrigins = [
+      'http://localhost:3000',
+      'http://localhost:3001',
+      'http://localhost:3002',
+      'http://127.0.0.1:3000'
+    ];
+    if (localhostOrigins.includes(origin)) {
+      return true;
+    }
+  }
   
   // Exact match
   if (ALLOWED_ORIGINS.includes(origin)) {
