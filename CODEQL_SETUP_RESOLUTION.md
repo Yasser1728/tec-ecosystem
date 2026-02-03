@@ -62,6 +62,24 @@ If you need custom CodeQL queries or advanced configuration in the future:
 
 ---
 
+## Additional Notes
+
+### MSVC Workflow
+
+The repository also has a `msvc.yml` workflow for Microsoft C++ Code Analysis. This workflow:
+- Is designed for C++ projects
+- May fail or be unnecessary for this JavaScript/TypeScript project
+- Is independent of the CodeQL configuration and can be removed separately if not needed
+
+### Verification
+
+After merging this PR, verify that:
+1. The default CodeQL setup continues to run successfully
+2. Security scanning results appear in the Security tab
+3. No SARIF processing errors occur
+
+---
+
 **Date**: 2026-02-03  
 **Action**: Removed `.github/workflows/codeql.yml` to resolve configuration conflict  
 **Status**: ✅ Resolved
