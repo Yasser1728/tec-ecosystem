@@ -384,7 +384,6 @@ describe("Pi Payment API Endpoints", () => {
         body: {},
         headers: { "user-agent": "test" },
         socket: { remoteAddress: "127.0.0.1" },
-        socket: { remoteAddress: "127.0.0.1" },
         url: "/api/payments/approve",
       };
 
@@ -604,7 +603,6 @@ describe("Pi Payment API Endpoints", () => {
           // Missing txid
         },
         headers: { "user-agent": "test" },
-        socket: { remoteAddress: "127.0.0.1" },
         socket: { remoteAddress: "127.0.0.1" },
         url: "/api/payments/complete",
       };
