@@ -16,23 +16,52 @@ describe("PiPayments", () => {
   let mockWindow;
 
   beforeEach(() => {
-    // Mock window and Pi SDK
+    // Mock fetch first before anything else
+    global.fetch = jest.fn();
+    
+    // Mock window and Pi SDK with proper callback handling
+    const mockPiCreatePayment = jest.fn((paymentData, callbacks) => {
+      // Simulate async callback execution
+      const paymentId = "payment-123";
+      
+      // Call callbacks asynchronously for testing (use setTimeout for jsdom compatibility)
+      if (callbacks) {
+        setTimeout(() => {
+          if (callbacks.onReadyForServerApproval) {
+            callbacks.onReadyForServerApproval(paymentId);
+          }
+        }, 0);
+        
+        setTimeout(() => {
+          if (callbacks.onReadyForServerCompletion) {
+            callbacks.onReadyForServerCompletion(paymentId, "txid-123");
+          }
+        }, 10);
+      }
+      
+      return Promise.resolve({
+        identifier: paymentId,
+        user_uid: "user-123",
+      });
+    });
+    
     mockWindow = {
       Pi: {
         init: jest.fn().mockResolvedValue(undefined),
-        createPayment: jest.fn().mockResolvedValue({
-          identifier: "payment-123",
-          user_uid: "user-123",
-        }),
+        createPayment: mockPiCreatePayment,
       },
+      dispatchEvent: jest.fn(),
     };
-    global.window = mockWindow;
+    
+    // Override window object completely
+    Object.defineProperty(global, 'window', {
+      value: mockWindow,
+      writable: true,
+      configurable: true,
+    });
 
     // Create instance after mocking window
     piPayments = new PiPayments();
-
-    // Mock fetch
-    global.fetch = jest.fn();
 
     // Mock piAuth
     piAuth.getUser.mockReturnValue({
@@ -48,10 +77,7 @@ describe("PiPayments", () => {
     jest.clearAllMocks();
   });
 
-  // FIXME: These tests are skipped pending mock setup improvements
-  // The Pi SDK createPayment method requires specific mock configuration
-  // to handle async callbacks (onReadyForServerApproval, onReadyForServerCompletion)
-  describe.skip("createDomainPurchase", () => {
+  describe("createDomainPurchase", () => {
     it("should create domain purchase payment", async () => {
       const mockPaymentRecord = {
         id: "payment-123",
@@ -67,17 +93,24 @@ describe("PiPayments", () => {
         }),
       });
 
-      mockWindow.Pi.createPayment.mockResolvedValue({
-        identifier: "pi-payment-123",
-      });
-
       const result = await piPayments.createDomainPurchase({
         domain: "fundx",
         tier: "STANDARD",
       });
 
       expect(result.success).toBe(true);
-      expect(result.paymentId).toBe("pi-payment-123");
+      expect(result.paymentId).toBe("payment-123");
+      
+      // Verify fetch was called with correct data
+      expect(global.fetch).toHaveBeenCalledWith(
+        "/api/payments/create-payment",
+        expect.objectContaining({
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }),
+      );
     });
 
     it("should apply tier multiplier for premium tier", async () => {
@@ -87,10 +120,6 @@ describe("PiPayments", () => {
           success: true,
           payment: { id: "payment-123" },
         }),
-      });
-
-      mockWindow.Pi.createPayment.mockResolvedValue({
-        identifier: "pi-payment-123",
       });
 
       await piPayments.createDomainPurchase({
@@ -103,6 +132,7 @@ describe("PiPayments", () => {
       expect(global.fetch).toHaveBeenCalledWith(
         "/api/payments/create-payment",
         expect.objectContaining({
+          method: "POST",
           body: expect.stringContaining(expectedAmount.toString()),
         }),
       );
@@ -117,7 +147,7 @@ describe("PiPayments", () => {
     });
   });
 
-  describe.skip("createNotificationPayment", () => {
+  describe("createNotificationPayment", () => {
     it("should create notification payment with monthly duration", async () => {
       global.fetch.mockResolvedValue({
         ok: true,
@@ -125,10 +155,6 @@ describe("PiPayments", () => {
           success: true,
           payment: { id: "payment-123" },
         }),
-      });
-
-      mockWindow.Pi.createPayment.mockResolvedValue({
-        identifier: "pi-payment-123",
       });
 
       const result = await piPayments.createNotificationPayment({
@@ -140,6 +166,7 @@ describe("PiPayments", () => {
       expect(global.fetch).toHaveBeenCalledWith(
         "/api/payments/create-payment",
         expect.objectContaining({
+          method: "POST",
           body: expect.stringContaining('"amount":10'),
         }),
       );
@@ -154,10 +181,6 @@ describe("PiPayments", () => {
         }),
       });
 
-      mockWindow.Pi.createPayment.mockResolvedValue({
-        identifier: "pi-payment-123",
-      });
-
       await piPayments.createNotificationPayment({
         notificationType: "premium",
         duration: "yearly",
@@ -166,13 +189,14 @@ describe("PiPayments", () => {
       expect(global.fetch).toHaveBeenCalledWith(
         "/api/payments/create-payment",
         expect.objectContaining({
+          method: "POST",
           body: expect.stringContaining('"amount":80'),
         }),
       );
     });
   });
 
-  describe.skip("createEcommercePayment", () => {
+  describe("createEcommercePayment", () => {
     it("should create ecommerce payment with quantity", async () => {
       global.fetch.mockResolvedValue({
         ok: true,
@@ -180,10 +204,6 @@ describe("PiPayments", () => {
           success: true,
           payment: { id: "payment-123" },
         }),
-      });
-
-      mockWindow.Pi.createPayment.mockResolvedValue({
-        identifier: "pi-payment-123",
       });
 
       const result = await piPayments.createEcommercePayment({
@@ -197,13 +217,14 @@ describe("PiPayments", () => {
       expect(global.fetch).toHaveBeenCalledWith(
         "/api/payments/create-payment",
         expect.objectContaining({
+          method: "POST",
           body: expect.stringContaining('"amount":150'),
         }),
       );
     });
   });
 
-  describe.skip("createNFTMintingPayment", () => {
+  describe("createNFTMintingPayment", () => {
     it("should create NFT minting payment", async () => {
       global.fetch.mockResolvedValue({
         ok: true,
@@ -211,10 +232,6 @@ describe("PiPayments", () => {
           success: true,
           payment: { id: "payment-123" },
         }),
-      });
-
-      mockWindow.Pi.createPayment.mockResolvedValue({
-        identifier: "pi-payment-123",
       });
 
       const result = await piPayments.createNFTMintingPayment({
@@ -226,6 +243,7 @@ describe("PiPayments", () => {
       expect(global.fetch).toHaveBeenCalledWith(
         "/api/payments/create-payment",
         expect.objectContaining({
+          method: "POST",
           body: expect.stringContaining('"amount":50'),
         }),
       );
