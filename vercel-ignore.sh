@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Only build main and staging branches
-if [[ "$VERCEL_GIT_COMMIT_REF" == "main" ]] || [[ "$VERCEL_GIT_COMMIT_REF" == "staging" ]]; then
+# Only build main, develop, and staging branches
+if [[ "$VERCEL_GIT_COMMIT_REF" == "main" ]] || [[ "$VERCEL_GIT_COMMIT_REF" == "develop" ]] || [[ "$VERCEL_GIT_COMMIT_REF" == "staging" ]]; then
   # Proceed with the build
   echo "✅ Building branch: $VERCEL_GIT_COMMIT_REF"
   exit 0
