@@ -119,6 +119,12 @@ jobs:
     needs: build-and-sovereign
     if: github.event_name == 'push' || github.event_name == 'pull_request'
     
+    permissions:
+      contents: read
+      deployments: write
+      statuses: write
+      pull-requests: write
+    
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
@@ -131,6 +137,7 @@ jobs:
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           vercel-args: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && '--prod' || '' }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           working-directory: ./
 
       - name: 📊 Deployment Summary

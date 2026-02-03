@@ -23,6 +23,19 @@ describe('Payment Error Handler', () => {
     jest.clearAllMocks();
   });
 
+  describe('Module Exports', () => {
+    it('should export all named exports as functions/classes/objects', () => {
+      // Verify that all exports are properly accessible and have the correct types
+      // This test prevents the "d is not a function" runtime error from default export conflicts
+      expect(typeof PaymentError).toBe('function');
+      expect(typeof createPaymentError).toBe('function');
+      expect(typeof handlePaymentError).toBe('function');
+      expect(typeof getLocaleFromRequest).toBe('function');
+      expect(typeof PAYMENT_ERROR_CODES).toBe('object');
+      expect(PAYMENT_ERROR_CODES).not.toBe(null);
+    });
+  });
+
   describe('PAYMENT_ERROR_CODES', () => {
     it('should have all required error codes', () => {
       expect(PAYMENT_ERROR_CODES.TIMEOUT).toBe('PAYMENT_TIMEOUT');
