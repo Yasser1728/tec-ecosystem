@@ -396,9 +396,8 @@ describe("Pi Payment API Endpoints", () => {
 
       await handler(req, res);
 
-      // When body validation fails, the error is caught by error handler middleware
-      // and returned as 500 Internal Server Error in the test environment
-      // In production, this would be properly caught and returned as 400
+      // Validation errors are caught by the middleware error handler
+      // This tests the full middleware chain error handling behavior
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.json).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -616,9 +615,8 @@ describe("Pi Payment API Endpoints", () => {
 
       await handler(req, res);
 
-      // When body validation fails, the error is caught by error handler middleware
-      // and returned as 500 Internal Server Error in the test environment
-      // In production, this would be properly caught and returned as 400
+      // Validation errors are caught by the middleware error handler
+      // This tests the full middleware chain error handling behavior
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.json).toHaveBeenCalledWith(
         expect.objectContaining({
