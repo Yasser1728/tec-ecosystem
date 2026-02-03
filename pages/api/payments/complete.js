@@ -28,35 +28,7 @@ async function handler(req, res) {
   const locale = getLocaleFromRequest(req);
 
   try {
-    // Check if running in sandbox mode
-    const isSandbox =
-      process.env.NEXT_PUBLIC_PI_SANDBOX === "true" ||
-      process.env.PI_SANDBOX_MODE === "true";
-
-    if (isSandbox) {
-      // Sandbox mode: Log payment and return success immediately
-      // No external API calls to avoid SSRF vulnerabilities
-      console.log("✅ [Sandbox] Completing payment:", {
-        paymentId,
-        txid,
-        internalId,
-      });
-
-      return res.status(200).json({
-        success: true,
-        payment: {
-          id: internalId || paymentId,
-          piPaymentId: paymentId,
-          status: "COMPLETED",
-          txid: txid,
-          completedAt: new Date().toISOString(),
-          verified: true,
-        },
-        message: "Payment completed (sandbox mode)",
-      });
-    }
-
-    // Production mode - call Pi Platform API
+    // Always call Pi Network API to complete the payment (for both sandbox and production)
     const PI_API_KEY = process.env.PI_API_KEY;
 
     if (!PI_API_KEY) {

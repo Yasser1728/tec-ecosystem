@@ -64,10 +64,21 @@ describe("Pi Payment API Endpoints", () => {
       // Set sandbox mode
       process.env.NEXT_PUBLIC_PI_SANDBOX = "true";
       process.env.PI_SANDBOX_MODE = "true";
+      process.env.PI_API_KEY = "test-api-key-123";
       process.env.NEXTAUTH_URL = "http://localhost:3000";
     });
 
-    it("should approve payment in sandbox mode without calling Pi API", async () => {
+    it("should approve payment in sandbox mode by calling Pi API", async () => {
+      // Mock Pi Platform API approval for sandbox
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          identifier: "pi-payment-123",
+          status: "approved",
+          amount: 100,
+        }),
+      });
+
       const handler = require("../../pages/api/payments/approve").default;
       const req = {
         method: "POST",
@@ -87,8 +98,20 @@ describe("Pi Payment API Endpoints", () => {
 
       await handler(req, res);
 
-      // Should NOT call Pi API in sandbox mode
-      expect(global.fetch).not.toHaveBeenCalled();
+      // Should ALWAYS call Pi API even in sandbox mode
+      expect(global.fetch).toHaveBeenCalledTimes(1);
+
+      // Verify Pi Platform API was called correctly
+      expect(global.fetch).toHaveBeenCalledWith(
+        "https://api.minepi.com/v2/payments/pi-payment-123/approve",
+        expect.objectContaining({
+          method: "POST",
+          headers: expect.objectContaining({
+            Authorization: "Key test-api-key-123",
+            "Content-Type": "application/json",
+          }),
+        }),
+      );
 
       // Should return success
       expect(res.status).toHaveBeenCalledWith(200);
@@ -424,9 +447,20 @@ describe("Pi Payment API Endpoints", () => {
       // Set sandbox mode
       process.env.NEXT_PUBLIC_PI_SANDBOX = "true";
       process.env.PI_SANDBOX_MODE = "true";
+      process.env.PI_API_KEY = "test-api-key-123";
     });
 
-    it("should complete payment in sandbox mode without calling Pi API", async () => {
+    it("should complete payment in sandbox mode by calling Pi API", async () => {
+      // Mock Pi Platform API completion for sandbox
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          identifier: "pi-payment-123",
+          status: "completed",
+          txid: "txid-abc-123",
+        }),
+      });
+
       const handler = require("../../pages/api/payments/complete").default;
       const req = {
         method: "POST",
@@ -448,8 +482,21 @@ describe("Pi Payment API Endpoints", () => {
 
       await handler(req, res);
 
-      // Should NOT call Pi Platform API in sandbox mode
-      expect(global.fetch).not.toHaveBeenCalled();
+      // Should ALWAYS call Pi Platform API even in sandbox mode
+      expect(global.fetch).toHaveBeenCalledTimes(1);
+
+      // Verify Pi Platform API was called correctly
+      expect(global.fetch).toHaveBeenCalledWith(
+        "https://api.minepi.com/v2/payments/pi-payment-123/complete",
+        expect.objectContaining({
+          method: "POST",
+          headers: expect.objectContaining({
+            Authorization: "Key test-api-key-123",
+            "Content-Type": "application/json",
+          }),
+          body: JSON.stringify({ txid: "txid-abc-123" }),
+        }),
+      );
 
       // Should return success
       expect(res.status).toHaveBeenCalledWith(200);
@@ -461,7 +508,6 @@ describe("Pi Payment API Endpoints", () => {
             status: "COMPLETED",
             txid: "txid-abc-123",
           }),
-          message: expect.stringContaining("sandbox mode"),
         }),
       );
     });

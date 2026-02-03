@@ -28,25 +28,7 @@ async function handler(req, res) {
   try {
     console.log("Approving payment:", paymentId);
 
-    // Check if in sandbox mode
-    const isSandbox =
-      process.env.NEXT_PUBLIC_PI_SANDBOX === "true" ||
-      process.env.PI_SANDBOX_MODE === "true";
-
-    if (isSandbox) {
-      // Sandbox mode: auto-approve without calling Pi API
-      const auditLogId = `audit-${Date.now()}-${crypto.randomUUID()}`;
-
-      return res.status(200).json({
-        success: true,
-        approved: true,
-        paymentId,
-        auditLogId,
-        message: "Payment approved successfully",
-      });
-    }
-
-    // Production mode: Call Pi Network API to approve the payment
+    // Always call Pi Network API to approve the payment (for both sandbox and production)
     const piApiKey = process.env.PI_API_KEY;
 
     if (!piApiKey) {
