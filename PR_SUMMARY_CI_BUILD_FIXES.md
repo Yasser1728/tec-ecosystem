@@ -91,6 +91,26 @@ After cleanup, these workflows remain and are appropriate for the project:
 
 ---
 
+## ⚠️ Autovalidate False Positive (Expected)
+
+GitHub Copilot's autovalidate tool may show a failure:
+
+```
+Error: failed to delete file .github/workflows/codeql.yml: no such file or directory
+```
+
+**Status**: ℹ️ **Expected behavior - NOT a real issue**
+
+**Cause**: Autovalidate tries to apply our fix (delete codeql.yml), but the file is already deleted in our PR, causing the validation to fail.
+
+**Impact**: None - This does not affect the PR or indicate any code issues
+
+**Workflow**: https://github.com/Yasser1728/tec-ecosystem/actions/runs/21631371271/job/62344719490
+
+**Full Explanation**: See [AUTOVALIDATE_FALSE_POSITIVE.md](./AUTOVALIDATE_FALSE_POSITIVE.md)
+
+---
+
 ## 🔒 Security Review
 
 **Code Review**: ✅ PASSED (No issues found)  

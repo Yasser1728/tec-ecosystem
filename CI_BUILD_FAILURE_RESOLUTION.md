@@ -128,8 +128,23 @@ To use custom CodeQL queries or advanced configuration:
 ## Related Documentation
 
 - [CODEQL_SETUP_RESOLUTION.md](./CODEQL_SETUP_RESOLUTION.md) - Full technical details
+- [AUTOVALIDATE_FALSE_POSITIVE.md](./AUTOVALIDATE_FALSE_POSITIVE.md) - Autovalidate error explanation
 - [GitHub CodeQL Docs](https://docs.github.com/en/code-security/code-scanning/introduction-to-code-scanning/about-code-scanning-with-codeql)
 - [Default vs Advanced Setup](https://docs.github.com/en/code-security/code-scanning/enabling-code-scanning/configuring-default-setup-for-code-scanning)
+
+---
+
+## ⚠️ Known Issue: Autovalidate False Positive
+
+Copilot autovalidate may fail with:
+```
+Error: failed to delete file .github/workflows/codeql.yml: no such file or directory
+```
+
+**This is EXPECTED and NOT a problem!** Autovalidate tries to apply our fix (delete codeql.yml), but since we already deleted it, validation fails. This is a known limitation.
+
+**Workflow**: https://github.com/Yasser1728/tec-ecosystem/actions/runs/21631371271/job/62344719490  
+**Details**: [AUTOVALIDATE_FALSE_POSITIVE.md](./AUTOVALIDATE_FALSE_POSITIVE.md)
 
 ---
 
