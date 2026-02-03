@@ -10,6 +10,8 @@ import { ApprovePaymentSchema } from "../../../lib/validations/payment";
 import { withErrorHandler } from "../../../lib/utils/errorHandler";
 import { requirePermission } from "../../../lib/auth/permissions";
 import { PERMISSIONS } from "../../../lib/roles/definitions";
+import { fetchWithTimeout, PAYMENT_TIMEOUTS } from "../../../lib/config/payment-timeouts.js";
+import { logRetryAttempt, logPaymentTimeout } from "../../../lib/monitoring/payment-alerts.js";
 
 async function handler(req, res) {
   if (req.method !== "POST") {
@@ -51,14 +53,22 @@ async function handler(req, res) {
     console.log("Approving payment:", paymentId);
 
     // Retry logic - try up to 3 times with delays
-    const maxRetries = 3;
-    const retryDelay = 2000; // 2 seconds between retries
+    const maxRetries = PAYMENT_TIMEOUTS.MAX_RETRIES;
+    const retryDelay = PAYMENT_TIMEOUTS.RETRY_DELAY;
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
         console.log(`Attempt ${attempt}/${maxRetries} to approve payment...`);
+        
+        logRetryAttempt({
+          operation: 'approve',
+          attempt,
+          maxRetries,
+          delay: retryDelay,
+          reason: attempt === 1 ? 'initial' : 'retry',
+        });
 
-        const approveResponse = await fetch(
+        const approveResponse = await fetchWithTimeout(
           `https://api.minepi.com/v2/payments/${paymentId}/approve`,
           {
             method: "POST",
@@ -67,6 +77,7 @@ async function handler(req, res) {
               "Content-Type": "application/json",
             },
           },
+          PAYMENT_TIMEOUTS.PI_API_APPROVE
         );
 
         // If successful, return the result
@@ -118,6 +129,16 @@ async function handler(req, res) {
         });
       } catch (error) {
         console.error(`❌ Attempt ${attempt} failed:`, error.message);
+        
+        // Check if it's a timeout
+        if (error.message?.includes('timed out')) {
+          logPaymentTimeout({
+            operation: 'approve',
+            timeoutMs: PAYMENT_TIMEOUTS.PI_API_APPROVE,
+            paymentId,
+            data: { attempt, maxRetries },
+          });
+        }
 
         if (attempt < maxRetries) {
           await new Promise((resolve) => setTimeout(resolve, retryDelay));

@@ -11,6 +11,8 @@ import { withCORS } from "../../../middleware/cors";
 import { withBodyValidation } from "../../../lib/validations";
 import { CompletePaymentSchema } from "../../../lib/validations/payment";
 import { withErrorHandler } from "../../../lib/utils/errorHandler";
+import { fetchWithTimeout, PAYMENT_TIMEOUTS } from "../../../lib/config/payment-timeouts.js";
+import { logPaymentTimeout } from "../../../lib/monitoring/payment-alerts.js";
 
 async function handler(req, res) {
   if (req.method !== "POST") {
@@ -61,17 +63,34 @@ async function handler(req, res) {
       });
     }
 
-    const piCompleteResponse = await fetch(
-      `https://api.minepi.com/v2/payments/${paymentId}/complete`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Key ${PI_API_KEY}`,
-          "Content-Type": "application/json",
+    let piCompleteResponse;
+    try {
+      piCompleteResponse = await fetchWithTimeout(
+        `https://api.minepi.com/v2/payments/${paymentId}/complete`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Key ${PI_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ txid }),
         },
-        body: JSON.stringify({ txid }),
-      },
-    );
+        PAYMENT_TIMEOUTS.PI_API_COMPLETE
+      );
+    } catch (timeoutError) {
+      logPaymentTimeout({
+        operation: 'complete',
+        timeoutMs: PAYMENT_TIMEOUTS.PI_API_COMPLETE,
+        paymentId,
+        data: { txid },
+      });
+      
+      return res.status(504).json({
+        success: false,
+        error: "Payment completion timed out",
+        message: "The payment server took too long to respond. Please try again.",
+      });
+    }
 
     if (!piCompleteResponse.ok) {
       const errorData = await piCompleteResponse.json().catch(() => ({}));

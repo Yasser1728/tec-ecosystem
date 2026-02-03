@@ -1,0 +1,60 @@
+name: build-and-test
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main, develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  checks: write
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15  # Prevent hanging - force failure after 15 minutes
+
+    env:
+      NODE_ENV: test
+      DATABASE_URL: postgresql://test:test@localhost:5432/test?schema=public
+      NEXT_PUBLIC_PI_APP_ID: test_app_id
+      NEXT_PUBLIC_PI_SANDBOX: true
+      NEXT_PUBLIC_API_URL: http://localhost:3000
+      SKIP_ENV_VALIDATION: true
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        timeout-minutes: 2
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+        timeout-minutes: 2
+
+      - name: 📚 Install dependencies
+        run: npm ci
+        timeout-minutes: 5
+        env:
+          NPM_CONFIG_PRODUCTION: "false"
+
+      - name: 🔧 Generate Prisma Client
+        run: npx prisma generate
+        timeout-minutes: 2
+
+      - name: 🏗️ Build Application
+        run: npm run build
+        timeout-minutes: 5
+
+      - name: 🧪 Run Tests
+        run: npm test
+        timeout-minutes: 5
+        continue-on-error: false
+
+      - name: ✅ Build and Test Complete
+        if: success()
+        run: echo "✅ Build and tests completed successfully!"
