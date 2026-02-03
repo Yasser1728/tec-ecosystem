@@ -64,12 +64,15 @@ If you need custom CodeQL queries or advanced configuration in the future:
 
 ## Additional Notes
 
-### MSVC Workflow
+### MSVC Workflow - REMOVED ✅
 
-The repository also has a `msvc.yml` workflow for Microsoft C++ Code Analysis. This workflow:
-- Is designed for C++ projects
-- May fail or be unnecessary for this JavaScript/TypeScript project
-- Is independent of the CodeQL configuration and can be removed separately if not needed
+The repository previously had a `msvc.yml` workflow for Microsoft C++ Code Analysis. This workflow has been **removed** because:
+- It was designed for C++ projects and required CMakeLists.txt
+- This is a JavaScript/TypeScript/Node.js project with no C++ code
+- The workflow was failing with error: "The source directory does not appear to contain CMakeLists.txt"
+- Workflow run: https://github.com/Yasser1728/tec-ecosystem/actions/runs/21631111947/job/62343922037
+
+**Status**: ✅ Removed in this PR (not applicable to this project)
 
 ### Verification
 
