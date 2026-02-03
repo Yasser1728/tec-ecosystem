@@ -1,0 +1,87 @@
+name: Vercel Deployment Check
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+permissions:
+  contents: read
+  deployments: write
+  statuses: write
+  checks: write
+  pull-requests: write
+
+jobs:
+  vercel-deploy:
+    runs-on: ubuntu-latest
+    name: Vercel Production/Preview Deploy
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: 📚 Install dependencies
+        run: npm ci
+
+      - name: 🔧 Generate Prisma Client
+        run: npx prisma generate
+
+      - name: 🏗️ Build Next.js (verification)
+        run: npm run build
+        env:
+          NODE_ENV: production
+          SKIP_ENV_VALIDATION: true
+          DATABASE_URL: postgresql://dummy:user@dummy:5432/dummy?schema=public
+          NEXT_PUBLIC_PI_APP_ID: dummy_app_id
+          NEXT_PUBLIC_PI_SANDBOX: true
+          NEXT_PUBLIC_API_URL: http://localhost:3000
+
+      - name: 🚀 Deploy to Vercel (Production)
+        id: vercel-deploy-prod
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          working-directory: ./
+
+      - name: 🔍 Deploy to Vercel (Preview)
+        id: vercel-deploy-preview
+        if: github.event_name == 'pull_request'
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          working-directory: ./
+
+      - name: 📊 Deployment Summary (Production)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          echo "### 🚀 Production Deployment Successful" >> $GITHUB_STEP_SUMMARY
+          echo "**URL:** ${{ steps.vercel-deploy-prod.outputs.preview-url }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Environment:** Production" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch:** main" >> $GITHUB_STEP_SUMMARY
+
+      - name: 📊 Deployment Summary (Preview)
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "### 🔍 Preview Deployment Successful" >> $GITHUB_STEP_SUMMARY
+          echo "**Preview URL:** ${{ steps.vercel-deploy-preview.outputs.preview-url }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Environment:** Preview" >> $GITHUB_STEP_SUMMARY
+          echo "**PR:** #${{ github.event.pull_request.number }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: ✅ Vercel Deployment Check Passed
+        run: echo "✅ Vercel deployment check completed successfully!"
