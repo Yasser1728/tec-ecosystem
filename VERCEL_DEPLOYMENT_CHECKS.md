@@ -459,10 +459,97 @@ npm update
 
 ---
 
+## 🔐 إعداد GitHub Actions Integration (جديد)
+
+### الغرض: ظهور Vercel كـ Check في GitHub PRs
+
+تم إضافة تكامل مباشر بين GitHub Actions و Vercel في `.github/workflows/main.yml`
+
+### الخطوات المطلوبة:
+
+#### 1️⃣ الحصول على Vercel Tokens
+
+##### A. Vercel Token
+
+1. اذهب إلى: https://vercel.com/account/tokens
+2. اضغط **"Create Token"**
+3. أدخل اسم Token: `GitHub Actions`
+4. اختر Scope: **Full Access**
+5. اضغط **"Create"**
+6. انسخ Token (سيظهر مرة واحدة فقط!)
+
+##### B. Vercel Project IDs
+
+1. اذهب إلى: https://vercel.com/dashboard
+2. اختر مشروع `tec-ecosystem`
+3. اذهب إلى **Settings** → **General**
+4. انسخ:
+   - **Project ID**: `prj_xxxxx...`
+   - **Team/Org ID**: `team_xxxxx...` (من Account Settings)
+
+#### 2️⃣ إضافة Secrets في GitHub
+
+1. اذهب إلى Repository في GitHub
+2. **Settings** → **Secrets and variables** → **Actions**
+3. اضغط **"New repository secret"** لكل من:
+
+```
+VERCEL_TOKEN=<token من الخطوة 1A>
+VERCEL_ORG_ID=<team id من الخطوة 1B>
+VERCEL_PROJECT_ID=<project id من الخطوة 1B>
+```
+
+#### 3️⃣ التحقق من عمل Integration
+
+بعد إضافة Secrets:
+
+1. افتح PR جديد أو ادفع commit
+2. اذهب إلى **Actions** tab
+3. شاهد Workflow `TEC Sovereign AI Factory & Build 2026`
+4. تأكد من ظهور Job جديد: `vercel-deploy`
+
+#### 4️⃣ النتيجة المتوقعة
+
+في كل PR أو Push، سترى:
+
+```
+Checks:
+✅ Build & Factory (من build-and-sovereign job)
+✅ Vercel Deployment (من vercel-deploy job)
+```
+
+**URL المؤقت** سيظهر في الخطوة `Deployment Summary` للـ Preview deployments.
+
+### 🔄 Token Rotation (استبدال Tokens بشكل دوري)
+
+**يُنصح باستبدال Tokens كل 90 يوم لأمان أفضل:**
+
+1. احذف Token القديم من Vercel:
+   - https://vercel.com/account/tokens
+   - اضغط **Delete** بجانب Token القديم
+
+2. أنشئ Token جديد (اتبع الخطوة 1A أعلاه)
+
+3. حدّث Secret في GitHub:
+   - Repository Settings → Secrets → Actions
+   - اضغط على `VERCEL_TOKEN`
+   - اضغط **"Update secret"**
+   - الصق Token الجديد
+   - اضغط **"Update secret"**
+
+4. اختبر بعد التحديث:
+   - افتح PR تجريبي
+   - تأكد من نجاح Vercel deployment
+
+---
+
 ## ✅ Checklist: هل النظام جاهز؟
 
 - [ ] جميع Workflows موجودة في `.github/workflows/`
 - [ ] SNYK_TOKEN مضاف في GitHub Secrets
+- [ ] **VERCEL_TOKEN مضاف في GitHub Secrets (جديد)**
+- [ ] **VERCEL_ORG_ID مضاف في GitHub Secrets (جديد)**
+- [ ] **VERCEL_PROJECT_ID مضاف في GitHub Secrets (جديد)**
 - [ ] Vercel مربوط بـ GitHub
 - [ ] Deployment Protection مفعّل في Vercel
 - [ ] Branch Protection مفعّل في GitHub
@@ -487,6 +574,6 @@ npm update
 
 ---
 
-**آخر تحديث:** 29 ديسمبر 2024  
-**الحالة:** جاهز للتطبيق  
+**آخر تحديث:** 3 فبراير 2026  
+**الحالة:** جاهز للتطبيق (تحديث: إضافة GitHub Actions Integration)  
 **الأولوية:** عالية جداً (Fintech/Web3 Apps)

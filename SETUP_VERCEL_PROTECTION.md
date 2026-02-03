@@ -446,8 +446,68 @@ URL: https://tec-ecosystem.vercel.app
 - [ ] تأكدت من Production Branch = main
 - [ ] فعّلت Preview Deployments
 - [ ] أضفت Environment Variables
+- [ ] **أضفت GitHub Actions Secrets (VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID) (جديد)**
 - [ ] اختبرت بـ PR تجريبي
 - [ ] Deployment Protection يعمل ✅
+- [ ] **Vercel check يظهر في GitHub Actions (جديد)**
+
+---
+
+## 🔧 GitHub Actions Integration (إضافة جديدة)
+
+### الهدف: ظهور Vercel كـ Required Check في PRs
+
+تم إضافة job جديد في `.github/workflows/main.yml` يستخدم `vercel-action` لنشر التطبيق مباشرة من GitHub Actions.
+
+### الفوائد:
+
+- ✅ Vercel يظهر كـ check في كل PR
+- ✅ يمكن إضافته كـ required check في Branch Protection
+- ✅ URL مؤقت يظهر مباشرة في Workflow
+- ✅ توحيد كل Checks في مكان واحد
+
+### الخطوات السريعة:
+
+#### 1. احصل على Vercel Tokens:
+```
+https://vercel.com/account/tokens
+→ Create Token → Full Access
+```
+
+#### 2. احصل على Project/Org IDs:
+```
+https://vercel.com/dashboard
+→ Settings → General
+→ انسخ Project ID و Org/Team ID
+```
+
+#### 3. أضف Secrets في GitHub:
+```
+Repository Settings → Secrets → Actions
+→ New repository secret
+
+VERCEL_TOKEN=<your_token>
+VERCEL_ORG_ID=<your_org_id>
+VERCEL_PROJECT_ID=<your_project_id>
+```
+
+#### 4. اختبر:
+```
+افتح PR جديد → Actions → شاهد vercel-deploy job
+```
+
+### 🔄 Token Rotation
+
+**مهم للأمان - استبدل Tokens كل 90 يوم:**
+
+1. احذف Token القديم: https://vercel.com/account/tokens
+2. أنشئ Token جديد
+3. حدّث في GitHub Secrets: Repository → Settings → Secrets → VERCEL_TOKEN → Update
+4. اختبر بـ PR تجريبي
+
+### 📚 المزيد من المعلومات
+
+راجع `VERCEL_DEPLOYMENT_CHECKS.md` للدليل الكامل.
 
 ---
 
@@ -461,11 +521,12 @@ URL: https://tec-ecosystem.vercel.app
 - ✅ Environment Variables منظمة
 - ✅ Notifications تلقائية
 - ✅ ثقة 100% في Deployments
+- ✅ **Vercel check في GitHub Actions (جديد)**
 
 **🚀 نظام نشر احترافي!**
 
 ---
 
-**آخر تحديث:** 30 ديسمبر 2024  
-**الوقت المتوقع:** 15-20 دقيقة  
+**آخر تحديث:** 3 فبراير 2026 (إضافة GitHub Actions Integration)  
+**الوقت المتوقع:** 20-25 دقيقة  
 **الصعوبة:** متوسط ⭐⭐
