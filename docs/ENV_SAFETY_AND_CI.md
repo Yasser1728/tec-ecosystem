@@ -309,8 +309,8 @@ npm audit --production
 **Cause**: Middleware catching errors before handlers can return specific errors
 
 **Solution**: Ensure all test requests include:
-- `headers` with user-agent
-- `socket` with remoteAddress
+- `headers` with `user-agent`
+- `socket` with `remoteAddress`
 - `url` property
 - Proper authentication mocks
 

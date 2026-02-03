@@ -4,7 +4,7 @@
  * @jest-environment node
  */
 
-// Mock next-auth modules BEFORE requiring any modules that use them
+// Mock next-auth modules before requiring any modules that use them
 jest.mock("next-auth", () => jest.fn());
 jest.mock("next-auth/providers/credentials", () => ({
   default: jest.fn(() => ({
