@@ -214,11 +214,19 @@ npm run dev
 
 ### 5. Access the System
 
+#### Local Development:
 - **Home**: http://localhost:3000
 - **Ecosystem**: http://localhost:3000/ecosystem
 - **Sign In**: http://localhost:3000/auth/signin
 - **Dashboard**: http://localhost:3000/dashboard (requires auth)
 - **Admin**: http://localhost:3000/admin (requires ADMIN tier)
+
+#### Production/Testnet:
+- **Home**: https://tec-ecosystem.vercel.app
+- **Ecosystem**: https://tec-ecosystem.vercel.app/ecosystem
+- **Sign In**: https://tec-ecosystem.vercel.app/auth/signin
+- **Dashboard**: https://tec-ecosystem.vercel.app/dashboard (requires auth)
+- **Admin**: https://tec-ecosystem.vercel.app/admin (requires ADMIN tier)
 
 ---
 

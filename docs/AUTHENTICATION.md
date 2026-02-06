@@ -283,6 +283,7 @@ model User {
 
 Required variables in `.env.local`:
 
+#### For Local Development:
 ```bash
 # NextAuth
 NEXTAUTH_URL=http://localhost:3000
@@ -291,6 +292,26 @@ NEXTAUTH_SECRET=your-secret-key
 # Pi Network
 NEXT_PUBLIC_PI_APP_ID=your-pi-app-id
 PI_API_KEY=your-pi-api-key
+NEXT_PUBLIC_PI_SANDBOX=true
+PI_SANDBOX_MODE=true
+
+# Database
+DATABASE_URL=postgresql://...
+```
+
+#### For Production/Testnet Deployment:
+```bash
+# NextAuth
+NEXTAUTH_URL=https://tec-ecosystem.vercel.app
+NEXTAUTH_SECRET=your-secret-key
+
+# Pi Network
+NEXT_PUBLIC_PI_APP_ID=tec-titan-elite-commerce-04d84accdca2487c
+PI_API_KEY=your-pi-api-key
+NEXT_PUBLIC_PI_SANDBOX=true
+PI_SANDBOX_MODE=true
+PI_SANDBOX_API_URL=https://sandbox-api.minepi.com/v2
+PI_API_URL=https://api.minepi.com/v2
 
 # Database
 DATABASE_URL=postgresql://...

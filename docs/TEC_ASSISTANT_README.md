@@ -181,6 +181,7 @@ npm install
 
 Copy `.env.example` to `.env.local` and configure:
 
+#### For Local Development:
 ```env
 # Database
 DATABASE_URL="postgresql://user:password@localhost:5432/tec_ecosystem"
@@ -193,6 +194,25 @@ PI_API_KEY=your_pi_api_key_here
 
 # Authentication
 NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your_secret_here
+```
+
+#### For Production/Testnet Deployment:
+```env
+# Database
+DATABASE_URL="postgresql://user:password@host:5432/tec_ecosystem"
+
+# Pi Network
+NEXT_PUBLIC_PI_NETWORK=testnet
+NEXT_PUBLIC_PI_APP_ID=tec-titan-elite-commerce-04d84accdca2487c
+NEXT_PUBLIC_PI_SANDBOX=true
+PI_SANDBOX_MODE=true
+PI_API_KEY=your_pi_api_key_here
+PI_SANDBOX_API_URL=https://sandbox-api.minepi.com/v2
+PI_API_URL=https://api.minepi.com/v2
+
+# Authentication
+NEXTAUTH_URL=https://tec-ecosystem.vercel.app
 NEXTAUTH_SECRET=your_secret_here
 ```
 

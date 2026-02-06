@@ -13,6 +13,7 @@ import { PERMISSIONS } from "../../../lib/roles/definitions";
 import { PAYMENT_TIMEOUTS, fetchWithTimeout, withRetry } from "../../../lib/config/payment-timeouts.js";
 import { paymentAlertLogger } from "../../../lib/monitoring/payment-alerts.js";
 import { handlePaymentError, getLocaleFromRequest, PAYMENT_ERROR_CODES } from "../../../lib/errors/payment-errors.js";
+import { getPiApiBaseUrl } from "../../../lib/config/pi-api.js";
 
 async function handler(req, res) {
   if (req.method !== "POST") {
@@ -45,8 +46,12 @@ async function handler(req, res) {
         async () => {
           console.log(`Attempting to approve payment ${paymentId}...`);
 
+          // Get the correct Pi API base URL based on environment
+          const piApiBaseUrl = getPiApiBaseUrl();
+          console.log(`Using Pi API base URL: ${piApiBaseUrl}`);
+
           const approveResponse = await fetchWithTimeout(
-            `https://api.minepi.com/v2/payments/${paymentId}/approve`,
+            `${piApiBaseUrl}/payments/${paymentId}/approve`,
             {
               method: "POST",
               headers: {
