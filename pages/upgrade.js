@@ -79,29 +79,48 @@ export default function Upgrade() {
         },
         {
           onReadyForServerApproval: async (paymentId) => {
-            // Approve payment on server
-            const response = await fetch("/api/subscriptions/create", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                paymentId,
-                tier,
-                userId: session.user.id,
-              }),
-            });
+            console.log("✅ Payment ready for approval:", paymentId);
+            console.log("🔧 SDK Mode:", window.piSandboxMode ? "Local Mock" : "Real Pi SDK");
+            
+            try {
+              // Approve payment on server (subscription endpoint handles approval)
+              console.log("📡 Calling /api/subscriptions/create for:", paymentId);
+              const response = await fetch("/api/subscriptions/create", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  paymentId,
+                  tier,
+                  userId: session.user.id,
+                }),
+              });
 
-            if (response.ok) {
-              router.push("/dashboard?upgraded=true");
+              if (response.ok) {
+                console.log("✅ Subscription created successfully");
+                router.push("/dashboard?upgraded=true");
+              } else {
+                const errorData = await response.json();
+                console.error("❌ Subscription creation failed:", errorData);
+                alert("Failed to create subscription. Please contact support.");
+                setIsProcessing(false);
+              }
+            } catch (error) {
+              console.error("❌ Subscription error:", error);
+              alert("Failed to process upgrade. Please try again.");
+              setIsProcessing(false);
             }
           },
           onReadyForServerCompletion: async (paymentId, txid) => {
-            console.log("Payment completed:", paymentId, txid);
+            console.log("✅ Payment completed on blockchain:", paymentId, txid);
+            console.log("🔧 SDK Mode:", window.piSandboxMode ? "Local Mock" : "Real Pi SDK");
           },
           onCancel: () => {
+            console.log("❌ Payment cancelled by user");
             setIsProcessing(false);
           },
           onError: (error) => {
-            console.error("Payment error:", error);
+            console.error("❌ Payment error:", error);
+            alert("Payment failed: " + (error.message || "Unknown error"));
             setIsProcessing(false);
           },
         },

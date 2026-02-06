@@ -88,14 +88,17 @@ export default function Home() {
         {
           onReadyForServerApproval: async (paymentId) => {
             console.log("✅ Payment ready for approval:", paymentId);
-            setPaymentStatus("⏳ Registering payment...");
+            console.log("🔧 SDK Mode:", window.piSandboxMode ? "Local Mock" : "Real Pi SDK");
+            setPaymentStatus("⏳ Registering payment with Pi Network...");
 
             // Wait for Pi Network to register the payment
+            // This delay allows Pi Network's backend to process the payment creation
             await new Promise((resolve) => setTimeout(resolve, 3000));
 
-            setPaymentStatus("⏳ Approving payment...");
+            setPaymentStatus("⏳ Approving payment with backend...");
 
             try {
+              console.log("📡 Calling /api/payments/approve for:", paymentId);
               const response = await fetch("/api/payments/approve", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -112,9 +115,9 @@ export default function Home() {
               }
 
               const data = await response.json();
-              console.log("✅ Payment approved:", data);
+              console.log("✅ Payment approved successfully:", data);
               setPaymentStatus(
-                "✅ Payment approved! Waiting for completion...",
+                "✅ Payment approved! Waiting for blockchain completion...",
               );
             } catch (error) {
               console.error("❌ Approval error:", error);
@@ -124,9 +127,11 @@ export default function Home() {
 
           onReadyForServerCompletion: async (paymentId, txid) => {
             console.log("✅ Payment ready for completion:", paymentId, txid);
-            setPaymentStatus("⏳ Completing payment...");
+            console.log("🔧 SDK Mode:", window.piSandboxMode ? "Local Mock" : "Real Pi SDK");
+            setPaymentStatus("⏳ Completing payment with backend...");
 
             try {
+              console.log("📡 Calling /api/payments/complete for:", paymentId, txid);
               const response = await fetch("/api/payments/complete", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -143,7 +148,7 @@ export default function Home() {
               }
 
               const data = await response.json();
-              console.log("✅ Payment completed:", data);
+              console.log("✅ Payment completed successfully:", data);
               setPaymentStatus("✅ Payment successful! 🎉");
             } catch (error) {
               console.error("❌ Completion error:", error);
