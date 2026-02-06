@@ -384,6 +384,83 @@ NEXT_PUBLIC_PI_SANDBOX=true
 
 ---
 
-**آخر تحديث:** 29 ديسمبر 2024  
+**آخر تحديث:** 6 فبراير 2026  
 **الحالة:** جاهز للتطبيق  
 **الأولوية:** عالية جداً (مطلوب قبل الإطلاق)
+
+---
+
+## 📝 Testnet Environment Configuration (English)
+
+### Required Environment Variables for Testnet
+
+When deploying to testnet/sandbox environment, ensure the following environment variables are configured:
+
+#### Required Variables:
+
+```env
+# Pi Network Sandbox/Testnet Mode
+NEXT_PUBLIC_PI_SANDBOX=true
+PI_SANDBOX_MODE=true
+
+# Pi Network API URLs
+PI_SANDBOX_API_URL=https://sandbox-api.minepi.com/v2
+PI_API_URL=https://api.minepi.com/v2
+
+# Pi Network Credentials
+NEXT_PUBLIC_PI_APP_ID=tec-titan-elite-commerce-04d84accdca2487c
+PI_API_KEY=your_sandbox_pi_api_key_here
+
+# App URL (Production/Testnet)
+NEXTAUTH_URL=https://tec-ecosystem.vercel.app
+```
+
+### How Environment Variables are Used:
+
+1. **`NEXT_PUBLIC_PI_SANDBOX=true`** and **`PI_SANDBOX_MODE=true`**:
+   - These flags enable sandbox/testnet mode
+   - When enabled, the app uses sandbox API URLs instead of production
+   - Both should be set to `true` for testnet deployment
+
+2. **`PI_SANDBOX_API_URL`** and **`PI_API_URL`**:
+   - Define the base URLs for Pi Network API calls
+   - `PI_SANDBOX_API_URL`: Used when sandbox mode is enabled
+   - `PI_API_URL`: Used for production/mainnet mode
+   - The payment system automatically selects the correct URL
+
+3. **`NEXTAUTH_URL`**:
+   - Must be set to your deployed app URL: `https://tec-ecosystem.vercel.app`
+   - **Critical**: This must match the URL configured in Pi Developer Portal
+   - Incorrect URL will cause authentication and payment failures
+
+### Testnet vs Production:
+
+| Configuration | Testnet/Sandbox | Production/Mainnet |
+|--------------|-----------------|-------------------|
+| `NEXT_PUBLIC_PI_SANDBOX` | `true` | `false` |
+| `PI_SANDBOX_MODE` | `true` | `false` |
+| API Base URL | `https://sandbox-api.minepi.com/v2` | `https://api.minepi.com/v2` |
+| App URL | `https://tec-ecosystem.vercel.app` | `https://tec-ecosystem.vercel.app` |
+| Real Pi Tokens | ❌ No (simulated) | ✅ Yes (real) |
+| Payment Testing | ✅ Safe testing | ⚠️ Real transactions |
+
+### Important Notes:
+
+1. **URL Consistency**: The app URL configured in Vercel environment variables **must exactly match** the URL in Pi Developer Portal settings.
+
+2. **API Key**: Use the sandbox API key from Pi Developer Portal when in testnet mode.
+
+3. **Redeployment**: After changing environment variables in Vercel, always redeploy the application for changes to take effect.
+
+4. **Local Development**: For local development, use `http://localhost:3000` and set `NEXT_PUBLIC_PI_SANDBOX=true` in your `.env.local` file.
+
+### Verification Checklist:
+
+- [ ] `NEXT_PUBLIC_PI_SANDBOX=true` set in Vercel
+- [ ] `PI_SANDBOX_MODE=true` set in Vercel
+- [ ] `PI_SANDBOX_API_URL=https://sandbox-api.minepi.com/v2` set in Vercel
+- [ ] `PI_API_URL=https://api.minepi.com/v2` set in Vercel
+- [ ] `NEXTAUTH_URL=https://tec-ecosystem.vercel.app` set in Vercel
+- [ ] App URL in Pi Developer Portal matches Vercel deployment URL
+- [ ] Application redeployed after environment variable changes
+- [ ] Sandbox mode enabled in Pi Developer Portal
