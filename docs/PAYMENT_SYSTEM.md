@@ -9,10 +9,77 @@ The TEC Ecosystem payment system is built on Pi Network integration with enhance
 ### Core Components
 
 1. **Centralized Timeout Configuration** (`/lib/config/payment-timeouts.js`)
-2. **Payment Alert Logger** (`/lib/monitoring/payment-alerts.js`)
-3. **Bilingual Error Handler** (`/lib/errors/payment-errors.js`)
-4. **Payment API Endpoints** (`/pages/api/payments/`)
-5. **Client Payment Module** (`/lib/pi-payments.js`)
+2. **Pi API Base URL Helper** (`/lib/config/pi-api.js`)
+3. **Payment Alert Logger** (`/lib/monitoring/payment-alerts.js`)
+4. **Bilingual Error Handler** (`/lib/errors/payment-errors.js`)
+5. **Payment API Endpoints** (`/pages/api/payments/`)
+6. **Client Payment Module** (`/lib/pi-payments.js`)
+
+## Pi API Configuration
+
+### Automatic Environment Detection
+
+The payment system automatically selects the correct Pi API base URL based on environment configuration using the centralized helper (`/lib/config/pi-api.js`).
+
+#### Environment Variables for Pi API:
+
+```env
+# Sandbox/Testnet Mode Flags
+NEXT_PUBLIC_PI_SANDBOX=true          # Client-side sandbox flag
+PI_SANDBOX_MODE=true                 # Server-side sandbox flag
+
+# Pi API URLs (optional overrides)
+PI_SANDBOX_API_URL=https://sandbox-api.minepi.com/v2  # Testnet API URL
+PI_API_URL=https://api.minepi.com/v2                  # Production API URL
+```
+
+#### Helper Functions:
+
+##### `getPiApiBaseUrl()`
+Returns the correct Pi API base URL based on environment:
+
+```javascript
+import { getPiApiBaseUrl } from './lib/config/pi-api.js';
+
+// Automatically returns:
+// - https://sandbox-api.minepi.com/v2 if sandbox mode enabled
+// - https://api.minepi.com/v2 for production
+const baseUrl = getPiApiBaseUrl();
+const response = await fetch(`${baseUrl}/payments/${paymentId}/approve`, {
+  method: 'POST',
+  headers: { Authorization: `Key ${apiKey}` }
+});
+```
+
+##### `isSandboxMode()`
+Check if sandbox mode is enabled:
+
+```javascript
+import { isSandboxMode } from './lib/config/pi-api.js';
+
+if (isSandboxMode()) {
+  console.log('Running in sandbox/testnet mode');
+}
+```
+
+### Environment Configuration
+
+#### Testnet/Sandbox Setup:
+```env
+NEXT_PUBLIC_PI_SANDBOX=true
+PI_SANDBOX_MODE=true
+PI_SANDBOX_API_URL=https://sandbox-api.minepi.com/v2
+PI_API_URL=https://api.minepi.com/v2
+NEXTAUTH_URL=https://tec-ecosystem.vercel.app
+```
+
+#### Production/Mainnet Setup:
+```env
+NEXT_PUBLIC_PI_SANDBOX=false
+PI_SANDBOX_MODE=false
+PI_API_URL=https://api.minepi.com/v2
+NEXTAUTH_URL=https://tec-ecosystem.vercel.app
+```
 
 ## Timeout Configuration
 
@@ -62,9 +129,11 @@ Fetch wrapper with automatic timeout and abort:
 
 ```javascript
 import { fetchWithTimeout, PAYMENT_TIMEOUTS } from './lib/config/payment-timeouts.js';
+import { getPiApiBaseUrl } from './lib/config/pi-api.js';
 
+const baseUrl = getPiApiBaseUrl(); // Automatically selects correct URL
 const response = await fetchWithTimeout(
-  'https://api.minepi.com/v2/payments/123/approve',
+  `${baseUrl}/payments/123/approve`,
   { method: 'POST', headers: {...} },
   PAYMENT_TIMEOUTS.PI_API_APPROVE
 );
