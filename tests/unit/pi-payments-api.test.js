@@ -101,9 +101,9 @@ describe("Pi Payment API Endpoints", () => {
       // Should ALWAYS call Pi API even in sandbox mode
       expect(global.fetch).toHaveBeenCalledTimes(1);
 
-      // Verify Pi Platform API was called correctly
+      // Verify Pi Platform API was called correctly with SANDBOX URL
       expect(global.fetch).toHaveBeenCalledWith(
-        "https://api.minepi.com/v2/payments/pi-payment-123/approve",
+        "https://sandbox-api.minepi.com/v2/payments/pi-payment-123/approve",
         expect.objectContaining({
           method: "POST",
           headers: expect.objectContaining({
@@ -168,7 +168,7 @@ describe("Pi Payment API Endpoints", () => {
       // Should call Pi Platform API once
       expect(global.fetch).toHaveBeenCalledTimes(1);
 
-      // Verify Pi Platform API was called correctly
+      // Verify Pi Platform API was called correctly (production URL)
       expect(global.fetch).toHaveBeenCalledWith(
         "https://api.minepi.com/v2/payments/pi-payment-123/approve",
         expect.objectContaining({
@@ -485,9 +485,9 @@ describe("Pi Payment API Endpoints", () => {
       // Should ALWAYS call Pi Platform API even in sandbox mode
       expect(global.fetch).toHaveBeenCalledTimes(1);
 
-      // Verify Pi Platform API was called correctly
+      // Verify Pi Platform API was called correctly with SANDBOX URL
       expect(global.fetch).toHaveBeenCalledWith(
-        "https://api.minepi.com/v2/payments/pi-payment-123/complete",
+        "https://sandbox-api.minepi.com/v2/payments/pi-payment-123/complete",
         expect.objectContaining({
           method: "POST",
           headers: expect.objectContaining({
@@ -553,7 +553,7 @@ describe("Pi Payment API Endpoints", () => {
 
       await handler(req, res);
 
-      // Verify Pi Platform API was called correctly
+      // Verify Pi Platform API was called correctly (production URL)
       expect(global.fetch).toHaveBeenCalledWith(
         "https://api.minepi.com/v2/payments/pi-payment-123/complete",
         expect.objectContaining({
