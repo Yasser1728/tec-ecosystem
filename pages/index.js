@@ -92,10 +92,10 @@ export default function Home() {
             setPaymentStatus("⏳ Registering payment with Pi Network...");
 
             // Wait for Pi Network to register the payment on their backend
-            // Pi Network needs time to process the payment creation before it can be approved
-            // This delay is necessary to avoid 404 errors when calling the approve endpoint
-            // The backend approve endpoint has retry logic to handle cases where registration is still pending
-            const PI_NETWORK_REGISTRATION_DELAY = 3000; // 3 seconds (recommended by Pi Network best practices)
+            // This delay avoids 404 errors when calling the approve endpoint
+            // Pi Network's backend needs time to process and register the payment
+            // The backend approve endpoint includes retry logic for additional reliability
+            const PI_NETWORK_REGISTRATION_DELAY = 3000; // 3 seconds (empirically determined)
             await new Promise((resolve) => setTimeout(resolve, PI_NETWORK_REGISTRATION_DELAY));
 
             setPaymentStatus("⏳ Approving payment with backend...");

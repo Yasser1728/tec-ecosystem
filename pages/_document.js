@@ -30,18 +30,14 @@ export default function Document() {
                 // 2. Running in Pi Browser app
                 // 3. In testnet/production mode
                 const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-                // Check for known deployment hostnames (partial matches for flexibility)
-                // 'tec-ecosystem' matches tec-ecosystem.vercel.app and custom domains
-                // 'vercel.app' matches all Vercel preview and production deployments
-                // Add new deployment patterns here as needed
-                const deploymentHostnames = ['vercel.app', 'tec-ecosystem', 'minepi.com'];
-                const isDeployed = deploymentHostnames.some(host => window.location.hostname.includes(host));
-                const shouldUseRealSDK = isDeployed || !isLocalhost;
+                
+                // For localhost: Use local mock (fast testing without Pi Browser)
+                // For deployed URLs: Use real Pi SDK (proper Pi Network integration)
+                const shouldUseRealSDK = !isLocalhost;
                 
                 console.log('🔍 Environment detection:', {
                   hostname: window.location.hostname,
                   isLocalhost: isLocalhost,
-                  isDeployed: isDeployed,
                   shouldUseRealSDK: shouldUseRealSDK,
                   sandboxMode: window.piConfig.sandbox
                 });
@@ -133,7 +129,7 @@ export default function Document() {
                   (function() {
                     const SDK_LOAD_TIMEOUT_MS = 10000; // Total timeout: 10 seconds
                     const POLL_INTERVAL_MS = 100; // Check every 100ms
-                    const maxAttempts = SDK_LOAD_TIMEOUT_MS / POLL_INTERVAL_MS;
+                    const maxAttempts = Math.floor(SDK_LOAD_TIMEOUT_MS / POLL_INTERVAL_MS); // Integer division
                     let piCheckAttempts = 0;
                     
                     const checkPi = setInterval(function() {
