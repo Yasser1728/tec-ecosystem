@@ -30,8 +30,10 @@ export default function Document() {
                 // 2. Running in Pi Browser app
                 // 3. In testnet/production mode
                 const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-                const isDeployed = window.location.hostname.includes('vercel.app') || 
-                                   window.location.hostname.includes('tec-ecosystem');
+                // Check for known deployment hostnames
+                // Note: Add new deployment hostnames here if needed
+                const deploymentHostnames = ['vercel.app', 'tec-ecosystem', 'minepi.com'];
+                const isDeployed = deploymentHostnames.some(host => window.location.hostname.includes(host));
                 const shouldUseRealSDK = isDeployed || !isLocalhost;
                 
                 console.log('🔍 Environment detection:', {
@@ -128,7 +130,7 @@ export default function Document() {
                   
                   (function() {
                     let piCheckAttempts = 0;
-                    const maxAttempts = 100; // 10 seconds (100ms intervals)
+                    const maxAttempts = 100; // Wait up to 10 seconds with 100ms polling intervals
                     
                     const checkPi = setInterval(function() {
                       piCheckAttempts++;

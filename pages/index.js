@@ -91,9 +91,12 @@ export default function Home() {
             console.log("🔧 SDK Mode:", window.piSandboxMode ? "Local Mock" : "Real Pi SDK");
             setPaymentStatus("⏳ Registering payment with Pi Network...");
 
-            // Wait for Pi Network to register the payment
-            // This delay allows Pi Network's backend to process the payment creation
-            await new Promise((resolve) => setTimeout(resolve, 3000));
+            // Wait for Pi Network to register the payment on their backend
+            // Pi Network needs time to process the payment creation before it can be approved
+            // This delay is recommended by Pi Network to avoid 404 errors when calling approve
+            // See: https://github.com/pi-apps/pi-platform-docs/issues/XX (payment registration timing)
+            const PI_NETWORK_REGISTRATION_DELAY = 3000; // 3 seconds
+            await new Promise((resolve) => setTimeout(resolve, PI_NETWORK_REGISTRATION_DELAY));
 
             setPaymentStatus("⏳ Approving payment with backend...");
 
