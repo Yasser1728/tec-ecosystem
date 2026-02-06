@@ -30,8 +30,10 @@ export default function Document() {
                 // 2. Running in Pi Browser app
                 // 3. In testnet/production mode
                 const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-                // Check for known deployment hostnames
-                // Note: Add new deployment hostnames here if needed
+                // Check for known deployment hostnames (partial matches for flexibility)
+                // 'tec-ecosystem' matches tec-ecosystem.vercel.app and custom domains
+                // 'vercel.app' matches all Vercel preview and production deployments
+                // Add new deployment patterns here as needed
                 const deploymentHostnames = ['vercel.app', 'tec-ecosystem', 'minepi.com'];
                 const isDeployed = deploymentHostnames.some(host => window.location.hostname.includes(host));
                 const shouldUseRealSDK = isDeployed || !isLocalhost;
@@ -129,8 +131,10 @@ export default function Document() {
                   window.piSandboxMode = false;
                   
                   (function() {
+                    const SDK_LOAD_TIMEOUT_MS = 10000; // Total timeout: 10 seconds
+                    const POLL_INTERVAL_MS = 100; // Check every 100ms
+                    const maxAttempts = SDK_LOAD_TIMEOUT_MS / POLL_INTERVAL_MS;
                     let piCheckAttempts = 0;
-                    const maxAttempts = 100; // Wait up to 10 seconds with 100ms polling intervals
                     
                     const checkPi = setInterval(function() {
                       piCheckAttempts++;
@@ -159,7 +163,7 @@ export default function Document() {
                       
                       if (piCheckAttempts >= maxAttempts) {
                         clearInterval(checkPi);
-                        console.error('❌ Pi SDK failed to load after 10 seconds');
+                        console.error('❌ Pi SDK failed to load after ' + (SDK_LOAD_TIMEOUT_MS / 1000) + ' seconds');
                         console.error('⚠️ This may cause payment functionality to fail');
                         console.error('💡 Ensure you are running in Pi Browser or the Pi SDK script loaded correctly');
                       }
