@@ -14,6 +14,7 @@ import { withErrorHandler } from "../../../lib/utils/errorHandler";
 import { PAYMENT_TIMEOUTS, fetchWithTimeout } from "../../../lib/config/payment-timeouts.js";
 import { paymentAlertLogger } from "../../../lib/monitoring/payment-alerts.js";
 import { handlePaymentError, getLocaleFromRequest, PAYMENT_ERROR_CODES } from "../../../lib/errors/payment-errors.js";
+import { getPiApiBaseUrl } from "../../../lib/config/pi-api.js";
 
 async function handler(req, res) {
   if (req.method !== "POST") {
@@ -40,9 +41,13 @@ async function handler(req, res) {
       });
     }
 
+    // Get the correct Pi API base URL (sandbox or production)
+    const piApiBaseUrl = getPiApiBaseUrl();
+    console.log(`Using Pi API: ${piApiBaseUrl}`);
+
     try {
       const piCompleteResponse = await fetchWithTimeout(
-        `https://api.minepi.com/v2/payments/${paymentId}/complete`,
+        `${piApiBaseUrl}/payments/${paymentId}/complete`,
         {
           method: "POST",
           headers: {

@@ -10,15 +10,34 @@ import {
   PiPaymentResult,
 } from "../../domain/interfaces/services/IPiNetworkService";
 
+/**
+ * Determines the correct Pi API base URL based on environment
+ * Uses same logic as lib/config/pi-api.js but TypeScript compatible
+ */
+function getPiApiBaseUrl(): string {
+  // Check if sandbox mode is enabled
+  const isSandbox = 
+    process.env.PI_SANDBOX_MODE === 'true' || 
+    process.env.NEXT_PUBLIC_PI_SANDBOX === 'true';
+  
+  if (isSandbox) {
+    // Sandbox/Testnet mode
+    return process.env.PI_SANDBOX_API_URL || 'https://sandbox-api.minepi.com/v2';
+  } else {
+    // Production mode
+    return process.env.PI_API_URL || 'https://api.minepi.com/v2';
+  }
+}
+
 export class PiNetworkService implements IPiNetworkService {
   private readonly apiKey: string;
   private readonly apiUrl: string;
 
   constructor(apiKey: string, sandbox: boolean = true) {
     this.apiKey = apiKey;
-    this.apiUrl = sandbox
-      ? "https://api.minepi.com/v2"
-      : "https://api.minepi.com/v2";
+    // Use centralized URL selection logic based on environment
+    // The sandbox parameter is kept for compatibility but we use env vars
+    this.apiUrl = getPiApiBaseUrl();
   }
 
   async verifyAuth(accessToken: string): Promise<PiAuthResult> {
