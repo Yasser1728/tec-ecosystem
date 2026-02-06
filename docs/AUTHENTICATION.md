@@ -284,8 +284,10 @@ model User {
 Required variables in `.env.local`:
 
 ```bash
-# NextAuth
+# NextAuth - Local Development
 NEXTAUTH_URL=http://localhost:3000
+# NextAuth - Production/Testnet
+# NEXTAUTH_URL=https://tec-ecosystem.vercel.app
 NEXTAUTH_SECRET=your-secret-key
 
 # Pi Network

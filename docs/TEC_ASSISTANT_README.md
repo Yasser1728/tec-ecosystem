@@ -191,8 +191,10 @@ NEXT_PUBLIC_PI_APP_ID=your-pi-app-id
 NEXT_PUBLIC_PI_SANDBOX=true
 PI_API_KEY=your_pi_api_key_here
 
-# Authentication
+# Authentication - Local Development
 NEXTAUTH_URL=http://localhost:3000
+# Authentication - Production/Testnet
+# NEXTAUTH_URL=https://tec-ecosystem.vercel.app
 NEXTAUTH_SECRET=your_secret_here
 ```
 
@@ -209,7 +211,11 @@ npx prisma db push
 npm run dev
 ```
 
+**Local Development:**
 Visit `http://localhost:3000/assistant` to see the TEC Assistant landing page.
+
+**Production/Testnet:**
+Visit `https://tec-ecosystem.vercel.app/assistant` to see the TEC Assistant landing page.
 
 ## 🧪 Testing
 

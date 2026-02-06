@@ -107,13 +107,35 @@ PI_API_KEY=sandbox_pi_xxxxxxxxxxxxxxxxxx
 PI_API_SECRET=sandbox_secret_xxxxxxxxxxxxxxxxxx
 NEXT_PUBLIC_PI_APP_ID=sandbox_app_xxxxxxxxxxxxxxxxxx
 
-# Sandbox URLs (اختياري)
+# Pi API URLs (required for testnet)
 PI_API_URL=https://api.minepi.com/v2
 PI_SANDBOX_API_URL=https://sandbox-api.minepi.com/v2
+
+# App URL (required - must match Pi Developer Portal)
+NEXTAUTH_URL=https://tec-ecosystem.vercel.app
 ```
 
 5. اضغط **"Save"**
 6. **أعد نشر التطبيق** (Redeploy)
+
+---
+
+### ⚠️ متطلبات Testnet الأساسية
+
+**للتشغيل على Testnet، يجب تفعيل جميع المتغيرات التالية:**
+
+```env
+# Required for Testnet/Sandbox
+NEXT_PUBLIC_PI_SANDBOX=true          # Enable sandbox on client
+PI_SANDBOX_MODE=true                 # Enable sandbox on server
+PI_SANDBOX_API_URL=https://sandbox-api.minepi.com/v2  # Sandbox API URL
+PI_API_URL=https://api.minepi.com/v2 # Production API URL (fallback)
+
+# App URL - Must match Pi Developer Portal
+NEXTAUTH_URL=https://tec-ecosystem.vercel.app
+```
+
+**ملاحظة مهمة:** يجب أن تكون قيم `PI_SANDBOX_MODE` و `NEXT_PUBLIC_PI_SANDBOX` متطابقة (كلاهما `true` للـ testnet).
 
 ---
 

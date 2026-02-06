@@ -368,14 +368,29 @@ NODE_ENV=development
 PI_API_KEY=your_sandbox_key
 PI_SANDBOX_MODE=true
 NEXT_PUBLIC_PI_SANDBOX=true
+PI_SANDBOX_API_URL=https://sandbox-api.minepi.com/v2
+PI_API_URL=https://api.minepi.com/v2
+NEXTAUTH_URL=http://localhost:3000
 ```
 
-### Production
+### Production/Testnet
+
+**Required Environment Variables for Testnet:**
 
 ```env
 NODE_ENV=production
-PI_API_KEY=your_production_key
-PI_SANDBOX_MODE=false
+PI_API_KEY=your_production_or_sandbox_key
+
+# Testnet/Sandbox Configuration (both required)
+PI_SANDBOX_MODE=true
+NEXT_PUBLIC_PI_SANDBOX=true
+
+# Pi API URLs (both required for proper testnet operation)
+PI_SANDBOX_API_URL=https://sandbox-api.minepi.com/v2
+PI_API_URL=https://api.minepi.com/v2
+
+# App URL - Must match Pi Developer Portal
+NEXTAUTH_URL=https://tec-ecosystem.vercel.app
 
 # Optional: Monitoring
 NEXT_PUBLIC_SENTRY_DSN=your_sentry_dsn
@@ -386,6 +401,12 @@ PI_API_APPROVE_TIMEOUT=20000
 PI_API_COMPLETE_TIMEOUT=20000
 PAYMENT_MAX_RETRIES=5
 ```
+
+**Important Notes for Testnet:**
+- Both `PI_SANDBOX_MODE` and `NEXT_PUBLIC_PI_SANDBOX` must be set to `true`
+- Both `PI_SANDBOX_API_URL` and `PI_API_URL` should be configured
+- `NEXTAUTH_URL` must match the App URL in Pi Developer Portal (`https://tec-ecosystem.vercel.app`)
+- The app will automatically use the sandbox API URL when sandbox mode is enabled
 
 ## API Reference
 
