@@ -129,7 +129,7 @@ export default function Document() {
                   (function() {
                     const SDK_LOAD_TIMEOUT_MS = 10000; // Total timeout: 10 seconds
                     const POLL_INTERVAL_MS = 100; // Check every 100ms
-                    const maxAttempts = Math.floor(SDK_LOAD_TIMEOUT_MS / POLL_INTERVAL_MS); // Integer division
+                    const maxAttempts = Math.floor(SDK_LOAD_TIMEOUT_MS / POLL_INTERVAL_MS);
                     let piCheckAttempts = 0;
                     
                     const checkPi = setInterval(function() {

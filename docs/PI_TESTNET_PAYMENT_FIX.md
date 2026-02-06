@@ -19,15 +19,17 @@ The key insight: **In testnet, we need the REAL Pi SDK from Pi Network (with `sa
 
 ### Environment Detection
 
-The fix introduces hostname-based detection to determine which SDK to use:
+The fix introduces simple hostname-based detection to determine which SDK to use:
 
 ```javascript
 const isLocalhost = window.location.hostname === 'localhost' || 
                     window.location.hostname === '127.0.0.1';
-const isDeployed = window.location.hostname.includes('vercel.app') || 
-                   window.location.hostname.includes('tec-ecosystem');
-const shouldUseRealSDK = isDeployed || !isLocalhost;
+const shouldUseRealSDK = !isLocalhost;
 ```
+
+This approach is simple and reliable:
+- **Localhost** → Use local mock
+- **Any other hostname** → Use real Pi SDK
 
 ### Three Modes
 
