@@ -34,6 +34,8 @@ const translations = {
     // Navigation
     home: 'Home',
     domains: 'Domains',
+    dashboard: 'Dashboard',
+    upgrade: 'Upgrade',
     activity: 'Activity',
     profile: 'Profile',
     
@@ -82,6 +84,8 @@ const translations = {
     // Navigation
     home: 'الرئيسية',
     domains: 'النطاقات',
+    dashboard: 'لوحة التحكم',
+    upgrade: 'ترقية',
     activity: 'النشاط',
     profile: 'الملف الشخصي',
     
