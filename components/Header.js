@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { LanguageToggle } from "./layout";
 import { useLanguage } from "../hooks/useLanguage";
+import PiAuthButton from "./PiAuthButton";
 
 const navLinks = [
   { href: "/domains", label: "Domains", labelAr: "النطاقات" },
@@ -56,8 +57,11 @@ export default function Header() {
             ))}
           </nav>
 
-          {/* Right side */}
+          {/* Right side — Auth + Language + Mobile */}
           <div className="flex items-center gap-3">
+            <div className="hidden md:block">
+              <PiAuthButton compact language={language} />
+            </div>
             <LanguageToggle compact />
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
@@ -93,6 +97,10 @@ export default function Header() {
                   {language === "ar" ? link.labelAr : link.label}
                 </Link>
               ))}
+              {/* Mobile Auth */}
+              <div className="px-4 pt-3 border-t border-gray-800 mt-2">
+                <PiAuthButton language={language} />
+              </div>
             </div>
           </nav>
         )}

@@ -9,6 +9,7 @@ const translations = {
     send: "Send",
     thinking: "Thinking...",
     error: "Something went wrong. Please try again.",
+    fallback: "TEC Assistant is temporarily unavailable. You can continue platform operations manually.",
     quickPrompts: [
       "What domains are available?",
       "How do Pi payments work?",
@@ -23,6 +24,7 @@ const translations = {
     send: "إرسال",
     thinking: "جاري التفكير...",
     error: "حدث خطأ. يرجى المحاولة مرة أخرى.",
+    fallback: "مساعد TEC غير متاح مؤقتاً. يمكنك متابعة عمليات المنصة يدوياً.",
     quickPrompts: [
       "ما النطاقات المتاحة؟",
       "كيف تعمل مدفوعات Pi؟",
@@ -40,6 +42,8 @@ export default function TECNexusAI() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [assistantFailed, setAssistantFailed] = useState(false);
+  const [failCount, setFailCount] = useState(0);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -62,12 +66,27 @@ export default function TECNexusAI() {
         body: JSON.stringify({ message: msg, history: messages }),
       });
 
+      if (!response.ok) throw new Error("API error");
+
       const data = await response.json();
+      if (data.error) throw new Error(data.error);
+
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: data.error ? t.error : data.response },
+        { role: "assistant", content: data.response },
       ]);
+      // Reset fail count on success
+      setFailCount(0);
+      setAssistantFailed(false);
     } catch {
+      const newFailCount = failCount + 1;
+      setFailCount(newFailCount);
+
+      if (newFailCount >= 3) {
+        // After 3 consecutive failures, show persistent fallback
+        setAssistantFailed(true);
+      }
+
       setMessages((prev) => [
         ...prev,
         { role: "assistant", content: t.error },
@@ -126,6 +145,21 @@ export default function TECNexusAI() {
               </button>
             </div>
           </div>
+
+          {/* Assistant Fallback Banner */}
+          {assistantFailed && (
+            <div className="bg-yellow-900/30 border-b border-yellow-600/30 px-4 py-3 shrink-0">
+              <p className="text-xs text-yellow-300">
+                ⚠️ {t.fallback}
+              </p>
+              <button
+                onClick={() => { setAssistantFailed(false); setFailCount(0); }}
+                className="text-xs text-yellow-400 underline mt-1 hover:text-yellow-300"
+              >
+                {language === "ar" ? "إعادة المحاولة" : "Retry"}
+              </button>
+            </div>
+          )}
 
           {/* Messages */}
           <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">

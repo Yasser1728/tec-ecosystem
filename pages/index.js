@@ -1,11 +1,15 @@
 import Head from "next/head";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { BottomNav } from "../components/layout";
 import ParticlesCanvas from "../components/ParticlesCanvas";
 import PiAuthButton from "../components/PiAuthButton";
+import PaymentStatusBadge from "../components/PaymentStatusBadge";
+import PaymentButton from "../components/PaymentButton";
+import WalletStatus from "../components/WalletStatus";
+import { usePiAuth, AUTH_STATES } from "../hooks/usePiAuth";
 import { useLanguage } from "../hooks/useLanguage";
 
 const domains = [
@@ -27,7 +31,16 @@ const features = [
 
 export default function Home() {
   const { isRTL, language } = useLanguage();
-  const [piUser, setPiUser] = useState(null);
+  const {
+    authState,
+    user,
+    paymentStatus,
+    isLoggedIn,
+    handleAuthSuccess,
+    handleAuthError,
+    handleAuthLoading,
+    handleSignOut,
+  } = usePiAuth();
 
   return (
     <>
@@ -78,19 +91,45 @@ export default function Home() {
             </Link>
           </div>
 
-          {/* Pi Auth - compact */}
-          <div className="max-w-sm mx-auto">
+          {/* Pi Auth + Status */}
+          <div className="max-w-sm mx-auto space-y-3">
             <PiAuthButton
-              onAuthSuccess={(user) => setPiUser(user)}
-              onAuthError={(error) => console.error("Auth error:", error)}
+              onAuthSuccess={handleAuthSuccess}
+              onAuthError={handleAuthError}
+              onAuthLoading={handleAuthLoading}
+              onSignOut={handleSignOut}
+              language={language}
             />
-            {piUser && (
-              <p className="mt-2 text-sm text-gray-500">
-                Connected as @{piUser.username}
-              </p>
+            {/* Payment Status Badge — shows below auth button when relevant */}
+            {isLoggedIn && (
+              <div className="flex justify-center">
+                <PaymentStatusBadge
+                  status={paymentStatus}
+                  language={language}
+                />
+              </div>
             )}
           </div>
         </section>
+
+        {/* Wallet & Payment Eligibility — only when logged in */}
+        {isLoggedIn && user && (
+          <section className="relative z-10 container mx-auto px-4 pb-8">
+            <div className="max-w-md mx-auto space-y-4">
+              <WalletStatus
+                authState={authState}
+                user={user}
+                paymentStatus={paymentStatus}
+                language={language}
+              />
+              <PaymentButton
+                authState={authState}
+                paymentStatus={paymentStatus}
+                language={language}
+              />
+            </div>
+          </section>
+        )}
 
         {/* Domain Cards */}
         <section className="relative z-10 container mx-auto px-4 py-16">
