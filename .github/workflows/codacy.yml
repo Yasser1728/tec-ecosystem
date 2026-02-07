@@ -29,13 +29,13 @@ jobs:
 
     steps:
       - name: "📥 جلب الكود المصدري"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0 # Full history for better analysis
 
       # Cache for faster analysis
       - name: "💾 تفعيل التخزين المؤقت"
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/.cache/codacy
@@ -90,7 +90,7 @@ jobs:
 
       - name: "📊 رفع تقرير الأمان إلى جيت هاب"
         if: steps.check-sarif.outputs.has_results == 'true'
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         continue-on-error: true
         with:
           sarif_file: results.sarif
@@ -99,7 +99,7 @@ jobs:
 
       - name: "💾 حفظ تقرير التحليل كمرفق"
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: codacy-security-report-${{ github.run_number }}
           path: |
