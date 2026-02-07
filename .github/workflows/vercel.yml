@@ -42,7 +42,7 @@ jobs:
           DATABASE_URL: postgresql://dummy:user@dummy:5432/dummy?schema=public
           NEXT_PUBLIC_PI_APP_ID: dummy_app_id
           NEXT_PUBLIC_PI_SANDBOX: true
-          NEXT_PUBLIC_API_URL: http://localhost:3000
+          NEXT_PUBLIC_API_URL: https://tec-ecosystem.vercel.app
 
       - name: 🚀 Deploy to Vercel (Production)
         id: vercel-deploy-prod
