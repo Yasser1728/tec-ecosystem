@@ -98,8 +98,8 @@ export function usePiAuth() {
     if (authState !== AUTH_STATES.LOGGED_IN) return;
 
     const checkSession = () => {
-      // If Pi SDK becomes unavailable or user is cleared
-      if (!window.Pi || !user) {
+      // If Pi SDK becomes unavailable, trigger logout
+      if (!window.Pi) {
         setAuthState(AUTH_STATES.LOGGED_OUT);
         setUser(null);
       }
@@ -107,7 +107,7 @@ export function usePiAuth() {
 
     const interval = setInterval(checkSession, 30000);
     return () => clearInterval(interval);
-  }, [authState, user]);
+  }, [authState]);
 
   const handleAuthSuccess = useCallback((userData) => {
     setUser(userData);

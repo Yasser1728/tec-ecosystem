@@ -34,6 +34,8 @@ const translations = {
   },
 };
 
+const MAX_CONSECUTIVE_FAILURES = 3;
+
 export default function TECNexusAI() {
   const { language, isRTL } = useLanguage();
   const t = translations[language] || translations.en;
@@ -82,7 +84,7 @@ export default function TECNexusAI() {
       const newFailCount = failCount + 1;
       setFailCount(newFailCount);
 
-      if (newFailCount >= 3) {
+      if (newFailCount >= MAX_CONSECUTIVE_FAILURES) {
         // After 3 consecutive failures, show persistent fallback
         setAssistantFailed(true);
       }
