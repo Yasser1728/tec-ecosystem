@@ -6,10 +6,11 @@ If you encounter errors in the GitHub Copilot Pull Request Reviewer's autovalida
 
 ## Common Error Patterns
 
-### Pattern 1: Slice Bounds Panic (PR #310)
+### Pattern 1: Slice Bounds Panic (PR #310, #360)
 - ❌ Error message: `panic: runtime error: slice bounds out of range`
 - Other checks (ESLint, CodeQL) pass successfully
 - The failing job is "Run PMD on example"
+- **Latest occurrence**: PR #360 (2026-02-07) - See [detailed resolution guide](../AUTOVALIDATE_PR360_FAILURE_RESOLUTION.md)
 
 ### Pattern 2: Path/File Not Found (PR #313+)
 - ❌ Error message: `failed to delete file .github/workflows/test.yml: no such file or directory`
@@ -160,6 +161,10 @@ While we wait for GitHub to fix the tool:
 - [Quick Reference](../COPILOT_AUTOVALIDATE_ISSUE.md)
 - [GitHub Support](https://support.github.com/)
 
+### Specific Occurrence Resolutions
+
+- **PR #360 (2026-02-07)**: [Detailed Guide](../AUTOVALIDATE_PR360_FAILURE_RESOLUTION.md) | [Arabic Guide](../AUTOVALIDATE_PR360_FAILURE_RESOLUTION_AR.md) | [Quick Fix](../AUTOVALIDATE_PR360_QUICK_FIX.md)
+
 ## Questions?
 
 If you encounter a new pattern of this issue:
@@ -170,6 +175,7 @@ If you encounter a new pattern of this issue:
 
 ---
 
-**Last Updated**: 2026-01-22  
+**Last Updated**: 2026-02-07  
 **Status**: Known issue with GitHub's infrastructure  
-**ETA for Fix**: Pending GitHub Engineering response
+**ETA for Fix**: Pending GitHub Engineering response  
+**Recent Occurrences**: PR #310 (2026-01-22), PR #360 (2026-02-07)
