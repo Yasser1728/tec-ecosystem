@@ -79,3 +79,9 @@ body {
   transition-timing-function: ease-in-out;
 }
 
+/* Gradient text animation */
+@keyframes gradient {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
