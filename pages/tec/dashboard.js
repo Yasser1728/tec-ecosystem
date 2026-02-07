@@ -3,6 +3,10 @@ import Head from "next/head";
 import Link from "next/link";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import PiAuthButton from "../../components/PiAuthButton";
+import PaymentStatusBadge from "../../components/PaymentStatusBadge";
+import WalletStatus from "../../components/WalletStatus";
+import { usePiAuth } from "../../hooks/usePiAuth";
 import { getDomainStats, getDomainsByCategory } from "../../lib/domainMapping";
 
 /**
@@ -15,6 +19,16 @@ import { getDomainStats, getDomainsByCategory } from "../../lib/domainMapping";
 export default function Dashboard() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const stats = getDomainStats();
+  const {
+    authState,
+    user,
+    paymentStatus,
+    isLoggedIn,
+    handleAuthSuccess,
+    handleAuthError,
+    handleAuthLoading,
+    handleSignOut,
+  } = usePiAuth();
 
   // Mock data for quick stats - in production, this would come from API
   const quickStats = {
@@ -257,6 +271,39 @@ export default function Dashboard() {
 
             {/* Sidebar - 1/3 width */}
             <div className="space-y-6">
+              {/* Pi Auth & Wallet Status */}
+              <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-6">
+                <h2 className="text-xl font-bold text-white mb-4">
+                  Pi Account
+                </h2>
+                {isLoggedIn ? (
+                  <div className="space-y-4">
+                    <WalletStatus
+                      authState={authState}
+                      user={user}
+                      paymentStatus={paymentStatus}
+                    />
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    <PiAuthButton
+                      onAuthSuccess={handleAuthSuccess}
+                      onAuthError={handleAuthError}
+                      onAuthLoading={handleAuthLoading}
+                      onSignOut={handleSignOut}
+                    />
+                    <p className="text-xs text-gray-500 text-center">
+                      Connect to access payments & wallet
+                    </p>
+                  </div>
+                )}
+                {isLoggedIn && (
+                  <div className="mt-3">
+                    <PaymentStatusBadge status={paymentStatus} compact />
+                  </div>
+                )}
+              </div>
+
               {/* Recent Activity */}
               <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-6">
                 <h2 className="text-xl font-bold text-white mb-4">

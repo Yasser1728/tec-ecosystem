@@ -3,36 +3,51 @@ import Link from "next/link";
 const footerLinks = [
   {
     title: "Ecosystem",
+    titleAr: "النظام البيئي",
     links: [
-      { href: "/ecosystem", label: "All Domains" },
-      { href: "/fundx", label: "FundX" },
-      { href: "/estate", label: "Estate" },
-      { href: "/explorer", label: "Explorer" },
+      { href: "/ecosystem", label: "All Domains", labelAr: "جميع النطاقات" },
+      { href: "/fundx", label: "FundX", labelAr: "فندكس" },
+      { href: "/estate", label: "Estate", labelAr: "العقارات" },
+      { href: "/explorer", label: "Explorer", labelAr: "المستكشف" },
+      { href: "/nbf", label: "NBF", labelAr: "البنك السيادي" },
+      { href: "/vip", label: "VIP", labelAr: "كبار الشخصيات" },
     ],
   },
   {
     title: "Platform",
+    titleAr: "المنصة",
     links: [
-      { href: "/tec/ai-assistant", label: "AI Assistant" },
-      { href: "/upgrade", label: "Upgrade" },
-      { href: "/tec/dashboard", label: "Dashboard" },
-      { href: "/tec/overview", label: "Overview" },
+      { href: "/tec/ai-assistant", label: "AI Assistant", labelAr: "المساعد الذكي" },
+      { href: "/upgrade", label: "Upgrade", labelAr: "ترقية" },
+      { href: "/tec/dashboard", label: "Dashboard", labelAr: "لوحة التحكم" },
+      { href: "/tec/overview", label: "Overview", labelAr: "نظرة عامة" },
+      { href: "/domains", label: "Domain Portfolio", labelAr: "محفظة النطاقات" },
+    ],
+  },
+  {
+    title: "Resources",
+    titleAr: "الموارد",
+    links: [
+      { href: "/pi-setup", label: "Pi Setup", labelAr: "إعداد Pi" },
+      { href: "/membership", label: "Membership", labelAr: "العضوية" },
+      { href: "/referral", label: "Referral", labelAr: "الإحالة" },
     ],
   },
   {
     title: "Legal",
+    titleAr: "قانوني",
     links: [
-      { href: "/privacy", label: "Privacy" },
-      { href: "/terms", label: "Terms" },
+      { href: "/privacy", label: "Privacy Policy", labelAr: "سياسة الخصوصية" },
+      { href: "/terms", label: "Terms of Service", labelAr: "شروط الخدمة" },
     ],
   },
 ];
 
-export default function Footer() {
+export default function Footer({ language = "en" }) {
   return (
     <footer className="bg-gray-900 border-t border-gray-800">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 mb-3">
@@ -41,10 +56,15 @@ export default function Footer() {
               </div>
               <span className="font-bold text-white">TEC Ecosystem</span>
             </div>
-            <p className="text-sm text-gray-500 leading-relaxed">
+            <p className="text-sm text-gray-500 leading-relaxed mb-4">
               24 Luxury Business Domains
               <br />
               Powered by Pi Network
+            </p>
+            <p className="text-xs text-gray-600">
+              {language === "ar"
+                ? "تيتان إيليت كوميرس — 24 وحدة أعمال فاخرة"
+                : "Titan Elite Commerce — Elite Business Services"}
             </p>
           </div>
 
@@ -52,7 +72,7 @@ export default function Footer() {
           {footerLinks.map((col) => (
             <div key={col.title}>
               <h4 className="text-sm font-semibold text-gray-300 mb-3">
-                {col.title}
+                {language === "ar" ? col.titleAr : col.title}
               </h4>
               <ul className="space-y-2">
                 {col.links.map((link) => (
@@ -61,7 +81,7 @@ export default function Footer() {
                       href={link.href}
                       className="text-sm text-gray-500 hover:text-tec-green transition-colors"
                     >
-                      {link.label}
+                      {language === "ar" ? link.labelAr : link.label}
                     </Link>
                   </li>
                 ))}
