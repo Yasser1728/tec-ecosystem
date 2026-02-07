@@ -8,8 +8,6 @@ import { withCORS } from "../../../middleware/cors";
 import { withBodyValidation } from "../../../lib/validations";
 import { ApprovePaymentSchema } from "../../../lib/validations/payment";
 import { withErrorHandler } from "../../../lib/utils/errorHandler";
-import { requirePermission } from "../../../lib/auth/permissions";
-import { PERMISSIONS } from "../../../lib/roles/definitions";
 import { PAYMENT_TIMEOUTS, fetchWithTimeout, withRetry } from "../../../lib/config/payment-timeouts.js";
 import { paymentAlertLogger } from "../../../lib/monitoring/payment-alerts.js";
 import { handlePaymentError, getLocaleFromRequest, PAYMENT_ERROR_CODES } from "../../../lib/errors/payment-errors.js";
@@ -149,10 +147,11 @@ async function handler(req, res) {
 }
 
 // Apply security middleware layers
+// Note: No requirePermission here - this endpoint is called automatically
+// by the Pi SDK during the payment flow (onReadyForServerApproval callback).
+// Authentication is handled via PI_API_KEY on the server-to-Pi API call.
 export default withCORS(
   withErrorHandler(
-    requirePermission(PERMISSIONS.PAYMENT_APPROVE)(
-      withBodyValidation(handler, ApprovePaymentSchema)
-    )
+    withBodyValidation(handler, ApprovePaymentSchema)
   )
 );

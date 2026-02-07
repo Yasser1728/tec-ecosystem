@@ -48,6 +48,13 @@ jobs:
         id: vercel-deploy-prod
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: amondnet/vercel-action@v25
+        env:
+          PI_API_KEY: ${{ secrets.PI_API_KEY }}
+          PI_API_SECRET: ${{ secrets.PI_API_SECRET }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+          PI_SANDBOX_MODE: ${{ secrets.PI_SANDBOX_MODE }}
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
@@ -61,6 +68,13 @@ jobs:
         id: vercel-deploy-preview
         if: github.event_name == 'pull_request'
         uses: amondnet/vercel-action@v25
+        env:
+          PI_API_KEY: ${{ secrets.PI_API_KEY }}
+          PI_API_SECRET: ${{ secrets.PI_API_SECRET }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+          PI_SANDBOX_MODE: ${{ secrets.PI_SANDBOX_MODE }}
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
