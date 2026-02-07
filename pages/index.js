@@ -88,14 +88,20 @@ export default function Home() {
         {
           onReadyForServerApproval: async (paymentId) => {
             console.log("✅ Payment ready for approval:", paymentId);
-            setPaymentStatus("⏳ Registering payment...");
+            console.log("🔧 SDK Mode:", window.piSandboxMode ? "Local Mock" : "Real Pi SDK");
+            setPaymentStatus("⏳ Registering payment with Pi Network...");
 
-            // Wait for Pi Network to register the payment
-            await new Promise((resolve) => setTimeout(resolve, 3000));
+            // Wait for Pi Network to register the payment on their backend
+            // This delay avoids 404 errors when calling the approve endpoint
+            // Pi Network's backend needs time to process and register the payment
+            // The backend approve endpoint includes retry logic for additional reliability
+            const PI_NETWORK_REGISTRATION_DELAY = 3000; // 3 seconds (empirically determined)
+            await new Promise((resolve) => setTimeout(resolve, PI_NETWORK_REGISTRATION_DELAY));
 
-            setPaymentStatus("⏳ Approving payment...");
+            setPaymentStatus("⏳ Approving payment with backend...");
 
             try {
+              console.log("📡 Calling /api/payments/approve for:", paymentId);
               const response = await fetch("/api/payments/approve", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -112,9 +118,9 @@ export default function Home() {
               }
 
               const data = await response.json();
-              console.log("✅ Payment approved:", data);
+              console.log("✅ Payment approved successfully:", data);
               setPaymentStatus(
-                "✅ Payment approved! Waiting for completion...",
+                "✅ Payment approved! Waiting for blockchain completion...",
               );
             } catch (error) {
               console.error("❌ Approval error:", error);
@@ -124,9 +130,11 @@ export default function Home() {
 
           onReadyForServerCompletion: async (paymentId, txid) => {
             console.log("✅ Payment ready for completion:", paymentId, txid);
-            setPaymentStatus("⏳ Completing payment...");
+            console.log("🔧 SDK Mode:", window.piSandboxMode ? "Local Mock" : "Real Pi SDK");
+            setPaymentStatus("⏳ Completing payment with backend...");
 
             try {
+              console.log("📡 Calling /api/payments/complete for:", paymentId, txid);
               const response = await fetch("/api/payments/complete", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -143,7 +151,7 @@ export default function Home() {
               }
 
               const data = await response.json();
-              console.log("✅ Payment completed:", data);
+              console.log("✅ Payment completed successfully:", data);
               setPaymentStatus("✅ Payment successful! 🎉");
             } catch (error) {
               console.error("❌ Completion error:", error);

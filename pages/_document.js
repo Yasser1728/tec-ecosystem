@@ -24,7 +24,25 @@ export default function Document() {
                   return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
                 }
                 
-                // Pi Sandbox Implementation (immediate fallback)
+                // Detect if we're in Pi Browser or should use real Pi SDK
+                // Real Pi SDK should be used when:
+                // 1. Running on deployed URL (not localhost)
+                // 2. Running in Pi Browser app
+                // 3. In testnet/production mode
+                const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+                
+                // For localhost: Use local mock (fast testing without Pi Browser)
+                // For deployed URLs: Use real Pi SDK (proper Pi Network integration)
+                const shouldUseRealSDK = !isLocalhost;
+                
+                console.log('🔍 Environment detection:', {
+                  hostname: window.location.hostname,
+                  isLocalhost: isLocalhost,
+                  shouldUseRealSDK: shouldUseRealSDK,
+                  sandboxMode: window.piConfig.sandbox
+                });
+                
+                // Pi Sandbox Implementation (local development fallback only)
                 window.PiSandbox = function() {
                   this.authenticated = false;
                   this.user = null;
@@ -32,14 +50,14 @@ export default function Document() {
                 };
                 
                 window.PiSandbox.prototype.init = function(config) {
-                  console.log('🧪 [Sandbox] Initializing with config:', config);
+                  console.log('🧪 [Local Mock] Initializing with config:', config);
                   this.config = config || { version: "2.0", sandbox: true };
-                  console.log('✅ [Sandbox] Pi SDK initialized (sandbox mode)');
+                  console.log('✅ [Local Mock] Pi SDK initialized (local dev mode)');
                   return Promise.resolve();
                 };
                 
                 window.PiSandbox.prototype.authenticate = function(scopes, onIncompletePaymentFound) {
-                  console.log('🧪 [Sandbox] Authenticating with scopes:', scopes);
+                  console.log('🧪 [Local Mock] Authenticating with scopes:', scopes);
                   this.authenticated = true;
                   this.scopes = scopes || [];
                   this.user = {
@@ -47,7 +65,7 @@ export default function Document() {
                     username: 'sandbox_user',
                     wallet_address: null
                   };
-                  console.log('✅ [Sandbox] Authentication successful:', this.user);
+                  console.log('✅ [Local Mock] Authentication successful:', this.user);
                   return Promise.resolve({
                     accessToken: 'sandbox_token_' + generateSecureId(),
                     user: this.user
@@ -56,18 +74,18 @@ export default function Document() {
                 
                 window.PiSandbox.prototype.createPayment = function(paymentData, callbacks) {
                   const self = this;
-                  console.log('🧪 [Sandbox] Creating payment:', paymentData);
+                  console.log('🧪 [Local Mock] Creating payment:', paymentData);
                   
                   if (!self.authenticated) {
                     const error = new Error('User must authenticate first');
-                    console.error('❌ [Sandbox]', error.message);
+                    console.error('❌ [Local Mock]', error.message);
                     if (callbacks.onError) callbacks.onError(error, null);
                     return Promise.reject(error);
                   }
                   
                   if (!self.scopes.includes('payments')) {
                     const error = new Error('Cannot create a payment without "payments" scope');
-                    console.error('❌ [Sandbox]', error.message);
+                    console.error('❌ [Local Mock]', error.message);
                     if (callbacks.onError) callbacks.onError(error, null);
                     return Promise.reject(error);
                   }
@@ -76,14 +94,14 @@ export default function Document() {
                   const txid = 'sandbox_txid_' + generateSecureId();
                   
                   setTimeout(function() {
-                    console.log('✅ [Sandbox] Payment ready for approval:', paymentId);
+                    console.log('✅ [Local Mock] Payment ready for approval:', paymentId);
                     if (callbacks.onReadyForServerApproval) {
                       callbacks.onReadyForServerApproval(paymentId);
                     }
                   }, 1000);
                   
                   setTimeout(function() {
-                    console.log('✅ [Sandbox] Payment completed:', { paymentId: paymentId, txid: txid });
+                    console.log('✅ [Local Mock] Payment completed:', { paymentId: paymentId, txid: txid });
                     if (callbacks.onReadyForServerCompletion) {
                       callbacks.onReadyForServerCompletion(paymentId, txid);
                     }
@@ -97,101 +115,57 @@ export default function Document() {
                   });
                 };
                 
-                // Initialize sandbox immediately
-                console.log('🧪 Initializing Pi Sandbox...');
-                window.Pi = new window.PiSandbox();
-                window.piSandboxMode = true;
-                console.log('✅ Pi Sandbox ready');
-                
-                // Try to load real Pi SDK (will override if available)
-                (function() {
-                  let piCheckAttempts = 0;
-                  const maxAttempts = 30; // 3 seconds
+                // Only use local mock in local development
+                if (!shouldUseRealSDK) {
+                  console.log('🧪 Using local mock (localhost development)');
+                  window.Pi = new window.PiSandbox();
+                  window.piSandboxMode = true;
+                  console.log('✅ Local Pi mock ready');
+                } else {
+                  // Wait for real Pi SDK to load (testnet/production)
+                  console.log('⏳ Waiting for real Pi SDK to load (testnet/production)...');
+                  window.piSandboxMode = false;
                   
-                  const checkPi = setInterval(function() {
-                    piCheckAttempts++;
+                  (function() {
+                    const SDK_LOAD_TIMEOUT_MS = 10000; // Total timeout: 10 seconds
+                    const POLL_INTERVAL_MS = 100; // Check every 100ms
+                    const maxAttempts = Math.floor(SDK_LOAD_TIMEOUT_MS / POLL_INTERVAL_MS);
+                    let piCheckAttempts = 0;
                     
-                    // Check if real Pi SDK loaded (has different structure than our sandbox)
-                    if (window.Pi && window.Pi.constructor.name !== 'PiSandbox') {
-                      clearInterval(checkPi);
-                      console.log('✅ Real Pi SDK loaded (attempt ' + piCheckAttempts + ')');
-                      console.log('📱 App ID:', window.piConfig.appId);
-                      window.piSandboxMode = false;
+                    const checkPi = setInterval(function() {
+                      piCheckAttempts++;
                       
-                      try {
-                        if (window.Pi.init) {
-                          window.Pi.init({ version: "2.0", sandbox: window.piConfig.sandbox });
-                          console.log('✅ Pi SDK initialized');
+                      // Check if real Pi SDK loaded from external script
+                      if (window.Pi && typeof window.Pi.init === 'function') {
+                        clearInterval(checkPi);
+                        console.log('✅ Real Pi SDK loaded successfully (attempt ' + piCheckAttempts + ')');
+                        console.log('📱 Initializing with App ID:', window.piConfig.appId);
+                        console.log('🔧 Sandbox mode:', window.piConfig.sandbox);
+                        
+                        try {
+                          // Initialize the real Pi SDK
+                          window.Pi.init({ version: "2.0", sandbox: window.piConfig.sandbox })
+                            .then(function() {
+                              console.log('✅ Pi SDK initialized successfully');
+                            })
+                            .catch(function(e) {
+                              console.error('❌ Pi SDK initialization failed:', e);
+                            });
+                        } catch (e) {
+                          console.error('❌ Pi SDK init error:', e);
                         }
-                      } catch (e) {
-                        console.warn('⚠️ Pi SDK init failed:', e);
+                        return;
                       }
-                    }
-                    
-                    if (piCheckAttempts >= maxAttempts) {
-                      clearInterval(checkPi);
-                      console.log('🧪 Using Sandbox mode (Pi SDK not detected)');
-                    }
-                  }, 100);
-                  
-                  // Timeout after 10 seconds
-                  setTimeout(function() {
-                    clearInterval(checkPi);
-                    if (!window.Pi) {
-                      console.warn('⚠️ Pi SDK not loaded. Using sandbox mode.');
-                      // Create mock Pi object for sandbox
-                      let authenticatedScopes = [];
-                      let isAuthenticated = false;
                       
-                      window.Pi = {
-                        init: function(config) {
-                          console.log('🧪 Sandbox: Mock init with config:', config);
-                          return Promise.resolve();
-                        },
-                        authenticate: function(scopes, onIncompletePaymentFound) {
-                          console.log('🧪 Sandbox: Mock authentication with scopes:', scopes);
-                          authenticatedScopes = scopes || [];
-                          isAuthenticated = true;
-                          return Promise.resolve({
-                            accessToken: 'sandbox_token_' + generateSecureId(),
-                            user: {
-                              uid: 'sandbox_user_' + generateSecureId(),
-                              username: 'sandbox_user',
-                              wallet_address: null
-                            }
-                          });
-                        },
-                        createPayment: function(paymentData, callbacks) {
-                          // Check if authenticated with payments scope
-                          if (!isAuthenticated) {
-                            console.error('❌ Sandbox: Not authenticated');
-                            return Promise.reject(new Error('User must authenticate first'));
-                          }
-                          if (!authenticatedScopes.includes('payments')) {
-                            console.error('❌ Sandbox: Missing payments scope');
-                            return Promise.reject(new Error('Cannot create a payment without "payments" scope'));
-                          }
-                          
-                          console.log('🧪 Sandbox: Mock payment', paymentData);
-                          var paymentId = 'sandbox_payment_' + generateSecureId();
-                          var txid = 'sandbox_txid_' + generateSecureId();
-                          
-                          setTimeout(function() {
-                            if (callbacks.onReadyForServerApproval) {
-                              callbacks.onReadyForServerApproval(paymentId);
-                            }
-                          }, 1000);
-                          setTimeout(function() {
-                            if (callbacks.onReadyForServerCompletion) {
-                              callbacks.onReadyForServerCompletion(paymentId, txid);
-                            }
-                          }, 2000);
-                          return Promise.resolve({ identifier: paymentId });
-                        }
-                      };
-                    }
-                  }, 10000);
-                })();
+                      if (piCheckAttempts >= maxAttempts) {
+                        clearInterval(checkPi);
+                        console.error('❌ Pi SDK failed to load after ' + (SDK_LOAD_TIMEOUT_MS / 1000) + ' seconds');
+                        console.error('⚠️ This may cause payment functionality to fail');
+                        console.error('💡 Ensure you are running in Pi Browser or the Pi SDK script loaded correctly');
+                      }
+                    }, 100);
+                  })();
+                }
               `,
           }}
         />
@@ -199,9 +173,16 @@ export default function Document() {
       <body>
         <Main />
         <NextScript />
+        {/* 
+          Load Pi SDK eagerly in production/testnet to ensure it's ready before payments.
+          Uses afterInteractive to not block initial page load, but loads as soon as page is interactive.
+          In localhost dev, the local mock is used instead (see inline script above).
+        */}
         <Script
           src="https://sdk.minepi.com/pi-sdk.js"
           strategy="afterInteractive"
+          onLoad={() => console.log('📦 Pi SDK script loaded')}
+          onError={(e) => console.error('❌ Pi SDK script failed to load:', e)}
         />
       </body>
     </Html>
