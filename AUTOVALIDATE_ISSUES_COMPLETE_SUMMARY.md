@@ -1,6 +1,6 @@
 # GitHub Copilot Autovalidate Issues - Complete Summary
 
-**Last Updated**: 2026-01-22  
+**Last Updated**: 2026-02-07  
 **Status**: Active - Multiple Known Issues  
 **Impact**: High - Blocking PR merges
 
@@ -14,8 +14,9 @@ The tec-ecosystem repository has identified **two distinct but related issues** 
 |-------|----|----|--------|----------|
 | Slice Bounds Panic | #310 | 2026-01-22 | Documented | High |
 | Path Configuration Error | #313+ | 2026-01-22 | Active | High |
+| Slice Bounds Panic | #360 | 2026-02-07 | Documented | High |
 
-## Issue 1: Slice Bounds Panic (PR #310)
+## Issue 1: Slice Bounds Panic (PR #310, #360)
 
 ### Error Pattern
 ```
@@ -30,9 +31,23 @@ github.com/github/codeml-autofix/go/v2/pkg/autofix/editcommands.Replace.Apply(..
 - **Improper Error Handling**: Panic instead of error return
 
 ### Impact
-- Blocks PR #310
-- May affect PRs with multi-byte UTF-8 characters
+- Blocks PR #310, #360
+- May affect PRs with multi-byte UTF-8 characters or specific file size patterns
 - Other checks (ESLint, CodeQL) pass successfully
+
+### Latest Occurrence: PR #360 (2026-02-07)
+
+**Error**: `panic: runtime error: slice bounds out of range [:201] with capacity 191`
+
+**Context**:
+- PR modifying payment SDK initialization (`pages/_document.js`, `pages/index.js`, `pages/upgrade.js`)
+- Tool attempted to insert content at position 201 in a file with only 191 bytes
+- All other quality checks (ESLint, CodeQL, Agent) passed successfully
+
+**Resolution Documentation**:
+- [Detailed Guide (English)](./AUTOVALIDATE_PR360_FAILURE_RESOLUTION.md)
+- [Detailed Guide (Arabic)](./AUTOVALIDATE_PR360_FAILURE_RESOLUTION_AR.md)
+- [Quick Fix Guide](./AUTOVALIDATE_PR360_QUICK_FIX.md)
 
 ### Documentation
 - [Full Bug Report](./GITHUB_COPILOT_AUTOVALIDATE_BUG_REPORT.md)
