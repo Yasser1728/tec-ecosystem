@@ -364,8 +364,28 @@ export default function Dashboard() {
             </div>
           </div>
 
+          {/* Upgrade Banner */}
+          <div className="mt-8 bg-gradient-to-r from-[#00ff9d]/10 to-[#00c6ff]/10 border border-[#00ff9d]/30 rounded-xl p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-xl font-bold text-white mb-2">
+                  💎 Upgrade Your Plan
+                </h3>
+                <p className="text-gray-400">
+                  Unlock premium features and unlimited access with Pi payments
+                </p>
+              </div>
+              <Link
+                href="/upgrade"
+                className="bg-gradient-to-r from-[#00ff9d] to-[#00c6ff] text-gray-900 px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all whitespace-nowrap"
+              >
+                Upgrade Now
+              </Link>
+            </div>
+          </div>
+
           {/* Bottom Banner */}
-          <div className="mt-8 bg-gradient-to-r from-purple-900/50 to-pink-900/50 border border-purple-500/30 rounded-xl p-6">
+          <div className="mt-4 bg-gradient-to-r from-purple-900/50 to-pink-900/50 border border-purple-500/30 rounded-xl p-6">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-xl font-bold text-white mb-2">

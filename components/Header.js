@@ -5,7 +5,8 @@ import { LanguageToggle } from "./layout";
 import { useLanguage } from "../hooks/useLanguage";
 
 const navLinks = [
-  { href: "/ecosystem", label: "Domains", labelAr: "النطاقات" },
+  { href: "/domains", label: "Domains", labelAr: "النطاقات" },
+  { href: "/ecosystem", label: "Ecosystem", labelAr: "النظام البيئي" },
   { href: "/tec/ai-assistant", label: "AI Assistant", labelAr: "المساعد الذكي" },
   { href: "/tec/dashboard", label: "Dashboard", labelAr: "لوحة التحكم" },
   { href: "/upgrade", label: "Upgrade", labelAr: "ترقية" },

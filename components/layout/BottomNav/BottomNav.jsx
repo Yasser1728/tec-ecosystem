@@ -41,17 +41,17 @@ const getNavItems = (t) => [
     elevated: true
   },
   {
-    id: 'activity',
-    label: t('activity'),
+    id: 'dashboard',
+    label: t('dashboard'),
     icon: '📊',
-    href: '/activity',
+    href: '/tec/dashboard',
     gradient: false
   },
   {
-    id: 'profile',
-    label: t('profile'),
-    icon: '👤',
-    href: '/profile',
+    id: 'upgrade',
+    label: t('upgrade'),
+    icon: '⭐',
+    href: '/upgrade',
     gradient: false
   }
 ];
