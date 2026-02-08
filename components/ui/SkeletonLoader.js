@@ -4,6 +4,8 @@
  * 
  * @module components/ui/SkeletonLoader
  * @version 1.0.0
+ * 
+ * Note: Shimmer animation is configured in tailwind.config.cjs
  */
 
 /**
@@ -133,16 +135,3 @@ export default function SkeletonLoader({ variant = 'card', count = 1, className 
     </>
   );
 }
-
-/**
- * Add shimmer animation to globals.css or tailwind config:
- * 
- * @keyframes shimmer {
- *   0% { transform: translateX(-100%); }
- *   100% { transform: translateX(100%); }
- * }
- * 
- * .animate-shimmer {
- *   animation: shimmer 2s infinite;
- * }
- */

@@ -168,7 +168,9 @@ export default function ServiceRouter() {
 
                 {/* Status Indicator */}
                 {domain.status === 'active' && (
-                  <span className="text-green-400 text-xs">● Active</span>
+                  <span className="text-green-400 text-xs">
+                    ● {language === 'ar' ? 'نشط' : 'Active'}
+                  </span>
                 )}
               </div>
 

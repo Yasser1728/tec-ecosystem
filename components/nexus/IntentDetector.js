@@ -219,7 +219,15 @@ export default function IntentDetector() {
             <button
               key={idx}
               onClick={() => handleExampleClick(example)}
-              className="text-xs px-3 py-2 bg-gray-800 border border-gray-700 rounded-full text-gray-300 hover:border-[#00ff9d]/50 hover:text-white transition-all"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleExampleClick(example);
+                }
+              }}
+              tabIndex={0}
+              role="button"
+              className="text-xs px-3 py-2 bg-gray-800 border border-gray-700 rounded-full text-gray-300 hover:border-[#00ff9d]/50 hover:text-white focus:outline-none focus:ring-2 focus:ring-[#00ff9d]/50 transition-all"
             >
               {example}
             </button>
