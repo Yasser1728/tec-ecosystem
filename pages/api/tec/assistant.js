@@ -17,20 +17,29 @@ import AiAssistantService from "../../../apps/tec/services/aiAssistantService.js
 // Singleton instance to maintain conversation history across requests
 const assistantService = new AiAssistantService();
 
-// Dynamic governance import with fallback for resilience
+// Lazy-loaded governance module with fallback for resilience
 let tecAssistantGovernance = null;
-let governanceLoadError = null;
+let governanceLoadAttempted = false;
 
-// Try to load governance module, but don't crash if it fails
-(async () => {
+/**
+ * Lazy load governance module on first request
+ * This avoids race conditions and allows the app to start even if governance fails
+ */
+async function getGovernance() {
+  if (governanceLoadAttempted) {
+    return tecAssistantGovernance;
+  }
+  
+  governanceLoadAttempted = true;
   try {
     const governanceModule = await import("../../../lib/assistant/governance.js");
     tecAssistantGovernance = governanceModule.tecAssistantGovernance;
+    return tecAssistantGovernance;
   } catch (e) {
-    governanceLoadError = e;
     console.warn("Governance module failed to load, using fallback mode:", e.message);
+    return null;
   }
-})();
+}
 
 // Development/Sandbox mode - bypass governance for faster testing
 const BYPASS_GOVERNANCE = process.env.NEXT_PUBLIC_PI_SANDBOX === "true" || 
@@ -96,8 +105,9 @@ export default async function handler(req, res) {
     // Try to process through Governance Layer, with fallback
     let governedResponse = null;
     try {
-      if (tecAssistantGovernance) {
-        governedResponse = await tecAssistantGovernance.processGovernedRequest(
+      const governance = await getGovernance();
+      if (governance) {
+        governedResponse = await governance.processGovernedRequest(
           effectiveUserId,
           message,
           governanceContext
