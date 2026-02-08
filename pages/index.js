@@ -112,21 +112,14 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Wallet & Payment Eligibility — only when logged in */}
-        {isLoggedIn && user && (
+        {/* Pi Network Integration — visible when authenticated */}
+        {isLoggedIn && (
           <section className="relative z-10 container mx-auto px-4 pb-8">
             <div className="max-w-md mx-auto space-y-4">
               {/* Mainnet Mode Indicator */}
               <div className="text-center text-sm text-gray-400 mb-2">
                 🌐 Mainnet Mode: Real Pi payments
               </div>
-
-              <WalletStatus
-                authState={authState}
-                user={user}
-                paymentStatus={paymentStatus}
-                language={language}
-              />
 
               {/* Test Pi SDK Button */}
               <button
@@ -198,11 +191,23 @@ export default function Home() {
                 💎 Pay 1 Pi - Demo Payment
               </button>
 
-              <PaymentButton
-                authState={authState}
-                paymentStatus={paymentStatus}
-                language={language}
-              />
+              {/* Wallet Status & Payment Button — only when user object is available */}
+              {user && (
+                <>
+                  <WalletStatus
+                    authState={authState}
+                    user={user}
+                    paymentStatus={paymentStatus}
+                    language={language}
+                  />
+
+                  <PaymentButton
+                    authState={authState}
+                    paymentStatus={paymentStatus}
+                    language={language}
+                  />
+                </>
+              )}
             </div>
           </section>
         )}
