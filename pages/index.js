@@ -9,6 +9,7 @@ import PiAuthButton from "../components/PiAuthButton";
 import PaymentStatusBadge from "../components/PaymentStatusBadge";
 import PaymentButton from "../components/PaymentButton";
 import WalletStatus from "../components/WalletStatus";
+import PaymentReadinessBar from "../components/payments/PaymentReadinessBar";
 import { usePiAuth, AUTH_STATES } from "../hooks/usePiAuth";
 import { useLanguage } from "../hooks/useLanguage";
 
@@ -111,6 +112,11 @@ export default function Home() {
             )}
           </div>
         </section>
+
+        {/* Payment Readiness Bar - shows when user is logged in */}
+        {isLoggedIn && (
+          <PaymentReadinessBar />
+        )}
 
         {/* Pi Network Integration — always visible for demo/testing */}
         <section className="relative z-10 container mx-auto px-4 pb-8">
