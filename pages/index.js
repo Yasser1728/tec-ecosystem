@@ -169,6 +169,10 @@ export default function Home() {
                             headers: { "Content-Type": "application/json" },
                             body: JSON.stringify({ paymentId }),
                           });
+                          if (!res.ok) {
+                            console.error("❌ Server approval failed with status:", res.status);
+                            return;
+                          }
                           const data = await res.json();
                           console.log("Server approval response:", data);
                           if (data.success) {
@@ -188,6 +192,10 @@ export default function Home() {
                             headers: { "Content-Type": "application/json" },
                             body: JSON.stringify({ paymentId, txid }),
                           });
+                          if (!res.ok) {
+                            console.error("❌ Server completion failed with status:", res.status);
+                            return;
+                          }
                           const data = await res.json();
                           console.log("Server completion response:", data);
                           if (data.success) {
