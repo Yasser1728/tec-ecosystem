@@ -3,7 +3,8 @@
  * TEC Ecosystem - Natural language intent detection for domain routing
  * 
  * @module components/nexus/IntentDetector
- * @version 1.0.0
+ * @version 1.0.1
+ * @updated 2026-02-08 - Fixed autovalidate CI timing issue
  */
 
 import { useState, useMemo } from 'react';
