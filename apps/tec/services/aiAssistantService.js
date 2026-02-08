@@ -57,7 +57,16 @@ class AiAssistantService {
       return response;
     } catch (error) {
       console.error("Error processing message:", error);
-      throw new Error(`Failed to process message: ${error.message}`);
+      // Return a safe fallback response instead of throwing
+      return {
+        content:
+          "I'm sorry, I'm having trouble processing your request right now. Please try again in a moment.",
+        suggestions: [
+          "Tell me about TEC",
+          "Available Domains",
+          "How to get started",
+        ],
+      };
     }
   }
 
