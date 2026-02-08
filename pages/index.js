@@ -112,105 +112,103 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Pi Network Integration — visible when authenticated */}
-        {isLoggedIn && (
-          <section className="relative z-10 container mx-auto px-4 pb-8">
-            <div className="max-w-md mx-auto space-y-4">
-              {/* Mainnet Mode Indicator */}
-              <div className="text-center text-sm text-gray-400 mb-2">
-                🌐 Mainnet Mode: Real Pi payments
-              </div>
-
-              {/* Test Pi SDK Button */}
-              <button
-                onClick={() => {
-                  console.log("🧪 Testing Pi SDK...");
-                  if (typeof window !== "undefined" && window.Pi) {
-                    console.log("✅ window.Pi exists:", window.Pi);
-                    console.log("Pi SDK methods:", Object.keys(window.Pi));
-                    if (window.piConfig) {
-                      console.log("Pi Config:", window.piConfig);
-                    }
-                    alert("✅ Pi SDK is loaded! Check console for details.");
-                  } else {
-                    console.log("❌ window.Pi is not defined");
-                    alert("❌ Pi SDK not loaded. Please refresh the page.");
-                  }
-                }}
-                className="w-full bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
-              >
-                🖊 Test Pi SDK (Check Console)
-              </button>
-
-              {/* Demo Payment Button */}
-              <button
-                onClick={async () => {
-                  console.log("💰 Starting demo payment...");
-                  
-                  if (typeof window === "undefined" || !window.Pi) {
-                    console.log("❌ Pi SDK not loaded");
-                    alert("❌ Pi SDK not loaded. Please refresh the page.");
-                    return;
-                  }
-
-                  try {
-                    console.log("Creating payment with amount: 1 Pi");
-                    const payment = await window.Pi.createPayment(
-                      {
-                        amount: 1,
-                        memo: "Demo Payment",
-                        metadata: { demo: true, source: "homepage" },
-                      },
-                      {
-                        onReadyForServerApproval: (paymentId) => {
-                          console.log("✅ Payment approved by user:", paymentId);
-                          alert(`✅ Payment approved: ${paymentId}`);
-                        },
-                        onReadyForServerCompletion: (paymentId, txid) => {
-                          console.log("✅ Payment completed:", paymentId, txid);
-                          alert(`✅ Payment completed! TXID: ${txid}`);
-                        },
-                        onCancel: (paymentId) => {
-                          console.log("❌ Payment cancelled:", paymentId);
-                          alert("❌ Payment was cancelled");
-                        },
-                        onError: (error, payment) => {
-                          console.error("❌ Payment error:", error, payment);
-                          alert(`❌ Payment error: ${error.message}`);
-                        },
-                      }
-                    );
-                    console.log("Payment created:", payment);
-                  } catch (error) {
-                    console.error("❌ Payment failed:", error);
-                    alert(`❌ Payment failed: ${error.message}`);
-                  }
-                }}
-                className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
-              >
-                💎 Pay 1 Pi - Demo Payment
-              </button>
-
-              {/* Wallet Status & Payment Button — only when user object is available */}
-              {user && (
-                <>
-                  <WalletStatus
-                    authState={authState}
-                    user={user}
-                    paymentStatus={paymentStatus}
-                    language={language}
-                  />
-
-                  <PaymentButton
-                    authState={authState}
-                    paymentStatus={paymentStatus}
-                    language={language}
-                  />
-                </>
-              )}
+        {/* Pi Network Integration — always visible for demo/testing */}
+        <section className="relative z-10 container mx-auto px-4 pb-8">
+          <div className="max-w-md mx-auto space-y-4">
+            {/* Mainnet Mode Indicator */}
+            <div className="text-center text-sm text-gray-400 mb-2">
+              🌐 Mainnet Mode: Real Pi payments
             </div>
-          </section>
-        )}
+
+            {/* Test Pi SDK Button */}
+            <button
+              onClick={() => {
+                console.log("🧪 Testing Pi SDK...");
+                if (typeof window !== "undefined" && window.Pi) {
+                  console.log("✅ window.Pi exists:", window.Pi);
+                  console.log("Pi SDK methods:", Object.keys(window.Pi));
+                  if (window.piConfig) {
+                    console.log("Pi Config:", window.piConfig);
+                  }
+                  alert("✅ Pi SDK is loaded! Check console for details.");
+                } else {
+                  console.log("❌ window.Pi is not defined");
+                  alert("❌ Pi SDK not loaded. Please refresh the page.");
+                }
+              }}
+              className="w-full bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
+            >
+              🖊 Test Pi SDK (Check Console)
+            </button>
+
+            {/* Demo Payment Button */}
+            <button
+              onClick={async () => {
+                console.log("💰 Starting demo payment...");
+                
+                if (typeof window === "undefined" || !window.Pi) {
+                  console.log("❌ Pi SDK not loaded");
+                  alert("❌ Pi SDK not loaded. Please refresh the page.");
+                  return;
+                }
+
+                try {
+                  console.log("Creating payment with amount: 1 Pi");
+                  const payment = await window.Pi.createPayment(
+                    {
+                      amount: 1,
+                      memo: "Demo Payment",
+                      metadata: { demo: true, source: "homepage" },
+                    },
+                    {
+                      onReadyForServerApproval: (paymentId) => {
+                        console.log("✅ Payment approved by user:", paymentId);
+                        alert(`✅ Payment approved: ${paymentId}`);
+                      },
+                      onReadyForServerCompletion: (paymentId, txid) => {
+                        console.log("✅ Payment completed:", paymentId, txid);
+                        alert(`✅ Payment completed! TXID: ${txid}`);
+                      },
+                      onCancel: (paymentId) => {
+                        console.log("❌ Payment cancelled:", paymentId);
+                        alert("❌ Payment was cancelled");
+                      },
+                      onError: (error, payment) => {
+                        console.error("❌ Payment error:", error, payment);
+                        alert(`❌ Payment error: ${error.message}`);
+                      },
+                    }
+                  );
+                  console.log("Payment created:", payment);
+                } catch (error) {
+                  console.error("❌ Payment failed:", error);
+                  alert(`❌ Payment failed: ${error.message}`);
+                }
+              }}
+              className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
+            >
+              💎 Pay 1 Pi - Demo Payment
+            </button>
+
+            {/* Wallet Status & Payment Button — only when user object is available */}
+            {isLoggedIn && user && (
+              <>
+                <WalletStatus
+                  authState={authState}
+                  user={user}
+                  paymentStatus={paymentStatus}
+                  language={language}
+                />
+
+                <PaymentButton
+                  authState={authState}
+                  paymentStatus={paymentStatus}
+                  language={language}
+                />
+              </>
+            )}
+          </div>
+        </section>
 
         {/* Domain Cards */}
         <section className="relative z-10 container mx-auto px-4 py-16">
