@@ -63,9 +63,7 @@ export default function PaymentUnavailable({
         </div>
         <div className="flex items-center gap-2">
           <span className="text-red-400">●</span>
-          <span className="text-xs text-gray-400">
-            {language === 'ar' ? 'شبكة Pi' : 'Pi Network'}
-          </span>
+          <span className="text-xs text-gray-400">{t.piNetwork}</span>
         </div>
       </div>
 
@@ -76,9 +74,7 @@ export default function PaymentUnavailable({
             {t.useAlternative}
           </p>
           <div className="text-xs text-gray-600">
-            {language === 'ar'
-              ? 'سيتم إضافة طرق دفع بديلة قريباً'
-              : 'Alternative payment methods coming soon'}
+            {t.alternativeMethodsComingSoon}
           </div>
         </div>
       )}

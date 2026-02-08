@@ -201,9 +201,7 @@ export default function IntentDetector() {
         {showSuggestions && getSuggestions.length === 0 && input.trim().length > 3 && (
           <div className="absolute top-full left-0 right-0 mt-2 bg-gray-800 border border-gray-700 rounded-lg shadow-lg p-4 z-10">
             <p className="text-gray-400 text-sm">
-              {language === 'ar' 
-                ? 'لم يتم العثور على نطاقات مطابقة. حاول استخدام كلمات مختلفة.'
-                : 'No matching domains found. Try using different keywords.'}
+              {t.noMatchingDomains}
             </p>
           </div>
         )}

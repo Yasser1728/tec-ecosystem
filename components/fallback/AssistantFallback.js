@@ -71,9 +71,7 @@ export default function AssistantFallback() {
           className="bg-gray-800 border border-gray-700 rounded-lg p-3 text-center hover:border-[#00ff9d]/50 transition-colors"
         >
           <div className="text-2xl mb-1">⭐</div>
-          <div className="text-xs text-gray-300">
-            {language === 'ar' ? 'الترقية' : 'Upgrade'}
-          </div>
+          <div className="text-xs text-gray-300">{tCommon.upgrade}</div>
         </Link>
         
         <Link
@@ -81,9 +79,7 @@ export default function AssistantFallback() {
           className="bg-gray-800 border border-gray-700 rounded-lg p-3 text-center hover:border-[#00ff9d]/50 transition-colors"
         >
           <div className="text-2xl mb-1">📊</div>
-          <div className="text-xs text-gray-300">
-            {language === 'ar' ? 'لوحة التحكم' : 'Dashboard'}
-          </div>
+          <div className="text-xs text-gray-300">{tCommon.dashboard}</div>
         </Link>
         
         <Link
@@ -91,9 +87,7 @@ export default function AssistantFallback() {
           className="bg-gray-800 border border-gray-700 rounded-lg p-3 text-center hover:border-[#00ff9d]/50 transition-colors"
         >
           <div className="text-2xl mb-1">ℹ️</div>
-          <div className="text-xs text-gray-300">
-            {language === 'ar' ? 'المساعدة' : 'Help Center'}
-          </div>
+          <div className="text-xs text-gray-300">{tCommon.helpCenter}</div>
         </Link>
       </div>
 
