@@ -161,13 +161,43 @@ export default function Home() {
                       metadata: { demo: true, source: "homepage" },
                     },
                     {
-                      onReadyForServerApproval: (paymentId) => {
-                        console.log("✅ Payment approved by user:", paymentId);
-                        alert(`✅ Payment approved: ${paymentId}`);
+                      onReadyForServerApproval: async (paymentId) => {
+                        console.log("✅ Payment ready for server approval:", paymentId);
+                        try {
+                          const res = await fetch("/api/payments/approve", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ paymentId }),
+                          });
+                          const data = await res.json();
+                          console.log("Server approval response:", data);
+                          if (data.success) {
+                            console.log("✅ Payment approved by server");
+                          } else {
+                            console.error("❌ Server approval failed:", data);
+                          }
+                        } catch (err) {
+                          console.error("❌ Failed to call approve API:", err);
+                        }
                       },
-                      onReadyForServerCompletion: (paymentId, txid) => {
-                        console.log("✅ Payment completed:", paymentId, txid);
-                        alert(`✅ Payment completed! TXID: ${txid}`);
+                      onReadyForServerCompletion: async (paymentId, txid) => {
+                        console.log("✅ Payment ready for server completion:", paymentId, txid);
+                        try {
+                          const res = await fetch("/api/payments/complete", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ paymentId, txid }),
+                          });
+                          const data = await res.json();
+                          console.log("Server completion response:", data);
+                          if (data.success) {
+                            console.log("✅ Payment completed successfully! 🎉");
+                          } else {
+                            console.error("❌ Server completion failed:", data);
+                          }
+                        } catch (err) {
+                          console.error("❌ Failed to call complete API:", err);
+                        }
                       },
                       onCancel: (paymentId) => {
                         console.log("❌ Payment cancelled:", paymentId);
