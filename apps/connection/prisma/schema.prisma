@@ -1,0 +1,145 @@
+// Connection.pi - Networking Domain
+// Professional networking and connections
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client-connection"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("CONNECTION_DATABASE_URL")
+}
+
+// Network Profiles
+model Network {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  displayName   String
+  bio           String?
+  industry      String?
+  location      Json?
+  
+  connections   Int      @default(0)
+  followers     Int      @default(0)
+  following     Int      @default(0)
+  
+  contacts      Contact[]
+  relationships Relationship[]
+  events        Event[]
+  opportunities Opportunity[]
+  
+  metadata      Json?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([industry])
+  @@map("connection_networks")
+}
+
+// Contacts
+model Contact {
+  id            String   @id @default(cuid())
+  networkId     String
+  network       Network  @relation(fields: [networkId], references: [id], onDelete: Cascade)
+  
+  contactUserId String?
+  name          String
+  email         String?
+  phone         String?
+  company       String?
+  position      String?
+  
+  tags          String[]
+  notes         String?
+  
+  status        String   @default("ACTIVE")
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([networkId])
+  @@index([contactUserId])
+  @@map("connection_contacts")
+}
+
+// Relationships
+model Relationship {
+  id            String   @id @default(cuid())
+  networkId     String
+  network       Network  @relation(fields: [networkId], references: [id], onDelete: Cascade)
+  
+  connectedUserId String
+  relationshipType String // COLLEAGUE, PARTNER, FRIEND, MENTOR
+  
+  strength      Int      @default(50) // 0-100
+  
+  connectedAt   DateTime @default(now())
+  lastInteraction DateTime?
+  
+  metadata      Json?
+  
+  @@index([networkId])
+  @@index([connectedUserId])
+  @@map("connection_relationships")
+}
+
+// Networking Events
+model Event {
+  id            String   @id @default(cuid())
+  networkId     String
+  network       Network  @relation(fields: [networkId], references: [id], onDelete: Cascade)
+  
+  title         String
+  description   String
+  eventType     String   // CONFERENCE, MEETUP, WEBINAR, WORKSHOP
+  
+  startDate     DateTime
+  endDate       DateTime
+  location      Json?
+  
+  attendees     Int      @default(0)
+  capacity      Int?
+  
+  status        String   @default("UPCOMING")
+  
+  metadata      Json?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([networkId])
+  @@index([eventType])
+  @@index([startDate])
+  @@map("connection_events")
+}
+
+// Business Opportunities
+model Opportunity {
+  id            String   @id @default(cuid())
+  networkId     String
+  network       Network  @relation(fields: [networkId], references: [id], onDelete: Cascade)
+  
+  title         String
+  description   String
+  opportunityType String // JOB, PARTNERSHIP, INVESTMENT, COLLABORATION
+  
+  value         Float?
+  currency      String?  @default("PI")
+  
+  deadline      DateTime?
+  
+  status        String   @default("OPEN")
+  
+  metadata      Json?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([networkId])
+  @@index([opportunityType])
+  @@index([status])
+  @@map("connection_opportunities")
+}

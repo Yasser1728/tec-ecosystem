@@ -8,8 +8,12 @@
  */
 
 import { DomainBootstrap } from "../../core/bootstrap";
-import { getDomainDatabaseConfig } from "../../core/database";
+import { getDomainDatabaseConfig, registerDomainClient } from "../../core/database";
 import domainConfig from "./config";
+import nxDB from "./db/client.js";
+
+// Register this domain's database client
+registerDomainClient("nx", nxDB);
 
 /**
  * NX Domain Class
@@ -74,3 +78,4 @@ export class NXDomain extends DomainBootstrap {
 export const nxDomain = new NXDomain();
 
 export default nxDomain;
+export { nxDB };

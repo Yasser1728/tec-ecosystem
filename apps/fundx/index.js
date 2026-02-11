@@ -8,8 +8,12 @@
  */
 
 import { DomainBootstrap } from "../../core/bootstrap";
-import { getDomainDatabaseConfig } from "../../core/database";
+import { getDomainDatabaseConfig, registerDomainClient } from "../../core/database";
 import domainConfig from "./config";
+import fundxDB from "./db/client.js";
+
+// Register this domain's database client
+registerDomainClient("fundx", fundxDB);
 
 /**
  * FundX Domain Class
@@ -75,3 +79,4 @@ export class FundXDomain extends DomainBootstrap {
 export const fundxDomain = new FundXDomain();
 
 export default fundxDomain;
+export { fundxDB };

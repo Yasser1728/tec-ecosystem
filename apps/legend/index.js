@@ -8,8 +8,12 @@
  */
 
 import { DomainBootstrap } from "../../core/bootstrap";
-import { getDomainDatabaseConfig } from "../../core/database";
+import { getDomainDatabaseConfig, registerDomainClient } from "../../core/database";
 import domainConfig from "./config";
+import legendDB from "./db/client.js";
+
+// Register this domain's database client
+registerDomainClient("legend", legendDB);
 
 /**
  * Legend Domain Class
@@ -74,3 +78,4 @@ export class LegendDomain extends DomainBootstrap {
 export const legendDomain = new LegendDomain();
 
 export default legendDomain;
+export { legendDB };

@@ -1,0 +1,277 @@
+// TEC.pi - TEC Hub Domain
+// Central orchestration and integration hub
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../../node_modules/.prisma/client-tec"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("TEC_DATABASE_URL")
+}
+
+// ============================================
+// TEC ASSISTANT MODELS
+// ============================================
+
+model TecUser {
+  id              String         @id @default(cuid())
+  piUid           String         @unique
+  piUsername      String         @unique
+  walletAddress   String?
+  
+  // Gamification
+  currentStreak   Int            @default(0)
+  longestStreak   Int            @default(0)
+  totalXp         Int            @default(0)
+  level           Int            @default(1)
+  
+  // Status
+  status          String         @default("ACTIVE") // ACTIVE, INACTIVE, SUSPENDED, DELETED
+  role            String         @default("USER")   // USER, PREMIUM, ADMIN
+  
+  // Relations
+  checkIns        TecCheckIn[]
+  unlocks         TecUnlock[]
+  invitesSent     TecInvite[]    @relation("InviterRelation")
+  invitedBy       TecInvite?     @relation("InviteeRelation")
+  transactions    TecTransaction[]
+  
+  // Audit
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  lastActiveAt    DateTime?
+  
+  @@index([piUsername])
+  @@index([createdAt])
+  @@map("tec_users")
+}
+
+model TecCheckIn {
+  id              String    @id @default(cuid())
+  userId          String
+  user            TecUser   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  date            DateTime  @db.Date
+  signal          String    // POSITIVE, NEUTRAL, CAUTION
+  xpEarned        Int
+  streakDay       Int
+  
+  createdAt       DateTime  @default(now())
+  
+  @@unique([userId, date])
+  @@index([date])
+  @@map("tec_check_ins")
+}
+
+model TecSignal {
+  id              String    @id @default(cuid())
+  date            DateTime  @unique @db.Date
+  type            String    // POSITIVE, NEUTRAL, CAUTION
+  
+  // AI Enhancement (Future)
+  confidence      Float?
+  metadata        Json?
+  
+  generatedAt     DateTime  @default(now())
+  
+  @@index([date])
+  @@map("tec_signals")
+}
+
+model TecTransaction {
+  id              String    @id @default(cuid())
+  userId          String
+  user            TecUser   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  piPaymentId     String    @unique
+  txHash          String?
+  amount          Decimal   @db.Decimal(18, 7)
+  type            String    // UNLOCK_FEATURE, SUBSCRIPTION, TIP, REFUND
+  status          String    @default("PENDING") // PENDING, COMPLETED, FAILED, CANCELLED, REFUNDED
+  
+  // Metadata
+  itemId          String?
+  metadata        Json?
+  
+  // Audit
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  completedAt     DateTime?
+  
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("tec_transactions")
+}
+
+model TecUnlock {
+  id              String    @id @default(cuid())
+  userId          String
+  user            TecUser   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  featureKey      String
+  transactionId   String?
+  
+  unlockedAt      DateTime  @default(now())
+  expiresAt       DateTime?
+  
+  @@unique([userId, featureKey])
+  @@index([featureKey])
+  @@map("tec_unlocks")
+}
+
+model TecInvite {
+  id              String    @id @default(cuid())
+  
+  inviterId       String
+  inviter         TecUser   @relation("InviterRelation", fields: [inviterId], references: [id], onDelete: Cascade)
+  
+  inviteeId       String?   @unique
+  invitee         TecUser?  @relation("InviteeRelation", fields: [inviteeId], references: [id], onDelete: Cascade)
+  
+  code            String    @unique
+  status          String    @default("PENDING") // PENDING, ACCEPTED, EXPIRED, REVOKED
+  
+  createdAt       DateTime  @default(now())
+  acceptedAt      DateTime?
+  
+  @@index([inviterId])
+  @@index([code])
+  @@map("tec_invites")
+}
+
+// ============================================
+// TEC HUB MODELS
+// ============================================
+
+// Domain Registry
+model Domain {
+  id            String   @id @default(cuid())
+  name          String   @unique
+  displayName   String
+  description   String
+  
+  sector        String
+  category      String
+  
+  icon          String
+  color         String
+  
+  integrations  Integration[]
+  
+  status        String   @default("ACTIVE")
+  
+  launchedAt    DateTime?
+  
+  metadata      Json?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([name])
+  @@index([category])
+  @@index([status])
+  @@map("tec_domains")
+}
+
+// Domain Integrations
+model Integration {
+  id            String   @id @default(cuid())
+  domainId      String
+  domain        Domain   @relation(fields: [domainId], references: [id], onDelete: Cascade)
+  
+  integrationType String // API, WEBHOOK, EVENT, DATA_SYNC
+  targetDomain  String?
+  
+  config        Json
+  
+  status        String   @default("ACTIVE")
+  
+  lastSyncedAt  DateTime?
+  
+  metadata      Json?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([domainId])
+  @@index([integrationType])
+  @@map("tec_integrations")
+}
+
+// TEC Dashboards
+model Dashboard {
+  id            String   @id @default(cuid())
+  userId        String
+  name          String
+  description   String?
+  
+  layout        Json     // Widget configurations
+  
+  domains       String[] // Domain names included
+  
+  isDefault     Boolean  @default(false)
+  isPublic      Boolean  @default(false)
+  
+  reports       Report[]
+  
+  metadata      Json?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([isDefault])
+  @@map("tec_dashboards")
+}
+
+// Dashboard Reports
+model Report {
+  id            String    @id @default(cuid())
+  dashboardId   String
+  dashboard     Dashboard @relation(fields: [dashboardId], references: [id], onDelete: Cascade)
+  
+  title         String
+  reportType    String    // ANALYTICS, PERFORMANCE, FINANCIAL, USAGE
+  
+  domains       String[]
+  
+  data          Json
+  
+  period        Json      // start, end dates
+  
+  analytics     Analytics[]
+  
+  generatedAt   DateTime  @default(now())
+  
+  metadata      Json?
+  
+  @@index([dashboardId])
+  @@index([reportType])
+  @@index([generatedAt])
+  @@map("tec_reports")
+}
+
+// Analytics Data
+model Analytics {
+  id            String   @id @default(cuid())
+  reportId      String
+  report        Report   @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  
+  domain        String
+  metric        String
+  value         Float
+  unit          String?
+  
+  dimensions    Json?
+  
+  timestamp     DateTime @default(now())
+  
+  @@index([reportId])
+  @@index([domain])
+  @@index([metric])
+  @@index([timestamp])
+  @@map("tec_analytics")
+}

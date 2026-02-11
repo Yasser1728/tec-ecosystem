@@ -8,8 +8,12 @@
  */
 
 import { DomainBootstrap } from "../../core/bootstrap";
-import { getDomainDatabaseConfig } from "../../core/database";
+import { getDomainDatabaseConfig, registerDomainClient } from "../../core/database";
 import domainConfig from "./config";
+import nexusDB from "./db/client.js";
+
+// Register this domain's database client
+registerDomainClient("nexus", nexusDB);
 
 /**
  * Nexus Domain Class
@@ -74,3 +78,4 @@ export class NexusDomain extends DomainBootstrap {
 export const nexusDomain = new NexusDomain();
 
 export default nexusDomain;
+export { nexusDB };

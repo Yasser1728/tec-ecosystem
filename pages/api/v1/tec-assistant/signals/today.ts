@@ -3,12 +3,12 @@
  * GET /api/v1/tec-assistant/signals/today
  */
 
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient as TecPrismaClient } from ".prisma/client-tec";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { SignalRepository } from "@/src/infrastructure/database/repositories/SignalRepository";
 import { GetTodaySignal } from "@/src/domain/use-cases/signals/GetTodaySignal";
 
-const prisma = new PrismaClient();
+const prisma = new TecPrismaClient();
 
 export default async function handler(
   req: NextApiRequest,

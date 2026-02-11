@@ -1,0 +1,148 @@
+// Elite.pi - Elite Networking Domain
+// Exclusive high-level networking
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client-elite"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("ELITE_DATABASE_URL")
+}
+
+// Elite Networks
+model Network {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  memberLevel   String   @default("ELITE")
+  displayName   String
+  title         String?
+  bio           String?
+  
+  netWorth      Float?
+  industry      String?
+  
+  connections   Int      @default(0)
+  
+  contacts      Contact[]
+  relationships Relationship[]
+  events        Event[]
+  opportunities Opportunity[]
+  
+  verified      Boolean  @default(false)
+  
+  metadata      Json?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([memberLevel])
+  @@map("elite_networks")
+}
+
+// Elite Contacts
+model Contact {
+  id            String   @id @default(cuid())
+  networkId     String
+  network       Network  @relation(fields: [networkId], references: [id], onDelete: Cascade)
+  
+  contactUserId String?
+  name          String
+  title         String?
+  company       String?
+  
+  contactInfo   Json?
+  
+  influence     Int      @default(0) // 0-100
+  
+  isVerified    Boolean  @default(false)
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([networkId])
+  @@index([contactUserId])
+  @@map("elite_contacts")
+}
+
+// Elite Relationships
+model Relationship {
+  id            String   @id @default(cuid())
+  networkId     String
+  network       Network  @relation(fields: [networkId], references: [id], onDelete: Cascade)
+  
+  connectedUserId String
+  relationshipType String // INVESTOR, ADVISOR, PARTNER, BOARD_MEMBER
+  
+  value         Float?
+  
+  establishedAt DateTime @default(now())
+  lastContact   DateTime?
+  
+  metadata      Json?
+  
+  @@index([networkId])
+  @@index([connectedUserId])
+  @@map("elite_relationships")
+}
+
+// Exclusive Events
+model Event {
+  id            String   @id @default(cuid())
+  networkId     String
+  network       Network  @relation(fields: [networkId], references: [id], onDelete: Cascade)
+  
+  title         String
+  description   String
+  category      String   // SUMMIT, GALA, FORUM, RETREAT
+  
+  startDate     DateTime
+  endDate       DateTime
+  venue         Json?
+  
+  isInviteOnly  Boolean  @default(true)
+  maxAttendees  Int?
+  
+  status        String   @default("SCHEDULED")
+  
+  metadata      Json?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([networkId])
+  @@index([category])
+  @@map("elite_events")
+}
+
+// Investment Opportunities
+model Opportunity {
+  id            String   @id @default(cuid())
+  networkId     String
+  network       Network  @relation(fields: [networkId], references: [id], onDelete: Cascade)
+  
+  title         String
+  description   String
+  category      String   // INVESTMENT, ACQUISITION, PARTNERSHIP, DEAL
+  
+  minimumInvestment Float?
+  expectedReturn Float?
+  currency      String   @default("PI")
+  
+  deadline      DateTime?
+  
+  isConfidential Boolean @default(true)
+  
+  status        String   @default("AVAILABLE")
+  
+  metadata      Json?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([networkId])
+  @@index([category])
+  @@map("elite_opportunities")
+}

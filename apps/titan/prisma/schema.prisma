@@ -1,0 +1,152 @@
+// Titan.pi - Enterprise Solutions Domain
+// Large-scale enterprise solutions
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client-titan"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("TITAN_DATABASE_URL")
+}
+
+// Enterprise Clients
+model Enterprise {
+  id            String   @id @default(cuid())
+  name          String
+  industry      String
+  size          String   // SMALL, MEDIUM, LARGE, ENTERPRISE
+  
+  address       Json?
+  contactInfo   Json
+  
+  solutions     Solution[]
+  deployments   Deployment[]
+  licenses      License[]
+  
+  status        String   @default("ACTIVE")
+  
+  metadata      Json?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([industry])
+  @@index([size])
+  @@index([status])
+  @@map("titan_enterprises")
+}
+
+// Enterprise Solutions
+model Solution {
+  id            String     @id @default(cuid())
+  enterpriseId  String
+  enterprise    Enterprise @relation(fields: [enterpriseId], references: [id], onDelete: Cascade)
+  
+  name          String
+  type          String     // PLATFORM, SERVICE, INTEGRATION, CUSTOM
+  description   String     @db.Text
+  
+  version       String
+  
+  pricing       Json
+  
+  deployments   Deployment[]
+  
+  status        String     @default("AVAILABLE")
+  
+  metadata      Json?
+  
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  
+  @@index([enterpriseId])
+  @@index([type])
+  @@map("titan_solutions")
+}
+
+// Solution Deployments
+model Deployment {
+  id            String     @id @default(cuid())
+  enterpriseId  String
+  enterprise    Enterprise @relation(fields: [enterpriseId], references: [id], onDelete: Cascade)
+  
+  solutionId    String
+  solution      Solution   @relation(fields: [solutionId], references: [id])
+  
+  environment   String     // PRODUCTION, STAGING, DEVELOPMENT
+  region        String
+  
+  config        Json
+  
+  status        String     @default("DEPLOYING")
+  
+  regions       Region[]
+  
+  deployedAt    DateTime?
+  lastUpdatedAt DateTime?
+  
+  metadata      Json?
+  
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  
+  @@index([enterpriseId])
+  @@index([solutionId])
+  @@index([environment])
+  @@map("titan_deployments")
+}
+
+// Deployment Regions
+model Region {
+  id            String     @id @default(cuid())
+  deploymentId  String
+  deployment    Deployment @relation(fields: [deploymentId], references: [id], onDelete: Cascade)
+  
+  name          String
+  code          String
+  location      Json
+  
+  capacity      Json
+  
+  status        String     @default("ACTIVE")
+  
+  metadata      Json?
+  
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  
+  @@index([deploymentId])
+  @@index([code])
+  @@map("titan_regions")
+}
+
+// Enterprise Licenses
+model License {
+  id            String     @id @default(cuid())
+  enterpriseId  String
+  enterprise    Enterprise @relation(fields: [enterpriseId], references: [id], onDelete: Cascade)
+  
+  licenseKey    String     @unique
+  licenseType   String     // TRIAL, STANDARD, PREMIUM, ENTERPRISE
+  
+  users         Int?
+  domains       Int?
+  features      Json
+  
+  validFrom     DateTime   @default(now())
+  validUntil    DateTime
+  
+  status        String     @default("ACTIVE")
+  
+  metadata      Json?
+  
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  
+  @@index([enterpriseId])
+  @@index([licenseType])
+  @@index([status])
+  @@map("titan_licenses")
+}

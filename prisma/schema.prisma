@@ -8,6 +8,13 @@ datasource db {
   directUrl = env("POSTGRES_URL")
 }
 
+// ============================================
+// SHARED TABLES ONLY
+// User management, payments, and NFTs shared across all domains
+// Domain-specific models are in apps/{domain}/prisma/schema.prisma
+// ============================================
+
+// User management (shared across all domains)
 model User {
   id            String    @id @default(cuid())
   piId          String    @unique
@@ -28,6 +35,7 @@ model User {
   @@map("users")
 }
 
+// Payment system (PROTECTED - DO NOT MODIFY)
 model Payment {
   id            String        @id @default(cuid())
   userId        String
@@ -48,6 +56,7 @@ model Payment {
   @@map("payments")
 }
 
+// NFT system (shared)
 model NFT {
   id              String    @id @default(cuid())
   tokenId         String    @unique
@@ -65,6 +74,11 @@ model NFT {
   @@index([domainName])
   @@map("nfts")
 }
+
+// ============================================
+// SHARED E-COMMERCE TABLES
+// Product catalog, cart, and order management shared across commerce domains
+// ============================================
 
 model Product {
   id          String      @id @default(cuid())
@@ -165,7 +179,11 @@ model OrderItem {
   @@map("order_items")
 }
 
-// Business Units Management
+// ============================================
+// SHARED BUSINESS UNIT MANAGEMENT
+// Domain/business unit configuration and tracking
+// ============================================
+
 model BusinessUnit {
   id          String   @id @default(cuid())
   key         String   @unique // fundx, explorer, commerce, etc.
@@ -224,7 +242,11 @@ model BusinessUnitFeature {
   @@map("business_unit_features")
 }
 
-// User Activity Tracking
+// ============================================
+// SHARED ACTIVITY TRACKING & SUBSCRIPTIONS
+// User activity and subscription management across all domains
+// ============================================
+
 model UserActivity {
   id             String   @id @default(cuid())
   userId         String
@@ -241,7 +263,6 @@ model UserActivity {
   @@map("user_activities")
 }
 
-// Subscriptions for Business Units
 model Subscription {
   id             String   @id @default(cuid())
   userId         String
@@ -265,7 +286,11 @@ model Subscription {
   @@map("subscriptions")
 }
 
-// Forensic Audit Logs
+// ============================================
+// FORENSIC AUDIT & SECURITY SYSTEM
+// Shared audit logging and security controls
+// ============================================
+
 model AuditLog {
   id               String   @id @default(cuid())
   userId           String?
@@ -308,7 +333,6 @@ model AuditLog {
   @@map("audit_logs")
 }
 
-// System Control for Emergency Circuit Breaker
 model SystemControl {
   id                    String   @id @default(cuid())
   integrityLevel        String   @default("NORMAL") // NORMAL, WARNING, CRITICAL, LOCKED
@@ -330,7 +354,6 @@ model SystemControl {
   @@map("system_control")
 }
 
-// Transfer tracking for inter-domain transfers
 model Transfer {
   id                String   @id @default(cuid())
   sourceUserId      String
@@ -367,133 +390,3 @@ model Transfer {
   @@map("transfers")
 }
 
-// ============================================
-// TEC ASSISTANT DOMAIN MODELS
-// ============================================
-
-model TecUser {
-  id              String         @id @default(cuid())
-  piUid           String         @unique
-  piUsername      String         @unique
-  walletAddress   String?
-  
-  // Gamification
-  currentStreak   Int            @default(0)
-  longestStreak   Int            @default(0)
-  totalXp         Int            @default(0)
-  level           Int            @default(1)
-  
-  // Status
-  status          String         @default("ACTIVE") // ACTIVE, INACTIVE, SUSPENDED, DELETED
-  role            String         @default("USER")   // USER, PREMIUM, ADMIN
-  
-  // Relations
-  checkIns        TecCheckIn[]
-  unlocks         TecUnlock[]
-  invitesSent     TecInvite[]    @relation("InviterRelation")
-  invitedBy       TecInvite?     @relation("InviteeRelation")
-  transactions    TecTransaction[]
-  
-  // Audit
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
-  lastActiveAt    DateTime?
-  
-  @@index([piUsername])
-  @@index([createdAt])
-  @@map("tec_users")
-}
-
-model TecCheckIn {
-  id              String    @id @default(cuid())
-  userId          String
-  user            TecUser   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  date            DateTime  @db.Date
-  signal          String    // POSITIVE, NEUTRAL, CAUTION
-  xpEarned        Int
-  streakDay       Int
-  
-  createdAt       DateTime  @default(now())
-  
-  @@unique([userId, date])
-  @@index([date])
-  @@map("tec_check_ins")
-}
-
-model TecSignal {
-  id              String    @id @default(cuid())
-  date            DateTime  @unique @db.Date
-  type            String    // POSITIVE, NEUTRAL, CAUTION
-  
-  // AI Enhancement (Future)
-  confidence      Float?
-  metadata        Json?
-  
-  generatedAt     DateTime  @default(now())
-  
-  @@index([date])
-  @@map("tec_signals")
-}
-
-model TecTransaction {
-  id              String    @id @default(cuid())
-  userId          String
-  user            TecUser   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  piPaymentId     String    @unique
-  txHash          String?
-  amount          Decimal   @db.Decimal(18, 7)
-  type            String    // UNLOCK_FEATURE, SUBSCRIPTION, TIP, REFUND
-  status          String    @default("PENDING") // PENDING, COMPLETED, FAILED, CANCELLED, REFUNDED
-  
-  // Metadata
-  itemId          String?
-  metadata        Json?
-  
-  // Audit
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  completedAt     DateTime?
-  
-  @@index([userId])
-  @@index([status])
-  @@index([createdAt])
-  @@map("tec_transactions")
-}
-
-model TecUnlock {
-  id              String    @id @default(cuid())
-  userId          String
-  user            TecUser   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  featureKey      String
-  transactionId   String?
-  
-  unlockedAt      DateTime  @default(now())
-  expiresAt       DateTime?
-  
-  @@unique([userId, featureKey])
-  @@index([featureKey])
-  @@map("tec_unlocks")
-}
-
-model TecInvite {
-  id              String    @id @default(cuid())
-  
-  inviterId       String
-  inviter         TecUser   @relation("InviterRelation", fields: [inviterId], references: [id], onDelete: Cascade)
-  
-  inviteeId       String?   @unique
-  invitee         TecUser?  @relation("InviteeRelation", fields: [inviteeId], references: [id], onDelete: Cascade)
-  
-  code            String    @unique
-  status          String    @default("PENDING") // PENDING, ACCEPTED, EXPIRED, REVOKED
-  
-  createdAt       DateTime  @default(now())
-  acceptedAt      DateTime?
-  
-  @@index([inviterId])
-  @@index([code])
-  @@map("tec_invites")
-}

@@ -1,0 +1,120 @@
+// Alert.pi - Alert Management Domain
+// Notifications and alert system
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client-alert"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("ALERT_DATABASE_URL")
+}
+
+// Alert Services
+model Service {
+  id            String   @id @default(cuid())
+  userId        String
+  name          String
+  type          String   // EMAIL, SMS, PUSH, WEBHOOK
+  status        String   @default("ACTIVE")
+  
+  metrics       Metric[]
+  logs          Log[]
+  configurations Configuration[]
+  integrations  Integration[]
+  
+  metadata      Json?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([type])
+  @@map("alert_services")
+}
+
+// Alert Metrics
+model Metric {
+  id            String   @id @default(cuid())
+  serviceId     String
+  service       Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  
+  alertsSent    Int
+  alertsFailed  Int
+  alertsRead    Int
+  responseTime  Float
+  
+  timestamp     DateTime @default(now())
+  
+  @@index([serviceId])
+  @@index([timestamp])
+  @@map("alert_metrics")
+}
+
+// Alert Logs
+model Log {
+  id            String   @id @default(cuid())
+  serviceId     String
+  service       Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  
+  alertType     String   // INFO, WARNING, ERROR, CRITICAL
+  recipient     String
+  subject       String
+  message       String   @db.Text
+  
+  deliveryStatus String  @default("PENDING")
+  readAt        DateTime?
+  
+  metadata      Json?
+  
+  sentAt        DateTime @default(now())
+  
+  @@index([serviceId])
+  @@index([alertType])
+  @@index([deliveryStatus])
+  @@map("alert_logs")
+}
+
+// Alert Configuration
+model Configuration {
+  id            String   @id @default(cuid())
+  serviceId     String
+  service       Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  
+  settingName   String
+  settingValue  String
+  
+  isActive      Boolean  @default(true)
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@unique([serviceId, settingName])
+  @@index([serviceId])
+  @@map("alert_configurations")
+}
+
+// Alert Integrations
+model Integration {
+  id            String   @id @default(cuid())
+  serviceId     String
+  service       Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  
+  provider      String   // SENDGRID, TWILIO, FIREBASE, SLACK
+  type          String   // EMAIL, SMS, PUSH, WEBHOOK
+  
+  apiKey        String?
+  config        Json?
+  
+  status        String   @default("ACTIVE")
+  
+  lastUsedAt    DateTime?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([serviceId])
+  @@index([provider])
+  @@map("alert_integrations")
+}

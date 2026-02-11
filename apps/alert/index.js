@@ -8,8 +8,12 @@
  */
 
 import { DomainBootstrap } from "../../core/bootstrap";
-import { getDomainDatabaseConfig } from "../../core/database";
+import { getDomainDatabaseConfig, registerDomainClient } from "../../core/database";
 import domainConfig from "./config";
+import alertDB from "./db/client.js";
+
+// Register this domain's database client
+registerDomainClient("alert", alertDB);
 
 /**
  * Alert Domain Class
@@ -74,3 +78,4 @@ export class AlertDomain extends DomainBootstrap {
 export const alertDomain = new AlertDomain();
 
 export default alertDomain;
+export { alertDB };

@@ -8,8 +8,12 @@
  */
 
 import { DomainBootstrap } from "../../core/bootstrap";
-import { getDomainDatabaseConfig } from "../../core/database";
+import { getDomainDatabaseConfig, registerDomainClient } from "../../core/database";
 import domainConfig from "./config";
+import explorerDB from "./db/client.js";
+
+// Register this domain's database client
+registerDomainClient("explorer", explorerDB);
 
 /**
  * Explorer Domain Class
@@ -75,3 +79,4 @@ export class ExplorerDomain extends DomainBootstrap {
 export const explorerDomain = new ExplorerDomain();
 
 export default explorerDomain;
+export { explorerDB };

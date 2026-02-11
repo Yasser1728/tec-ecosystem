@@ -1,0 +1,120 @@
+// Nexus.pi - Integration Nexus Domain
+// Central integration hub
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client-nexus"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("NEXUS_DATABASE_URL")
+}
+
+// Integration Services
+model Service {
+  id            String   @id @default(cuid())
+  userId        String
+  name          String
+  type          String   // CONNECTOR, BRIDGE, GATEWAY, ADAPTER
+  description   String?
+  status        String   @default("ACTIVE")
+  
+  metrics       Metric[]
+  logs          Log[]
+  configurations Configuration[]
+  integrations  Integration[]
+  
+  metadata      Json?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([type])
+  @@map("nexus_services")
+}
+
+// Integration Metrics
+model Metric {
+  id            String   @id @default(cuid())
+  serviceId     String
+  service       Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  
+  metricType    String   // THROUGHPUT, LATENCY, ERRORS, SUCCESS
+  value         Float
+  unit          String
+  
+  timestamp     DateTime @default(now())
+  
+  @@index([serviceId])
+  @@index([metricType])
+  @@index([timestamp])
+  @@map("nexus_metrics")
+}
+
+// Integration Logs
+model Log {
+  id            String   @id @default(cuid())
+  serviceId     String
+  service       Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  
+  level         String
+  message       String   @db.Text
+  source        String
+  target        String?
+  
+  metadata      Json?
+  
+  timestamp     DateTime @default(now())
+  
+  @@index([serviceId])
+  @@index([level])
+  @@index([timestamp])
+  @@map("nexus_logs")
+}
+
+// Integration Configuration
+model Configuration {
+  id            String   @id @default(cuid())
+  serviceId     String
+  service       Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  
+  key           String
+  value         String   @db.Text
+  dataType      String
+  
+  isEncrypted   Boolean  @default(false)
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@unique([serviceId, key])
+  @@index([serviceId])
+  @@map("nexus_configurations")
+}
+
+// Integration Mappings
+model Integration {
+  id            String   @id @default(cuid())
+  serviceId     String
+  service       Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  
+  sourceSystem  String
+  targetSystem  String
+  
+  mapping       Json     // Field mappings
+  transform     Json?    // Transformation rules
+  
+  status        String   @default("ACTIVE")
+  
+  lastExecutedAt DateTime?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([serviceId])
+  @@index([sourceSystem])
+  @@index([targetSystem])
+  @@map("nexus_integrations")
+}

@@ -1,0 +1,139 @@
+// Brookfield.pi - Brookfield Real Estate Domain
+// Premium real estate services
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client-brookfield"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("BROOKFIELD_DATABASE_URL")
+}
+
+// Premium Properties
+model Property {
+  id            String   @id @default(cuid())
+  ownerId       String
+  name          String
+  description   String   @db.Text
+  propertyClass String   // LUXURY, COMMERCIAL, INDUSTRIAL, MIXED_USE
+  
+  location      Json
+  
+  price         Float
+  currency      String   @default("PI")
+  
+  specifications Json
+  features      String[]
+  images        String[]
+  
+  status        String   @default("AVAILABLE")
+  
+  listings      Listing[]
+  valuations    Valuation[]
+  offers        Offer[]
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([ownerId])
+  @@index([propertyClass])
+  @@index([status])
+  @@map("brookfield_properties")
+}
+
+// Property Listings
+model Listing {
+  id            String   @id @default(cuid())
+  propertyId    String
+  property      Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  
+  listingType   String   // SALE, LEASE, INVESTMENT
+  askingPrice   Float
+  currency      String   @default("PI")
+  
+  isExclusive   Boolean  @default(false)
+  
+  listedDate    DateTime @default(now())
+  expiryDate    DateTime?
+  
+  status        String   @default("ACTIVE")
+  
+  metadata      Json?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([propertyId])
+  @@index([listingType])
+  @@map("brookfield_listings")
+}
+
+// Property Valuations
+model Valuation {
+  id            String   @id @default(cuid())
+  propertyId    String
+  property      Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  
+  valuationType String   // INVESTMENT, MARKET, INSURANCE
+  estimatedValue Float
+  currency      String   @default("PI")
+  
+  assessor      String?
+  report        Json?
+  
+  valuationDate DateTime @default(now())
+  
+  @@index([propertyId])
+  @@map("brookfield_valuations")
+}
+
+// Investment Offers
+model Offer {
+  id            String   @id @default(cuid())
+  propertyId    String
+  property      Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  
+  investorId    String
+  offerPrice    Float
+  currency      String   @default("PI")
+  
+  conditions    Json?
+  
+  status        String   @default("SUBMITTED")
+  
+  contracts     Contract[]
+  
+  submittedAt   DateTime @default(now())
+  reviewedAt    DateTime?
+  
+  @@index([propertyId])
+  @@index([investorId])
+  @@map("brookfield_offers")
+}
+
+// Investment Contracts
+model Contract {
+  id            String   @id @default(cuid())
+  offerId       String
+  offer         Offer    @relation(fields: [offerId], references: [id], onDelete: Cascade)
+  
+  contractType  String   // PURCHASE, LEASE, PARTNERSHIP
+  referenceNumber String @unique
+  
+  terms         Json
+  
+  executedDate  DateTime?
+  closingDate   DateTime?
+  
+  status        String   @default("DRAFT")
+  
+  documentUrl   String?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([offerId])
+  @@map("brookfield_contracts")
+}

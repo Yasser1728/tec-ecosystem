@@ -1,0 +1,122 @@
+// Life.pi - Long-term Growth Domain
+// Financial planning and wealth management
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client-life"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("LIFE_DATABASE_URL")
+}
+
+// Portfolio Management
+model Portfolio {
+  id          String   @id @default(cuid())
+  userId      String
+  name        String
+  type        String   // RETIREMENT, GROWTH, CONSERVATIVE, AGGRESSIVE
+  totalValue  Float    @default(0)
+  currency    String   @default("PI")
+  status      String   @default("ACTIVE")
+  
+  investments Investment[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([type])
+  @@map("life_portfolios")
+}
+
+// Investment Tracking
+model Investment {
+  id              String    @id @default(cuid())
+  portfolioId     String
+  portfolio       Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  
+  name            String
+  type            String    // STOCKS, BONDS, CRYPTO, REAL_ESTATE, COMMODITIES
+  amount          Float
+  currentValue    Float
+  purchasePrice   Float
+  purchaseDate    DateTime
+  
+  metadata        Json?
+  
+  transactions    Transaction[]
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  @@index([portfolioId])
+  @@index([type])
+  @@map("life_investments")
+}
+
+// Transaction History
+model Transaction {
+  id            String     @id @default(cuid())
+  investmentId  String
+  investment    Investment @relation(fields: [investmentId], references: [id], onDelete: Cascade)
+  
+  type          String     // BUY, SELL, DIVIDEND, INTEREST
+  amount        Float
+  price         Float
+  quantity      Float?
+  currency      String     @default("PI")
+  
+  description   String?
+  metadata      Json?
+  
+  executedAt    DateTime   @default(now())
+  createdAt     DateTime   @default(now())
+  
+  @@index([investmentId])
+  @@index([type])
+  @@index([executedAt])
+  @@map("life_transactions")
+}
+
+// Financial Accounts
+model Account {
+  id            String     @id @default(cuid())
+  userId        String
+  accountNumber String     @unique
+  accountType   String     // CHECKING, SAVINGS, INVESTMENT, RETIREMENT
+  balance       Float      @default(0)
+  currency      String     @default("PI")
+  status        String     @default("ACTIVE")
+  
+  statements    Statement[]
+  
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  
+  @@index([userId])
+  @@index([accountType])
+  @@map("life_accounts")
+}
+
+// Account Statements
+model Statement {
+  id            String   @id @default(cuid())
+  accountId     String
+  account       Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  
+  periodStart   DateTime
+  periodEnd     DateTime
+  openingBalance Float
+  closingBalance Float
+  
+  documentUrl   String?
+  metadata      Json?
+  
+  generatedAt   DateTime @default(now())
+  
+  @@index([accountId])
+  @@index([periodStart])
+  @@map("life_statements")
+}

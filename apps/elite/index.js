@@ -8,8 +8,12 @@
  */
 
 import { DomainBootstrap } from "../../core/bootstrap";
-import { getDomainDatabaseConfig } from "../../core/database";
+import { getDomainDatabaseConfig, registerDomainClient } from "../../core/database";
 import domainConfig from "./config";
+import eliteDB from "./db/client.js";
+
+// Register this domain's database client
+registerDomainClient("elite", eliteDB);
 
 /**
  * Elite Domain Class
@@ -74,3 +78,4 @@ export class EliteDomain extends DomainBootstrap {
 export const eliteDomain = new EliteDomain();
 
 export default eliteDomain;
+export { eliteDB };

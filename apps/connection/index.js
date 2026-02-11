@@ -8,8 +8,12 @@
  */
 
 import { DomainBootstrap } from "../../core/bootstrap";
-import { getDomainDatabaseConfig } from "../../core/database";
+import { getDomainDatabaseConfig, registerDomainClient } from "../../core/database";
 import domainConfig from "./config";
+import connectionDB from "./db/client.js";
+
+// Register this domain's database client
+registerDomainClient("connection", connectionDB);
 
 /**
  * Connection Domain Class
@@ -74,3 +78,4 @@ export class ConnectionDomain extends DomainBootstrap {
 export const connectionDomain = new ConnectionDomain();
 
 export default connectionDomain;
+export { connectionDB };

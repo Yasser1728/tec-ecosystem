@@ -1,0 +1,150 @@
+// Ecommerce.pi - E-Commerce Domain
+// B2C e-commerce marketplace
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client-ecommerce"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("ECOMMERCE_DATABASE_URL")
+}
+
+// Product Catalog
+model Product {
+  id            String   @id @default(cuid())
+  sellerId      String
+  name          String
+  description   String
+  brand         String?
+  category      String
+  subcategory   String?
+  
+  price         Float
+  salePrice     Float?
+  currency      String   @default("PI")
+  
+  inventory     Inventory?
+  orders        Order[]
+  
+  images        String[]
+  specifications Json?
+  
+  rating        Float?
+  reviewCount   Int      @default(0)
+  
+  status        String   @default("ACTIVE")
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([sellerId])
+  @@index([category])
+  @@index([status])
+  @@map("ecommerce_products")
+}
+
+// Customer Orders
+model Order {
+  id            String   @id @default(cuid())
+  productId     String
+  product       Product  @relation(fields: [productId], references: [id])
+  
+  customerId    String
+  orderNumber   String   @unique
+  quantity      Int
+  itemPrice     Float
+  totalAmount   Float
+  tax           Float    @default(0)
+  shipping      Float    @default(0)
+  currency      String   @default("PI")
+  
+  status        String   @default("PENDING")
+  
+  shippingAddress Json
+  billingAddress Json?
+  
+  shipments     Shipment[]
+  
+  orderDate     DateTime @default(now())
+  paidDate      DateTime?
+  deliveredDate DateTime?
+  
+  metadata      Json?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([customerId])
+  @@index([productId])
+  @@index([status])
+  @@map("ecommerce_orders")
+}
+
+// Product Inventory
+model Inventory {
+  id            String   @id @default(cuid())
+  productId     String   @unique
+  product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  quantity      Int      @default(0)
+  reserved      Int      @default(0)
+  available     Int      @default(0)
+  
+  lowStockThreshold Int  @default(10)
+  
+  warehouseLocation String?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([productId])
+  @@map("ecommerce_inventory")
+}
+
+// Supplier Management
+model Supplier {
+  id            String   @id @default(cuid())
+  name          String
+  companyName   String
+  email         String
+  phone         String?
+  address       Json?
+  
+  productsSupplied Int   @default(0)
+  
+  rating        Float?
+  status        String   @default("ACTIVE")
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([status])
+  @@map("ecommerce_suppliers")
+}
+
+// Shipment Tracking
+model Shipment {
+  id            String   @id @default(cuid())
+  orderId       String
+  order         Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  trackingNumber String  @unique
+  carrier       String
+  shippingMethod String  // STANDARD, EXPRESS, SAME_DAY
+  
+  estimatedDelivery DateTime
+  actualDelivery DateTime?
+  
+  status        String   @default("PREPARING")
+  
+  trackingEvents Json[]
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([orderId])
+  @@index([status])
+  @@map("ecommerce_shipments")
+}

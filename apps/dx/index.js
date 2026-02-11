@@ -8,8 +8,12 @@
  */
 
 import { DomainBootstrap } from "../../core/bootstrap";
-import { getDomainDatabaseConfig } from "../../core/database";
+import { getDomainDatabaseConfig, registerDomainClient } from "../../core/database";
 import domainConfig from "./config";
+import dxDB from "./db/client.js";
+
+// Register this domain's database client
+registerDomainClient("dx", dxDB);
 
 /**
  * DX Domain Class
@@ -75,3 +79,4 @@ export class DXDomain extends DomainBootstrap {
 export const dxDomain = new DXDomain();
 
 export default dxDomain;
+export { dxDB };

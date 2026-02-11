@@ -1,0 +1,122 @@
+// Legend.pi - Legend Membership Domain
+// Elite premium membership tier
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client-legend"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("LEGEND_DATABASE_URL")
+}
+
+// Legend Memberships
+model Membership {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  tier          String   @default("LEGEND")
+  status        String   @default("ACTIVE")
+  
+  startDate     DateTime @default(now())
+  endDate       DateTime?
+  autoRenew     Boolean  @default(true)
+  
+  benefits      Benefit[]
+  accesses      Access[]
+  
+  metadata      Json?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([status])
+  @@map("legend_memberships")
+}
+
+// Exclusive Benefits
+model Benefit {
+  id            String     @id @default(cuid())
+  membershipId  String
+  membership    Membership @relation(fields: [membershipId], references: [id], onDelete: Cascade)
+  
+  type          String     // VIP_ACCESS, CONCIERGE, UNLIMITED, PRIORITY
+  title         String
+  description   String
+  
+  isUnlimited   Boolean    @default(false)
+  usageLimit    Int?
+  usageCount    Int        @default(0)
+  
+  isActive      Boolean    @default(true)
+  
+  expiresAt     DateTime?
+  
+  createdAt     DateTime   @default(now())
+  
+  @@index([membershipId])
+  @@index([type])
+  @@map("legend_benefits")
+}
+
+// Membership Tiers
+model Tier {
+  id            String   @id @default(cuid())
+  name          String   @unique
+  rank          Int      @unique
+  annualPrice   Float
+  monthlyPrice  Float?
+  currency      String   @default("PI")
+  
+  perks         Json
+  
+  isAvailable   Boolean  @default(true)
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([rank])
+  @@map("legend_tiers")
+}
+
+// Exclusive Privileges
+model Privilege {
+  id            String   @id @default(cuid())
+  code          String   @unique
+  title         String
+  description   String
+  category      String   // CONCIERGE, UNLIMITED, VIP, EXCLUSIVE
+  
+  minTier       String
+  
+  isActive      Boolean  @default(true)
+  
+  details       Json?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([category])
+  @@map("legend_privileges")
+}
+
+// Premium Access
+model Access {
+  id            String     @id @default(cuid())
+  membershipId  String
+  membership    Membership @relation(fields: [membershipId], references: [id], onDelete: Cascade)
+  
+  resourceName  String
+  resourceType  String     // DOMAIN, FEATURE, EVENT, CONTENT
+  accessLevel   String     // FULL, LIMITED, PRIORITY
+  
+  grantedAt     DateTime   @default(now())
+  expiresAt     DateTime?
+  
+  metadata      Json?
+  
+  @@index([membershipId])
+  @@index([resourceType])
+  @@map("legend_accesses")
+}

@@ -3,6 +3,7 @@
  *
  * Provides database isolation patterns for all domains
  * Each domain gets its own isolated database/schema
+ * Updated to support multiple Prisma clients for complete sovereignty
  */
 
 /**
@@ -35,6 +36,43 @@ export const DOMAIN_DATABASES = {
   zone: "zone_db",
   elite: "elite_db",
 };
+
+/**
+ * Domain client registry
+ * Stores Prisma client instances for each domain
+ */
+const domainClients = new Map();
+
+/**
+ * Register a domain's Prisma client
+ * @param {string} domainName - The domain name
+ * @param {object} client - The Prisma client instance
+ */
+export function registerDomainClient(domainName, client) {
+  domainClients.set(domainName, client);
+  console.log(`[Database] Registered client for domain: ${domainName}`);
+}
+
+/**
+ * Get Prisma client for a specific domain
+ * @param {string} domainName - The domain name
+ * @returns {object} The Prisma client instance
+ */
+export function getDomainClient(domainName) {
+  return domainClients.get(domainName);
+}
+
+/**
+ * Get all registered domain clients
+ * @returns {Array} Array of domain client objects
+ */
+export function getAllDomainClients() {
+  return Array.from(domainClients.entries()).map(([domain, client]) => ({
+    domain,
+    client,
+    database: getDomainDatabase(domain),
+  }));
+}
 
 /**
  * Get database name for a domain
@@ -100,4 +138,7 @@ export default {
   getDomainDatabaseConfig,
   initializeDomainDatabase,
   getAllDomainDatabases,
+  registerDomainClient,
+  getDomainClient,
+  getAllDomainClients,
 };

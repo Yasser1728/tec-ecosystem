@@ -2,13 +2,13 @@
  * CheckIn Repository Implementation - TEC Assistant Domain
  */
 
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient as TecPrismaClient } from ".prisma/client-tec";
 import { CheckIn } from "../../../domain/entities/CheckIn";
 import { SignalType } from "../../../domain/entities/Signal";
 import { ICheckInRepository } from "../../../domain/interfaces/repositories/ICheckInRepository";
 
 export class CheckInRepository implements ICheckInRepository {
-  constructor(private prisma: PrismaClient) {}
+  constructor(private prisma: TecPrismaClient) {}
 
   async findByUserAndDate(userId: string, date: Date): Promise<CheckIn | null> {
     const checkIn = await this.prisma.tecCheckIn.findUnique({

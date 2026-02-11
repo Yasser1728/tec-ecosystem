@@ -2,12 +2,12 @@
  * Unlock Repository Implementation - TEC Assistant Domain
  */
 
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient as TecPrismaClient } from ".prisma/client-tec";
 import { Unlock } from "../../../domain/entities/Unlock";
 import { IUnlockRepository } from "../../../domain/interfaces/repositories/IUnlockRepository";
 
 export class UnlockRepository implements IUnlockRepository {
-  constructor(private prisma: PrismaClient) {}
+  constructor(private prisma: TecPrismaClient) {}
 
   async findByUserAndFeature(
     userId: string,

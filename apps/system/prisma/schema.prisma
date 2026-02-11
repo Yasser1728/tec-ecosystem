@@ -1,0 +1,123 @@
+// System.pi - System Management Domain
+// Core system operations and management
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client-system"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("SYSTEM_DATABASE_URL")
+}
+
+// System Services
+model Service {
+  id            String   @id @default(cuid())
+  name          String   @unique
+  type          String   // CORE, API, WORKER, CRON, QUEUE
+  version       String
+  status        String   @default("RUNNING")
+  
+  metrics       Metric[]
+  logs          Log[]
+  configurations Configuration[]
+  integrations  Integration[]
+  
+  healthCheckUrl String?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([type])
+  @@index([status])
+  @@map("system_services")
+}
+
+// System Metrics
+model Metric {
+  id            String   @id @default(cuid())
+  serviceId     String
+  service       Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  
+  metricType    String   // CPU, MEMORY, DISK, NETWORK, CUSTOM
+  name          String
+  value         Float
+  unit          String
+  
+  threshold     Float?
+  
+  timestamp     DateTime @default(now())
+  
+  @@index([serviceId])
+  @@index([metricType])
+  @@index([timestamp])
+  @@map("system_metrics")
+}
+
+// System Logs
+model Log {
+  id            String   @id @default(cuid())
+  serviceId     String
+  service       Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  
+  level         String   // INFO, WARN, ERROR, CRITICAL
+  message       String   @db.Text
+  source        String
+  
+  stackTrace    String?  @db.Text
+  context       Json?
+  
+  timestamp     DateTime @default(now())
+  
+  @@index([serviceId])
+  @@index([level])
+  @@index([timestamp])
+  @@map("system_logs")
+}
+
+// System Configuration
+model Configuration {
+  id            String   @id @default(cuid())
+  serviceId     String
+  service       Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  
+  key           String
+  value         String   @db.Text
+  valueType     String   // STRING, NUMBER, BOOLEAN, JSON
+  
+  isEncrypted   Boolean  @default(false)
+  description   String?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@unique([serviceId, key])
+  @@index([serviceId])
+  @@map("system_configurations")
+}
+
+// System Integrations
+model Integration {
+  id            String   @id @default(cuid())
+  serviceId     String
+  service       Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  
+  name          String
+  type          String   // INTERNAL, EXTERNAL, THIRD_PARTY
+  endpoint      String?
+  
+  authType      String?  // NONE, API_KEY, OAUTH, JWT
+  credentials   Json?
+  
+  status        String   @default("ACTIVE")
+  
+  lastCheckedAt DateTime?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([serviceId])
+  @@index([type])
+  @@map("system_integrations")
+}

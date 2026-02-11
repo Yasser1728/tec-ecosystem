@@ -8,8 +8,12 @@
  */
 
 import { DomainBootstrap } from "../../core/bootstrap";
-import { getDomainDatabaseConfig } from "../../core/database";
+import { getDomainDatabaseConfig, registerDomainClient } from "../../core/database";
 import domainConfig from "./config";
+import tecDB from "./db/client.js";
+
+// Register this domain's database client
+registerDomainClient("tec", tecDB);
 
 /**
  * TEC Domain Class
@@ -75,3 +79,4 @@ export class TECDomain extends DomainBootstrap {
 export const tecDomain = new TECDomain();
 
 export default tecDomain;
+export { tecDB };

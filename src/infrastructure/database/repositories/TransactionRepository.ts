@@ -2,7 +2,7 @@
  * Transaction Repository Implementation - TEC Assistant Domain
  */
 
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient as TecPrismaClient } from ".prisma/client-tec";
 import {
   Transaction,
   TransactionType,
@@ -11,7 +11,7 @@ import {
 import { ITransactionRepository } from "../../../domain/interfaces/repositories/ITransactionRepository";
 
 export class TransactionRepository implements ITransactionRepository {
-  constructor(private prisma: PrismaClient) {}
+  constructor(private prisma: TecPrismaClient) {}
 
   async findById(id: string): Promise<Transaction | null> {
     const transaction = await this.prisma.tecTransaction.findUnique({

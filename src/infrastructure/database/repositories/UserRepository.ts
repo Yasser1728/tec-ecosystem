@@ -3,12 +3,12 @@
  * Prisma-based data persistence
  */
 
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient as TecPrismaClient } from ".prisma/client-tec";
 import { User, UserStatus, UserRole } from "../../../domain/entities/User";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUserRepository";
 
 export class UserRepository implements IUserRepository {
-  constructor(private prisma: PrismaClient) {}
+  constructor(private prisma: TecPrismaClient) {}
 
   async findById(id: string): Promise<User | null> {
     const user = await this.prisma.tecUser.findUnique({ where: { id } });

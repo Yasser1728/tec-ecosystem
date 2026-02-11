@@ -1,0 +1,151 @@
+// Estate.pi - Real Estate Domain
+// Property management and real estate services
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client-estate"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("ESTATE_DATABASE_URL")
+}
+
+// Property Listings
+model Property {
+  id            String   @id @default(cuid())
+  ownerId       String
+  title         String
+  description   String   @db.Text
+  propertyType  String   // HOUSE, APARTMENT, CONDO, LAND, COMMERCIAL
+  
+  address       Json
+  location      Json     // lat, lng, city, country
+  
+  price         Float
+  currency      String   @default("PI")
+  
+  specifications Json    // bedrooms, bathrooms, sqm, etc.
+  amenities     String[]
+  images        String[]
+  
+  status        String   @default("AVAILABLE")
+  
+  listings      Listing[]
+  valuations    Valuation[]
+  offers        Offer[]
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([ownerId])
+  @@index([propertyType])
+  @@index([status])
+  @@map("estate_properties")
+}
+
+// Property Listings
+model Listing {
+  id            String   @id @default(cuid())
+  propertyId    String
+  property      Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  
+  listingType   String   // SALE, RENT, LEASE
+  price         Float
+  currency      String   @default("PI")
+  
+  listedDate    DateTime @default(now())
+  expiryDate    DateTime?
+  
+  status        String   @default("ACTIVE")
+  
+  views         Int      @default(0)
+  inquiries     Int      @default(0)
+  
+  metadata      Json?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([propertyId])
+  @@index([listingType])
+  @@index([status])
+  @@map("estate_listings")
+}
+
+// Property Valuations
+model Valuation {
+  id            String   @id @default(cuid())
+  propertyId    String
+  property      Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  
+  valuationType String   // MARKET, ASSESSED, APPRAISAL
+  value         Float
+  currency      String   @default("PI")
+  
+  valuedBy      String?
+  methodology   String?
+  
+  valuationDate DateTime @default(now())
+  
+  notes         String?
+  metadata      Json?
+  
+  @@index([propertyId])
+  @@index([valuationType])
+  @@map("estate_valuations")
+}
+
+// Offers
+model Offer {
+  id            String   @id @default(cuid())
+  propertyId    String
+  property      Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  
+  buyerId       String
+  offerAmount   Float
+  currency      String   @default("PI")
+  
+  terms         Json?
+  
+  status        String   @default("PENDING")
+  
+  contracts     Contract[]
+  
+  submittedAt   DateTime @default(now())
+  respondedAt   DateTime?
+  
+  metadata      Json?
+  
+  @@index([propertyId])
+  @@index([buyerId])
+  @@index([status])
+  @@map("estate_offers")
+}
+
+// Contracts
+model Contract {
+  id            String   @id @default(cuid())
+  offerId       String
+  offer         Offer    @relation(fields: [offerId], references: [id], onDelete: Cascade)
+  
+  contractType  String   // SALE, LEASE, RENT
+  contractNumber String  @unique
+  
+  terms         Json
+  
+  signedDate    DateTime?
+  effectiveDate DateTime?
+  expiryDate    DateTime?
+  
+  status        String   @default("DRAFT")
+  
+  documentUrl   String?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([offerId])
+  @@index([status])
+  @@map("estate_contracts")
+}

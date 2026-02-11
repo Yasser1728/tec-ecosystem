@@ -8,8 +8,12 @@
  */
 
 import { DomainBootstrap } from "../../core/bootstrap";
-import { getDomainDatabaseConfig } from "../../core/database";
+import { getDomainDatabaseConfig, registerDomainClient } from "../../core/database";
 import domainConfig from "./config";
+import vipDB from "./db/client.js";
+
+// Register this domain's database client
+registerDomainClient("vip", vipDB);
 
 /**
  * VIP Domain Class
@@ -74,3 +78,4 @@ export class VIPDomain extends DomainBootstrap {
 export const vipDomain = new VIPDomain();
 
 export default vipDomain;
+export { vipDB };

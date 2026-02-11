@@ -3,14 +3,14 @@
  * POST /api/v1/tec-assistant/check-ins
  */
 
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient as TecPrismaClient } from ".prisma/client-tec";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { CheckInRepository } from "@/src/infrastructure/database/repositories/CheckInRepository";
 import { UserRepository } from "@/src/infrastructure/database/repositories/UserRepository";
 import { SignalRepository } from "@/src/infrastructure/database/repositories/SignalRepository";
 import { ConfirmDailyCheckIn } from "@/src/domain/use-cases/check-ins/ConfirmDailyCheckIn";
 
-const prisma = new PrismaClient();
+const prisma = new TecPrismaClient();
 
 export default async function handler(
   req: NextApiRequest,

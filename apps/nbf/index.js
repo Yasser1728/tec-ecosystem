@@ -8,8 +8,12 @@
  */
 
 import { DomainBootstrap } from "../../core/bootstrap";
-import { getDomainDatabaseConfig } from "../../core/database";
+import { getDomainDatabaseConfig, registerDomainClient } from "../../core/database";
 import domainConfig from "./config";
+import nbfDB from "./db/client.js";
+
+// Register this domain's database client
+registerDomainClient("nbf", nbfDB);
 
 /**
  * NBF Domain Class
@@ -74,3 +78,4 @@ export class NBFDomain extends DomainBootstrap {
 export const nbfDomain = new NBFDomain();
 
 export default nbfDomain;
+export { nbfDB };
