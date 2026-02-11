@@ -3,7 +3,7 @@
  * POST /api/v1/tec-assistant/auth
  */
 
-import { PrismaClient as TecPrismaClient } from "@prisma/client-tec";
+import { PrismaClient as TecPrismaClient } from ".prisma/client-tec";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { UserRepository } from "@/src/infrastructure/database/repositories/UserRepository";
 import { PiNetworkService } from "@/src/infrastructure/pi-network/PiNetworkService";

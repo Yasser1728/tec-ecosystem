@@ -2,7 +2,7 @@
  * Unlock Repository Implementation - TEC Assistant Domain
  */
 
-import { PrismaClient as TecPrismaClient } from "@prisma/client-tec";
+import { PrismaClient as TecPrismaClient } from ".prisma/client-tec";
 import { Unlock } from "../../../domain/entities/Unlock";
 import { IUnlockRepository } from "../../../domain/interfaces/repositories/IUnlockRepository";
 

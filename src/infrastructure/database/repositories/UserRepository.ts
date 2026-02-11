@@ -3,7 +3,7 @@
  * Prisma-based data persistence
  */
 
-import { PrismaClient as TecPrismaClient } from "@prisma/client-tec";
+import { PrismaClient as TecPrismaClient } from ".prisma/client-tec";
 import { User, UserStatus, UserRole } from "../../../domain/entities/User";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUserRepository";
 

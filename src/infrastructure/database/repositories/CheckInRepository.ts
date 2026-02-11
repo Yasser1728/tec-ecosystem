@@ -2,7 +2,7 @@
  * CheckIn Repository Implementation - TEC Assistant Domain
  */
 
-import { PrismaClient as TecPrismaClient } from "@prisma/client-tec";
+import { PrismaClient as TecPrismaClient } from ".prisma/client-tec";
 import { CheckIn } from "../../../domain/entities/CheckIn";
 import { SignalType } from "../../../domain/entities/Signal";
 import { ICheckInRepository } from "../../../domain/interfaces/repositories/ICheckInRepository";

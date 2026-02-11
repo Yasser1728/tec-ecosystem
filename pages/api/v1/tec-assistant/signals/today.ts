@@ -3,7 +3,7 @@
  * GET /api/v1/tec-assistant/signals/today
  */
 
-import { PrismaClient as TecPrismaClient } from "@prisma/client-tec";
+import { PrismaClient as TecPrismaClient } from ".prisma/client-tec";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { SignalRepository } from "@/src/infrastructure/database/repositories/SignalRepository";
 import { GetTodaySignal } from "@/src/domain/use-cases/signals/GetTodaySignal";

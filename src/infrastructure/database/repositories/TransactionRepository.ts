@@ -2,7 +2,7 @@
  * Transaction Repository Implementation - TEC Assistant Domain
  */
 
-import { PrismaClient as TecPrismaClient } from "@prisma/client-tec";
+import { PrismaClient as TecPrismaClient } from ".prisma/client-tec";
 import {
   Transaction,
   TransactionType,

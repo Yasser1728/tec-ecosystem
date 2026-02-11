@@ -2,7 +2,7 @@
  * Signal Repository Implementation - TEC Assistant Domain
  */
 
-import { PrismaClient as TecPrismaClient } from "@prisma/client-tec";
+import { PrismaClient as TecPrismaClient } from ".prisma/client-tec";
 import { Signal, SignalType } from "../../../domain/entities/Signal";
 import { ISignalRepository } from "../../../domain/interfaces/repositories/ISignalRepository";
 
