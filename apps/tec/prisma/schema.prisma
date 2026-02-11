@@ -1,0 +1,142 @@
+// TEC.pi - TEC Hub Domain
+// Central orchestration and integration hub
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client-tec"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("TEC_DATABASE_URL")
+}
+
+// Domain Registry
+model Domain {
+  id            String   @id @default(cuid())
+  name          String   @unique
+  displayName   String
+  description   String
+  
+  sector        String
+  category      String
+  
+  icon          String
+  color         String
+  
+  integrations  Integration[]
+  
+  status        String   @default("ACTIVE")
+  
+  launchedAt    DateTime?
+  
+  metadata      Json?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([name])
+  @@index([category])
+  @@index([status])
+  @@map("tec_domains")
+}
+
+// Domain Integrations
+model Integration {
+  id            String   @id @default(cuid())
+  domainId      String
+  domain        Domain   @relation(fields: [domainId], references: [id], onDelete: Cascade)
+  
+  integrationType String // API, WEBHOOK, EVENT, DATA_SYNC
+  targetDomain  String?
+  
+  config        Json
+  
+  status        String   @default("ACTIVE")
+  
+  lastSyncedAt  DateTime?
+  
+  metadata      Json?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([domainId])
+  @@index([integrationType])
+  @@map("tec_integrations")
+}
+
+// TEC Dashboards
+model Dashboard {
+  id            String   @id @default(cuid())
+  userId        String
+  name          String
+  description   String?
+  
+  layout        Json     // Widget configurations
+  
+  domains       String[] // Domain names included
+  
+  isDefault     Boolean  @default(false)
+  isPublic      Boolean  @default(false)
+  
+  reports       Report[]
+  
+  metadata      Json?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([isDefault])
+  @@map("tec_dashboards")
+}
+
+// Dashboard Reports
+model Report {
+  id            String    @id @default(cuid())
+  dashboardId   String
+  dashboard     Dashboard @relation(fields: [dashboardId], references: [id], onDelete: Cascade)
+  
+  title         String
+  reportType    String    // ANALYTICS, PERFORMANCE, FINANCIAL, USAGE
+  
+  domains       String[]
+  
+  data          Json
+  
+  period        Json      // start, end dates
+  
+  analytics     Analytics[]
+  
+  generatedAt   DateTime  @default(now())
+  
+  metadata      Json?
+  
+  @@index([dashboardId])
+  @@index([reportType])
+  @@index([generatedAt])
+  @@map("tec_reports")
+}
+
+// Analytics Data
+model Analytics {
+  id            String   @id @default(cuid())
+  reportId      String
+  report        Report   @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  
+  domain        String
+  metric        String
+  value         Float
+  unit          String?
+  
+  dimensions    Json?
+  
+  timestamp     DateTime @default(now())
+  
+  @@index([reportId])
+  @@index([domain])
+  @@index([metric])
+  @@index([timestamp])
+  @@map("tec_analytics")
+}

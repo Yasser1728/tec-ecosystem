@@ -1,0 +1,121 @@
+// NBF.pi - National Banking & Finance
+// Core banking and financial services
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client-nbf"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("NBF_DATABASE_URL")
+}
+
+// Financial Portfolio
+model Portfolio {
+  id          String   @id @default(cuid())
+  userId      String
+  portfolioName String
+  portfolioType String // PERSONAL, BUSINESS, CORPORATE
+  totalValue  Float    @default(0)
+  currency    String   @default("PI")
+  status      String   @default("ACTIVE")
+  
+  investments Investment[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([portfolioType])
+  @@map("nbf_portfolios")
+}
+
+// Investment Products
+model Investment {
+  id              String    @id @default(cuid())
+  portfolioId     String
+  portfolio       Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  
+  productName     String
+  productType     String    // DEPOSIT, LOAN, INVESTMENT, INSURANCE
+  amount          Float
+  interestRate    Float?
+  maturityDate    DateTime?
+  
+  terms           Json?
+  
+  transactions    Transaction[]
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  @@index([portfolioId])
+  @@index([productType])
+  @@map("nbf_investments")
+}
+
+// Financial Transactions
+model Transaction {
+  id            String     @id @default(cuid())
+  investmentId  String
+  investment    Investment @relation(fields: [investmentId], references: [id], onDelete: Cascade)
+  
+  type          String     // DEPOSIT, WITHDRAWAL, INTEREST, FEE, TRANSFER
+  amount        Float
+  balance       Float
+  currency      String     @default("PI")
+  
+  reference     String?
+  description   String?
+  metadata      Json?
+  
+  executedAt    DateTime   @default(now())
+  createdAt     DateTime   @default(now())
+  
+  @@index([investmentId])
+  @@index([type])
+  @@index([executedAt])
+  @@map("nbf_transactions")
+}
+
+// Banking Accounts
+model Account {
+  id            String     @id @default(cuid())
+  userId        String
+  accountNumber String     @unique
+  accountType   String     // CHECKING, SAVINGS, FIXED_DEPOSIT, CURRENT
+  balance       Float      @default(0)
+  currency      String     @default("PI")
+  status        String     @default("ACTIVE")
+  
+  statements    Statement[]
+  
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  
+  @@index([userId])
+  @@index([accountType])
+  @@map("nbf_accounts")
+}
+
+// Account Statements
+model Statement {
+  id            String   @id @default(cuid())
+  accountId     String
+  account       Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  
+  periodStart   DateTime
+  periodEnd     DateTime
+  openingBalance Float
+  closingBalance Float
+  
+  statementUrl  String?
+  metadata      Json?
+  
+  generatedAt   DateTime @default(now())
+  
+  @@index([accountId])
+  @@index([periodStart])
+  @@map("nbf_statements")
+}

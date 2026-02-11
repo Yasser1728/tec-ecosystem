@@ -1,0 +1,127 @@
+// DX.pi - Developer Experience Domain
+// Developer tools and services
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client-dx"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DX_DATABASE_URL")
+}
+
+// Service Registry
+model Service {
+  id            String   @id @default(cuid())
+  userId        String
+  name          String
+  type          String   // API, MICROSERVICE, FUNCTION, WEBHOOK
+  endpoint      String
+  version       String
+  status        String   @default("ACTIVE")
+  
+  metrics       Metric[]
+  logs          Log[]
+  configurations Configuration[]
+  integrations  Integration[]
+  
+  metadata      Json?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([type])
+  @@index([status])
+  @@map("dx_services")
+}
+
+// Service Metrics
+model Metric {
+  id            String   @id @default(cuid())
+  serviceId     String
+  service       Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  
+  metricName    String   // REQUESTS, LATENCY, ERRORS, UPTIME
+  metricValue   Float
+  unit          String   // COUNT, MS, PERCENTAGE
+  
+  timestamp     DateTime @default(now())
+  
+  metadata      Json?
+  
+  @@index([serviceId])
+  @@index([metricName])
+  @@index([timestamp])
+  @@map("dx_metrics")
+}
+
+// Service Logs
+model Log {
+  id            String   @id @default(cuid())
+  serviceId     String
+  service       Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  
+  level         String   // INFO, WARN, ERROR, DEBUG
+  message       String
+  stackTrace    String?
+  
+  requestId     String?
+  userId        String?
+  
+  metadata      Json?
+  
+  timestamp     DateTime @default(now())
+  
+  @@index([serviceId])
+  @@index([level])
+  @@index([timestamp])
+  @@map("dx_logs")
+}
+
+// Service Configuration
+model Configuration {
+  id            String   @id @default(cuid())
+  serviceId     String
+  service       Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  
+  key           String
+  value         String
+  type          String   // STRING, NUMBER, BOOLEAN, JSON
+  isSecret      Boolean  @default(false)
+  
+  description   String?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@unique([serviceId, key])
+  @@index([serviceId])
+  @@map("dx_configurations")
+}
+
+// Service Integrations
+model Integration {
+  id            String   @id @default(cuid())
+  serviceId     String
+  service       Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  
+  name          String
+  provider      String
+  type          String   // OAUTH, API_KEY, WEBHOOK, DATABASE
+  
+  credentials   Json?    // Encrypted
+  config        Json?
+  
+  status        String   @default("ACTIVE")
+  
+  lastSyncedAt  DateTime?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([serviceId])
+  @@index([provider])
+  @@map("dx_integrations")
+}

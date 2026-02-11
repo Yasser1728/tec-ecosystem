@@ -1,0 +1,172 @@
+// Explorer.pi - Travel & Exploration Domain
+// Travel booking and experiences
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client-explorer"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("EXPLORER_DATABASE_URL")
+}
+
+// Travel Destinations
+model Destination {
+  id            String   @id @default(cuid())
+  name          String
+  country       String
+  city          String?
+  region        String?
+  
+  description   String   @db.Text
+  highlights    String[]
+  images        String[]
+  
+  location      Json     // lat, lng
+  
+  category      String   // ADVENTURE, LUXURY, CULTURE, NATURE
+  
+  rating        Float?
+  reviewCount   Int      @default(0)
+  
+  bookings      Booking[]
+  experiences   Experience[]
+  
+  status        String   @default("ACTIVE")
+  
+  metadata      Json?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([country])
+  @@index([category])
+  @@index([status])
+  @@map("explorer_destinations")
+}
+
+// Travel Bookings
+model Booking {
+  id            String      @id @default(cuid())
+  userId        String
+  destinationId String
+  destination   Destination @relation(fields: [destinationId], references: [id])
+  
+  bookingNumber String      @unique
+  bookingType   String      // FLIGHT, HOTEL, PACKAGE, TOUR
+  
+  checkInDate   DateTime
+  checkOutDate  DateTime
+  
+  guests        Int         @default(1)
+  
+  totalPrice    Float
+  currency      String      @default("PI")
+  
+  status        String      @default("PENDING")
+  
+  itineraries   Itinerary[]
+  
+  metadata      Json?
+  
+  bookedAt      DateTime    @default(now())
+  confirmedAt   DateTime?
+  
+  @@index([userId])
+  @@index([destinationId])
+  @@index([status])
+  @@map("explorer_bookings")
+}
+
+// Travel Itineraries
+model Itinerary {
+  id            String   @id @default(cuid())
+  bookingId     String
+  booking       Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  
+  day           Int
+  title         String
+  description   String
+  
+  activities    Json[]
+  
+  startTime     DateTime
+  endTime       DateTime
+  
+  location      Json?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([bookingId])
+  @@map("explorer_itineraries")
+}
+
+// Travel Experiences
+model Experience {
+  id            String      @id @default(cuid())
+  destinationId String
+  destination   Destination @relation(fields: [destinationId], references: [id])
+  
+  title         String
+  description   String      @db.Text
+  type          String      // TOUR, ACTIVITY, DINING, ENTERTAINMENT
+  
+  duration      Int?        // minutes
+  
+  price         Float
+  currency      String      @default("PI")
+  
+  maxParticipants Int?
+  
+  images        String[]
+  
+  rating        Float?
+  reviewCount   Int         @default(0)
+  
+  availability  Json?
+  
+  status        String      @default("AVAILABLE")
+  
+  travels       Travel[]
+  
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  
+  @@index([destinationId])
+  @@index([type])
+  @@index([status])
+  @@map("explorer_experiences")
+}
+
+// Travel Records
+model Travel {
+  id            String     @id @default(cuid())
+  userId        String
+  experienceId  String
+  experience    Experience @relation(fields: [experienceId], references: [id])
+  
+  travelDate    DateTime
+  participants  Int        @default(1)
+  
+  totalPaid     Float
+  currency      String     @default("PI")
+  
+  status        String     @default("SCHEDULED")
+  
+  review        Json?
+  rating        Float?
+  
+  completedAt   DateTime?
+  
+  metadata      Json?
+  
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  
+  @@index([userId])
+  @@index([experienceId])
+  @@index([status])
+  @@map("explorer_travels")
+}

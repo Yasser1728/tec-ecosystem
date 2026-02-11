@@ -1,0 +1,150 @@
+// Zone.pi - Regional Operations Domain
+// Regional management and operations
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client-zone"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("ZONE_DATABASE_URL")
+}
+
+// Enterprise Operations
+model Enterprise {
+  id            String   @id @default(cuid())
+  name          String
+  type          String   // REGIONAL_HQ, BRANCH, SUBSIDIARY
+  
+  location      Json
+  timezone      String
+  
+  solutions     Solution[]
+  deployments   Deployment[]
+  licenses      License[]
+  
+  status        String   @default("OPERATIONAL")
+  
+  metadata      Json?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([type])
+  @@index([status])
+  @@map("zone_enterprises")
+}
+
+// Regional Solutions
+model Solution {
+  id            String     @id @default(cuid())
+  enterpriseId  String
+  enterprise    Enterprise @relation(fields: [enterpriseId], references: [id], onDelete: Cascade)
+  
+  name          String
+  category      String     // INFRASTRUCTURE, PLATFORM, APPLICATION
+  
+  description   String?
+  
+  regions       Region[]
+  
+  status        String     @default("ACTIVE")
+  
+  metadata      Json?
+  
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  
+  @@index([enterpriseId])
+  @@index([category])
+  @@map("zone_solutions")
+}
+
+// Regional Deployments
+model Deployment {
+  id            String     @id @default(cuid())
+  enterpriseId  String
+  enterprise    Enterprise @relation(fields: [enterpriseId], references: [id], onDelete: Cascade)
+  
+  name          String
+  environment   String     // PROD, STAGING, DEV
+  
+  config        Json
+  
+  status        String     @default("ACTIVE")
+  
+  regions       Region[]
+  
+  deployedAt    DateTime   @default(now())
+  
+  metadata      Json?
+  
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  
+  @@index([enterpriseId])
+  @@index([environment])
+  @@map("zone_deployments")
+}
+
+// Operational Regions
+model Region {
+  id            String      @id @default(cuid())
+  deploymentId  String?
+  deployment    Deployment? @relation(fields: [deploymentId], references: [id])
+  
+  solutionId    String?
+  solution      Solution?   @relation(fields: [solutionId], references: [id])
+  
+  name          String
+  code          String      @unique
+  country       String
+  city          String?
+  
+  location      Json        // lat, lng
+  
+  capacity      Json?
+  
+  status        String      @default("ACTIVE")
+  
+  metadata      Json?
+  
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  
+  @@index([deploymentId])
+  @@index([solutionId])
+  @@index([code])
+  @@index([country])
+  @@map("zone_regions")
+}
+
+// Regional Licenses
+model License {
+  id            String     @id @default(cuid())
+  enterpriseId  String
+  enterprise    Enterprise @relation(fields: [enterpriseId], references: [id], onDelete: Cascade)
+  
+  licenseKey    String     @unique
+  type          String     // REGIONAL, GLOBAL, LIMITED
+  
+  regions       String[]   // Region codes
+  
+  features      Json
+  
+  issuedDate    DateTime   @default(now())
+  expiryDate    DateTime
+  
+  status        String     @default("VALID")
+  
+  metadata      Json?
+  
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  
+  @@index([enterpriseId])
+  @@index([type])
+  @@index([status])
+  @@map("zone_licenses")
+}

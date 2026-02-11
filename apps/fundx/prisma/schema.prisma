@@ -1,0 +1,125 @@
+// FundX.pi - Investment Fund Management
+// Mutual funds and investment strategies
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client-fundx"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("FUNDX_DATABASE_URL")
+}
+
+// Investment Portfolio
+model Portfolio {
+  id          String   @id @default(cuid())
+  userId      String
+  name        String
+  strategy    String   // AGGRESSIVE, MODERATE, CONSERVATIVE, BALANCED
+  riskLevel   String   // LOW, MEDIUM, HIGH
+  totalValue  Float    @default(0)
+  currency    String   @default("PI")
+  status      String   @default("ACTIVE")
+  
+  investments Investment[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([strategy])
+  @@map("fundx_portfolios")
+}
+
+// Fund Investments
+model Investment {
+  id              String    @id @default(cuid())
+  portfolioId     String
+  portfolio       Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  
+  fundName        String
+  fundType        String    // INDEX, MUTUAL, ETF, HEDGE
+  units           Float
+  navPrice        Float     // Net Asset Value
+  totalValue      Float
+  
+  performanceData Json?
+  
+  transactions    Transaction[]
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  @@index([portfolioId])
+  @@index([fundType])
+  @@map("fundx_investments")
+}
+
+// Fund Transactions
+model Transaction {
+  id            String     @id @default(cuid())
+  investmentId  String
+  investment    Investment @relation(fields: [investmentId], references: [id], onDelete: Cascade)
+  
+  type          String     // SUBSCRIBE, REDEEM, SWITCH, DIVIDEND
+  units         Float
+  navPrice      Float
+  amount        Float
+  fees          Float      @default(0)
+  currency      String     @default("PI")
+  
+  description   String?
+  metadata      Json?
+  
+  executedAt    DateTime   @default(now())
+  createdAt     DateTime   @default(now())
+  
+  @@index([investmentId])
+  @@index([type])
+  @@index([executedAt])
+  @@map("fundx_transactions")
+}
+
+// Investment Accounts
+model Account {
+  id            String     @id @default(cuid())
+  userId        String
+  accountNumber String     @unique
+  accountType   String     // REGULAR, IRA, 401K, ROTH
+  balance       Float      @default(0)
+  currency      String     @default("PI")
+  status        String     @default("ACTIVE")
+  
+  statements    Statement[]
+  
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  
+  @@index([userId])
+  @@index([accountType])
+  @@map("fundx_accounts")
+}
+
+// Account Statements
+model Statement {
+  id            String   @id @default(cuid())
+  accountId     String
+  account       Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  
+  periodStart   DateTime
+  periodEnd     DateTime
+  openingBalance Float
+  closingBalance Float
+  totalGains    Float?
+  totalLosses   Float?
+  
+  documentUrl   String?
+  metadata      Json?
+  
+  generatedAt   DateTime @default(now())
+  
+  @@index([accountId])
+  @@index([periodStart])
+  @@map("fundx_statements")
+}

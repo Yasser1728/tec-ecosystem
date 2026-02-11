@@ -1,0 +1,121 @@
+// Analytics.pi - Analytics Domain
+// Data analytics and insights
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client-analytics"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("ANALYTICS_DATABASE_URL")
+}
+
+// Analytics Services
+model Service {
+  id            String   @id @default(cuid())
+  userId        String
+  name          String
+  type          String   // DASHBOARD, REPORT, ALERT, QUERY
+  description   String?
+  status        String   @default("ACTIVE")
+  
+  metrics       Metric[]
+  logs          Log[]
+  configurations Configuration[]
+  integrations  Integration[]
+  
+  metadata      Json?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([type])
+  @@map("analytics_services")
+}
+
+// Metrics Collection
+model Metric {
+  id            String   @id @default(cuid())
+  serviceId     String
+  service       Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  
+  category      String   // TRAFFIC, REVENUE, ENGAGEMENT, PERFORMANCE
+  name          String
+  value         Float
+  unit          String
+  
+  dimensions    Json?    // Additional dimensions
+  
+  timestamp     DateTime @default(now())
+  
+  @@index([serviceId])
+  @@index([category])
+  @@index([timestamp])
+  @@map("analytics_metrics")
+}
+
+// Activity Logs
+model Log {
+  id            String   @id @default(cuid())
+  serviceId     String
+  service       Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  
+  eventType     String
+  eventName     String
+  userId        String?
+  
+  properties    Json?
+  
+  timestamp     DateTime @default(now())
+  
+  @@index([serviceId])
+  @@index([eventType])
+  @@index([timestamp])
+  @@map("analytics_logs")
+}
+
+// Analytics Configuration
+model Configuration {
+  id            String   @id @default(cuid())
+  serviceId     String
+  service       Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  
+  settingKey    String
+  settingValue  String
+  dataType      String   // STRING, NUMBER, BOOLEAN, JSON
+  
+  description   String?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@unique([serviceId, settingKey])
+  @@index([serviceId])
+  @@map("analytics_configurations")
+}
+
+// Data Integrations
+model Integration {
+  id            String   @id @default(cuid())
+  serviceId     String
+  service       Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  
+  source        String
+  type          String   // API, DATABASE, FILE, STREAM
+  
+  credentials   Json?
+  mapping       Json?    // Field mappings
+  
+  status        String   @default("ACTIVE")
+  
+  lastSyncedAt  DateTime?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([serviceId])
+  @@index([source])
+  @@map("analytics_integrations")
+}

@@ -1,0 +1,117 @@
+// Epic.pi - Epic Membership Domain
+// Premium membership tier
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client-epic"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("EPIC_DATABASE_URL")
+}
+
+// Membership Records
+model Membership {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  tier          String   @default("EPIC")
+  status        String   @default("ACTIVE")
+  
+  startDate     DateTime @default(now())
+  endDate       DateTime?
+  renewalDate   DateTime?
+  
+  benefits      Benefit[]
+  accesses      Access[]
+  
+  metadata      Json?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([tier])
+  @@index([status])
+  @@map("epic_memberships")
+}
+
+// Membership Benefits
+model Benefit {
+  id            String     @id @default(cuid())
+  membershipId  String
+  membership    Membership @relation(fields: [membershipId], references: [id], onDelete: Cascade)
+  
+  benefitType   String     // DISCOUNT, ACCESS, PRIORITY, EXCLUSIVE
+  name          String
+  description   String
+  value         String?
+  
+  isActive      Boolean    @default(true)
+  
+  expiresAt     DateTime?
+  
+  createdAt     DateTime   @default(now())
+  
+  @@index([membershipId])
+  @@index([benefitType])
+  @@map("epic_benefits")
+}
+
+// Membership Tiers
+model Tier {
+  id            String   @id @default(cuid())
+  name          String   @unique
+  level         Int      @unique
+  price         Float
+  currency      String   @default("PI")
+  
+  features      Json
+  
+  isActive      Boolean  @default(true)
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([level])
+  @@map("epic_tiers")
+}
+
+// Membership Privileges
+model Privilege {
+  id            String   @id @default(cuid())
+  code          String   @unique
+  name          String
+  description   String
+  category      String   // SERVICE, DISCOUNT, ACCESS, SUPPORT
+  
+  requiredTier  String
+  
+  isActive      Boolean  @default(true)
+  
+  metadata      Json?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([category])
+  @@index([requiredTier])
+  @@map("epic_privileges")
+}
+
+// Access Records
+model Access {
+  id            String     @id @default(cuid())
+  membershipId  String
+  membership    Membership @relation(fields: [membershipId], references: [id], onDelete: Cascade)
+  
+  resource      String
+  resourceType  String     // DOMAIN, FEATURE, SERVICE, CONTENT
+  
+  grantedAt     DateTime   @default(now())
+  expiresAt     DateTime?
+  
+  @@index([membershipId])
+  @@index([resourceType])
+  @@map("epic_accesses")
+}

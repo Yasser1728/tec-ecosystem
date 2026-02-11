@@ -1,0 +1,139 @@
+// Insure.pi - Insurance Domain
+// Comprehensive insurance management
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client-insure"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("INSURE_DATABASE_URL")
+}
+
+// Insurance Policies
+model Policy {
+  id            String   @id @default(cuid())
+  userId        String
+  policyNumber  String   @unique
+  policyType    String   // LIFE, HEALTH, AUTO, HOME, BUSINESS
+  provider      String
+  premium       Float
+  coverage      Float
+  currency      String   @default("PI")
+  status        String   @default("ACTIVE")
+  
+  startDate     DateTime
+  endDate       DateTime
+  renewalDate   DateTime?
+  
+  claims        Claim[]
+  coverages     Coverage[]
+  beneficiaries Beneficiary[]
+  premiums      Premium[]
+  
+  metadata      Json?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([policyType])
+  @@index([status])
+  @@map("insure_policies")
+}
+
+// Insurance Claims
+model Claim {
+  id            String   @id @default(cuid())
+  policyId      String
+  policy        Policy   @relation(fields: [policyId], references: [id], onDelete: Cascade)
+  
+  claimNumber   String   @unique
+  claimType     String   // MEDICAL, ACCIDENT, THEFT, DAMAGE, LIABILITY
+  amount        Float
+  approvedAmount Float?
+  currency      String   @default("PI")
+  status        String   @default("PENDING")
+  
+  incidentDate  DateTime
+  filedDate     DateTime @default(now())
+  settledDate   DateTime?
+  
+  description   String
+  evidence      Json?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([policyId])
+  @@index([status])
+  @@index([claimNumber])
+  @@map("insure_claims")
+}
+
+// Policy Coverage Details
+model Coverage {
+  id            String   @id @default(cuid())
+  policyId      String
+  policy        Policy   @relation(fields: [policyId], references: [id], onDelete: Cascade)
+  
+  coverageType  String   // MEDICAL, DENTAL, VISION, COLLISION, COMPREHENSIVE
+  coverageLimit Float
+  deductible    Float
+  copay         Float?
+  currency      String   @default("PI")
+  
+  details       Json?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([policyId])
+  @@index([coverageType])
+  @@map("insure_coverages")
+}
+
+// Premium Payments
+model Premium {
+  id            String   @id @default(cuid())
+  policyId      String
+  policy        Policy   @relation(fields: [policyId], references: [id], onDelete: Cascade)
+  
+  amount        Float
+  currency      String   @default("PI")
+  dueDate       DateTime
+  paidDate      DateTime?
+  status        String   @default("PENDING")
+  
+  paymentMethod String?
+  transactionId String?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([policyId])
+  @@index([status])
+  @@index([dueDate])
+  @@map("insure_premiums")
+}
+
+// Policy Beneficiaries
+model Beneficiary {
+  id            String   @id @default(cuid())
+  policyId      String
+  policy        Policy   @relation(fields: [policyId], references: [id], onDelete: Cascade)
+  
+  name          String
+  relationship  String   // SPOUSE, CHILD, PARENT, SIBLING, OTHER
+  percentage    Float    // Percentage of benefit
+  contactInfo   Json?
+  
+  isPrimary     Boolean  @default(false)
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([policyId])
+  @@map("insure_beneficiaries")
+}

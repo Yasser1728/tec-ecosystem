@@ -1,0 +1,124 @@
+// VIP.pi - VIP Membership Domain
+// Premium VIP services
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client-vip"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("VIP_DATABASE_URL")
+}
+
+// VIP Memberships
+model Membership {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  tier          String   @default("VIP")
+  level         Int      @default(1)
+  status        String   @default("ACTIVE")
+  
+  points        Int      @default(0)
+  
+  startDate     DateTime @default(now())
+  expiryDate    DateTime?
+  
+  benefits      Benefit[]
+  accesses      Access[]
+  
+  metadata      Json?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([level])
+  @@index([status])
+  @@map("vip_memberships")
+}
+
+// VIP Benefits
+model Benefit {
+  id            String     @id @default(cuid())
+  membershipId  String
+  membership    Membership @relation(fields: [membershipId], references: [id], onDelete: Cascade)
+  
+  category      String     // LOUNGE, PRIORITY, UPGRADE, GIFT
+  name          String
+  description   String
+  
+  quota         Int?
+  used          Int        @default(0)
+  
+  isActive      Boolean    @default(true)
+  
+  validUntil    DateTime?
+  
+  createdAt     DateTime   @default(now())
+  
+  @@index([membershipId])
+  @@index([category])
+  @@map("vip_benefits")
+}
+
+// VIP Tiers
+model Tier {
+  id            String   @id @default(cuid())
+  name          String   @unique
+  level         Int      @unique
+  price         Float
+  currency      String   @default("PI")
+  
+  perks         Json
+  pointsRequired Int     @default(0)
+  
+  isActive      Boolean  @default(true)
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([level])
+  @@map("vip_tiers")
+}
+
+// VIP Privileges
+model Privilege {
+  id            String   @id @default(cuid())
+  code          String   @unique
+  name          String
+  description   String
+  type          String   // LOUNGE, FAST_TRACK, UPGRADE, CONCIERGE
+  
+  minLevel      Int      @default(1)
+  
+  isActive      Boolean  @default(true)
+  
+  details       Json?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([type])
+  @@index([minLevel])
+  @@map("vip_privileges")
+}
+
+// VIP Access
+model Access {
+  id            String     @id @default(cuid())
+  membershipId  String
+  membership    Membership @relation(fields: [membershipId], references: [id], onDelete: Cascade)
+  
+  facility      String
+  facilityType  String     // LOUNGE, EVENT, SERVICE, AREA
+  
+  accessDate    DateTime   @default(now())
+  expiresAt     DateTime?
+  
+  metadata      Json?
+  
+  @@index([membershipId])
+  @@index([facilityType])
+  @@map("vip_accesses")
+}

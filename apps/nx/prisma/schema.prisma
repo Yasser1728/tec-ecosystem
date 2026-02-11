@@ -1,0 +1,118 @@
+// NX.pi - Next-Gen Experience Domain
+// Advanced technology services
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client-nx"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("NX_DATABASE_URL")
+}
+
+// NX Services
+model Service {
+  id            String   @id @default(cuid())
+  userId        String
+  name          String
+  category      String   // AI, ML, BLOCKCHAIN, IOT, AR_VR
+  description   String?
+  status        String   @default("ACTIVE")
+  
+  metrics       Metric[]
+  logs          Log[]
+  configurations Configuration[]
+  integrations  Integration[]
+  
+  metadata      Json?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([category])
+  @@map("nx_services")
+}
+
+// Service Metrics
+model Metric {
+  id            String   @id @default(cuid())
+  serviceId     String
+  service       Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  
+  name          String
+  value         Float
+  unit          String
+  category      String
+  
+  timestamp     DateTime @default(now())
+  
+  @@index([serviceId])
+  @@index([category])
+  @@index([timestamp])
+  @@map("nx_metrics")
+}
+
+// Service Logs
+model Log {
+  id            String   @id @default(cuid())
+  serviceId     String
+  service       Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  
+  level         String   // DEBUG, INFO, WARN, ERROR
+  message       String   @db.Text
+  
+  metadata      Json?
+  
+  timestamp     DateTime @default(now())
+  
+  @@index([serviceId])
+  @@index([level])
+  @@index([timestamp])
+  @@map("nx_logs")
+}
+
+// Service Configuration
+model Configuration {
+  id            String   @id @default(cuid())
+  serviceId     String
+  service       Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  
+  key           String
+  value         String   @db.Text
+  type          String
+  
+  isSecure      Boolean  @default(false)
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@unique([serviceId, key])
+  @@index([serviceId])
+  @@map("nx_configurations")
+}
+
+// Service Integrations
+model Integration {
+  id            String   @id @default(cuid())
+  serviceId     String
+  service       Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  
+  name          String
+  provider      String
+  type          String
+  
+  config        Json?
+  
+  status        String   @default("ACTIVE")
+  
+  lastSyncedAt  DateTime?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([serviceId])
+  @@index([provider])
+  @@map("nx_integrations")
+}
