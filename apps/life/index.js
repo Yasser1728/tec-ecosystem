@@ -8,8 +8,12 @@
  */
 
 import { DomainBootstrap } from "../../core/bootstrap";
-import { getDomainDatabaseConfig } from "../../core/database";
+import { getDomainDatabaseConfig, registerDomainClient } from "../../core/database";
 import domainConfig from "./config";
+import lifeDB from "./db/client.js";
+
+// Register this domain's database client
+registerDomainClient("life", lifeDB);
 
 /**
  * Life Domain Class
@@ -75,3 +79,4 @@ export class LifeDomain extends DomainBootstrap {
 export const lifeDomain = new LifeDomain();
 
 export default lifeDomain;
+export { lifeDB };

@@ -8,8 +8,12 @@
  */
 
 import { DomainBootstrap } from "../../core/bootstrap";
-import { getDomainDatabaseConfig } from "../../core/database";
+import { getDomainDatabaseConfig, registerDomainClient } from "../../core/database";
 import domainConfig from "./config";
+import brookfieldDB from "./db/client.js";
+
+// Register this domain's database client
+registerDomainClient("brookfield", brookfieldDB);
 
 /**
  * Brookfield Domain Class
@@ -75,3 +79,4 @@ export class BrookfieldDomain extends DomainBootstrap {
 export const brookfieldDomain = new BrookfieldDomain();
 
 export default brookfieldDomain;
+export { brookfieldDB };

@@ -8,8 +8,12 @@
  */
 
 import { DomainBootstrap } from "../../core/bootstrap";
-import { getDomainDatabaseConfig } from "../../core/database";
+import { getDomainDatabaseConfig, registerDomainClient } from "../../core/database";
 import domainConfig from "./config";
+import ecommerceDB from "./db/client.js";
+
+// Register this domain's database client
+registerDomainClient("ecommerce", ecommerceDB);
 
 /**
  * Ecommerce Domain Class
@@ -75,3 +79,4 @@ export class EcommerceDomain extends DomainBootstrap {
 export const ecommerceDomain = new EcommerceDomain();
 
 export default ecommerceDomain;
+export { ecommerceDB };

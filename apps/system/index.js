@@ -8,8 +8,12 @@
  */
 
 import { DomainBootstrap } from "../../core/bootstrap";
-import { getDomainDatabaseConfig } from "../../core/database";
+import { getDomainDatabaseConfig, registerDomainClient } from "../../core/database";
 import domainConfig from "./config";
+import systemDB from "./db/client.js";
+
+// Register this domain's database client
+registerDomainClient("system", systemDB);
 
 /**
  * System Domain Class
@@ -75,3 +79,4 @@ export class SystemDomain extends DomainBootstrap {
 export const systemDomain = new SystemDomain();
 
 export default systemDomain;
+export { systemDB };

@@ -8,8 +8,12 @@
  */
 
 import { DomainBootstrap } from "../../core/bootstrap";
-import { getDomainDatabaseConfig } from "../../core/database";
+import { getDomainDatabaseConfig, registerDomainClient } from "../../core/database";
 import domainConfig from "./config";
+import titanDB from "./db/client.js";
+
+// Register this domain's database client
+registerDomainClient("titan", titanDB);
 
 /**
  * Titan Domain Class
@@ -75,3 +79,4 @@ export class TitanDomain extends DomainBootstrap {
 export const titanDomain = new TitanDomain();
 
 export default titanDomain;
+export { titanDB };

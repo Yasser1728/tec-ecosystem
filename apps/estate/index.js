@@ -8,8 +8,12 @@
  */
 
 import { DomainBootstrap } from "../../core/bootstrap";
-import { getDomainDatabaseConfig } from "../../core/database";
+import { getDomainDatabaseConfig, registerDomainClient } from "../../core/database";
 import domainConfig from "./config";
+import estateDB from "./db/client.js";
+
+// Register this domain's database client
+registerDomainClient("estate", estateDB);
 
 /**
  * Estate Domain Class
@@ -75,3 +79,4 @@ export class EstateDomain extends DomainBootstrap {
 export const estateDomain = new EstateDomain();
 
 export default estateDomain;
+export { estateDB };

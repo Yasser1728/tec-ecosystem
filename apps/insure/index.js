@@ -8,8 +8,12 @@
  */
 
 import { DomainBootstrap } from "../../core/bootstrap";
-import { getDomainDatabaseConfig } from "../../core/database";
+import { getDomainDatabaseConfig, registerDomainClient } from "../../core/database";
 import domainConfig from "./config";
+import insureDB from "./db/client.js";
+
+// Register this domain's database client
+registerDomainClient("insure", insureDB);
 
 /**
  * Insure Domain Class
@@ -74,3 +78,4 @@ export class InsureDomain extends DomainBootstrap {
 export const insureDomain = new InsureDomain();
 
 export default insureDomain;
+export { insureDB };

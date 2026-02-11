@@ -8,8 +8,12 @@
  */
 
 import { DomainBootstrap } from "../../core/bootstrap";
-import { getDomainDatabaseConfig } from "../../core/database";
+import { getDomainDatabaseConfig, registerDomainClient } from "../../core/database";
 import domainConfig from "./config";
+import zoneDB from "./db/client.js";
+
+// Register this domain's database client
+registerDomainClient("zone", zoneDB);
 
 /**
  * Zone Domain Class
@@ -74,3 +78,4 @@ export class ZoneDomain extends DomainBootstrap {
 export const zoneDomain = new ZoneDomain();
 
 export default zoneDomain;
+export { zoneDB };

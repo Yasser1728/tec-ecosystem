@@ -8,8 +8,12 @@
  */
 
 import { DomainBootstrap } from "../../core/bootstrap";
-import { getDomainDatabaseConfig } from "../../core/database";
+import { getDomainDatabaseConfig, registerDomainClient } from "../../core/database";
 import domainConfig from "./config";
+import assetsDB from "./db/client.js";
+
+// Register this domain's database client
+registerDomainClient("assets", assetsDB);
 
 /**
  * Assets Domain Class
@@ -75,3 +79,4 @@ export class AssetsDomain extends DomainBootstrap {
 export const assetsDomain = new AssetsDomain();
 
 export default assetsDomain;
+export { assetsDB };
