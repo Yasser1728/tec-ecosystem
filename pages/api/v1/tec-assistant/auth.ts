@@ -3,13 +3,13 @@
  * POST /api/v1/tec-assistant/auth
  */
 
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient as TecPrismaClient } from "@prisma/client-tec";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { UserRepository } from "@/src/infrastructure/database/repositories/UserRepository";
 import { PiNetworkService } from "@/src/infrastructure/pi-network/PiNetworkService";
 import { AuthenticateWithPi } from "@/src/domain/use-cases/auth/AuthenticateWithPi";
 
-const prisma = new PrismaClient();
+const prisma = new TecPrismaClient();
 
 export default async function handler(
   req: NextApiRequest,

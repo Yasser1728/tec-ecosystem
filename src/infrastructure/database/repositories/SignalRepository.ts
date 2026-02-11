@@ -2,12 +2,12 @@
  * Signal Repository Implementation - TEC Assistant Domain
  */
 
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient as TecPrismaClient } from "@prisma/client-tec";
 import { Signal, SignalType } from "../../../domain/entities/Signal";
 import { ISignalRepository } from "../../../domain/interfaces/repositories/ISignalRepository";
 
 export class SignalRepository implements ISignalRepository {
-  constructor(private prisma: PrismaClient) {}
+  constructor(private prisma: TecPrismaClient) {}
 
   async findById(id: string): Promise<Signal | null> {
     const signal = await this.prisma.tecSignal.findUnique({ where: { id } });
