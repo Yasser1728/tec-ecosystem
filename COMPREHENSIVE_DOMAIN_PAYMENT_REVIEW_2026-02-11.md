@@ -770,7 +770,7 @@ const CompletePaymentSchema = z.object({
 // ✅ إضافة circuit breaker
 import CircuitBreaker from 'opossum';
 
-const piApiBre aker = new CircuitBreaker(callPiApi, {
+const piApiBreaker = new CircuitBreaker(callPiApi, {
   timeout: 15000,
   errorThresholdPercentage: 50,
   resetTimeout: 30000
