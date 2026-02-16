@@ -121,7 +121,7 @@ function checkConflicts() {
       console.log('ℹ️  You are using a hybrid routing approach:');
       console.log('   - Pages Router for most routes');
       console.log('   - App Router for specific routes');
-      console.log('   This is supported as long as routes don\'t conflict.\n');
+      console.log("   This is supported as long as routes don't conflict.\n");
     }
     
     process.exit(0);

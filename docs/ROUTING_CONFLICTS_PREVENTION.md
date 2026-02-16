@@ -109,10 +109,12 @@ Delete or move the file from the `app/` directory.
 
 ✅ **No routing conflicts detected** in the tec-ecosystem repository.
 
-Our hybrid approach:
-- Pages Router: 175 routes (main application)
+Our hybrid approach (as of this writing):
+- Pages Router: ~175 routes (main application)
 - App Router: 1 route (validation endpoint)
 - Conflicts: 0
+
+*Note: These numbers may change as the codebase evolves. Run `npm run check:routes` to see current counts.*
 
 ## Related Issues
 
