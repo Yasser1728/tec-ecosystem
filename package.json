@@ -56,7 +56,7 @@
     "zod": "^4.3.5"
   },
   "devDependencies": {
-    "@commitlint/cli": "^18.0.0",
+    "@commitlint/cli": "^20.4.1",
     "@commitlint/config-conventional": "^18.0.0",
     "@playwright/test": "^1.57.0",
     "@swc/core": "^1.15.8",
