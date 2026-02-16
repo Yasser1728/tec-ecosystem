@@ -717,6 +717,7 @@ npm run test:coverage
 - **[API Documentation](./docs/API.md)**: Complete API reference
 - **[Architecture Guide](./docs/ARCHITECTURE.md)**: Technical architecture overview
 - **[Pi Integration Guide](./docs/PI_INTEGRATION.md)**: Pi Network SDK integration
+- **[Routing Conflicts Prevention](./docs/ROUTING_CONFLICTS_PREVENTION.md)**: Next.js routing conflict detection and prevention
 - **[Compliance Documentation](./private/COMPLIANCE.md)**: GDPR and Pi compliance
 - **[Contributing Guidelines](./CONTRIBUTING.md)**: How to contribute
 - **[Security Policy](./docs/SECURITY.md)**: Security guidelines and reporting

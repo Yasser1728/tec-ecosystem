@@ -159,6 +159,7 @@ npm run test:coverage
 
 - **[توثيق API](./docs/API.md)**: مرجع API كامل
 - **[دليل البنية](./docs/ARCHITECTURE.md)**: نظرة عامة على البنية التقنية
+- **[منع تعارضات التوجيه](./docs/ROUTING_CONFLICTS_PREVENTION_AR.md)**: اكتشاف ومنع تعارضات التوجيه في Next.js
 - **[إرشادات المساهمة](./CONTRIBUTING.md)**: كيفية المساهمة
 - **[سياسة الأمان](./docs/SECURITY.md)**: إرشادات الأمان والإبلاغ
 - **[سجل التغييرات](./docs/CHANGELOG.md)**: تاريخ الإصدارات
