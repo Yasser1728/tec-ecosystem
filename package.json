@@ -33,7 +33,9 @@
     "ai:generate-services": "node ai-agent/services/generateServices.js",
     "ai:build": "echo 'Sovereign AI Build Initiated...'",
     "vercel:check": "bash scripts/check-vercel-config.sh",
-    "vercel:validate": "npm run vercel:check && npm run build"
+    "vercel:validate": "npm run vercel:check && npm run build",
+    "check:routes": "node scripts/check-routing-conflicts.js",
+    "prebuild": "node scripts/check-routing-conflicts.js"
   },
   "dependencies": {
     "@prisma/client": "^6.1.0",
