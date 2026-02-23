@@ -43,11 +43,11 @@ jobs:
     steps:
       # 1️⃣ Checkout repository
       - name: 📥 Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       # 2️⃣ Setup Node.js
       - name: 🟢 Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "20"
           cache: "npm"
@@ -84,7 +84,7 @@ jobs:
 
       # 8️⃣ Upload Build + Ledger + Artifacts
       - name: 📦 Upload Build & Ledger Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: sovereign-factory-output
           path: |
